@@ -1,0 +1,700 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/maximum-clique-for-massive-sparse-graphs/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:36:25 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index35c6.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>Maximum clique for massive sparse graphs - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="The new BBMCSP algorithm uses the sparse_graph type available in GRAPH to solve maximum clique problems in sparse networks."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="Maximum clique for massive sparse graphs - biicode Blog" /><meta
+property="og:description" content="The new BBMCSP algorithm uses the sparse_graph type available in GRAPH to solve maximum clique problems in sparse networks." /><meta
+property="og:url" content="http://blog.biicode.com/maximum-clique-for-massive-sparse-graphs/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:section" content="algorithms" /><meta
+property="article:published_time" content="2015-02-24T16:52:49+00:00" /><meta
+property="article:modified_time" content="2015-02-25T15:06:42+00:00" /><meta
+property="og:updated_time" content="2015-02-25T15:06:42+00:00" /><meta
+property="og:image" content="http://ryanrossi.com/pmc/tscc/infectious.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="Maximum clique for massive sparse graphs - biicode Blog"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/infectious.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Maximum clique for massive sparse graphs Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index8f7c.html?p=2108' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-2108 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/algorithms/index.html" rel="v:url" property="v:title">algorithms</a> » <strong
+class="breadcrumb_last">Maximum clique for massive sparse graphs</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-2108" class="post-2108 post type-post status-publish format-standard hentry category-algorithms category-bitscan-2"> <header
+class="entry-header"><h1 class="entry-title">Maximum clique for massive sparse graphs</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="16:52" rel="bookmark"><time
+class="entry-date" datetime="2015-02-24T16:52:49+00:00">February 24, 2015</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/pablo/index.html" title="View all posts by pablo" rel="author">pablo</a></span></span></div> </header><div
+class="entry-content"><p>In a <a
+href="../category/bitscan-2/index.html">previous post</a> we introduced the maximum clique problem (MCP) and reported performance of the efficient bit-parallel exact solver BBMC, implemented with BITSCAN and GRAPH libraries available in the Biicode repositories <a
+title="Bitscan" href="https://www.biicode.com/pablodev/bitscan" target="_blank">pablodev/bitscan</a> and <a
+title="GRAPH" href="https://www.biicode.com/pablodev/graph" target="_blank">pablodev/graph</a> respectively. BBMC is concerned with small and middle size graphs.</p><p>Also very challenging are real networks that arise from different fields such as social networks, infrastructure networks, scientific networks and so on. These graphs tend to have many thousands—even millions— of nodes but are usually very sparse —the <a
+title="Network Repository" href="http://networkrepository.com/" target="_blank">Network Data Repository</a> hosts more than 500 of such graphs—.  An open problem is finding the clique number (the cardinality of a maximum clique) of such networks to get an insight into their structure. Unfortunately the problem is NP-hard and no polynomial algorithm is expected to be found; tailoring and exact solver for this task is as yet an <a
+title="Open questions on Clique" href="http://link.springer.com/chapter/10.1007%2F978-3-642-13193-6_2" target="_blank">open question</a> [1].</p><p><img
+class="aligncenter" src="../../ryanrossi.com/pmc/tscc/infectious.png" alt="BBMCSP is the new application of BITSCAN and GRAPH libs available in biicode to solve the maximum clique problem." width="471" height="459" /></p><p><span
+id="more-2108"></span></p><h2>BBMCSP can quickly solve the maximum clique problem of sparse networks</h2><p>Only just some months ago it has been possible to tailor BBMC for real networks. The main problem in successful exact solvers for the middle size case is that the majority of them encode the adjacency matrix in full, whereas real graphs require some form of compression—i.e. typically a list of edges—. The new BBMCSP algorithm uses the <em>sparse_graph</em> type available in GRAPH to compress the adjacency matrix, while still taking advantage of fast bit string operations between vertex sets.</p><p>As in the previous post we will not go into implementation details here —see the <a
+title="COPT block" href="https://www.biicode.com/pablodev/copt" target="_blank">pablodev/copt</a> block to look at some source code—but  report performance of BBMCSP over a number of massive networks available in the Network Data Repository. Experiments have been run on a  Linux workstation with an Intel(R) Xeon(R) CPU E5-2690 v2 multi-core processor and 128GB of main memory, using always a single-core. The table reports comparison results against previous best <a
+title="PMC algorithm home page" href="http://ryanrossi.com/pmc/" target="_blank">PMC </a>algorithm over 30 massive graphs. In the table each row is a network. Header <em>dmax</em> and <em>davg </em>stand for maximum graph degree and average graph degree respectively; w is the cardinality of the maximum clique, <em>BBMCSP</em> and <em>PMC</em> gives search time performance in seconds for both algorithms and <em>PMC/BBMCSP </em>reports  the time ratio.</p><table
+id="tablepress-4" class="tablepress tablepress-id-4"><thead><tr
+class="row-1 odd"><th
+class="column-1">Category</th><th
+class="column-2">Name</th><th
+class="column-3">|V|</th><th
+class="column-4">|E|</th><th
+class="column-5">dmax</th><th
+class="column-6">davg</th><th
+class="column-7">w</th><th
+class="column-8">BBMCSP</th><th
+class="column-9">PMC</th><th
+class="column-10">PMC/  BBMCSP</th></tr></thead><tbody
+class="row-hover"><tr
+class="row-2 even"><td
+class="column-1">Affiliation</td><td
+class="column-2">aff-orkut-user2groups</td><td
+class="column-3">8730857</td><td
+class="column-4">327037420</td><td
+class="column-5">318268</td><td
+class="column-6">74.92</td><td
+class="column-7">6</td><td
+class="column-8">1377.23</td><td
+class="column-9">29042.3</td><td
+class="column-10">21.09</td></tr><tr
+class="row-3 odd"><td
+class="column-1">Infrastructure</td><td
+class="column-2">inf-germany_osm</td><td
+class="column-3">11548845</td><td
+class="column-4">12369181</td><td
+class="column-5">13</td><td
+class="column-6">2.14</td><td
+class="column-7">3</td><td
+class="column-8">&gt;0.001</td><td
+class="column-9">2.88</td><td
+class="column-10">2878.92</td></tr><tr
+class="row-4 even"><td
+class="column-1">Infrastructure</td><td
+class="column-2">inf-great-britain_osm</td><td
+class="column-3">7733822</td><td
+class="column-4">8156517</td><td
+class="column-5">8</td><td
+class="column-6">2.11</td><td
+class="column-7">3</td><td
+class="column-8">&gt;0.001</td><td
+class="column-9">1.94</td><td
+class="column-10">1939.6</td></tr><tr
+class="row-5 odd"><td
+class="column-1">Infrastructure</td><td
+class="column-2">inf-italy_osm</td><td
+class="column-3">6686493</td><td
+class="column-4">7013978</td><td
+class="column-5">9</td><td
+class="column-6">2.1</td><td
+class="column-7">3</td><td
+class="column-8">&gt;0.001</td><td
+class="column-9">1.54</td><td
+class="column-10">1540.19</td></tr><tr
+class="row-6 even"><td
+class="column-1">Scientific computing</td><td
+class="column-2">adaptive</td><td
+class="column-3">6815744</td><td
+class="column-4">13624320</td><td
+class="column-5">4</td><td
+class="column-6">4</td><td
+class="column-7">2</td><td
+class="column-8">1.15</td><td
+class="column-9">6.94</td><td
+class="column-10">6.03</td></tr><tr
+class="row-7 odd"><td
+class="column-1">Scientific computing</td><td
+class="column-2">channel-500x100x100-b050</td><td
+class="column-3">4802000</td><td
+class="column-4">42681372</td><td
+class="column-5">18</td><td
+class="column-6">17.78</td><td
+class="column-7">4</td><td
+class="column-8">5.22</td><td
+class="column-9">21.15</td><td
+class="column-10">4.06</td></tr><tr
+class="row-8 even"><td
+class="column-1">Scientific computing</td><td
+class="column-2">delaunay_n22</td><td
+class="column-3">4194304</td><td
+class="column-4">12582869</td><td
+class="column-5">23</td><td
+class="column-6">6</td><td
+class="column-7">4</td><td
+class="column-8">1.58</td><td
+class="column-9">7.4</td><td
+class="column-10">4.7</td></tr><tr
+class="row-9 odd"><td
+class="column-1">Scientific computing</td><td
+class="column-2">delaunay_n23</td><td
+class="column-3">8388608</td><td
+class="column-4">25165784</td><td
+class="column-5">28</td><td
+class="column-6">6</td><td
+class="column-7">4</td><td
+class="column-8">3.29</td><td
+class="column-9">14.87</td><td
+class="column-10">4.52</td></tr><tr
+class="row-10 even"><td
+class="column-1">Scientific computing</td><td
+class="column-2">delaunay_n24</td><td
+class="column-3">16777216</td><td
+class="column-4">50331601</td><td
+class="column-5">26</td><td
+class="column-6">6</td><td
+class="column-7">4</td><td
+class="column-8">6.84</td><td
+class="column-9">29.38</td><td
+class="column-10">4.29</td></tr><tr
+class="row-11 odd"><td
+class="column-1">Scientific computing</td><td
+class="column-2">hugebubbles-00020</td><td
+class="column-3">21198119</td><td
+class="column-4">31790179</td><td
+class="column-5">3</td><td
+class="column-6">3</td><td
+class="column-7">2</td><td
+class="column-8">3.62</td><td
+class="column-9">34.05</td><td
+class="column-10">9.4</td></tr><tr
+class="row-12 even"><td
+class="column-1">Scientific computing</td><td
+class="column-2">hugetrace-00000</td><td
+class="column-3">4588484</td><td
+class="column-4">6879133</td><td
+class="column-5">3</td><td
+class="column-6">3</td><td
+class="column-7">2</td><td
+class="column-8">0.69</td><td
+class="column-9">5.2</td><td
+class="column-10">7.54</td></tr><tr
+class="row-13 odd"><td
+class="column-1">Scientific computing</td><td
+class="column-2">hugetrace-00010</td><td
+class="column-3">12057441</td><td
+class="column-4">18082179</td><td
+class="column-5">3</td><td
+class="column-6">3</td><td
+class="column-7">2</td><td
+class="column-8">1.83</td><td
+class="column-9">14.82</td><td
+class="column-10">8.09</td></tr><tr
+class="row-14 even"><td
+class="column-1">Scientific computing</td><td
+class="column-2">hugetric-00000</td><td
+class="column-3">5824554</td><td
+class="column-4">8733523</td><td
+class="column-5">3</td><td
+class="column-6">3</td><td
+class="column-7">2</td><td
+class="column-8">0.88</td><td
+class="column-9">6.32</td><td
+class="column-10">7.18</td></tr><tr
+class="row-15 odd"><td
+class="column-1">Scientific computing</td><td
+class="column-2">hugetric-00010</td><td
+class="column-3">6592765</td><td
+class="column-4">9885854</td><td
+class="column-5">3</td><td
+class="column-6">3</td><td
+class="column-7">2</td><td
+class="column-8">1.07</td><td
+class="column-9">8.1</td><td
+class="column-10">7.56</td></tr><tr
+class="row-16 even"><td
+class="column-1">Scientific computing</td><td
+class="column-2">hugetric-00020</td><td
+class="column-3">7122792</td><td
+class="column-4">10680777</td><td
+class="column-5">3</td><td
+class="column-6">3</td><td
+class="column-7">2</td><td
+class="column-8">1.19</td><td
+class="column-9">9.03</td><td
+class="column-10">7.6</td></tr><tr
+class="row-17 odd"><td
+class="column-1">Scientific computing</td><td
+class="column-2">venturiLevel3</td><td
+class="column-3">4026819</td><td
+class="column-4">8054237</td><td
+class="column-5">6</td><td
+class="column-6">4</td><td
+class="column-7">3</td><td
+class="column-8">0.57</td><td
+class="column-9">3.58</td><td
+class="column-10">6.24</td></tr><tr
+class="row-18 even"><td
+class="column-1">Social</td><td
+class="column-2">soc-friendster</td><td
+class="column-3">65608366</td><td
+class="column-4">1806067135</td><td
+class="column-5">5214</td><td
+class="column-6">55.06</td><td
+class="column-7">129</td><td
+class="column-8">1027.25</td><td
+class="column-9">7680.92</td><td
+class="column-10">7.48</td></tr><tr
+class="row-19 odd"><td
+class="column-1">Social</td><td
+class="column-2">soc-livejournal07</td><td
+class="column-3">5204176</td><td
+class="column-4">48709773</td><td
+class="column-5">15017</td><td
+class="column-6">18.72</td><td
+class="column-7">358</td><td
+class="column-8">0.01</td><td
+class="column-9">6.34</td><td
+class="column-10">862.17</td></tr><tr
+class="row-20 even"><td
+class="column-1">Social</td><td
+class="column-2">soc-livejournal-user-groups</td><td
+class="column-3">7489073</td><td
+class="column-4">112307315</td><td
+class="column-5">1053749</td><td
+class="column-6">29.99</td><td
+class="column-7">9</td><td
+class="column-8">717.73</td><td
+class="column-9">36245</td><td
+class="column-10">50.5</td></tr><tr
+class="row-21 odd"><td
+class="column-1">Social</td><td
+class="column-2">soc-ljournal-2008</td><td
+class="column-3">5363260</td><td
+class="column-4">49514271</td><td
+class="column-5">19432</td><td
+class="column-6">18.46</td><td
+class="column-7">400</td><td
+class="column-8">0</td><td
+class="column-9">7.22</td><td
+class="column-10">7051.04</td></tr><tr
+class="row-22 even"><td
+class="column-1">Social</td><td
+class="column-2">soc-orkut-dir</td><td
+class="column-3">3072441</td><td
+class="column-4">117185083</td><td
+class="column-5">33313</td><td
+class="column-6">76.28</td><td
+class="column-7">51</td><td
+class="column-8">55.78</td><td
+class="column-9">228.94</td><td
+class="column-10">4.1</td></tr><tr
+class="row-23 odd"><td
+class="column-1">Social</td><td
+class="column-2">soc-sinaweibo</td><td
+class="column-3">58655849</td><td
+class="column-4">261321033</td><td
+class="column-5">278489</td><td
+class="column-6">8.91</td><td
+class="column-7">44</td><td
+class="column-8">94.84</td><td
+class="column-9">2605</td><td
+class="column-10">27.47</td></tr><tr
+class="row-24 even"><td
+class="column-1">Social (facebook)</td><td
+class="column-2">socfb-A-anon</td><td
+class="column-3">3097165</td><td
+class="column-4">23667394</td><td
+class="column-5">4915</td><td
+class="column-6">15.28</td><td
+class="column-7">25</td><td
+class="column-8">9.01</td><td
+class="column-9">21.75</td><td
+class="column-10">2.41</td></tr><tr
+class="row-25 odd"><td
+class="column-1">Social (facebook)</td><td
+class="column-2">socfb-konect.edges</td><td
+class="column-3">46009640</td><td
+class="column-4">72040814</td><td
+class="column-5">4960</td><td
+class="column-6">3.13</td><td
+class="column-7">6</td><td
+class="column-8">0.64</td><td
+class="column-9">21.92</td><td
+class="column-10">34.36</td></tr><tr
+class="row-26 even"><td
+class="column-1">Social (facebook)</td><td
+class="column-2">socfb-uci-uni</td><td
+class="column-3">58790782</td><td
+class="column-4">92208195</td><td
+class="column-5">4960</td><td
+class="column-6">3.14</td><td
+class="column-7">6</td><td
+class="column-8">0.92</td><td
+class="column-9">33.09</td><td
+class="column-10">36.11</td></tr><tr
+class="row-27 odd"><td
+class="column-1">Web links</td><td
+class="column-2">web-ClueWeb09-50m</td><td
+class="column-3">428136612</td><td
+class="column-4">446534058</td><td
+class="column-5">308477</td><td
+class="column-6">2.09</td><td
+class="column-7">56</td><td
+class="column-8">4.77</td><td
+class="column-9">635.72</td><td
+class="column-10">133.15</td></tr><tr
+class="row-28 even"><td
+class="column-1">Web links</td><td
+class="column-2">web-indochina-2004-all</td><td
+class="column-3">7414866</td><td
+class="column-4">150984819</td><td
+class="column-5">256425</td><td
+class="column-6">40.72</td><td
+class="column-7">6848</td><td
+class="column-8">0.28</td><td
+class="column-9">1137.24</td><td
+class="column-10">4038.84</td></tr><tr
+class="row-29 odd"><td
+class="column-1">Web links</td><td
+class="column-2">web-it-2004-all</td><td
+class="column-3">41291318</td><td
+class="column-4">1027474947</td><td
+class="column-5">1326744</td><td
+class="column-6">49.77</td><td
+class="column-7">3222</td><td
+class="column-8">0.19</td><td
+class="column-9">162.32</td><td
+class="column-10">832.67</td></tr><tr
+class="row-30 even"><td
+class="column-1">Web links</td><td
+class="column-2">web-wikipedia_link_de</td><td
+class="column-3">3930109</td><td
+class="column-4">68714064</td><td
+class="column-5">437732</td><td
+class="column-6">34.97</td><td
+class="column-7">339</td><td
+class="column-8">0.01</td><td
+class="column-9">10.33</td><td
+class="column-10">1587.48</td></tr><tr
+class="row-31 odd"><td
+class="column-1">Web links</td><td
+class="column-2">web-wikipedia_link_fr</td><td
+class="column-3">5115915</td><td
+class="column-4">104591689</td><td
+class="column-5">1274642</td><td
+class="column-6">40.89</td><td
+class="column-7">332</td><td
+class="column-8">0.12</td><td
+class="column-9">23.8</td><td
+class="column-10">206.31</td></tr></tbody></table><p>These and other algorithms have been tested over more than 275 real graphs. The full raw data together with a BBMCSP binary is available <a
+title="Comparison of BBMCSP with PMC and others" href="http://venus.elai.upm.es/logs/results_sparse/" target="_blank">here</a>. <strong>We believe BBMCSP results  are clearly best on average for a stand-alone exact solver on massive graphs</strong>. If this is not the case, please let us know.</p><p>If we get a favorable feedback from readers interested in BBMCSP and/or in the maximum clique problem tailored  for very large or massive graphs we will explain the BBMCSP algorithm in full together with implementation details concerning BITSCAN and GRAPH.</p><p>Hope you enjoy this new BITSCAN and GRAPH application and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our<span
+class="Apple-converted-space"> </span><a
+href="http://docs.biicode.com/">docs</a>,<span
+class="Apple-converted-space"> </span><a
+href="http://forum.biicode.com/">forum</a><span
+class="Apple-converted-space"> </span>and/or<span
+class="Apple-converted-space"> </span><a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a><span
+class="Apple-converted-space"> </span>for questions and answers or comment below to tell us your enquiries.</p><p>[1] Pardalos, P. Rebennack, S.; Experimental Algorithms. Lecture Notes in Computer Science, Volume 6049, 2010, pp 13-22.</p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../maximum-clique-problem-bitscan-biicode/index.html" title="Solving the maximum clique problem with BITSCAN">Solving the maximum clique problem with BITSCAN</a></li><li><a
+href="../exact-maximum-clique-for-massive-real-graphs/index.html" title="Exact maximum clique for large or massive real graphs continued">Exact maximum clique for large or massive real graphs continued</a></li><li><a
+href="../bit-parallel-approximate-coloring/index.html" title="Bit-parallel approximate coloring">Bit-parallel approximate coloring</a></li><li><a
+href="../bitscan-cpp-library-bit-strings/index.html" title="BITSCAN: a C++ library for bit strings">BITSCAN: a C++ library for bit strings</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/maximum-clique-for-massive-sparse-graphs/' addthis:title='Maximum clique for massive sparse graphs' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/algorithms/index.html" rel="category tag">algorithms</a>, <a
+href="../category/bitscan-2/index.html" rel="category tag">BITSCAN</a>. Bookmark the <a
+href="index.html" title="Permalink to Maximum clique for massive sparse graphs" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../dependency-management-boost-libraries/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Boost libraries are now supported in biicode</a></div><div
+class="next"><a
+href="../poco-cpp-libraries-available-biicode/index.html" rel="next">POCO C++ Libraries are now available in biicode <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="post pingback"><p>Pingback: <a
+href='../exact-maximum-clique-for-massive-real-graphs/index.html' rel='external nofollow' class='url'>Exact maximum clique for massive real graphs - biicode Blog</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='http://radar.oreilly.com/2015/04/four-short-links-10-april-2015.html' rel='external nofollow' class='url'>Four short links: 10 April 2015 - O'Reilly Radar</a>()</p></li></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '2108%20http_/blog.biicode.com/index8f7c.html?p=2108';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "Maximum clique for massive sparse graphs";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index1f77.html?cf_action=sync_comments&amp;post_id=2108';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-content/plugins/tablepress/js/jquery.datatables.minf24c.js?ver=1.6'></script>
+<script type="text/javascript">
+jQuery(document).ready(function($){
+$('#tablepress-4').dataTable({"order":[],"orderClasses":false,"stripeClasses":['even','odd'],"pagingType":"simple"});
+});
+</script><!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/maximum-clique-for-massive-sparse-graphs/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:36:27 GMT -->
+</html>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; LittleCMS</title> <atom:link href="http://blog.biicode.com/tag/littlecms/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to upload to biicode. Example 3: Little CMS by Marti Maria</title><link>http://blog.biicode.com/upload-to-biicode-little-cms/</link> <comments>http://blog.biicode.com/upload-to-biicode-little-cms/#comments</comments> <pubDate>Mon, 13 Oct 2014 13:10:01 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[lcms]]></category> <category><![CDATA[LittleCMS]]></category> <category><![CDATA[Marti Maria]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1764</guid> <description><![CDATA[<p>Updated for biicode 2.0! Once a library is uploaded to biicode, everyone can reuse it easily!  Let&#8217;s see a new example about how to upload to biicode just following a few steps, again, this is another example about how to proceed when your library depends on others. For this matter we&#8217;re using the fantastic library Little [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-little-cms/">How to upload to biicode. Example 3: Little CMS by Marti Maria</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>Once a library is uploaded to biicode, everyone can reuse it easily!  Let&#8217;s see a new example about how to upload to biicode just following a few steps, again, this is another example about how to proceed when your library depends on others. For this matter we&#8217;re using the fantastic library <a
+title="Little CMS" href="http://www.littlecms.com" target="_blank">Little CMS</a>, a free, open source, CMM engine. It provides fast transforms between ICC profiles.</p><p>As you can guess, once we&#8217;re done everybody will be able to use this library just by typing <code>#include "martimaria/littlecms/include/lcms2.h"</code></p><p><span
+id="more-1764"></span></p><h3>The Initial Steps to upload to biicode: one, two, three, four!</h3><p>These don&#8217;t defer from the ones used on the previous examples last week: <a
+title="upload to biicode json11" href="http://blog.biicode.com/upload-to-biicode-i/">Json11</a> and <a
+title="upload to biicode box2d" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D</a>.</p><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so if the author  updates the library we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to the <a
+title="mm2/Little-CMS" href="https://github.com/mm2/Little-CMS" target="_blank">original repository</a> and click on fork:</p><p><img
+class="aligncenter wp-image-1769 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/FORK.png" alt="Fork the Little CMS source code to upload to biicode." width="895" height="90" /></p><p>&nbsp;</p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init lcms
+$ cd lcms
+$ bii new amalulla/little-cms</pre><p>If you already are a biicode user you can replace &#8220;amalulla&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/amalulla/little-cms</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\amalulla\little-cms
+$ git clone https://github.com/amalulla/Little-CMS.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command <code>bii deps</code> give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter wp-image-1770 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bii_deps_lcms.png" alt="bii_deps_lcms" width="262" height="375" /></p><p>What&#8217;s going on? Seems we have tons of unresolved files, How should we proceed with those in order to get the library working?</p><h4>4. Solve your Unresolved includes</h4><h4>4.1. #include External Libraries</h4><p>Let&#8217;s start with the ones we already new about: <em>jpeglib.h</em> and <em>tiffio.h,</em> they are the dependencies, as Marti Maria explains in the library Docs:</p><blockquote><p>If you plan to compile the tifficc and jpgicc utilities, you need to have following libraries installed. Please refer to documentation of each library for installation instructions.</p></blockquote><p>Well, that&#8217;s not our case, in biicode you don&#8217;t need to install nor download the libraries, so, we&#8217;re going to look for them in biicode:</p><p><img
+class="aligncenter wp-image-1771 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/search-in-biicode.png" alt="Search the explore section of biicode a C/C++ dependency manager" width="1049" height="102" /></p><p>Lets check, they&#8217;re already in biicode!</p><ul><li><strong>tiffio.h <span
+style="font-weight: 300;color: #292f33">→ </span><span
+style="font-weight: 300;color: #292f33"> </span></strong>Lib TIFF <a
+title="libtiff original library" href="http://www.remotesensing.org/libtiff/" target="_blank">http://www.remotesensing.org/libtiff/</a> <span
+style="font-weight: 300;color: #292f33">→ <a
+title="tiff library biicode" href="http://www.biicode.com/tiff/tiff" target="_blank">http://www.biicode.com/tiff/tiff</a> → <a
+title="tiffio.h" href="//www.biicode.com/tiff/tiff/tiff/master/0/libtiff/tiffio.h" target="_blank">tiffio.h </a></span></li><li><strong>jpeglib.h <span
+style="font-weight: 300;color: #292f33">→ </span></strong> Independent JPEG Group <a
+title="independent jpeg group library" href="http://www.ijg.org" target="_blank">http://www.ijg.org</a>/ <span
+style="font-weight: 300;color: #292f33">→ <a
+title="jpeg library biicode" href="http://www.biicode.com/jpeg/jpeg" target="_blank">http://www.biicode.com/jpeg/jpeg</a> → <a
+title="jpeglib.h " href="http://www.biicode.com/jpeg/jpeg/jpeg/master/0/jpeglib.h" target="_blank">jpeglib.h</a></span></li></ul><p><strong>UPDATE:</strong> They&#8217;ve been already uploaded to biicode so we&#8217;ll <del>change the includes in the library into the includes biicode needs to recognize them</del> map the right includes in our <em>biicode.conf</em> file, just like this:</p><ul><li>#<del>include &#8220;tiffio.h&#8221; <strong><span
+style="font-weight: 300;color: #292f33">→ </span></strong><em><span
+style="color: #292f33">r</span><span
+style="color: #292f33">eplace for</span></em><strong><span
+style="font-weight: 300;color: #292f33"> #include &#8220;tiff/tiff/libtiff/tiffio.h&#8221;</span></strong></del></li><li><del> #include &#8220;jpeglib.h&#8221; <strong><span
+style="font-weight: 300;color: #292f33">→ </span></strong><span
+style="font-weight: 300;color: #292f33"><em>replace for</em></span><strong><span
+style="font-weight: 300;color: #292f33"> #include &#8220;jpeg/jpeg/jpeglib.h&#8221;</span></strong></del></li></ul><p></p><pre class="crayon-plain-tag">[includes]
+    jpeglib.h: jpeg/jpeg
+    tiffio.h: tiff/tiff/libtiff</pre><p>Check our reference section in the docs to <a
+href="http://docs.biicode.com/c++/reference/biicode-conf.html#includes" target="_blank">read more aboout [includes]</a>.</p><h3>How do we know the required include?</h3><p>Just get into the URL of the required file, like this:</p><p><img
+class="aligncenter wp-image-1772 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/jpeg-dependencies.png" alt="Search the blocks the users upload to biicode." width="1030" height="501" /></p><p>&nbsp;</p><p>Once we&#8217;ve updated the #include routes, execute<em> bii find</em> command to retrieve the dependencies:</p><pre class="crayon-plain-tag">$ bii find //to retrieve the dependencies</pre><p><img
+class="aligncenter size-full wp-image-1773" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/find_libs.png" alt="find_libs" width="478" height="79" /></p><p>So if we execute <code>bii deps</code> again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1774" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bii_deps_lcms1.png" alt="bii_deps_lcms1" width="264" height="403" /></p><p>&nbsp;</p><p>Now that external libraries are included we&#8217;ve got to address what&#8217;s going on with the other &#8220;not found&#8221; includes, let&#8217;s build the project to see exactly what&#8217;s going on and which includes it cannot find.</p><pre class="crayon-plain-tag">$ bii build</pre><p>It doesn&#8217;t build, so it seems we still have a couple things to solve.</p><h4>4.2. #include internal folders</h4><p>In your <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> , placed into blocks/username/blockname/bii folder, write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/src
+/include
+/utils/common</pre><p>&nbsp;</p><p><img
+class="aligncenter wp-image-2196 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biicodeconf-littlecms.png" alt="" width="710" height="428" /></p><p>Execute <code>bii deps</code> command again to check how&#8217;s our adaptation going:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1829" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biifindmexlcms.png" alt="bii find" width="256" height="356" /></p><p>&nbsp;</p><h4>4.3. There&#8217;s still some #include (s) biicode can not resolve, what&#8217;s going on here?</h4><p>4.3.1 #include &#8220;mex.h&#8221;</p><p>First of all we&#8217;ve got to check which files use #include &#8220;mex.h&#8221;  , it&#8217;s icctrans.c located into: lcms\blocks\amalulla\littlecms\utils\matlab\icctrans.c</p><p>It seems it&#8217;s something related with matlab, but just in case we&#8217;re going to google <code>#include "mex.h",</code> and we ensure it, this is a feature related to Matlab functionality, and as we&#8217;re not using that functionality we&#8217;re going to ignore the whole matlab folder. Notice that if you want to use matlab locally you have to link it. But that&#8217;s another post&#8217;s issue.</p><p>4.3.2 #include &#8220;lcms.h&#8221;</p><p>Let&#8217;s check which files use #include &#8220;lcms.h&#8221;, that&#8217;s an include referred to a previous Little-CMS version. There are currently four files that use that include, they are located into utils/samples, we&#8217;re also going to ignore those, because they won&#8217;t work with the new version, the examples I&#8217;m referring to are:  mkgrayer.c, itufax.c, mkcmy.c and wtpt.c</p><p>43.3. testbed folder</p><p>Finally we&#8217;re also ignoring the whole testbed folder, as it usually contains experimental features, that&#8217;s the dev/development environment.</p><p>So let&#8217;s create a <em>ignore.bii</em> file and write this into it:</p><pre class="crayon-plain-tag">testbed/*
+utils/samples/mkgrayer.c
+utils/samples/itufax.c
+utils/samples/mkcmy.c
+utils/samples/wtpt.c
+utils/matlab/*</pre><p><img
+class="aligncenter size-large wp-image-1995" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/ignore2.png" alt="ignore" width="630" height="533" /></p><p>Execute <code>bii deps</code> command again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1831" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps-working.png" alt="biideps working" width="281" height="303" /></p><p>Now there are no unresolved #include(s) so let&#8217;s build to check if everything is working properly:</p><pre class="crayon-plain-tag">$ bii build</pre><p>And it properly builds the library, so get into your bin folder and execute any of the examples created to check it out, for example:</p><pre class="crayon-plain-tag">$ cd bin
+bin/~$ amalulla_littlecms_utils_samples_mktiff8.exe</pre><p>And you should see a new file called lcmstiff8.icm created and this output on your terminal:</p><pre class="crayon-plain-tag">$ Creating lcmstiff8.icm...Done.</pre><p>And we&#8217;re ready to go!</p><p>Don&#8217;t forget to publish your library once you&#8217;re done! That way everybody can reuse easily from your library!</p><pre class="crayon-plain-tag">$ bii publish</pre><p>Want to check if the library we&#8217;ve just uploaded is truly reusable? Try making your own example and reuse from it!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-little-cms/">How to upload to biicode. Example 3: Little CMS by Marti Maria</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-little-cms/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; recluising</title> <atom:link href="http://blog.biicode.com/author/recluising/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Moving servos with arduino, pca9685 and a nunchuk</title><link>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/</link> <comments>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/#comments</comments> <pubDate>Wed, 25 Jun 2014 08:00:46 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[nunchuck]]></category> <category><![CDATA[pca9685]]></category> <category><![CDATA[servo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=696</guid> <description><![CDATA[<p>Hi all! As all you know, we have many adafruit libraries allocated at biicode, including the one to handle the PCA9685, capable of moving up to 16 servos. Also You can find the nunchuck library, that allows to use nunchucky. That&#8217;s all the software you need to move some servos using a joystick. &#160; Let&#8217;s begin!. These are [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/">Moving servos with arduino, pca9685 and a nunchuk</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Hi all!</p><p>As all you know, we have many adafruit libraries allocated at biicode, including <a
+title="link to servo driver adafruit" href="https://www.biicode.com/adafruit/blocks/adafruit/pwm_servo_driver_library/branches/master" target="_blank">the one to handle the PCA9685</a>, capable of moving up to 16 servos. Also You can find the <a
+title="nunchuck" href="https://www.biicode.com/gabrielbianconi/blocks/gabrielbianconi/nunchuk/branches/master">nunchuck</a> library, that allows to use nunchucky. That&#8217;s all the software you need to move some servos using a joystick.</p><p><span
+id="more-696"></span></p><p>&nbsp;</p><p><strong>Let&#8217;s begin!. </strong></p><p>These are the main ingredients you need to achieve successfully this recipe:</p><ul><li>Two servos</li><li>One Arduino ( I have used UNO board)</li><li>One <a
+title="pca8695" href="http://www.adafruit.com/products/815">Adafruit 16-Channel 12-bit PWM/Servo Driver &#8211; I2C interface</a> (pca8695)</li><li>One wii nunchuk</li><li>One <a
+title="nunchucky" href="http://www.adafruit.com/products/345">nunchucky adapter</a></li><li>Typical stuff (wires, protoboard)</li></ul><p>Now you have all you need, take a look at the sketch below:</p><p><img
+class="alignnone wp-image-697" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/servos-and-nunchuck_bb.png" alt="servos and nunchuck sketch" width="630" height="474" /></p><p>&nbsp;</p><p>You can follow the connections from the picture. We have used 2 servos at ports 0 and 4 for clarity.</p><p><strong>Where is the code I need?</strong></p><p>You can also reuse, branch, extend or just take a look at our code below (from <a
+title="recluising servos nunchuk" href="https://www.biicode.com/recluising/blocks/recluising/servos_nunchuk/branches/master">recluising/servos_nunchuk</a>) by using <em><a
+title="bii open" href="http://docs.biicode.com/biicode/reference/commands.html?highlight=bii%20open#bii-open-editing-code">bii open</a>: bii open recluising/servos_nunchuk</em></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;Wire.h&gt;
+#include &lt;adafruit/pwm_servo_driver_library/adafruit_pwmservodriver.h&gt;
+#include &lt;gabrielbianconi/nunchuk/nunchuk.h&gt;
+// called this way, it uses the default address 0x40
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+ArduinoNunchuk nunchuk = ArduinoNunchuk();
+#define SERVOMIN  150 // this is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  600 // this is the 'maximum' pulse length count (out of 4096)
+void setup() {
+  Serial.begin(9600);
+  Serial.println("Set up running...");
+  pwm.begin();
+  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+  nunchuk.init();
+  Serial.println("... Set up completed");
+}
+void move_x(int x){
+  double pulselen_x;
+  pulselen_x= map(x,0,255,SERVOMIN,SERVOMAX);
+  pwm.setPWM(0, 0, pulselen_x);
+  //output
+  Serial.print("x: ");
+  Serial.println(x);
+}
+void move_y(int y){
+  double pulselen_y;
+  pulselen_y= map(y,0,255,SERVOMIN,SERVOMAX);
+  pwm.setPWM(4, 0, pulselen_y);
+  //output
+  Serial.print("y: ");
+  Serial.println(y);
+}
+void move(int x,int y){
+  move_x(x);
+  move_y(y);
+}
+void loop() {
+  nunchuk.update();
+  if(nunchuk.cButton==1){
+    move_x(nunchuk.analogX);
+  }
+  else if(nunchuk.zButton==1){
+    move_y(nunchuk.analogY);
+  }
+  else{
+    move(nunchuk.analogX,nunchuk.analogY);
+  }
+  Serial.print(nunchuk.analogX, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.analogY, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelX, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelY, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelZ, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.zButton, DEC);
+  Serial.print(' ');
+  Serial.println(nunchuk.cButton, DEC);
+  delay(50);
+}</pre><p>You can also reuse from the necessary libraries to code your own sketch with <em><a
+title="command bii init" href="http://docs.biicode.com/biicode/commands/core_commands.html#bii-init-creates-a-new-project">bii init project</a>,</em> in this case the libraries reused are:</p><ul><li><a
+title="link to servo driver adafruit" href="https://www.biicode.com/adafruit/blocks/adafruit/pwm_servo_driver_library/branches/master">adafruit pca8695 </a></li><li><a
+title="nunchuck" href="https://www.biicode.com/gabrielbianconi/blocks/gabrielbianconi/nunchuk/branches/master">nunchuck</a></li></ul><p>Pay special attention to the #includes linking to the libraries that control the drivers we need. You just need to write the #include, and biicode will configure everything for you (using <a
+title="bii find" href="http://docs.biicode.com/biicode/reference/commands.html?highlight=bii%20find#bii-find-retrieving-dependencies">bii find</a>).</p><p>At set-up we set port 9600 to get the serial output. We will print values captured by nunchuk so we can know how the nunchuk is working and what values it&#8217;s registering. If you test the code, you should see something like this:</p><div
+id="attachment_698" style="width: 640px" class="wp-caption alignnone"><img
+class="wp-image-698" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/serie.png" alt="serial port output" width="630" height="361" /><p
+class="wp-caption-text">serial port output</p></div><p>We are moving two servos with the buttons and pads provided by the nunchuk joystick. We decided to use the logical pad to move the servos depending on axis values (x,y).</p><p>So, when we move the pad trough the x axis, one servo is moved and  if the y axis is the one we&#8217;re moving through, we move the other servo!</p><p>Just execute <a
+title="bii arduino:upload" href="http://docs.biicode.com/arduino/reference/commands.html?highlight=upload#bii-arduino-upload-upload-a-firmware-in-arduino" target="_blank">bii arduino: upload</a>  to load the code into your arduino and this is the way it works:</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/OWGSpEgf8yQ?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p><strong>Now it&#8217;s your turn</strong></p><p>This example is not cool enough, We&#8217;re sure you can do it better, so&#8230; here are some ideas, if you test them, we&#8217;ll be happy to know your feedback and your experience using biicode:</p><ul><li>Try something with more than 2 servos,  you can use up to 16!</li><li>Change the way you move the servos, maybe switching servo with nunchuk buttons.</li><li>Use the nunchuck sensors (maybe the accelerometer) to move the servos depending on its values.</li></ul><p>Happy coding!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/">Moving servos with arduino, pca9685 and a nunchuk</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Create a funny moving Doll with RaspberryPI</title><link>http://blog.biicode.com/funny-moving-doll-raspberrypi/</link> <comments>http://blog.biicode.com/funny-moving-doll-raspberrypi/#comments</comments> <pubDate>Fri, 20 Dec 2013 13:38:26 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[doll]]></category> <category><![CDATA[moving]]></category> <category><![CDATA[project]]></category> <category><![CDATA[RaspberryPi]]></category> <category><![CDATA[tutorial]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=345</guid> <description><![CDATA[<p>Would you like to surprise your friends by doing something really cool? You can now make a moving doll in just 20 minutes using RaspberryPI and biicode. It’s super easy, you only have to follow this 4 steps: You just need paper, scissors, a servo, a RaspberryPI and biicode! Read our short “How to make [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/funny-moving-doll-raspberrypi/">Create a funny moving Doll with RaspberryPI</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+dir="ltr">Would you like to surprise your friends by doing something really cool?</p><p
+dir="ltr">You can now make a moving doll in just 20 minutes using RaspberryPI and <a
+href="http://www.biicode.com">biicode</a>.</p><div
+id="attachment_1162" style="width: 361px" class="wp-caption aligncenter"><img
+class="wp-image-1162" src="http://blog.biicode.com/wp-content/uploads/sites/2/2013/12/pi1l.jpg" alt="RaspberryPi" width="351" height="281" /><p
+class="wp-caption-text">Credit: ScratchMyPi</p></div><p
+dir="ltr">It’s super easy, you only have to follow this 4 steps:</p><p
+dir="ltr"><span
+id="more-345"></span></p><ol><li>You just need paper, scissors, a servo, a RaspberryPI and biicode!</li><li>Read our short “<a
+title="Funny Moving doll rpi" href="http://docs.biicode.com/raspberrypi/examples/raspberry-pi-moving-doll.html" target="_blank">How to make a funny moving doll”</a> doc</li><li>Implement the code and build a project using biicode in 2 minutes</li><li>Make your own design (or just use a <a
+title="cubeecraft" href="http://www.cubeecraft.com/" target="_blank">cubeecraft</a>)</li></ol><p
+dir="ltr">We created a <a
+title="Funny moving doll biicode" href="https://www.youtube.com/watch?v=_X9g1PrzcXM&#038;feature=youtu.be" target="_blank">Heisenberg doll</a> in 20 minutes. Is cool, isn’t it?</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/_X9g1PrzcXM?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p
+dir="ltr">There are thousands of different funny moving dolls that can be built. And we know you can beat Heisenberg… it&#8217;s really easy to try.</p><p
+dir="ltr">Once you have your doll moving, share it with your friends and family and make them laugh.</p><p
+dir="ltr">We would love to see how creative you are. You can send us your creations to <a
+title="info biicode email" href="mailto:info@biicode.com" target="_blank">info@biicode.com</a> and we will upload them to our YouTube channel.</p><p
+dir="ltr">It’s a good opportunity to show your circles that your christmas cards are special and unique.</p><p
+dir="ltr">Can you surprise us?</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/funny-moving-doll-raspberrypi/">Create a funny moving Doll with RaspberryPI</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/funny-moving-doll-raspberrypi/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>biicode beta is over</title><link>http://blog.biicode.com/biicode-open/</link> <comments>http://blog.biicode.com/biicode-open/#comments</comments> <pubDate>Fri, 20 Dec 2013 13:32:35 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[news]]></category> <category><![CDATA[features]]></category> <category><![CDATA[open]]></category> <category><![CDATA[release]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=343</guid> <description><![CDATA[<p>After an initial Beta launch with a restricted base of users, we are happy to announce that we can now open our service to everyone ;-) biicode beta is over For those of you that would like to experience how easy and efficient reusing code with Biicode is, you can sign up in Sing Up [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-open/">biicode beta is over</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+dir="ltr">After an initial Beta launch with a restricted base of users, we are happy to announce that we can now open our service to everyone ;-)</p><p
+dir="ltr"><span
+id="more-343"></span></p><h2>biicode beta is over</h2><p
+dir="ltr">For those of you that would like to experience how easy and efficient reusing code with Biicode is, you can sign up in <strong><a
+title="Biicode" href="http://www.biicode.com/accounts/signup" target="_blank">Sing Up</a></strong> and start enjoying the experience.</p><p
+dir="ltr">We are more than happy listening to your feedback, what do you think of Biicode, what can be improved and where should we put focus on?</p><p><img
+class="wp-image-1165 alignleft" src="http://blog.biicode.com/wp-content/uploads/sites/2/2013/12/biicode-logo.png" alt="biicode beta is over" width="86" height="122" /></p><p>&nbsp;</p><p>Feel free to share it with your friends and let’s Reuse &amp; Play!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-open/">biicode beta is over</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicode-open/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Our very first offsite: Teamwork &amp; Water Activities, a real fun day</title><link>http://blog.biicode.com/first-offsite-teamwork-water-activities-fun-day/</link> <comments>http://blog.biicode.com/first-offsite-teamwork-water-activities-fun-day/#comments</comments> <pubDate>Tue, 17 Sep 2013 08:31:35 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[biicoders]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=218</guid> <description><![CDATA[<p>A start-up project&#8217;s key to success must be based on hard work, talent, cooperation and enjoying your job. At Biicode, besides computer experts and awesome workers (a.k.a. geeks), we are also young youthful and we love to have fun. A proof of this is the very first offsite of the company. July 26, 2013 might [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-offsite-teamwork-water-activities-fun-day/">Our very first offsite: Teamwork &amp; Water Activities, a real fun day</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+lang="en-US">A start-up project&#8217;s key to success must be based on <strong>hard work, talent, cooperation and enjoying your job</strong>. At Biicode, besides computer experts and awesome workers (a.k.a. geeks), we are also young youthful and we love to have fun. A proof of this is <strong>the very first offsite of the company</strong>.<span
+id="more-218"></span></p><p
+lang="en-US">July 26, 2013 might have been just one more day for most people, but for the Biicode team it was a special day: it was <strong>the first time our team had a plan out of the office</strong>. The rules were simple: to enjoy the day in the swamp of Valmayor renting a sailboat and some canoes, in order to take advantage of the opportunity to become a better team. And, thanks to this amazing group of people, it was an epic day.</p><p
+lang="en-US"><img
+class="alignleft size-full wp-image-223" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/offsitebiicode2.jpg" alt="OffSite Biicode 1" width="400" height="300" /></p><p
+dir="ltr">Following some brief explanations about safety and handling we took the boats and we &#8220;put out to sea.&#8221; Some of us paddled and others enjoyed the wind while the boats sped. Although it was the middle of the summer, the nice weather made the trip even more pleasant — the wind and the temperature were great for sailing, it seemed the day was filled with our happiness. We discovered that <strong>there are real sailors and rowers among us</strong>. Several races took place among the canoes. Their goal was not arriving first — it was trying not to fall from the boat and keep rowing while the spectators couldn&#8217;t stop laughing. After a few hours it was time to change and the &#8220;captains&#8221; became rowers and vice versa. We had to bala<img
+class="alignleft size-full wp-image-222" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/offsitebiicode1.jpg" alt="OffSite Biicode 2" width="400" height="300" />nce the weight on board several times in order not to capsize. At the beginning it was a little confusing, but thanks to the coordination developed at work, the team managed to act as one. Our instructor was amazed.</p><p
+lang="en-US">After the morning activity, it was time to recover and we all went to an Asturian restaurant. <strong>The best way to end up the day was with some of the best Asturian food, some beers and good conversation</strong>.<img
+class="alignleft size-full wp-image-224" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/offsitebiicode3.jpg" alt="OffSite Biicode 3" width="400" height="300" /></p><p
+lang="en-US">The atmosphere was not very different from a normal day at the office but, together,  we managed to make it memorable and therefore repeatable. We are already planning the next day out.</p><p
+dir="ltr">Will you come with us? ;-)</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-offsite-teamwork-water-activities-fun-day/">Our very first offsite: Teamwork &amp; Water Activities, a real fun day</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/first-offsite-teamwork-water-activities-fun-day/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>biicode second alpha event</title><link>http://blog.biicode.com/second-alpha-test/</link> <comments>http://blog.biicode.com/second-alpha-test/#comments</comments> <pubDate>Wed, 21 Aug 2013 11:30:09 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[alpha]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=213</guid> <description><![CDATA[<p>The experience of the first alpha test went very well and was enriching because we collected a lot of feedback. So, after a few days, we decided it was time to take another step forward. This would be a real challenge, so we prepared thoroughly to welcome some of the best engineers in our country. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/second-alpha-test/">biicode second alpha event</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+lang="en-US">The experience of the first alpha test went very well and was enriching because we collected a lot of feedback. So, after a few days, <strong>we decided it was time to take another step forward</strong>. This would be a real challenge, so we prepared thoroughly to welcome <strong>some of the best engineers in our country</strong>. Engineers from Google, Tuenti, Facebook or CERN came to the office to try Biicode and gave us their opinions.</p><p
+lang="en-US"><span
+id="more-213"></span></p><p
+lang="en-US">The installation and configuration was faster this time because we had learnt from the previous time. This is an example of what we are looking for: to learn, to improve, to try and to learn again. But, this time, the testers were harsher and more demanding and we were bombarded with high-level technical questions, inspiring feedback and suggestions. As we were surrounded by incredibly talented people, we acquired tons of knowledge.  This information was truly valuable to us. And this is Biicode’s way of thinking — prodigious minds working together, a distended atmosphere and a common objective: to make life easier.</p><p><img
+class="alignleft wp-image-214" title="Biicode Second Alpha Test" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/bii_alpha_2_1.jpg" alt="bii_alpha_2_1" width="400" height="225" /></p><p
+lang="en-US">During the hours the event lasted, we learned a lot and we also enjoyed the company of the testers. For us the experience was very inspiring and we are willing to repeat it anytime, anyplace, and with anyone who loves programming.</p><p
+lang="en-US">Such experiences are what continues to make us improve and grow. So, from Biicode, we want to thank again all participants — your help was priceless.</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/second-alpha-test/">biicode second alpha event</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/second-alpha-test/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Biicode&#8217;s first alpha test</title><link>http://blog.biicode.com/biicode-first-alpha-test/</link> <comments>http://blog.biicode.com/biicode-first-alpha-test/#comments</comments> <pubDate>Wed, 21 Aug 2013 09:58:17 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[alpha]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=205</guid> <description><![CDATA[<p>Every beginning proves to be a stimulating and challenging situation. This is why it is so important to be surrounded by reliable people. On July 11th, 2013, Biicode’s first alpha test took place at our headquarters, and we enjoyed the event as much as we learnt from our alpha testers. The hours prior to the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-first-alpha-test/">Biicode&#8217;s first alpha test</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+lang="en-US">Every beginning proves to be a stimulating and challenging situation. This is why it is so important to be surrounded by reliable people. On July 11th, 2013, Biicode’s first alpha test took place at our headquarters, and we enjoyed the event as much as we learnt from our alpha testers.<span
+id="more-205"></span></p><p
+lang="en-US">The hours prior to the beginning of the event, we prepared the last details. Then we went out for a meal together in order to get ready and have a brief brainstorming. Despite the fact that it wasn&#8217;t an official evaluation, we worked as if it were. We wanted to have everything ready and we had fun on the process.</p><p><img
+class="alignleft wp-image-206" title="Biicode Alpha Test 1" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/bii_alpha_1_1.jpg" alt="bii_alpha_1_1" width="400" height="225" /></p><p
+lang="en-US">At five o&#8217;clock, some participants started arriving and, when all had arrived , we started with the presentation. The atmosphere was great: ice-cream, laughs, and the presentation of a new product… Could we ask for anything else? Well I guess we could ask for everything to be perfect, and somehow that&#8217;s what happened. After a few technical problems, all the participants were able to work on our platform. They completed some interactive examples in order to understand better the Biicode features.<img
+class="alignleft wp-image-207" title="Biicode Alpha Test 2" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/bii_alpha_1_3.jpg" alt="bii_alpha_1_3" width="400" height="225" /></p><p
+lang="en-US">When we realized the event was over, we remembered the best anecdotes of the day. We gathered all the information that our mates had provided us and, incredibly, everything had gone better than expected.</p><p
+lang="en-US">An alpha test can be something cold and impersonal or may be an approach to colleagues and a good way to spend a Thursday afternoon. At Biicode, we prefer the second option.</p><p
+lang="en-US">Biicode wants to thank all the participants for their generous assistance, opinions and information. It’s really valuable for us.</p><p
+lang="en-US">See you all soon!</p><p>&nbsp;<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-first-alpha-test/">Biicode&#8217;s first alpha test</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicode-first-alpha-test/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

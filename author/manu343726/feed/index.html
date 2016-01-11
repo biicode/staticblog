@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Manu Sánchez</title> <atom:link href="http://blog.biicode.com/author/manu343726/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>About non-intrusive polymorphism</title><link>http://blog.biicode.com/about-non-intrusive-polymorphism/</link> <comments>http://blog.biicode.com/about-non-intrusive-polymorphism/#comments</comments> <pubDate>Tue, 19 May 2015 14:59:48 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[java]]></category> <category><![CDATA[polymorphism]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2266</guid> <description><![CDATA[<p>Polymorphism in C++ C++ implements subtyping polymorphism in the form of virtual functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function: [crayon-56886b9a2c51d463177524/] In the example above, the Interface class defines a pure virtual function f() that all the hierarchy members should override. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Polymorphism in C++</h2><p>C++ implements <a
+href="http://en.wikipedia.org/wiki/Subtyping">subtyping polymorphism</a> in the form of <code>virtual</code> functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function:</p><pre class="crayon-plain-tag">struct Interface
+{
+    virtual void f() = 0;
+    virtual ~Interface() = default;
+};
+struct A : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "A!" &lt;&lt; std::endl;
+    }
+};
+struct B : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "B!" &lt;&lt; std::endl;
+    }
+};</pre><p><span
+id="more-2266"></span></p><p>In the example above, the <code>Interface</code> class defines a pure virtual function <code>f()</code> that all the hierarchy members should override. Now you can play with objects of that hierarchy in a uniform way, being sure all of those have a <code>f()</code> function of its own.</p><pre class="crayon-plain-tag">void call_f(Interface&amp; i)
+{
+    return i.f();
+}
+int main()
+{
+    A a;
+    B b;
+    call_f(a);
+    call_f(b);
+}</pre><p>One of the most common uses cases of polymorphism is to be able to store multiple heterogeneous objects into the same container and then operate on them on the same way. While <code>virtual</code> ensures each object acts with its correct behavior. This is usually achieved with dynamic allocation: Allocating objects and the use pointers to the base class to refer to them. This way we can refer to any object of the hierarchy using the same pointer type.</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Interface&gt; objects;
+    objects.emplace_back(new A{});
+    objects.emplace_back(new B{});
+    ...
+    for(Interface* o : objects)
+        o-&gt;f();
+}</pre><p>This simple <em>&#8220;Inherit and dynamically allocate&#8221;</em> approach works like a charm, but is very error prone. Did you noticed the memory leak in the example? Also suffers from a little culprint that, IMHO, is not that little: Inheritance. To make all the sorcery work, you should belong to a class hierarchy. What if I want polymorphic behavior for existing types? What if I want polymorphic functions for <code>int</code>? Being bound to a class hierarchy is not the way to go. <em>I&#8217;m looking at you Java</em>.</p><p>Fortunately we are using C++, a multi-paradigm programming language that allows you to write very smart tricks. Meet <span
+style="text-decoration: underline;">non-intrusive polymorphism</span>.</p><h2 id="to-or-not-to-">To <code>:</code> or not to <code>:</code></h2><p>What if you can find a way to provide that kind of polymorphism, <em>a function with a specific implementation for each type</em> and at the same type have easy heterogeneous storage?</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(1);
+    objects.emplace_back("hello world!"s);
+    for(Poly&amp; o : objects)
+        o.f();
+}</pre><p>Bonus: No dynamic memory management, just RAIIfied polymorphism from the beginning.</p><p>The fundamentals are simple: <strong>Hide all the polymorphism intricacies to the user</strong>. We will do exactly the same inheritance, base class, dynamic allocation as above, but all closed inside the <code>Poly</code> class.</p><p>Lets look at the internals of <code>Poly</code>:</p><pre class="crayon-plain-tag">struct Poly
+{
+    void f()
+    {
+        ptr-&gt;f();
+    }
+private:
+    base* ptr;
+};</pre><p>A pointer to a dynamically-allocated object and a <code>f()</code> member function that calls the <code>f()</code> from the object. As I said, all polymorphism will be managed inside the <code>Poly</code> class internally. The point is that having to inherit from a base class to achieve polymorphism <strong>is an implementation detail</strong>, only based on how the language works.</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    base* ptr;
+};</pre><p>The trick consists in being able to store any kind of data dynamically, instead of explicitly asking that type to belong to the <code>base</code> hierarchy. Come in templates!</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    template&lt;typename T&gt;
+    struct derived
+    {
+        T data;
+        void f() overrides
+        {
+            ::f(data);
+        }
+    };
+    base* ptr;
+};</pre><p>Now each type we introduce into <code>Poly</code> has its own implementation of <code>f()</code>. In this example, I supposed there&#8217;s a viable free <code>f()</code> function taking a <code>T</code> as parameter. As long as your type has a valid <code>f()</code> overload, template, whatever, your type can be used in <code>Poly</code>.<br
+/> Here&#8217;s an example:</p><pre class="crayon-plain-tag">void f(int i)
+{
+    std::cout &lt;&lt; "int: " &lt;&lt; i &lt;&lt; std::endl;
+};
+void f(vonst std::string&amp; str)
+{
+    std::cout &lt;&lt; "std::string: " &lt;&lt; str &lt;&lt; std::endl;
+}
+int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(0);
+    objects.emplace_back("hello!"s);
+    for(auto&amp; o : objects)
+        o.f();
+};</pre><p></p><h2 id="some-details">Some details</h2><p>The constructor of <code>Poly</code> does part of the trick: It gets a value and instances the correct derived class dynamically:</p><pre class="crayon-plain-tag">struct Poly
+{
+    template&lt;typename T&gt;
+    Poly(T&amp;&amp; data) :
+        _ptr{ new derived&lt;T&gt;{std::forward&lt;T&gt;(data)}
+    {}
+    ...
+};</pre><p>&nbsp;</p><p>Also don&#8217;t forget to follow <a
+href="http://stackoverflow.com/questions/4782757/rule-of-three-becomes-rule-of-five-with-c11">The Rule Of Five/Three</a> and implement all the special member functions required for correct value semantics of <code>Poly</code> objects. Use a smart pointer instead or raw <code>new</code>/<code>delete</code> if you like.</p><h2 id="references">References</h2><p><a
+href="http://channel9.msdn.com/Events/GoingNative/2013/Inheritance-Is-The-Base-Class-of-Evil">&#8220;Inheritance is The Base Class of Evil&#8221;, Sean Parent</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/about-non-intrusive-polymorphism/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>The Pragmatic C++ Programmer</title><link>http://blog.biicode.com/the-pragmatic-cpp-programmer/</link> <comments>http://blog.biicode.com/the-pragmatic-cpp-programmer/#comments</comments> <pubDate>Tue, 12 May 2015 14:46:11 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[c++ learning curve]]></category> <category><![CDATA[rant]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2242</guid> <description><![CDATA[<p> A couple of days ago I was studying at my university library when my colleague Miguel Madrid got up and started to traverse the library looking for programming books. It&#8217;s a game we usually play, to find out a good quality book in a place full of Java 2 SE manuals&#8230; There are some gems on [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/the-pragmatic-cpp-programmer/">The Pragmatic C++ Programmer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+id="the-pragmatic-c-programmer"> A couple of days ago I was studying at my university library when my colleague Miguel Madrid got up and started to traverse the library looking for programming books. It&#8217;s a game we usually play, to find out a good quality book in a place full of Java 2 SE manuals&#8230;</p><p>There are some gems on that library though. There&#8217;s a couple of copies of Alexandrescu&#8217;s <a
+href="http://www.amazon.es/Modern-Design-Applied-Generic-Patterns/dp/0201704315/ref=pd_sim_14_1?ie=UTF8&amp;refRID=10BQM5HP4J8VDY2P21J6">&#8220;Modern C++ Design&#8221;</a> (No longer that Modern, right?) and <a
+href="http://www.amazon.es/Template-Metaprogramming-Concepts-Techniques-Beyond/dp/0321227255">&#8220;C++ Template Metaprogramming&#8221;</a>, the latter only borrowed by me in the last five years according to the registry. I always try to have a copy of both, it&#8217;s easy since there are only a few people doing C++ there, never reaching the <em>&#8220;TMP mental asylum&#8221;</em> I&#8217;m usually in.</p><p>But that day, Miguel reached me with a copy of &#8220;The Pragmatic Programmer&#8221;. <em>&#8220;One of the most influential books in the history of software engineering&#8221;</em> the cover says. <strong>I&#8217;m so scared of how software engineering examples look like</strong>&#8230;</p><p>&nbsp;</p><p><span
+id="more-2242"></span></p><h2 id="software-engineering-books">Software engineering books</h2><p>Ignore the fact that I didn&#8217;t like the book at all. For me, it&#8217;s only another example of how someone sells his own experiences as a &#8220;how you should do&#8221; book. What really matters for me are the code examples and guidelines.</p><p>I always suspect from a book of this kind that provides examples in multiple programming languages. I&#8217;m sorry guys, but <strong>each language has its own rules, design decisions, optimal ways to perform a task</strong>. A language is designed to be used in a specific way. Of course you can use a chainsaw as a toothbrush, but don&#8217;t expect that things will work as optimal as expected&#8230;</p><p>There&#8217;s nothing wrong in providing multiple examples in different programming languages at the beginning, but things start to stink when a guideline is implemented in almost exactly the same way in two completely different languages. What&#8217;s wrong with <em>&#8220;The Pragmatic Programmer&#8221;</em>? In the fact that <strong>the only main differences between its examples are that in Java the author uses dots, and in C++ arrows.</strong></p><h2 id="people-dont-understand-c">People don&#8217;t understand C++</h2><p>C++ is hard, I will not deny it. But there are a lot of people who do not understand how C++ works, and even when considering C++ an object oriented language (I&#8217;m afraid it&#8217;s not), C++ OOP has nothing to do with Java-like OOP.</p><p><a
+href="http://c2.com/cgi/wiki?AlanKayOnMessaging">OOP is not about objects and classes</a>, but about program modules intercommunication, but we usually forget that and try to map everything as an object. And since people is used to GCed OO languages, most of them think that objects live <em>elsewhere</em> and should be <em>referenced</em>. So they usually do the horrible <code>Class* ptr = new Class();</code> pattern by default, and never get the role of constructors and destructors except in <em>wrapper classes that manage <code>new/delete</code> automatically</em>.</p><p>From &#8220;The Pragmatic Programmer&#8221;:</p><blockquote><p>If circumstances permit we can change from a pointer var to an actual node object</p></blockquote><p>Here the author realizes that C++ has ctors and dtors and hence you can write a wrapper class that manages that <em>object instantiation/destruction</em> for you. That&#8217;s the point when I started to cry. No, being in the pre move semantics era is not a reason to Javaize every variable in a way to boost object passing. And I&#8217;m sure the author didn&#8217;t write the examples in Java++ because of performance concerns.</p><p>Last year I had a teacher that, when teaching OpenGL, showed this as an example of how a 2d vector class should look like:</p><pre class="crayon-plain-tag">class vector2d
+{
+    vector2d* add(vector2d* a, vector2d* b)
+    {
+        return new vector2d(a-&gt;x + b-&gt;x, a-&gt;y + b-&gt;y);
+    }
+private:
+    float x, y;
+};</pre><p>Then I got up in the middle of the classroom and shouted &#8220;THAT&#8217;S JAVA!!!&#8221;. Not kidding, everybody there looked at me while saying &#8220;What this f&#8230; idiot is talking about?&#8221;. Then I reached my teacher and asked him why he was doing C++ in that way:</p><blockquote><p>I usually write C, C++, and Java in exactly the same way because I find it&#8217;s the most elegant.</p></blockquote><p>Ok so you write three of the most different programming languages in the world in exactly the same way&#8230;</p><p>Also the &#8220;Ok guys you can optimize your regular polygon function by storing sin and cos results in a variable instead of computing that on each loop iteration&#8221; example, ignoring optimizer capabilities that completely outperform us by doing sin and cos at the same time in one instruction only, plus loop hoisting. But I don&#8217;t expect any good C/C++ advice from a place where people still think that manual assembly outperforms any compiler, and boast themselves by discarding OpenCV in favor of their own &#8220;fast square root routine&#8221; for image processing.</p><p>Things started to get weird when some mates asked me how they could implement <code>operator+()</code>, since their compiler didn&#8217;t allowed them to write <code>vector2d* operator+(vector2d*, vector2d*)</code>&#8230;</p><p>The point is that they don&#8217;t understand C++ object model. Objects live on the stack except explicitly stated. This is one of the first topics I usually cover when teaching C++, to make people understand that C++ objects are tied to its scope, and cannot be moved from there. When returning a value from a function, the object does not fly out the function and reaches the caller, but there&#8217;s a value interchange between an object living on the callee, an object living on the caller, and an intermediary object between the two contexts that we usually don&#8217;t care about. Think of C++ objects as plants, not as bees flying around.</p><p>I don&#8217;t expect any C++ class to have a <code>sizeof()</code> greater than 60 bytes. That nearly fits a L1 cache line. And I trust RVO for in deep copy. Of course always profile first, but you may notice that it&#8217;s hard to get a context when copy elision is not applied by the compiler. <strong>Long live value semantics</strong>. Even better with modern C++, where you don&#8217;t worry about object passing anymore since the last corner cases don&#8217;t covered by N/RVO are handled by move semantics.</p><h2 id="but-why-why-is-c-that-hard-to-get">But why? Why is C++ that hard to get?</h2><p>Ask this to yourselves. At least for me, when I ask people why they feel C++ that hard, they answer something in the form of:</p><blockquote><p>Manual memory management. C++ has no GC.</p></blockquote><p>Garbage collection&#8230;. Why do we need garbage collection if we have our beloved</p><p><img
+class="alignnone" title="Who needs garbage collectors when we have }?" src="http://www.decodeunicode.org/data/glyph/196x196/007D.gif" alt="Garbage collectors aren't required in C++ when there is }" width="196" height="196" /></p><p>?</p><p>Also consider class special functions: Ctors, dtor, assignment operators. I&#8217;m always surprised looking at people reinventing the wheel, when aggregation of STL resource handlers do the work automatically. The very well known Rule Of Zero.</p><p>Here&#8217;s some real code:</p><pre class="crayon-plain-tag">class Class{
+...
+protected:
+    vector&lt;T&gt; m_g;
+    int m_size;
+    int m_BB;
+    std::string m_name;
+};
+Class::Class(void){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+}
+Class::Class(const Class::Class&amp; c){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+    (*this)=c;
+}
+Class::Class(int size){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+    init(size);
+}
+Class&amp; Class::operator= (const Class&amp; g){
+    init(g.m_size);
+    for(int i=0; i&lt;m_size; i++){
+        m_g[i]=g.m_g[i];
+    }
+    this-&gt;m_name=g.m_name;
+    return *this;
+}
+void Class::clear(){
+    m_g.clear();
+    m_size=0;
+    m_BB=0;
+    m_name.clear();
+}
+int Class::init(int size){
+    //deallocates previous
+    clear();
+    try{
+        m_g.resize(size);
+    }catch(...){
+        cout&lt;&lt;"memory not allocated";
+        return -1;
+    }
+    m_size=size;
+    ...
+    return 0;
+}</pre><p>Clearly the author comes from C background. This class suffers from a lot of repetitive code, code that mimics the job the compiler already does for class member variables (Look at the <code>init()</code> function and where it&#8217;s called from), etc. I&#8217;m not worried about performance here, you may be surprised this was extracted from a library that has the merit of being the faster lib in its field, outperforming even C++ gurus Boost code. Imagine what this lib can do with an in depth C++ guidelines review.</p><p>C++ is hard, but it&#8217;s not hard on &#8220;mundane&#8221; tasks like defining a class and its special members. <strong>It&#8217;s the programmer who make it hard by ignoring how the language works</strong>. I always say this to my C++ pupils: I don&#8217;t remember the last time I wrote a C++ destructor, assignment operator, etc; except for freaking purposes.</p><p>Dealing with templates could be hard. Dealing with name lookup rules is hard. But dealing with the implementation of object value semantics in a class that&#8217;s just an aggregate of other objects is not hard. You just should rely on the language.</p><h2 id="so-what-we-should-do">So, what we should do?</h2><p>That depends on the context of course. But my main advice is to known how something works before buzzing about how horrible it is. Do C in C++ if you like, even Java++, but then don&#8217;t cry when your codebase starts going crazy.</p><p>Here are some advices from my own:</p><ul><li><strong>Know the language</strong>: <a
+href="https://docs.google.com/viewer?a=v&amp;pid=sites&amp;srcid=YXVzdGluLWNzLm9yZ3x3ZWJ8Z3g6MzBhNDk2M2JiZTA5NTU0ZA">C++ is a huge elephant</a>, but the elephant is not exactly what you are used to in other OO languages. I don&#8217;t even consider C++ an object oriented language since it&#8217;s not object/class centered. Choose the tool (functional programming, generic algorithms, objetc, whatever) that best fits to your problem. If you strip some of that paradigms using a little subset of the language only, it does not play as well and easy as it would.</li><li><strong>Understand how it works</strong>: If you try to do things in the same way you learned for other languages, things go wrong. Each language is different. In case of software engineering guidelines, OO patterns, etc; pay special attention since these are usually written for usual OO languages based on reference semantics. They may work, but can be non optimal on C++ value semantics. Doing reference semantics, i.e. Javaize everything with pointers/smart pointers, does not work since C++ is not designed to do that intensive use of dynamic allocation. Take into account that in OO reference languages such as Java, doing <code>new</code> has almost zero cost since the whole language and its runtime its designed to work in that way. That&#8217;s not the case for C++.</li><li><strong>Trust the compiler</strong>: The ages when a compiler was a mere code translator are gone. When doing optimizations by hand you are trying to beat the result of almost 30 years of compiler and optimization algorithms research boxed in a thing that runs on a chip that measures its computational power at MFLOPS. Even if you have an awesome brain that can compete with that power, you will be doomed at the point of code generation since you play in an ecosystem where CPU instruction sets and architectures are too far for being that &#8220;fetch, decode, execute&#8221; schema we all learned at the school/college. The <em>Ford factory pipeline</em> is not a valid metaphor to describe how CPUs work these days. This is reflected in the fact that if you think of C++ as a &#8220;syntactical abstraction layer hiding a couple of assembly instructions&#8221; you are wrong 99% of times. That&#8217;s no longer the case, since hardware is not that simple. <strong>Think of your C++ code as a high level description of what the program should do, not how really does it</strong>.<br
+/> But be careful! Don&#8217;t treat the compiler as a genius! Check its assembly output from time to time to see what it actually did. The cool point here is that the more readable the code is, more optimizable is since the optimizer understands your intention. Write convoluted code like a fast square root routine that I&#8217;m sure relies on Undefined Behavior and you will get a code that runs 30% slower than what GCC would generate by its own, considering <a
+href="http://developerblog.redhat.com/2015/01/02/improving-math-performance-in-glibc/">the effort glibc guys put</a> on efficient floating point code generation.</li></ul><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/the-pragmatic-cpp-programmer/">The Pragmatic C++ Programmer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/the-pragmatic-cpp-programmer/feed/</wfw:commentRss> <slash:comments>9</slash:comments> </item> <item><title>Boost libraries are now supported in biicode</title><link>http://blog.biicode.com/dependency-management-boost-libraries/</link> <comments>http://blog.biicode.com/dependency-management-boost-libraries/#comments</comments> <pubDate>Fri, 20 Feb 2015 08:29:13 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[boost]]></category> <category><![CDATA[boost c++ libraries]]></category> <category><![CDATA[c++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086</guid> <description><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices. However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices.</p><p>However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular dependencies, and that&#8217;s only for header-only libraries (thankfully 80% of Boost is header-only). For non header-only libs, it&#8217;s a true pain. You should compile those and then link against, being careful about what you are doing.<br
+/> Even if setting up Boost manually could be a bit hard, when it works it&#8217;s a pleasure to develop with it.</p><p>At biicode we have been working hard to simplify the process, to make Boost available for any C++ programmer with just an include. But this is only the start, the project has been <a
+href="https://github.com/Manu343726/boost-biicode">released as open source</a> to allow everyone contribute and help.</p><p>I hope you like it.<br
+/> <img
+class=" wp-image-2094 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/Boost.png" alt="Boost libraries are finally supported in biicode" width="277" height="86" /></p><h2></h2><p><span
+id="more-2086"></span></p><h2 id="working-with-boost">Working with Boost libraries</h2><p></p><pre class="crayon-plain-tag">$ sudo apt-get install boost</pre><p>That&#8217;s what most of us do to work with Boost. There&#8217;s no easy way to change the Boost version though, or even have multiple coexistent Boost versions. In addition to the fact that the package-manager way doesn&#8217;t work on Windows.</p><p>The main purpose of biicode is to handle dependencies and improve the development workflow. That means one should take into account:</p><ul><li>A user may want to work <strong>with different versions of Boost</strong>. It should be <strong>easy to switch between Boost versions during development</strong>.</li><li>When dealing with Standard C++, that is, with true portable C++, one should care about multiple compilers and test his/her code with all of them. <strong>It should be easy to switch Boost to work with different compilers</strong>. In our case, that means GCC, Clang, MSVC, MinGW GCC, and the different versions of each one.</li></ul><p>That were the two main objectives I had when I started to work in Boost support for biicode. To <strong>make Boost setup portable across versions, compilers, and platforms</strong>, and at the same time make the <strong>process fully transparent to the user</strong>.</p><h2 id="our-approach">Our approach</h2><p>The biicode Boost setup is very simple: Install each Boost version on a dedicated folder inside the biicode environment, and then rely on Boost&#8217;s bjam to handle the different compilers.</p><p>The setup should also handle all the installation process, which means:</p><ol><li>Download the requested Boost version if it&#8217;s not currently in the biicode environment.</li><li>Bootstrap it.</li><li>Build the libraries.</li><li>Configure <code>FindBoost.cmake</code> to track the installation.</li></ol><p>But how should that look like in user code? I was thinking about it for a long time. Actually, the current interface is just the last of a very long process of testing different approaches.<br
+/> I finally ended up trying not to force the user to learn new commands. Instead, try to mimic the current Boost setup with CMake: Instead of calling <code>find_package(Boost COMPONENTS...)</code>, call <code>bii_find_boost(COMPONENTS...)</code>. <strong>The rest of the <code>CMakeLists.txt</code> is almost the same.</strong></p><p><code>bii_find_boost()</code> wraps the <code>find_package(Boost)</code> call by first setting up the required boost version (Steps 1 and 2 above), building the requested <code>COMPONENTS</code> on demand, finally calling <code>find_package(Boost COMPONENTS ...)</code>.</p><h2 id="a-boost-example-with-biicode">A Boost example with biicode</h2><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p>That&#8217;s an example of the Boost.Coroutine library extracted from the Boost docs. It&#8217;s so simple, it just takes a coroutine to print the string &#8220;<em>Hello, world!&#8221;</em> in two steps to see how the coroutine <em>continues</em> its execution on consecutive calls.</p><p>This is the <code>CMakeLists.txt</code> file of the <a
+href="http://www.biicode.com/examples/boost-coroutine"><code>examples/boost-coroutine</code></a> block available in our cloud:</p><pre class="crayon-plain-tag">include(biicode/boost/setup)
+    INIT_BIICODE_BLOCK()
+    ADD_BIICODE_TARGETS()
+    set(Boost_USE_STATIC_LIBS ON)
+    bii_find_boost(COMPONENTS system coroutine context thread REQUIRED)
+    target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+    if(MSVC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    else()
+        target_compile_options(${BII_BLOCK_TARGET} INTERFACE -std=c++11)
+    endif()</pre><p>Let&#8217;s open and run the example:</p><pre class="crayon-plain-tag">$ bii init boost-examples
+$ bii open examples/boost-coroutine
+$ bii find
+$ bii cpp:configure
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 4.9.2
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+      examples/boost-corutine
+---------------------------------
+-- Setting up Biicode Boost...
+-- Downloading Boost 1.57.0...
+-- Bootstrapping Boost 1.57.0...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.2...
+-- Building system library...
+-- Building coroutine library...
+-- Building context library...
+-- Building thread library...
+-- Boost 1.57.0
+Found the following Boost libraries
+    system
+    coroutine
+    context
+    thread
+...
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p><strong>Issue with MinGW: </strong>To compile Boost.Context, MinGW depends on the Microsoft assembler. Be sure you have ml or ml64 (Depending on your platform) in your PATH. Those executables are usually shipped within Visual Studio, check the Visual Studio Directory/VC/bin/ folder.</p><p><strong>Issue with CMake configure: </strong>Seems that CMake has problems with long-running configures. In some cases, even if the libraries were built successfully, find_package() is not able to find the Boost components. Just rerun bii cpp:configure.</p><p><strong>Header only libraries: </strong>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost(). Try with a naked <code>bii_find_boost()</code> call.</p><p>We currently maintain a <code>biicode/boost</code> block with the scripts, which has four different tracks representing the four (three) different Boost versions we have tested: <code>master</code> (The latest version available, currently Boost 1.57.0), <code>1.57.0</code>, <code>1.56.0</code>, and <code>1.55.0</code>. Want to change the Boost version you want? Just go to the <code>biicode.conf</code> of your block and change the <code>biicode/boost</code> track in the <code>requirements</code> entry.</p><p>Refer to <a
+href="http://docs.biicode.com/c++/examples/boost.html">the docs</a> for more info.</p><h2 id="whats-next">What&#8217;s next?</h2><p>I want to see what people say about this. The main reason we released this as an open source project is to allow the community to improve it with us. This is a first working version, but I&#8217;m sure it could be improved a lot thanks to your feedback and thoughts. Check the <a
+href="https://github.com/Manu343726/boost-biicode#issues">README&#8217;s issues entry</a> and the project issues page.<br
+/> There are people who already were helping us. I specially thank <a
+href="http://thetoeb.de/">Tobias Becker</a> for his feedback on the last steps of the development. His <a
+href="http://www.biicode.com/toeb/cmakepp">cmakepp</a> library is a great tool and something I want to use in our Boost scripts in the near future. cmakepp is <em>batteries included</em> CMake!</p><p>I think dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward.<br
+/> Let&#8217;s continue working until a modern C++ development environment becomes reality.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/dependency-management-boost-libraries/feed/</wfw:commentRss> <slash:comments>7</slash:comments> </item> <item><title>A Tiny Metaprogramming Library: Boxing &#8211; Part 1</title><link>http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/</link> <comments>http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/#comments</comments> <pubDate>Fri, 23 Jan 2015 18:47:56 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[boxing]]></category> <category><![CDATA[c++ metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2042</guid> <description><![CDATA[<p>A Tiny Metaprogramming Library episode 3: Last time we introduced the mathematical concept of function as an entity that takes an input, generating an output. In that process, the function does not change any external state. We also talked about metafunctions, a way to represent functions operating on C++ types using C++ templates. After the theory, [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/">A Tiny Metaprogramming Library: Boxing &#8211; Part 1</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>A Tiny Metaprogramming Library episode 3:</h2><p><a
+href="http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/">Last time</a> we introduced the mathematical concept of function as an entity that takes an input, generating an output. In that process, the function does not change any external state.</p><p>We also talked about <em>metafunctions</em>, a way to represent functions operating on C++ types using C++ templates.</p><p>After the theory, we followed with some conventions about the specific implementation of metafunctions in our tiny metaprogramming library. We decided that:</p><ul><li><strong>Any type with a <code>type</code> public member type is considered a metafunction</strong>, where <code>type</code> represents the result of that metafunction.That means to take the result of a metafunction we should say <code>typename F::type</code> in most of the situations. We introduced a simple tool <code>tml::eval</code> to help a bit.</li><li>Our metafunctions are templates, but these are constrained to <strong>take type parameters only</strong>.</li></ul><p>In this post we will learn how to use boxing to pass value parameters as type parameters for our metafunctions. This is not something new but a way to understand what <a
+href="http://en.cppreference.com/w/cpp/types/integral_constant"><code>std::integral_constant</code></a>, one of the fundamentals of <code>&lt;type_traits&gt;</code>, is and what can be used for.<br
+/> <img
+class="aligncenter" src="https://31.media.tumblr.com/e4da3090e08789c6432b034c9d2591c0/tumblr_mzi7ktPV6s1r6jnjdo1_400.gif" alt="Tiny Metaprogramming library episode 3: boxing." width="384" height="256" /></p><p><span
+id="more-2042"></span></p><h2 id="boxing-values">Boxing values</h2><p>We need a way to represent a value with a type. This is simple: Put a <code>static</code> public constant on a type, meaning the value of that constant is the value represented by that type. Something like this:</p><pre class="crayon-plain-tag">template&lt;typename T, T V&gt;
+struct value_holder
+{
+    static constexpr T value = V;
+};</pre><p>Here we defined a template <code>value_holder</code>, which takes a type and a value of that type as parameters. Then it defines a public compile-time constant (Note the <code>constexpr</code>, not strictly needed, but more elegant than <code>const</code> or the old <a
+href="http://cpptrivia.blogspot.com.es/2010/12/enum-hack.html"><em>enum hack</em></a>) which holds the value <code>V</code>. After instantiating that template, you can get the value the instance holds via its <code>value</code> public member constant:</p><pre class="crayon-plain-tag">using i = value_holder&lt;int,1&gt;; // i = 1
+static_assert(i::value == 1, "i should be 1");</pre><p><em>For the C++11 newbies, <code>static_assert()</code> is like the good old C <code>assert()</code>, but at compile-time.</em></p><p>Now we can implement simple metafunctions operating on &#8220;values&#8221;:</p><pre class="crayon-plain-tag">template&lt;typename a, typename b&gt;
+struct add
+{
+    using result = value_holder&lt;¿?,a::value, b::value&gt;;
+};
+using a = value_holder&lt;int,1&gt;;
+using b = value_holder&lt;int,2&gt;;
+using c = tml::eval&lt;add&lt;a,b&gt;&gt;;
+static_assert(c::value == 3, "Ok?");</pre><p>Now let&#8217;s get, let&#8217;s deeply understand, what we have written above: We are not just computing integer addition at compile-time, but hacking the C++ type system to do some computations for us! Cool, isn&#8217;t?</p><p>Of course is not that simple. We are doing C++ template metaprogramming, not playing with Java generics.</p><h3 id="the-type-of-the-result">The type of the result</h3><p>I&#8217;m sure you noticed that where I should place the type of the result value inside the <code>add</code> metafunction, I just wrote <code>¿?</code>. As we have seen, <code>value_holder</code> expects the type of the value first, then the value.</p><p>But, <strong>what&#8217;s the type of <code>a::value + b::value</code>?</strong></p><p>Hopefully, the old days of C++98/03 are gone, and C++11 ships with a tool to solve our problem easily: <code>decltype()</code>.</p><p><code>decltype()</code> takes an expression and returns the type of the result of evaluating that expression.</p><p><em>&#8220;The type of the result of evaluating that expression&#8221;</em> How can the C++ compiler know what that type is if the expression is not (And usually it cannot be) evaluated at compile time?</p><p>Remember that we are working on a language with a strict and static type system. This is not javascript. A C++ compiler knows perfectly the type of every expression you wrote in your program. That&#8217;s a lot of information, and the source of most of the sorcery modern optimizers apply to your C++ programs.</p><p>So our addition metafunction should be:</p><pre class="crayon-plain-tag">template&lt;typename a, typename b&gt;
+struct add
+{
+    using result = value_holder&lt;decltype(a::value + b::value),
+                                a::value + b::value&gt;;
+};</pre><p></p><h3 id="the-value-member-its-really-a-good-idea">The <code>::value</code> member. It&#8217;s really a good idea?</h3><p>Well, that depends on your point of view. Having a boxing type <code>T</code> and getting its value with <code>::value</code> is so convenient:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+constexpr unbox = T::value;</pre><p><em>Sorry, I had to write an example using C++14 variable-templates :)</em></p><pre class="crayon-plain-tag">static_assert(std::is_integral&lt;int&gt;::value, "???? int is not integral?");</pre><p>But consider our functional metaphor. The <code>add</code> metafunction defined above has its result written like this:</p><pre class="crayon-plain-tag">using result = value_holder&lt;decltype(a::value + b::value),
+                            a::value + b::value&gt;;</pre><p>which works perfectly with <code>value_holder</code>-like things.</p><p>But now I want to do <code>a = 1 + (2 + 3)</code>:</p><pre class="crayon-plain-tag">using a = typename add&lt;value_holder&lt;int,1&gt;,
+                       add&lt;value_holder&lt;int,2&gt;,
+                           value_holder&lt;int,3&gt;
+                          &gt;
+                      &gt;::type;</pre><p><em>Ignore the Haskell-bastard syntax&#8230; Hopefully along this series we will learn some mechanisms to improve this. As usually, stay tuned.</em></p><p>Of course this does not compile. <code>add</code> has no <code>value</code> member. I know, I should evaluate the metafunction first:</p><pre class="crayon-plain-tag">using a = typename add&lt;value_holder&lt;int,1&gt;,
+                       typename add&lt;value_holder&lt;int,2&gt;,
+                                    value_holder&lt;int,3&gt;
+                                   &gt;::type
+                      &gt;::type;</pre><p>But we are trying to make TMP something readable with our Tiny Metaprogramming Libraries, and one of the points we should improve is metafunction evaluation. No more chained <code>typename ::type</code>s please.</p><p>But there&#8217;s a problem here: Even if we develop a generic tool for expression evaluation (Do you remember <code>tml::eval</code>?) we cannot write nested metafunctions if those are implemented in that way:</p><pre class="crayon-plain-tag">using a = tml::eval&lt;add&lt;value_holder&lt;int,1&gt;,
+                        add&lt;value_holder&lt;int,2&gt;,
+                            value_holder&lt;int,3&gt;
+                           &gt;
+                      &gt;
+                   &gt;;</pre><p>This will never work since to evaluate that expression, it should be instanced first. And <code>add</code> is expecting <code>::value</code> in its operands. That will be a problem in the future, keep it in mind. We will see different approaches to solve this.</p><h2 id="plz-send-teh-codez">Plz send teh codez</h2><p>I you check <a
+href="https://github.com/Manu343726/tiny-metaprogramming-library/tree/4a173b187226a9cb32fa4639f8cb5283ddaf5365/blocks/manu343726/tiny">my Tiny Metaprogramming Library</a>, I currently have two files: <code>core/eval.hpp</code> and <code>core.hpp</code>. The first is the header containing <code>tml::eval</code> and the second is an umbrella header with all the core features of the library.</p><p>As part of the library core features, I will add a new header, <code>integral_constant.hpp</code>, with a template similar to <code>value_holder</code> example given here. Let&#8217;s keep it simple and just alias <code>std::integral_constant</code> :)</p><pre class="crayon-plain-tag">#include &lt;type_traits&gt;
+namespace tml
+{
+    template&lt;typename T, T V&gt;
+    using integral_constant = std::integral_constant&lt;T,V&gt;;
+}</pre><p></p><h2 id="whats-next">What&#8217;s next?</h2><p>Now we are able to pass values to our type-only metafunctions, using the standard <code>std::integral_constant</code> template.</p><p>The next step is to write such thing for templates, something that takes a template and holds it on a type. Of course that boxed template should be instantiable.</p><p>Are you ready?</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/">A Tiny Metaprogramming Library: Boxing &#8211; Part 1</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</title><link>http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/</link> <comments>http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/#comments</comments> <pubDate>Wed, 14 Jan 2015 14:36:43 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[A Tiny Metaprogramming Lib]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[meta-programming]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2012</guid> <description><![CDATA[<p>I know I&#8217;m repeating this everytime I write a new article, but it&#8217;s one of the key points to make template metaprogramming feasible, which means: TMP is just a functional language. A language with a &#8220;Aghhhh, my eyes, please!!! Aaahhhhhg!!!&#8221; syntax, but still a functional language. To start a C++ metaprogramming library the right way, [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/">A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>I know I&#8217;m repeating this everytime I write a new article, but it&#8217;s one of the key points to make template metaprogramming feasible, which means: <strong>TMP is just a functional language</strong>. A language with a &#8220;<em>Aghhhh, my eyes, please!!! Aaahhhhhg!!!</em>&#8221; syntax, but still a functional language.</p><p>To start a C++ metaprogramming library the right way, we&#8217;d better have a clear idea of what a metafunction is, and how our library represents and manages a metafunction.</p><p><span
+id="more-2012"></span></p><h2>Functions</h2><p><img
+class="alignnone" src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Function_machine2.svg/500px-Function_machine2.svg.png" alt="Metafunctions next episode of the Tiny Metaprogramming Library in biicode" width="500" height="495" /></p><p>What&#8217;s a metafunction? Forget that. <a
+href="http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/">Enter in our Haskell metaphor first</a>. <strong>What&#8217;s a function?</strong> From <a
+href="http://en.wikipedia.org/wiki/Function_%28mathematics%29" target="_blank">Wikipedia</a>:</p><blockquote><p>&#8220;[&#8230;] a function is a relation between a set of inputs and a set of permissible outputs with the property that each input is related to exactly one output.&#8221;</p></blockquote><p>I hope you noticed that&#8217;s the mathematical definition of function, instead of a <em>programming-related</em> one. In general, I think calling programming entities <em>functions</em> is not a good idea. They have more to do with old subroutines than with math functions: Most of our code depends on side effects, generates side effects, or depends on reading and changing an external state in some way.</p><p>This is C++, but not the C++ most of us usually play with. This is a functional language: There are no side effects, there&#8217;s no external state. A function only takes an input, does some transformations on it, producing an output. Functions are mathematical functions, not some kind of prettified subroutines.</p><h3>Metafunctions</h3><p><em>&#8220;Something that takes an input, does something with it, producing a result&#8221;</em></p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct add_const
+{
+    using type = const T;
+};</pre><p>This is a struct template parametrized with a type parameter <code>T</code>. Whatever type you instance the template with, the instance struct has a public member type called <code>type</code> equivalent to <code>const T</code>.</p><p>For example: If you instance the template with <code>int</code> as parameter:</p><pre class="crayon-plain-tag">using a = add_const&lt;int&gt;</pre><p>The member type <code>type</code> will be an alias of <code>const int</code>:</p><pre class="crayon-plain-tag">using b = add_const&lt;int&gt;::type; //b is const int</pre><p>Something that takes an input, <code>T</code>, does something with it (add <code>const</code>), returning and output <code>type</code>.</p><p>A template is just a way to represent a function operating on C++ types. That&#8217;s what we call <strong>metafunction</strong>. A function operating on C++ types. Since a type cannot be modified, metafunctions are pure functions, which have no side effects.<br
+/> The functional language metaphor has much more sense now, right?</p><h2>Metafunctions in our tiny metaprogramming library</h2><p>We are playing with the C++ type system, using types or type generators (templates) as elements of our abstract metaprogramming type system.<br
+/> We will have functions, values, &#8220;arrays&#8221;, etc. But these are really sets of C++ types.</p><p>Since C++ lacks type categories (I&#8217;m waiting for the Concepts proposal) there&#8217;s no direct way to arrange C++ types into different groups, and use those groups to simulate a high-order type system for our metaprogramming library. <em>Take a look at <a
+href="https://ldionne.github.io/hana/" target="_blank">Boost.Hana</a> for an approximation of type categories for a metaprogramming library, based on tag dispatching</em>.</p><p>Instead of building a complex category system like Hana (I&#8217;m not a good mathematician, nor an specialist on category theory :) ), my library will be based on some conventions and rules.</p><h4>Return value of metafunctions</h4><p>Using a template as a function operating on types, as a metafunction, is not a new concept. Take a look at <code></code>:</p><pre class="crayon-plain-tag">using ptr = std::decay&lt;int[3]&gt;::type;</pre><p>The templates defined there, called type traits, provide information and transformations of given types. For example, <a
+href="http://en.cppreference.com/w/cpp/types/decay" target="_blank"><code>std::decay</code></a> simulates the decay applied to a type when a parameter is passed by value to a function.</p><p>To be compatible with the Standard Library, in my Tiny Metaprogramming Library I<strong>&#8216;m assuming that any type with a <code>type</code> public member type is a metafunction</strong>.</p><p>Following that convention, a simple template alias can be a way to get rid of the <code>typename ::type</code> construction, accessing directly to the return value of a metafunction:</p><pre class="crayon-plain-tag">template&lt;typename F&gt;
+alias eval = typename F::type;
+alias myint = eval&lt;std::remove_reference&lt;int&amp;&gt;&gt;;</pre><p>Of course this only works for simple expressions. Follow this series to see how this simple but powerful tool evolves.</p><h2>Parameters of metafunctions</h2><p>A C++ template can take many kinds of parameters: Types, pointers, values, etc. But let&#8217;s keep it simple and <strong>only allow type parameters</strong>. Why? Because that simplifies a lot our metafunctions.</p><p>In fact, a simple variadic template-template parameter like the following represents any function our library can deal with:</p><pre class="crayon-plain-tag">template&lt;typename... ARGS&gt; class F</pre><p><em>Using this little jewel, imagine the next step of the <code>eval</code> tool above.</em></p><p>But you may think: <em>&#8220;Manu, I need value parameters too. And template-template parameters&#8221;</em>. Don&#8217;t worry, we can simulate this using type parameters. Stay tuned for the next post!</p><h2>Summary</h2><p>We&#8217;ve just learned what does &#8220;TMP is a functional language&#8221; means. We also learned a way to represent functions operating on C++ types, metafunctions, and two simple conventions for our tiny metaprogramming library:</p><p>&#8211; <strong>Any <code>type</code> with a <code>type</code> public member type is considered a metafunction. That member contains the result of the function</strong>.<br
+/> &#8211; <strong>Our metafunctions, represented via templates, can take type parameters only</strong>.</p><p>In the next post we will see how to use boxing to simulate value parameters and template-template parameters for our metafunctions.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/">A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>A Tiny Metaprogramming Library</title><link>http://blog.biicode.com/tiny-metaprogramming-library/</link> <comments>http://blog.biicode.com/tiny-metaprogramming-library/#comments</comments> <pubDate>Tue, 16 Dec 2014 11:14:14 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[code design]]></category> <category><![CDATA[functions]]></category> <category><![CDATA[template metaprogramming]]></category> <category><![CDATA[tmp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1975</guid> <description><![CDATA[<p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++. It&#8217;s not a funny way to play with the compiler only, template metaprogramming is a powerful tool for C++ [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library/">A Tiny Metaprogramming Library</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++.</p><p>It&#8217;s not a funny way to play with the compiler only, <strong>template metaprogramming is a powerful tool for C++ developers and something that many of us must deal with everyday.</strong></p><div
+id="attachment_1977" style="width: 1034px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1977" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/metaprogramming.jpg" alt="Template metaprogramming in C++ with biicode" width="1024" height="768" /><p
+class="wp-caption-text">by <a
+href="http://photo.net/photodb/photo?photo_id=6522423&amp;size=lg">Shane Willis</a></p></div><p><span
+id="more-1975"></span></p><h2>Why is metaprogramming important?</h2><p>C++ is a great language to write applications in, but it&#8217;s even better to write libraries. You can write abstract, natural (readable) and performant generic APIs.<br
+/> To me the best example is the <code>vector</code> template (The algebraic vector, not the C++ <code>std::vector</code> one):</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct vector3
+{
+    vector3() : vector3{0, 0, 0} {}
+    vector3(T xx, T yy, T zz) :
+        x{xx},
+        y{yy},
+        z{zz}
+    {}
+    vector3&amp; operator+=(const vector3&amp; v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
+    friend vector3 operator+(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        //Want speed, pass by value?
+        //I prefer to have a clear interface,
+        //but that's another topic...
+        vector3 cpy{lhs};
+        return cpy += rhs;
+    }
+    friend bool operator==(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        return std::tie(lhs.x,lhs.y,lhs.z) == std::tie(rhs.x,rhs.y,rhs.z);
+    }
+    T x, y, z;
+};</pre><p>Using that <code>vector3</code> template is easy and it resembles algebraic notation:</p><pre class="crayon-plain-tag">vector3&lt;int&gt; a{1,2,3}, b{4,5,6};
+vector3&lt;int&gt; c = a + b;
+bool eq = c == vector3&lt;int&gt;{5,7,9};</pre><p>The same for a hypothetical <code>matrix</code> template:</p><pre class="crayon-plain-tag">matrix&lt;int,2,2&gt; m{ {1,2}, {3,4} };
+m.row(0) = m.row(0)*4 + m.row(1);</pre><p><em>Bjarne Stroupstrup does a great in-depth description of the design of this kind of matrix template in his book &#8220;The C++ Programming Language, 4th Edition&#8221;</em></p><p>Compare that with the <em>pure OO</em> alternative of other languages:</p><pre class="crayon-plain-tag">Matrix&lt;int&gt; a = new Matrix&lt;int&gt;(2,2, 1,2,3,4);
+Matrix&lt;int&gt; b = new Matrix&lt;int&gt;(2,2, 5,6,7,8);
+Matrix&lt;int&gt; c = new Matrix&lt;int&gt;(2,2);
+c = a.add(b); a.row(0) = a.row(0).mul(4).add(a.row(0));</pre><p>There are a few points that should be noted here:</p><h4>Don&#8217;t leave to runtime decisions based on properties you know at compile-time</h4><p>In general that only serves to increase runtime overhead.</p><p>In the matrix example, the matrix dimensions are known at compile time. Despite having some kind of <a
+href="http://en.wikipedia.org/wiki/Variable-length_array">VLA</a> allocated on the stack, it hasn&#8217;t got much sense to introduce dynamic memory allocation here, with all its cache misses, alloc/dealloc/memory-footprint overheads, etc.</p><p>Consider also the matrix&#8217;s design. How you would implement this?<br
+/> What comes to my mind is a <code>matrix_slice</code> class with all the algebraic operations between matrix slices, where a slice is only a portion of a matrix (Maybe <code>matrix_view</code> is a common name for this thing with non-owning semantics).<br
+/> The key point here is that a matrix row can bee seen as a slice, a submatrix can be seen as a slice, and even a matrix can be seen as a slice. Implement matrix ops only in one site (the <code>slice</code>) then propagate them along your implementation via composition, inheritance, type aliasing, whatever you like.</p><p>Even if we decide to use the inheritance approach (<code>matrix</code> inherits from <code>slice</code>, <code>row</code> inherits from <code>slice</code>, etc), C++ has great (crazy) things to achieve this in a performant way, like <a
+href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">CRTP</a>; or going further enough, using the classic dynamic dispatch <a
+href="http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html">the right way</a>.</p><p><strong>Performance matters. C++ is a language for performance.</strong> If that was not the case, I would be using python or even ruby. But we are here because we need to squeeze down each CPU cicle. Nowadays that performance is only provided when understanding how hardware works and giving enough information to your compiler. C++ does both thing pretty well, or at least it gives you the opportunity to do them properly.</p><p>Don&#8217;t throw away those opportunities writing oh-my-runtime designs. Use your type system (literally); understand your compiler capabilities.</p><h4>OO is not the 42 of programming</h4><p>&#8220;<em>Everything must be an object, there are only classes, classes with their methods. Model your system with objects talking each other&#8221;</em> That&#8217;s <strong>The Big Lie Of Object Oriented Programming</strong>.</p><p>You can&#8217;t model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an &#8220;<em>object</em>&#8220;. A function is a function, don&#8217;t force it to be something else. I want a set of functions, not a class full of static methods.It&#8217;s true. It all boils down to <code>std::cos()</code> vs. <code>Math.cos()</code> but what&#8217;s relevant to me is the design of the code.</p><p>Take a look at the above OO example again:</p><pre class="crayon-plain-tag">c = a.add(b);
+a.row(0) = a.row(0).mul(4).add(a.row(0));</pre><p><code>b</code> is added to <code>a</code>? Addition is a binary operation, that means that neither of their operands have more importance than the other, they just participate in the operation. <code>b</code> is not being added to <code>a</code>, it&#8217;s the addition of <code>a</code> and <code>b</code> what produces a result, <code>c</code>.</p><p>That&#8217;s a problem. Modeling a binary operation as an object method is a very big mistake. There are really three things playing here: the operator, the first operand, and the second operand. <strong>OO forgets about the first one, with one object playing two roles at the same time</strong>.</p><p>Am I being pedant? Consider this:</p><pre class="crayon-plain-tag">c = b.add(a);</pre><p>Is there any semantic difference with the previous example?</p><p>As I said, there aren&#8217;t objects only in a system. Thankfully, syntax apart, C++ takes this the right way, differentiating between functions and objects. In C++ addition there are three things: two object operands and the operator; where a C++ operator is just a fancy syntax for a non-member function.</p><p><strong>There are different categories in a system, everything cannot be modeled directly as an object</strong>. The power of C++ comes from its multiparadigm spirit, allowing us to decide what programming paradigm (OO, structured, functional, generic&#8230;) is better for each situation.</p><h3>Ok, a cool dissertation about C++ over Java, but why metaprogramming?</h3><p>Because implementing these clear, performant, and almost-static interfaces is not that easy.</p><p>You want to automate the implementation of those libraries, or at least describe the most common cases in a generic way, where being generic does not mean parametrizing the element type only&#8230; Generics are only a simple toy for kids, to make them think that their libraries are generic, but it&#8217;s really a casting party at Mr. Autoboxing house.<br
+/> Being generic means that if I manage a dynamic array, I don&#8217;t know the specific policy for dynamic memory the user wants. I just parametrize it:</p><pre class="crayon-plain-tag">template&lt; class T,
+          class Allocator = std::allocator&lt;T&gt;
+&gt; class vector;</pre><p>The problem is that that&#8217;s only the cool interface. The implementation is full of template madness like policy classes, multiple inheritance, template specializations, etc.</p><p>Template meta-programming helps to describe and implement that kind of generic designs, but its syntax makes your maintainer commit suicide just after approaching the codebase.</p><h2>What can we do?</h2><p>TMP is an ugly metalanguage. But its usage can be improved a lot if you think of it as a bastard version of Haskell, what I coined as <a
+href="http://isocpp.org/blog/2014/11/metaprogramming-with-modern-c-the-haskell-metaphor">&#8220;<em>The Haskell Metaphor</em>&#8220;</a>.</p><p>Since a pure bottom-up approach <a
+href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/">didn&#8217;t work as expected</a>, let&#8217;s try another approach: <strong>Learn high-level template metaprogramming developing your own <code>Tiny Metaprogramming Library</code></strong>.</p><h3>The Tiny Metaprogramming Library</h3><p>I&#8217;m a big fan of GitHub, so my version of the Tiny Metaprogramming Library <a
+href="https://github.com/Manu343726/tiny-metaprogramming-library">will be hosted on my github account</a>.</p><p>Hosting the library is one thing, but using it is a completely different beast.<br
+/> Deployment of C and C++ libraries is a so complex process, since each platform needs its own binary that should be compiled and linked with specific settings. Having a truly portable C++ library is a mess. Meanwhile most modern languages are shipped with their own dependency management system, where setting up a library just becomes using it via an <code>import</code>-like sentence and a <code>install dependencies</code> command.</p><p><a
+href="https://www.biicode.com">biicode</a> is a tool focused on giving the power of automatic dependency management to C and C++. It&#8217;s CMake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.<br
+/> The tool works like a charm, resolving all the dependencies and generating pretty projects via CMake generators just <code>#include</code>ing what you need:</p><pre class="crayon-plain-tag">include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+include(boost/install/install) #Magic happens here
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+# Actually create targets: EXEcutables and libraries.
+ADD_BIICODE_TARGETS()
+BII_BOOST(1.57.0)
+find_package(Boost COMPONENTS system coroutine REQUIRED)
+target_link_libraries(${BII_BLOCK_TARGETS} PUBLIC ${Boost_LIBRARIES})
+target_compile_options(${BII_BLOCK_TARGETS} PUBLIC -std=c++11)</pre><p></p><hr
+/><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p></p><hr
+/><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:configure -G "Unix Makefiles"
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p>So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, <a
+href="https://www.biicode.com/manu343726/tiny"><code>manu343726/tiny</code></a>, and all the examples provided in the blogposts will be using biicode for setup and building.<br
+/> I have developed a metaprogramming library before, the <a
+href="https://github.com/Manu343726/Turbo">Turbo Metaprogramming Library</a>. Many of my examples and guidelines may resemble the design of Turbo. Others may not, being fixes to bad design decisions.</p><p>The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library, in a way that each one is implementing and trying the lessons learned.<br
+/> Of course you can ask me whatever questions you like, post comments in the blogposts about specific questions covered there, or questions about my reference implementation on github via the issues system.</p><h3>The blogposts</h3><p>Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library.<br
+/> Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learnt and implemented before.</p><p>As the series and the libraries evolve my criteria may change, depending on your feedback, but this is the main set of bullets I&#8217;m thinking for the posts:</p><ul><li>Templates, basic concepts (Just re-read <a
+href="http://www.codeproject.com/Articles/826229/Template-Metaprogramming-with-Modern-Cplusplus-tem">this</a>)</li><li>Type parameters vs non-type parameters. Value boxing and template boxing (i.e. <code>std::integral_constant</code> and <code>tml::lazy</code>).</li><li>Mastering the Haskell bastard: Values and expressions</li><li>Improving expression evaluation.</li><li>Lists</li><li>Algorithms</li><li>Iterators</li><li>Lambda expressions</li><li>Monads</li></ul><h2>Are you ready for some cool metaprogramming?</h2><p>I hope you like this idea. It&#8217;s not only me writing crazy meta-stuff, but everybody developing their own metaprogramming library, learning something new each week, and comparing the different approaches each one is taking. I&#8217;m the guy who writes this posts, but I can learn a lot with your Tiny Metaprogramming Libraries and your feedback.</p><p>Hope you enjoy this metaprogramming post and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library/">A Tiny Metaprogramming Library</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/tiny-metaprogramming-library/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Metaprogramming with Modern C++: The Haskell Metaphor</title><link>http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/</link> <comments>http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/#comments</comments> <pubDate>Fri, 31 Oct 2014 11:36:50 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Haskell]]></category> <category><![CDATA[meta-programming]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1863</guid> <description><![CDATA[<p>I you are one of who have been following our post series about template metaprogramming with modern C++, at this time you should have become a C++ template Guru. At least thats what I expect ;). You know about class templates, function templates, value parameters, type parameters, variadic templates… Your template metaprogramming toolbox is full [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/">Metaprogramming with Modern C++: The Haskell Metaphor</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<div
+class="article-wrap"><p>I you are one of who have been following our <a
+href="http://blog.biicode.com/category/meta-programming/">post series</a> about template metaprogramming with modern C++, at this time you should have become a C++ template Guru. At least thats what I expect ;).</p><p>You know about class templates, function templates, value parameters, type parameters, variadic templates… Your template metaprogramming toolbox is full of great things to play with. Thats good, but you want to start playing with your compiler, writting some cool metaprograms.</p><p>Lets start the game!</p><p><span
+id="more-1863"></span></p><h2 id="good-old-template-metaprogramming"><em>“Good”</em> old template metaprogramming</h2><p>In the old days of C++98/03 there were no variadic templates, no template aliases, no <code>std::enable_if</code>. Metaprogramming with C++ was a hard and ugly task.</p><p>But it was a <em>neccesary</em> task. Most of the time library implementers used template metaprogramming to parametrize and automatize code generation for the library, instead of writting multiple duplicates or derivatives of the same code just to cover all the cases. This was, and it is, a common practice even for Standard Library vendors.</p><p>Template metaprogramming was used to improve perfomance on high-computing libraries too, with some clever code transformations done thanks to tmp. The best example of this is the <a
+href="http://en.wikipedia.org/wiki/Blitz%2B%2B">blitz++ library</a>, one of the first examples of a real use case of template metaprogramming.</p><p>But such codebases where hard to read and maintain, so for most common C++ programmers tmp was just <em>“crazy stuff for nerds”</em>.</p><p>Since C++11 the language has evolved to support some ways of metaprogramming as a common and useful thing. Metaprogramming became a first class citizen in C++, instead of the obscure, magical, and freaking way to abuse the compiler it was at the beginning.</p><p>Look at the <code>&lt;type_traits&gt;</code> header. It provides the so called <code>type traits</code>, class templates designed to provide some useful information about a given type.</p><div
+class="highlight"><pre class="crayon-plain-tag">#include &lt;type_traits&gt;
+constexpr bool is_ptr = std::is_pointer&lt;int*&gt;::value;</pre></div><p>Language features like <code>static_cast</code> and variadic templates help a lot too when doing tmp.</p><p>But the syntax is still too ugly. Consider the implementation of <code>std::decay</code>:</p><div
+class="highlight"><pre class="crayon-plain-tag">template&lt; class T &gt;
+struct decay {
+    typedef typename std::remove_reference&lt;T&gt;::type U;
+    typedef typename std::conditional&lt;
+        std::is_array&lt;U&gt;::value,
+        typename std::remove_extent&lt;U&gt;::type*,
+        typename std::conditional&lt;
+            std::is_function&lt;U&gt;::value,
+            typename std::add_pointer&lt;U&gt;::type,
+            typename std::remove_cv&lt;U&gt;::type
+        &gt;::type
+    &gt;::type type;
+};</pre></div><p>Too many nested <code>typename</code>s, its hard to follow and undertand the code.</p><p><strong>Could that syntax be improved?</strong> I think that&#8217;s possible, and that&#8217;s exactly what we will learn today.</p><h2 id="lets-get-simpler">Let&#8217;s get simpler</h2><p>As we seen in our introduction to tmp, the C++ template system can be seen as a pure functional language. In that way, suppose that you are working with a weird version of Haskell.</p><p>There are no templates, there are no types. You have expressions and values. Expressions and values that you can evaluate, manipulate, etc. Call this abstraction <em>“The Haskell Metaphor”</em>.</p><p><img
+class="alignright size-full wp-image-1866" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/haskell-logo-with-name.jpg" alt="The Haskell Metaphor in template metaprogramming in modern cpp" width="800" height="400" /></p><p>In our functional language, a C++ type is really a value we work with. And templates are expressions that take values (C++ types) as parameters:</p><div
+class="highlight"><pre class="crayon-plain-tag">template&lt;typename T&gt;
+using identity = T;
+using i = identity&lt;int&gt;;</pre></div><p>In the example above, the <code>identity</code> alias is a <em>metafunction</em> in our Haskell Metaphor: Takes a value and returns it. The alias <code>i</code> is only a value with a name, consider it a <em>(meta)variable</em>.</p><p>To get this metaphor simpler, our metafunctions will get C++ type parameters only. If you need to pass a C++ value, use boxing though <code>std::integral_constant</code>:</p><div
+class="highlight"><pre class="crayon-plain-tag">using one = identity&lt;std::integral_constant&lt;int,1&gt;&gt;;</pre></div><h2 id="play-with-simple-expressions">Play with simple expressions</h2><p>Here is an example of our <em>Haskell Metaphor</em>, using my Turbo metaprogramming library for C++11. Turbo is designed to be used with biicode, which makes Turbo completely platform independent and easy to use. For most of the cases, just include <code>&lt;manu343726/turbo_core/turbo_core.hpp&gt;</code> and you are ready:</p><div
+class="highlight"><pre class="crayon-plain-tag">#include &lt;manu343726/turbo_core/turbo_core.hpp&gt;
+using one = tml::Int&lt;1&gt;;
+using two = tml::Int&lt;2&gt;;
+using three = tml::eval&lt;tml::add&lt;one,two&gt;&gt;;
+int main()
+{
+    std::cout &lt;&lt; tml::to_runtime&lt;three&gt;() &lt;&lt; std::endl;
+}</pre></div><p>Let&#8217;s examine the example step by step:</p><ul><li><code>tml::Int</code> declares an integer value. Is just and alias to <code>std::integral_constant&lt;int&gt;</code>.</li><li><code>tml::add</code> is a metafunction to perform addition.</li><li><code>tml::eval</code> is the magic wand of Turbo. It takes any expression and evaluates it. The addition expression in this case.</li><li><code>tml::to_runtime</code> is the <em>bridge</em> between the compile-time and the runtime world. This function templates takes a type (A value in the Haskell metaphor) and returns the C++ equivalent value. This work is done completely at compile time and has zero runtime overhead.</li></ul><p>After compiling (Running the metaprogram), you can run the resulting C++ program:</p><div
+class="highlight"><pre class="crayon-plain-tag">$ bii cpp:build
+$ ./bin/example
+3</pre></div><p>Thats all! Simple, isn’t it? Here’s <code>std::decay</code> in the Turbo way:</p><div
+class="highlight"><pre class="crayon-plain-tag">template&lt; class T &gt;
+struct decay {
+    using U = tml::eval&lt;std::remove_reference&lt;T&gt;&gt;;
+    using type = tml::eval&lt;
+                 tml::conditional&lt;
+                                  std::is_array&lt;U&gt;,
+                                  tml::eval&lt;std::remove_extent&lt;U&gt;&gt;*,
+                                  tml::conditional&lt;
+                                                   std::is_function&lt;U&gt;,
+                                                   std::add_pointer&lt;U&gt;,
+                                                   std::remove_cv&lt;U&gt;
+                                                  &gt;
+                                 &gt;
+                          &gt;;
+};</pre></div><p>I found it much more readable. What do you think?</p><h2 id="summary">Summary</h2><p>Today we have seen that treating tmp as a functional language is a simpler way to do metaprogramming. We introduced what we call <em>The Haskell Metaphor</em> as a way to see and work with metaprograms: Look at that code as Haskell, instead of the C++ type system.</p><p>In the next posts we will see more complex examples of this metaphor, with high level metaprogramming constructions such as high-order metafunctions, lambda expressions, etc. Stay tuned!</p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/">Metaprogramming with Modern C++: The Haskell Metaphor</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Precompiled binaries in biicode: a proof of concept with SFML</title><link>http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/</link> <comments>http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/#comments</comments> <pubDate>Wed, 15 Oct 2014 15:16:46 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[blocks]]></category> <category><![CDATA[file-based deps manager]]></category> <category><![CDATA[how biicode works]]></category> <category><![CDATA[SFML]]></category> <category><![CDATA[upload to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1834</guid> <description><![CDATA[<p>The problem: C and C++ compilation times Biicode is a file-based dependencies manager for C and C++, focused on sharing and reusing source code, specifically, source (and header) files. Biicode uses the CMake building system to configure and build blocks, its unit of source code sharing. The default way to develop blocks is to include [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/">Precompiled binaries in biicode: a proof of concept with SFML</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h1 id="developing-and-submitting-precompiled-blocks">The problem: C and C++ compilation times</h1><p>Biicode is a file-based dependencies manager for C and C++, focused on sharing and reusing source code, specifically, source (and header) files.</p><p>Biicode uses the CMake building system to configure and build blocks, its unit of source code sharing. The default way to develop blocks is to include the required sources and any required extra configuration for building such files on a <code>CMakeLists.txt</code> file at the root of the block. Also biicode provides other files for specific config such as <code>dependencies.bii</code> or <code>paths.bii</code>.</p><p>So writting our own biicode block is a process with three simple steps:</p><ol><li>Get the sources and copy them on the block directory.</li><li>Configure the <code>CMakeLists.txt</code> file of the block for the specific build instructions for that sources.</li><li>Upload the block to the biicode cloud via <code>bii publish</code> command.</li></ol><p>So far so good. This approach works pretty well and the biicode community is growing everyday thanks to it. Whats exactly the problem with this approach? Its simple: <strong>Some C and C++ sources are hard to compile and it takes time. A lot of time.</strong></p><p><img
+class="aligncenter wp-image-1836 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/sfml-logo-big-300x91.png" alt="SFML works fine as biicode example" width="300" height="91" /></p><p><span
+id="more-1834"></span></p><h2 id="precompiled-binaries">Precompiled binaries</h2><p>Since the early days of C the answer to this problem was to deploy the library sharing the output binaries instead of the source code itself. This has the advantage that the user doesn’t have to compile the library himself, but only to link it with the program which actually using the library.</p><p>But precompiled binaries have their own problems:</p><ul><li>Binaries are OS/architecture specific, that means the output code of a C++ program is different on 32 bit linux than in 64 Windows for example. That makes sense, since the architecture is different. Never forget the final result of C and C++ compilation is binary code, not some kind of high-level assembly interpreted/compiled by a program to the final architecture at runtime, as many modern languages do. This means that if someone wants to develop a portable library (That is, capable of running in different architectures and operative systems), should compile and provide the binaries for each supported platform.</li><li>Binaries can have a huge size. That depends on the source code, the amount of variables with static storage duration, etc; but the fact is that a C/C++ binary can reach sizes measurable on megabytes, even hundreds of megabytes.</li></ul><p>In this post we will learn how to develop a biicode block which contains precompiled binaries instead of the sources, and how to configure the block to be correctly compiled on different platforms.</p><h2 id="the-block">The block</h2><p>This tutorial will use the awesome <a
+href="http://sfml-dev.org/index.php">SFML</a> library as an example of a C++ library that can be deployed as a precompiled block with biicode.</p><p>For this example, we will make our precompiled block ready for 64bit Linux and Windows. That means we should compile and deploy two binaries, one for windows and other for linux. Both will target GCC on release mode, using MinGW in the case of Windows.</p><p>The block has the following structure:</p><pre class="crayon-plain-tag">|-- manu343726/sfml
+|   |
+|   +-- bii
+|   |   |-- paths.bii
+|   |   |-- dependencies.bii
+|   |
+|   |-- CMakeLists.txt
+|   |...sfml sources...
+|   |
+|   +--lib/
+|   |   |
+|   |   +-- win64/MinGW/
+|   |   |   |
+|   |   |   |-- sfml-system.a
+|   |   |   ... more binaries ...
+|   |   |
+|   |   +-- unix64/
+|   |   |   |
+|   |   |   |-- sfml-system.so
+|   |   |   ... more binaries ...</pre><p><em>Note the block is <code>manu343627/sfml</code>, since my biicode nick is “Manu343726” and I called the block “SFML”. You can choose the block name you want and use your own account.</em></p><p>As you can see, the sfml sources are located at the block root directory, and the precompiled binaries are located on a <code>lib</code> folder, with subfolders for each supported platform. That directory also contains the <code>CMakeLists.txt</code> file of the block and a <code>bii</code> subfolder with block configuration files.</p><h2 id="getting-the-binaries">Getting the binaries</h2><p>Since this block contains the precompiled libraries of SFML, the first thing we should do is to get that binaries. SFML provides several binaries for each supported platform and toolchain, but the linkage of such binaries depends heavily on your setup (Something compiled with GCC 4.8.1 could not link with a library compiled with GCC 4.9.1 for example), I recommend you to download the sources and compile them yourself using the toolchain you will use with the biicode block. In my case, GCC 4.9.1 both on Linux and Windows, using <a
+href="http://nuwen.net/mingw.html">the STL’s fork of MinGW</a> in the latter.</p><p>The easiest way to achieve this is to fork the <a
+href="https://github.com/LaurentGomila/SFML">SFML libraries on GitHub</a>, clone your fork, and then build the library;</p><pre class="crayon-plain-tag">$ git clone https://github.com/Manu343726/sfml.git
+  Downloading, processing deltas, blah blah...
+$ cd sfml
+$ cmake -G "Unix Makefiles" -DBUILD_SHARED_LIBS=FALSE
+$ make all</pre><p><em>Note we will be using static linking instead of dynamic, that’s why the <code>BUILD_SHARED_LIBS</code> variable is set to false.</em></p><p>These instructions are valid for our two supported platforms, both use the “Unix Makefiles” generator.  When you finish compiling SFML, copy the contents of the <code>lib/</code> directory into its corresponding <code>manu343726/sfml/lib/</code> directory. Also copy the extra libraries SFML depends on, located under the <code>extlibs/</code> folder of the SFML repo. These are the OpenAL library and the libsndfile library.</p><h2 id="tuning-sfml-to-be-ready-for-biicode">Tuning SFML to be ready for biicode</h2><p>Our SFML block is named <code>manu343726/sfml</code>, so a SFML hello world program using biicode could be:</p><pre class="crayon-plain-tag">#include &lt;manu343726/sfml/Graphics.hpp&gt;
+int main()
+{
+    // Create the main window
+    sf::RenderWindow App(sf::VideoMode(800, 600, 32), "Hello World - SFML");
+    // Start the main loop
+    while (App.isOpen())
+    {
+        // Process events
+        sf::Event Event;
+        while (App.pollEvent(Event))
+        {
+            // Close window : exit
+            if (Event.type == sf::Event::Closed)
+                App.close();
+        }
+        // Clear screen, and fill it with blue
+        App.clear(sf::Color::Blue);
+        // Display the content of the window on screen
+        App.display();
+    }
+    return 0;
+}</pre><p>Have you noticed any problem? Biicode uses lowercasing for block names, so the original <code>SFML</code> root becomes <code>manu343726/sfml</code>. The first thing we should do is to modify the SFML headers to take care of that change, that is, replace every <code>#include &lt;SFML/&gt;</code> with <code>#include &lt;sfml/&gt;</code> using your preferred text replacing tool.</p><p>Now our SFML headers are <em>“biicodeized”</em>, and biicode would find our block when an user refers to any of its headers via an <code>#include "manu343726/sfml/whatever.hpp"</code>.</p><h2 id="tuning-biicode-to-work-with-sfml">Tuning biicode to work with SFML</h2><p>Sorry, that’s not all. There are some little things we should configure in our block. Be patient!</p><p>Biicode provides several <code>.bii</code> config files to specify explicit configurations that biicode could not infer properly trough its dependencies engine only.</p><h3 id="block-include-paths">Block include paths</h3><p>Take a look at the <code>#include</code>s we have changed above: <code>#include &lt;SFML/&gt;</code> is <code>#include &lt;sfml/&gt;</code> on our biicode SFML block. If those includes begin with <code>sfml/</code>, our build should have <code>manu343726/</code> as an include directory, isn’t? Then our compiler can find these files when preprocessing the code.</p><p>Biicode needs a similar setup too, since biicode analyzes dependencies via <code>#include</code> directives. For that purpose, biicode provides the <code>paths.bii</code> file, located under the <code>bii/</code>directory of a block:</p><pre class="crayon-plain-tag"># manu343726/sfml/bii/paths.bii
+/..</pre><p>The paths of <code>paths.bii</code> use the block root directory as root path, so in the example above we added <code>manu343726/</code> as an include path (Its the parent of our SFML block directory). Exactly what we want.</p><h3 id="explicit-block-dependencies">Explicit block dependencies</h3><p>Biicode is a smart file-based dependencies manager, that means biicode manages each file as a potential dependency, and each file dependency is managed separately.</p><p>Suppose we create a biicode project with a simple block just to try our awesome SFML block:</p><pre class="crayon-plain-tag">$ mkdir testsfml
+$ cd testsfml
+$ bii init
+$ bii new manu343726/testsfml</pre><p>The <code>manu343726/testsfml</code> has a simple <code>main.cpp</code> file with the following code:</p><pre class="crayon-plain-tag">#include "manu343726/sfml/Graphics.hpp"
+int main()
+{
+    sf::Window window;
+}</pre><p>To build and run that program correctly, biicode should retrieve the required dependencies from the biicode cloud, <code>manu343726/sfml/Graphics.hpp</code> in this case. Remember what we said above: Biicode is a file-based dependencies manager. So <strong>the default behavior of biicode is to get the required dependencies only, the <code>Graphics.hpp</code> header in this example, instead of the whole content of the block where the dependency is located.</strong></p><p>That means biicode will retrieve and store the <code>manu343726/sfml/Graphics.hpp</code> file only at the <code>deps/manu343726/sfml</code> folder instead of the all the block files, so <strong>our precompiled binaries are not downloaded!</strong></p><p><em>This behavior is not the same if you open the dependency block with the <code>bii open</code> command. In that case, you open the dependency block to edit it, so biicode downloads the entire block and our binaries are available.</em></p><p>Of course the guys at biicode were aware of this, and gave us a way to solve our problem: The <code>dependencies.bii</code> file.</p><pre class="crayon-plain-tag"># manu343726/sfml/bii/dependencies.bii
+System.hpp + *system*
+Window.hpp + *window*
+Graphics.hpp + *graphics*
+Audio.hpp +  *audio*
+Audio.hpp + *openal*
+Audio.hpp + *libsnd*
+Network.hpp + *network*</pre><p>Each line specifies a dependency rule, with the following syntax:</p><pre class="crayon-plain-tag">&lt;File name&gt; [+-=] &lt;File pattern&gt;</pre><p>meaning that the file at the left side depends on a file or set of files that match the pattern specified on the right. Biicode uses <a
+href="http://man7.org/linux/man-pages/man3/fnmatch.3.html">fnmatch</a> for that patterns, refer to <a
+href="http://docs.biicode.com/biicode/configuration_files/dependencies.html">the biicode docs</a> for more info.</p><p>So what rules we specified? For each SFML library, we said the header depends on a file matching the library name, also the two extra libraries the audio library needs. Our binaries match those names, so <strong>now biicode retrieves the binaries for each SFML header we are using.</strong></p><p>Always remember that these are file-dependencies. One of the advantages of this approach is that <strong>our block will download and link the used SFML libraries only</strong>, instead of all the five libraries by default. In our hello world example at the begin of the post, the only header we used is <code>Graphics.hpp</code>, so biicode will download and link the graphics library binaries only.</p><p>Continue to the building configurations bellow to see how this exactly works.</p><h2 id="configure-building">Configure building</h2><p>We have binaries, we have headers, now we have to specify how all those files should be used by the compiler to link the SFML block within the user block. Create a <code>CMakeLists.txt</code> file at the block root directory:</p><pre class="crayon-plain-tag"># Include biicode macros:
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initialize biicode block configuration:
+INIT_BIICODE_BLOCK()
+# Add biicode block targets:
+ADD_BIICODE_TARGETS()</pre><p>This is the default content of the <code>CMakeLists.txt</code> file of a biicode block. The first command includes all the biicode machinery (Macros, variables, etc), the second initializes the block variables, and then the last command adds the cmake targets corresponding to this block.</p><p>What we should do? Given an user program being builded using biicode, where our block is a dependency of it, we should specify cmake where our headers are and how our binaries should be linked within the user program. Here we go.</p><h3 id="include-directories">Include directories:</h3><p>As we said before, the SFML headers are located at the root directory of the block, so when cmake reaches our block that directory becomes the cmake’s current source directory, which can be accessed via the <code>CMAKE_CURRENT_SOURCE_DIR</code> cmake variable. Also, SFML sources used the <code>SFML</code> (<code>sfml</code> in biicode version) folder as root in their includes.</p><p>That means the path to that include root, and the path that should be added to the set of include directories, is <code>manu34326/</code>. In other words, <code>${CMAKE_CURRENT_SOURCE_DIR}/..</code>. Its exactly the same process we have done for the <code>paths.bii</code> above:</p><pre class="crayon-plain-tag"># Include biicode macros:
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initialize biicode block configuration:
+INIT_BIICODE_BLOCK()
+# Add biicode block targets:
+ADD_BIICODE_TARGETS()
+# SFML block variables:
+set(SFML_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/..)
+# SFML block includes:
+target_include_directories(${BII_BLOCK_TARGETS} PUBLIC ${SFML_INCLUDE_PATH})</pre><p></p><h3 id="finding-out-the-precompiled-libraries">Finding out the precompiled libraries:</h3><p>Now we should configure cmake to be able to find the correct precompiled libraries within this block and then link them correctly. Lets take an overview of our block structure again:</p><pre class="crayon-plain-tag">|-- manu343726/sfml
+|   |
+|   +--lib/
+|   |   |
+|   |   +-- win64/MinGW/
+|   |   |   |
+|   |   |   |-- sfml-system.dll
+|   |   |   ... more binaries ...
+|   |   |
+|   |   +-- unix64/
+|   |   |   |
+|   |   |   |-- sfml-system.so
+|   |   |   ... more binaries ...</pre><p>Ok, so we have one folder for the Linux 64 binaries, and other for the Windows 64 binaries. Then our current task is to get that path correctly given the OS and architecture we are. Don’t worry, its a simple <code>if</code>:</p><pre class="crayon-plain-tag"># SFML block includes:
+target_include_directories(${BII_BLOCK_TARGETS} PUBLIC ${SFML_INCLUDE_PATH})
+if(UNIX)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         # Linux 32 bits
+    else()
+         # Linux 64 bits
+    endif()
+elseif(WIN32)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         # Windows 32 bits
+    else()
+         # Windows 64 bits
+    endif()
+endif()</pre><p>The OS flags are self explanatory, but what about the <code>void*</code> trick? Its simple: If the size of a pointer in our architecture is 4 bytes, then the architecture has 32 bit word size, else suppose its 64 bit.</p><p>Now we know in what specific architecture/OS we are compiling to, so lets fill a <code>SFML_LIBS_PATH</code> variable containing the correct libraries location:</p><pre class="crayon-plain-tag"># SFML block includes:
+target_include_directories(${BII_BLOCK_TARGETS} PUBLIC ${SFML_INCLUDE_PATH})
+#Libraries root path:
+set(SFML_LIBS_PATH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/lib/ CACHE PATH "SFML binaries path root")
+if(UNIX)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         message( ERROR "Unsupported platform")
+    else()
+         set(SFML_LIBS_PATH
+             ${SFML_LIBS_PATH_ROOT}/unix64
+             CACHE PATH "SFML LINUX64 binaries path")
+    endif()
+elseif(WIN32)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         message( ERROR "Unsupported platform")
+    else()
+         set(SFML_LIBS_PATH
+             ${SFML_LIBS_PATH_ROOT}/win64/MinGW
+             CACHE PATH
+             "SFML WIN64 MinGW (GCC) binaries path")
+    endif()
+endif()</pre><p>After the architecture/OS switching, we are able to find the libraries with cmake. SFML has five libraries (system,window,graphics,audio,network), and we will find all those libraries and store them in a <code>SFML_LIBS</code> variable:</p><pre class="crayon-plain-tag"># Find the five sfml libraries and list these targets as a unique SFML_LIBS target:
+find_library(sfml-system-lib
+             NAMES sfml-system system
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-window-lib
+             NAMES sfml-window window
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-graphics-lib
+             NAMES sfml-graphics graphics
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-audio-lib
+             NAMES sfml-audio audio
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-network-lib
+             NAMES sfml-network network
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)</pre><p>The <code>find_library()</code> cmake command finds a library given a set of possible NAMES and possible PATHS. Stores it in a new cache entry with a given name (The first argumment).</p><p>Note we used the <code>NO_DEFAULT_PATH</code> flag. <code>FIND_LIBRARY()</code> first searches on the system libraries path by default, but thats not neccessary in our case since we know the libraries are on our block. So we pass our binaries path instead and specify no system searching with <code>NO_DEFAULT_PATH</code>.</p><h3 id="linking">Linking</h3><p>We have searched the binaries with the <code>find_library()</code> cmake command, and the results were stored on several cmake variables, one for each SFML library.</p><p>Did you remember the <code>dependencies.bii</code> setup above? We have seen that biicode will download the binaries only for the headers we included. If you use <code>Graphics.hpp</code>, biicode will download <code>libsfml-graphics.so</code>, <code>libsfml-graphics.dll</code>, etc. Nothing more, nothing less.</p><p>So we should take care of binaries that were not downloaded, just checking the result of the <code>find_library()</code> calls:</p><pre class="crayon-plain-tag">if(sfml-system-lib)
+   target_link_libraries( ${BII_LIB_TARGET} PUBLIC
+                          ${sfml-system-lib} )
+endif()</pre><p>We link the block output library within the SFML system binary only if it was used, downloaded, and found. Simple. Now do that for the five SFML libraries.</p><h3 id="windows-dlls">Windows <code>.dll</code>s</h3><p>Even if we are using static linking, SFML depends on some <code>.dll</code>s on Windows, so these files should be placed besides the final user executable (Located at <code>manu343726/bin/</code> after building). So we should copy those <code>.dll</code>s from our block to that location:</p><pre class="crayon-plain-tag"># On Windows copy the precompiled .dlls to the bin directory to make the final executable work properly:
+if(WIN32)
+    message(STATUS "Copying Windows .dlls to " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    add_custom_command(TARGET ${BII_LIB_TARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${SFML_LIBS_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif()</pre><p>During build setup, biicode sets the cmake variable <code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code> to point to that <code>bin/</code> directory, so the easiest way to achieve this is to copy our libraries directory content to that directory, using the <code>copy_directory</code> cmake portable command.</p><p>And thats all! Our SFML block is ready to be used on 64 bit Windows and Linux.</p><h2 id="publishing-the-block">Publishing the block</h2><p>At this time biicode has a maximum size limit of 12MB per block, which can be perfectly reached if we fill the block with binaries. There is a workaround to this problem: That max size is stored in a environment variable <code>BII_MAX_BLOCK_SIZE</code>, which measures that size on bytes. Just tooggle the variable to fit your block, and you are ready to publish!</p><pre class="crayon-plain-tag">$ export BII_MAX_BLOCK_SIZE=the_size_of_my_block
+$ bii publsh manu343726/sfml --tag BETA</pre><p></p><h2 id="the-results">The results</h2><p>Here are some screenshots of the <a
+href="https://github.com/LaurentGomila/SFML/blob/master/examples/pong/Pong.cpp"><code>Pong</code> SFML example</a>. This is my Manjaro Linux x86_64:</p><p><img
+class="alignnone" src="https://lh3.googleusercontent.com/-ONNyD_z5oTo/VD4-SPkMgVI/AAAAAAAAAlY/bVz_Zm92uWA/w1140-h698-no/ponglin64.png" alt="SFML of precompiled binaries in biicode" width="1140" height="698" /></p><p>And this is my Windows 7 x86_64:</p><p><img
+class="alignnone" src="https://lh3.googleusercontent.com/-eM0teLuBa44/VD489sC-0oI/AAAAAAAAAk8/Pt6DhL2eef0/w1287-h836-no/pongwin64.PNG" alt="SFML of precompiled binaries in biicode" width="1287" height="836" /></p><p>This and more examples are available at the biicode cloud as a <a
+href="https://www.biicode.com/examples/examples/sfml/master"><code>examples/sfml</code></a> block.</p><h2 id="summary">Summary</h2><p>In this post we learnt how to deploy libraries in biicode using precompiled binaries instead of providing and compiling the sources.</p><p>The process is not simple, but works as a proof of concept. Now biicode is working in a way to deploy precompiled blocks in a simpler way, to make our lives easier when doing C and C++ development. Stay tuned!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/">Precompiled binaries in biicode: a proof of concept with SFML</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/feed/</wfw:commentRss> <slash:comments>6</slash:comments> </item> <item><title>C/C++ Madrid meetup @ biicode office</title><link>http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/</link> <comments>http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/#comments</comments> <pubDate>Thu, 02 Oct 2014 14:55:31 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[C/C++ Madrid meetup]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[Clang]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1765</guid> <description><![CDATA[<p>Today is the day! We host the C/C++ Madrid meetup It&#8217;s finally here and full of interesting content. The C and C++ community gathers together to talk about metaprogramming. Manu Sánchez will be talking about template metaprogramming. He already addressed this issue in a couple of posts in our blog (read them HERE and HERE). [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/">C/C++ Madrid meetup @ biicode office</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Today is the day! We host the C/C++ Madrid meetup</h2><p>It&#8217;s finally here and full of interesting content. The C and C++ community gathers together to talk about metaprogramming.</p><div
+id="attachment_1767" style="width: 190px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1767" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/C-C++-Madrid-meetup.jpeg" alt="C/C++ Madrid meetup hosted at biicode" width="180" height="124" /><p
+class="wp-caption-text">On the shoulders of giants</p></div><p><span
+id="more-1765"></span></p><p><a
+href="https://twitter.com/Manu343726">Manu Sánchez</a> will be talking about template metaprogramming. He already addressed this issue in a couple of posts in our blog (read them <a
+href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/">HERE</a> and <a
+href="http://blog.biicode.com/template-metaprogramming-cpp-ii/">HERE</a>).</p><h2>Final templates tips: Duck typing and SFINAE</h2><p>C++ templates are processed in two phases: Declaration and instantiation. First the compiler checks the declaration of the template for syntactical correcness, but what happens to things that depends on template parameters?<br
+/> The compiler doesn&#8217;t know anything about that parameters until template instantiation, so it delays the analysis of such things until the second phase, which is executed after a template is instanced.</p><p>Consider this function template:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+void f( const T&amp; t)
+{
+    t.g();</pre><p><code>T</code> could be any type, so the question is: Has this type a member function <code>f()</code>?<br
+/> The answer is: Nobody knows, and the compiler doesn&#8217;t care. Until template instantiation.<br
+/> So if you use that template correctly, using a type <code>T</code> with a member function <code>f()</code>, the code compiles and works. But, if the type is not correct? Is that a compilation error? Enter SFINAE.</p><h3>SFINAE</h3><p>SFINAE, <em>Specialization Failure Is Not An Error</em>, is the colloquial name of a rule on the C++ Language Standard saying that a failure when trying to instantiate a template is not a compilation error, but the compiler continues trying with other alternatives (More templates or overloads).</p><p>Following with the duck typing example, if we use the function template with a type with no member function <code>f()</code>, that doesn&#8217;t result in a compilation error (And then the compiler aborting compilation), but the compiler continues searching for other template or overload that matches the call.</p><p>That behavior could be used to &#8220;enable&#8221; a template only if the template parameters passed fulfill a certain property or requirement. For example:</p><pre class="crayon-plain-tag">template&lt;typename T , typename = typename std::enable_if&lt;std::is_floating_point&lt;T&gt;::value&gt;::type&gt;
+void compare( T lhs , T rhs );</pre><p>That template could be used with floating-point parameters only. Note the <code>std::enable_if</code> template there. That template provided by the standard library allows us to use SFINAE in an easy way. What it does is to declare a member type <code>::type</code> if a certain boolean condition is true.<br
+/> If we reference that member (<code>typename std::enable_if::type</code> and the condition is false, than the template has no type member, and the template is ill-formed. But do you remember the SFINAE rule? Instead of aborting compilation because the ill-formed template, the compiler continues.</p><p>So the result is that we &#8220;disabled&#8221; that template because the parameter was not a floating-point type. Cool, isn&#8217;t?</p><h3>It&#8217;s never too late to sing up for the C/C++ Madrid meetup!!</h3><p>&nbsp;</p><style type="text/css">#meetup_oembed .mu_clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }* html #meetup_oembed .mu_clearfix, *:first-child+html #meetup_oembed .mu_clearfix { zoom: 1; }#meetup_oembed { background:#eee;border:1px solid #ccc;padding:10px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;margin:0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px; }#meetup_oembed h3 { font-weight:normal; margin:0 0 10px; padding:0; line-height:26px; font-family:Georgia,Palatino,serif; font-size:24px }#meetup_oembed p { margin: 0 0 10px; padding:0; line-height:16px; }#meetup_oembed img { border:none; margin:0; padding:0; }#meetup_oembed a, #meetup_oembed a:visited, #meetup_oembed a:link { color: #1B76B3; text-decoration: none; cursor: hand; cursor: pointer; }#meetup_oembed a:hover { color: #1B76B3; text-decoration: underline; }#meetup_oembed a.mu_button { font-size:14px; -moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;border:2px solid #A7241D;color:white!important;text-decoration:none;background-color: #CA3E47; background-image: -moz-linear-gradient(top, #ca3e47, #a8252e); background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #a8252e), color-stop(1, #ca3e47));disvplay:inline-block;padding:5px 10px; }#meetup_oembed a.mu_button:hover { color: #fff!important; text-decoration: none; }#meetup_oembed .photo { width:50px; height:50px; overflow:hidden;background:#ccc;float:left;margin:0 5px 0 0;text-align:center;padding:1px; }#meetup_oembed .photo img { height:50px }#meetup_oembed .number { font-size:18px; }#meetup_oembed .thing { text-transform: uppercase; color: #555; }</style><div
+id="meetup_oembed" style="height:397px"><div
+style="overflow:hidden;max-height:357px"><h3>Madrid C/C++</h3><p
+style="margin:0 0 10px;font-size:12px;line-height:16px;">Madrid, ES <br
+/> <span
+style="font-size:14px;font-weight:bold;">178</span> <em>programadores</em></p><p> <a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank"><img
+src="http://photos4.meetupstatic.com/photos/event/8/c/c/a/600_368916042.jpeg" style="float:right;max-width:150px;margin-right:0;" /></a><div
+style="margin-right:170px;line-height:16px;">Conoce otros programadores C/C++ de Madrid. Haz Networking, aprende, o simplemente disfruta de unas cervezas. Todos los niveles de conocimiento son bienvenidos, incluso princi&#8230;</div><p
+style="font-size:16px;margin:10px 0 5px;line-height:18px;">Next Meetup</p><p
+style="margin-bottom:2px;line-height:16px;font-size:14px;"><a
+title="De 0 a 100 (Taller): metaprogramación con plantillas en C++ moderno (I)" href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/" target="_blank">De 0 a 100 (Taller): metaprogramación con plantillas en C++ &#8230;</a></p><p
+style="line-height:18px;">Thursday, Oct 2, 2014,  7:00 PM<br
+/><span
+style="color:#4F8A10;">39 Attending</span></p></p></div><p
+style="margin:10px 0 5px;"><a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank" class="mu_button">Check out this Meetup Group &rarr;</a></p></div><p>&nbsp;</p><h3>We will try to broadcast the event through hangouts, check below:</h3><p><a
+href="https://plus.google.com/u/1/b/110838391970414654069/events/co6s91ch1obeppkjg6qopea00ig">C/C++ Madrid meetup Hangouts channel</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/">C/C++ Madrid meetup @ biicode office</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Template Metaprogramming with Modern C++: templates in depth</title><link>http://blog.biicode.com/template-metaprogramming-cpp-ii/</link> <comments>http://blog.biicode.com/template-metaprogramming-cpp-ii/#comments</comments> <pubDate>Thu, 25 Sep 2014 08:42:40 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[c++11]]></category> <category><![CDATA[c++14]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[metaprogramming]]></category> <category><![CDATA[modern c++]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1682</guid> <description><![CDATA[<p>Template Metaprogramming with Modern C++: Templates in depth The last time  we learnt what metaprogramming was, how metaprogramming in C++ via templates works, and the functional spirit of the embedded language that C++ template metaprogramming is. In this post we will learn C++ templates in depth: Class and function templates, template parameters, variadic templates, all [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-cpp-ii/">Template Metaprogramming with Modern C++: templates in depth</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<article
+class="markdown-body entry-content"><h2><a
+class="anchor" href="#template-metaprogramming-with-modern-c-templates-in-depth" name="user-content-template-metaprogramming-with-modern-c-templates-in-depth"></a>Template Metaprogramming with Modern C++: Templates in depth</h2><p><a
+title="The last time" href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/" target="_blank">The last time </a> we learnt what metaprogramming was, how metaprogramming in C++ via templates works, and the functional spirit of the embedded language that C++ template metaprogramming is.</p><p>In this post we will learn C++ templates in depth: Class and function templates, template parameters, variadic templates, all with in depth examples.<br
+/> <em>SPOILER: Finally, there is no SFINAE explanation on this post. This has a large amount of contents to be read and understood, I think understanding correctly the template system and the different categories of template parameters is good enough for a single (But large) blog post. Of course, if there is any problem feel free to post a comment here.</em></p><p><img
+class="aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/3/2014/05/template-metaprogramming-modern-cplus.jpg" alt="Template Metaprogramming Modern C++ in biicode" width="800" height="329" /><br
+/> <span
+id="more-1682"></span></p><h2><a
+class="anchor" href="#the-template-system-function-and-class-templates" name="user-content-the-template-system-function-and-class-templates"></a>The template system: Function and class templates</h2><p>As we have seen in the first post, the C++ template system generates C++ types and functions from an specification written by the programmer, what we call <em>template</em>. And of course generating a type means generating code too, since normally C++ types are coupled to code (That&#8217;s the concept of a class).</p><p>Lets see how those templates work. First a simple template function:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+T identity( const T&amp; e )
+{
+	return e;
+}</pre><p>This simple template declares a family of functions that take a value of any type <code>T</code> and returns it untouched. Its the runtime version of the metafunction we seen in the first post.<br
+/> When the programmer uses that template:</p><pre class="crayon-plain-tag">int i = identity(0);</pre><p>the compiler instantiates the template using the correct parameters, an <code>int</code> type parameter in this case.<br
+/> <em>Note how template parameters are inferred from the function argumentsassed to the template function. This is why when using function templates is not neccessary nor a good practice to pass template parameters explicitly. Only is needed in some cases when a parameter could not be inferred from the function arguments <a
+href="http://en.cppreference.com/w/cpp/memory/shared_ptr/make_shared"><code>std::make_shared()</code></a> for an example.</em></p><p>Exactly the same occurs for class templates: The compiler generates one type (class) and its corresponding code for each combination of template parameters.</p><p>There is one point to be noted: Its true that the compiler generates one instantation for each combination of parameters, but <strong>modern C++ compilers are smart enough to not generate executable code for templates that are not actually used in the program.</strong> Also, modern compilers perform memoization during template instantiation, which increases the performance of the template system. Both optimizations make invalid the old arargumentaying that C++ templates increase executable size. <strong>That&#8217;s not completely true, since the compiler only generates code for the things that are actually used</strong>, after optimizations like inlining, dead code elimination, etc.</p><p>See for example the classic fibonacci metafunction:</p><pre class="crayon-plain-tag">template&lt;int n&gt;
+struct fibonacci
+{
+	static constexpr int value = fibonacci&lt;n-1&gt;::value + fibonacci&lt;n-2&gt;::value;
+};
+template&lt;&gt;
+struct fibonacci&lt;0&gt;
+{
+	static constexpr value = 0;
+};
+template&lt;&gt;
+struct Fibonacci&lt;1&gt;
+{
+	static conexpr value = 1;
+};</pre><p>This is the instantation tree for a <code>fibonacci&lt;5&gt;</code> template instance:</p><pre class="crayon-plain-tag">+--------+
+                              | fib&lt;5&gt; |
+                              +--------+
+                                  /\
+                                 /  \
+                                /    \
+                               /      \
+                        +--------+  +--------+
+                        | fib&lt;4&gt; |  | fib&lt;3&gt; |
+                        +--------+  +--------+
+                            /\          /\
+                           /  ...      /  \
+                          /           /    \
+                         /           /      \
+                  +--------+  +--------+  +--------+
+                  | fib&lt;3&gt; |  | fib&lt;2&gt; |  | fib&lt;1&gt; |
+                  +--------+  +--------+  +--------+
+                       /\          /\
+                    ...  ...    ...  ...</pre><p>That&#8217;s what you would expect, right? Ok, but <strong>that&#8217;s not what the compiler does</strong>. Enter memoization:</p><pre class="crayon-plain-tag">+--------+
+                              | fib&lt;5&gt; |
+                              +--------+
+                                  /\
+                                 /  *
+                                /
+                               /
+                        +--------+
+                        | fib&lt;4&gt; |
+                        +--------+
+                            /\
+                           /  *
+                          /
+                         /
+                  +--------+
+                  | fib&lt;3&gt; |
+                  +--------+
+                       /\
+                      /  *
+                     /
+                    /
+             +--------+
+             | fib&lt;2&gt; |
+             +--------+
+                 /\
+                /  \
+               /    \
+              /      \
+       +--------+  +--------+
+       | fib&lt;1&gt; |  | fib&lt;0&gt; |
+       +--------+  +--------+</pre><p>where <code>*</code> means the compiler selected the memoized (Instanced previously) template instead of doing the full instantation again.</p><p>Then the fact that the compiler only generates code which actually does something (All syntactic sugar that high-level constructs provide is thrown away):</p><pre class="crayon-plain-tag">int main()
+{
+    return Fibonacci&lt;5&gt;::value;
+}</pre><p><a
+href="http://gcc.godbolt.org/#%7B%22version%22%3A3%2C%22filterAsm%22%3A%7B%22labels%22%3Atrue%2C%22directives%22%3Atrue%2C%22commentOnly%22%3Atrue%7D%2C%22compilers%22%3A%5B%7B%22sourcez%22%3A%22C4UwtgDgNghqA8BLAdsABMgfAKAM7ACcBXAY3QDNEAjAe2RhJMWwG9s0O185ES0S6%2BEAA8IBNCnQA3GFCIg0AXjSVa9RonjIAtAEZMALgMy5CgNQrqdBky3aATIeOz5Abk6dsAX1fZsoSFgEHHxiMks1G00ABhw2D25gXn5BUFFxSTQTeSU0aN8fPwDoOBB4EMJSCit1W31Wdk5E5IFkIXSJVCyXBWVdAt9sTLAYFAAKAEoGjwIQYCICZAjrDXhdWKNskAKgAAA%3D%22%2C%22compiler%22%3A%22%2Fopt%2Fgcc-4.9.0%2Fbin%2Fg%2B%2B%22%2C%22options%22%3A%22-O0%20-std%3Dc%2B%2B11%22%7D%5D%7D"><code>GCC 4.9 -std=c++11 -O0</code> x86 target</a>:</p><pre class="crayon-plain-tag">main:                                   # @main
+	movl	$55, %eax
+	movl	$0, -4(%rsp)
+	ret</pre><p>Only a hardcoded 55. Do you see code bloating there?</p><h2><a
+class="anchor" href="#template-parameters" name="user-content-template-parameters"></a>Template parameters</h2><p>C++ templates can take three kinds of parameters: <strong>Value parameters, type parameters, and template template parameters</strong>. <em>There are more categories (References, pointers, etc) but they are not as interesting as the former from the metaprogramming point of view.</em> Here we will see them in depth.</p><h3><a
+class="anchor" href="#value-parameters" name="user-content-value-parameters"></a>Value parameters</h3><p>First of all, C++ templates can take parameters that are <strong>integral values known at compile time</strong>. Say a <code>char</code>, an <code>unsigned int</code>, a <code>long int</code>, etc. The fibonacci example above is one case of template with value parameters only, an <code>int</code> in that case.</p><p>Lets see a more complex example to introduce you to modern C++ features: Imagine a metafunction that given a character <code>c</code> and a size <code>n</code> generates a string containing the <code>n</code> consecutive characters starting at <code>c</code>, name it <code>build_string</code>:</p><pre class="crayon-plain-tag">template&lt;char c , std::size_t n&gt;
+struct build_string
+{
+};</pre><p>Whats the return type of <code>build_string?</code> A string, of course. But we need <em>a compile-time string</em>. One way to represent strings at compile-time is using C++11 variadic templates:</p><pre class="crayon-plain-tag">template&lt;char... Cs&gt;
+struct string
+{
+	static constexpr std::array&lt;char,sizeof...(Cs)+1&gt; value = {Cs...,'\0'};
+	constexpr operator const char*()
+	{
+		return value.data();
+	}
+	operator std::string() const
+	{
+		return std::string{value.data()};
+	}
+};</pre><p>The <code>string</code> template is only a variadic pack of chars, but also has a <code>value</code> member array. That&#8217;s allows us to get the characters at runtime. Note how the array is initialized at compile-time from the char pack.<br
+/> Given the <code>string</code> template, we can build up a string recursively:</p><pre class="crayon-plain-tag">template&lt;char c , std::size_t n&gt;
+struct build_string
+{
+    template&lt;std::size_t count , typename STRING&gt;
+    struct build_string_impl;
+    template&lt;std::size_t count , char... Cs&gt;
+    struct build_string_impl&lt;count,string&lt;Cs...&gt;&gt;
+    {
+    	using result = typename build_string_impl&lt;count-1,string&lt;c+count,Cs...&gt;&gt;::result;
+    };
+    template&lt;char... Cs&gt;
+    struct build_string_impl&lt;0,string&lt;Cs...&gt;&gt;
+    {
+    	using result = string&lt;c,Cs...&gt;;
+    };
+    using result = typename build_string_impl&lt;n,string&lt;&gt;&gt;::result;
+};</pre><p>Using C++14 variable templates one can improve the syntax to get the char array a bit:</p><pre class="crayon-plain-tag">template&lt;char c , std::size_t n&gt;
+constexpr std::array&lt;char,n+1&gt; build_string_array = build_string&lt;c,n&gt;::result::value;</pre><p>How beautiful is to see a hardcoded <code>"abc"</code> string injected in your assembly, isn&#8217;t?<br
+/> <a
+href="http://goo.gl/dHA10n">See for yourself.</a></p><p>Value parameters, variadic templates, constexpr variadic-pack based initialization, C++14 variable templates&#8230; So far so good. Enter type parameters.</p><h3><a
+class="anchor" href="#type-parameters" name="user-content-type-parameters"></a>Type parameters</h3><p>As the name says, are parameters that represent types. The canonical example is a container template:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+class vector
+{
+    ...
+};</pre><p>One useful template is the <strong><em>typelist</em></strong>: A typelist represents a set (list) of types. This simple template is very powerfull since it allows us to hold and manipulate a set of types.<br
+/> Imagine you want to know if a type <code>T</code> is an integer type. What would you do? A simple approach is to store the set of known integral types on a list, and later<br
+/> search if the type we are asking is on that list:</p><pre class="crayon-plain-tag">//The typelist template
+template&lt;typename... Ts&gt;
+struct list{};
+//A metafunction returning the index of a type T in a list of types L. If T doesn't belong to L, it returns -1
+template&lt;typename T , typename L&gt;
+struct index_of;
+//Again that recursive head:tail traversal of functional languages
+template&lt;typename T , typename HEAD , typename... TAIL&gt;
+struct index_of&lt;T,list&lt;HEAD,TAIL...&gt;&gt;
+{
+	static constexpr int next_value = index_of&lt;T,TAIL...&gt;;::value;
+	static constexpr int value = next_value &gt;= 0 ? next_value + 1 : -1; //Propagate the -1 or the index
+};
+//First base case: The type is found (T matches HEAD)
+template&lt;tyename T , typename... TAIL&gt;
+struct index_of&lt;T,list&lt;T,TAIL...&gt;&gt;
+{
+	static constexpr int vaue = 0;
+};
+//Second base case: The type is not found (There are no more types on the list to match with)
+template&lt;typename T&gt;
+struct index_of&lt;T,list&lt;&gt;&gt;
+{
+	static constexpr int value = -1;
+};
+//A type T is integral if its found on a list containing all the integral types
+template&lt;typename T&gt;
+struct is_integral : public std::integral_constant&lt;bool, index_of&lt;T,list&lt;short,int,long,etc...&gt;&gt;::value &gt;= 0&gt;;;
+{};</pre><p>This thing (Storing a typelist of integral types and searching on it) is exactly what the libc++ Standard Library implementation does to implement the <code>std::is_integral</code> type trait. GCC&#8217;s stdlibc++ on the other hand uses explicit template specializations, one for each integral type.</p><p>Also, always be careful when writing and using that recursive metafunctions. The compiler has some limits, and breaking them could lead to some horrible errors like this:</p><p><img
+class="aligncenter wp-image-1688 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/biierror.png" alt="Template metaprogramming: not safe from errors, not even with biicode" width="811" height="375" />And thats only the header of the error, it was really two hundreds of lines long. Remember that &#8220;<em>Template instantiation depth reached max of X</em>&#8221; error. Will be one of your best friends when doing template metaprogramming.</p><h3><a
+class="anchor" href="#template-template-parameters" name="user-content-template-template-parameters"></a>Template-template parameters</h3><p>The last category is also the poor known category of template parameters, possibly because its ugly syntax.</p><p>A template-template parameter its a C++ template parameter which <strong>represents not a type nor a value, but a template itself</strong>:</p><pre class="crayon-plain-tag">template&lt;template&lt;typename&gt; class T&gt;
+struct foo{};</pre><p><code>foo</code> is a template expecting a template with one type parameter only. So <code>foo</code> can take something like this <code>bar</code> as template parameter:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct bar{};
+using foo_instance = foo&lt;bar&gt;;</pre><p>Its possible to write a template that can take any kind of template? No. Thats the reason why we encouraged the use of type parameters only for template metaprogramming during the first post. If we only use type parameters, doing that its easy thanks to variadic templates:</p><pre class="crayon-plain-tag">template&lt;typename...&gt; class T&gt;
+struct universal_template{};</pre><p>If you follow our coding convention, that <code>universal_template</code> could take any kind of template, metafunction, etc we have. During <a
+href="https://www.biicode.com/manu343726/manu343726/turbo_core/master">Turbo</a> development I followed that convention, and used box types for values (With types like <code>std::integral_constant</code>) and templates (With a template similar to that <code>universal_template</code>). The equivalent template was called <code>tml::lazy</code> from the fact that its primarily used for delayed and lazy template instantation:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct unary{};
+template&lt;typename LHS , typename RHS&gt;
+struct binary{};
+using unary_t = tml::lazy&lt;unary&gt;; //Its no more a template but a type
+using binary_t = tml::lazy&lt;binary&gt;;
+using unary_instance = tml::eval&lt;unary_t,int&gt; //Instaintiates the "template" unary_t with int as parameter,
+                                              //so unary_instance is unary</pre><p>As you can see, template-template parameters are very powerful ones, since they can convert templates into types, leading to many use cases. The best of all I think, they are the template metaprogramming equivalent of functors:</p><pre class="crayon-plain-tag">//A simple comparison metafunction
+template&lt;typename LHS , typename RHS&gt;
+struct less
+{
+    using result = std::integral_constant&lt;bool, (sizeof(LHS) &lt; sizeof(RHS))&gt;;
+};
+//Returns the minimal type given a comparison criteria (less by default)
+template&lt;typename LHS , typename RHS&gt;
+struct min
+{
+	using result = typename std::conditional&lt;tml::eval&lt;COMPARER,LHS,RHS&gt;::value,
+	                                         LHS,
+	                                         RHS
+	                                        &gt;::type;
+};</pre><p></p><h2><a
+class="anchor" href="#summary" name="user-content-summary"></a>Summary of template metaprogramming in depth</h2><ul
+class="task-list"><li><strong>Modern C++ compilers are smart enough to optimize the output of the template system and the execution of the template system itself</strong>. Beware of modern compiler capabilites, don&#8217;t tie yourself to old speaks. There are template-related problems, of course, but these are usually not. By default, there is no exponential and mind blowing executable size increase.</li><li><strong>There are three categories of template arguments</strong>, each with their own use cases and properties. Combine them to have a powerful template metaprogramming toolbox.</li></ul><p>Don&#8217;t be afraid if you haven&#8217;t understood some of the examples provided here. They are not intended to be simple, but to show use cases of template metaprogramming. Do you want to understand them completely? <a
+href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/">Come to the workshops</a> next week!</p><style type="text/css">#meetup_oembed .mu_clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }* html #meetup_oembed .mu_clearfix, *:first-child+html #meetup_oembed .mu_clearfix { zoom: 1; }#meetup_oembed { background:#eee;border:1px solid #ccc;padding:10px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;margin:0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px; }#meetup_oembed h3 { font-weight:normal; margin:0 0 10px; padding:0; line-height:26px; font-family:Georgia,Palatino,serif; font-size:24px }#meetup_oembed p { margin: 0 0 10px; padding:0; line-height:16px; }#meetup_oembed img { border:none; margin:0; padding:0; }#meetup_oembed a, #meetup_oembed a:visited, #meetup_oembed a:link { color: #1B76B3; text-decoration: none; cursor: hand; cursor: pointer; }#meetup_oembed a:hover { color: #1B76B3; text-decoration: underline; }#meetup_oembed a.mu_button { font-size:14px; -moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;border:2px solid #A7241D;color:white!important;text-decoration:none;background-color: #CA3E47; background-image: -moz-linear-gradient(top, #ca3e47, #a8252e); background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #a8252e), color-stop(1, #ca3e47));disvplay:inline-block;padding:5px 10px; }#meetup_oembed a.mu_button:hover { color: #fff!important; text-decoration: none; }#meetup_oembed .photo { width:50px; height:50px; overflow:hidden;background:#ccc;float:left;margin:0 5px 0 0;text-align:center;padding:1px; }#meetup_oembed .photo img { height:50px }#meetup_oembed .number { font-size:18px; }#meetup_oembed .thing { text-transform: uppercase; color: #555; }</style><div
+id="meetup_oembed" style="height:309px"><div
+style="overflow:hidden;max-height:269px"><h3>Madrid C/C++</h3><p
+style="margin:0 0 10px;font-size:12px;line-height:16px;">Madrid, ES <br
+/> <span
+style="font-size:14px;font-weight:bold;">180</span> <em>programadores</em></p><p> <a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank"><img
+src="http://photos4.meetupstatic.com/photos/event/8/c/c/a/600_368916042.jpeg" style="float:right;max-width:150px;margin-right:0;" /></a><div
+style="margin-right:170px;line-height:16px;">Conoce otros programadores C/C++ de Madrid. Haz Networking, aprende, o simplemente disfruta de unas cervezas. Todos los niveles de conocimiento son bienvenidos, incluso princi&#8230;</div></p></div><p
+style="margin:10px 0 5px;"><a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank" class="mu_button">Check out this Meetup Group &rarr;</a></p></div><p
+class="widgettitleFeatures" align="center"><strong>Stay tuned by signing up below</strong></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p> </article><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-cpp-ii/">Template Metaprogramming with Modern C++: templates in depth</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/template-metaprogramming-cpp-ii/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> </channel> </rss>

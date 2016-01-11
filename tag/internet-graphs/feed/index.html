@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; internet graphs</title> <atom:link href="http://blog.biicode.com/tag/internet-graphs/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Determining k-cores in a network: a new BITSCAN application</title><link>http://blog.biicode.com/k-cores-analysis-bitscan/</link> <comments>http://blog.biicode.com/k-cores-analysis-bitscan/#comments</comments> <pubDate>Thu, 04 Sep 2014 09:45:37 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[internet graphs]]></category> <category><![CDATA[k-core]]></category> <category><![CDATA[k-cores]]></category> <category><![CDATA[network analysis]]></category> <category><![CDATA[road graphs]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1507</guid> <description><![CDATA[<p>What is k-cores analysis? A major concern of social network analysis is to determine subgroups of actors which cooperate together within a network, in other words from cohesive subsets. To this avail a number of notions were introduced in the past such as cliques,  k-plexes, lambda sets, k-cores etc. Most of these notions are difficult [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/k-cores-analysis-bitscan/">Determining k-cores in a network: a new BITSCAN application</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>What is k-cores analysis?</h2><p>A major concern of social network analysis is to determine subgroups of actors which cooperate together within a network, in other words from <em>cohesive subsets</em>. To this avail a number of notions were introduced in the past such as <em>cliques</em>,  <em>k-plexes</em>, <em>lambda sets</em>, <em>k-cores</em> etc. Most of these notions are difficult to compute (non linear and many in NP), but computing cores is the exception because linear algorithms are known to exist<sup><a
+id="ref1" href="#fn1">1</a></sup> .This makes k-cores analysis an important source of information for real networks with hundreds of thousands of nodes, such as road graphs, internet graphs etc.</p><div
+id="attachment_1508" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1508" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/k-core-image.png" alt="k-cores decomposition of networks" width="400" height="230" /><p
+class="wp-caption-text">k-core decomposition (0-core, 1-core, 2-core, 3-core)</p></div><p
+style="text-align: left;"><span
+id="more-1507"></span></p><div><p>A<em> k-core</em> (first introduced by Seidy in 1983<sup><a
+id="ref2" href="#fn2">2</a>.</sup>) is any induced subgraph in which all its vertices have at least degree <em>k</em> and the subgraph is maximum with this property. The core of maximum order is called the <em>main core</em>. The core number of any vertex is the k-order of the highest core which contains this vertex. Finally the k-core number of a graph is the k-order of its main core. Note that the way degree is defined (in-degree, out-degree, in-degree + out-degree, …) determines different types of cores.</p><div
+id="attachment_1511" style="width: 310px" class="wp-caption alignleft"><img
+class="wp-image-1511" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/k-core-example-image.png" alt="k-cores example analysis" width="300" height="229" /><p
+class="wp-caption-text">A starred network: k-core number is 1</p></div><p>Core analysis is eminently <em>hierarchical</em>, as the above figure (borrowed from [1]) illustrates. The graph in the figure has four cores (0-core, 1-core, 2-core and 3-core) which are depicted in different shades of grey. 0-core is trivially the full graph, while the largest core (3-core) is shaded in the darkest grey. Note that cores do not have to be connected in the general case (e.g. in the figure, the 2-core contains two disconnected subgraphs). In very large sparse graphs k-core analysis typically helps to understand structure better with linear cost. It is much more informative than linear degree related notions. Consider as an example the starred computer network to the left. It is easy to see that the maximum graph degree of the network is 5 (the order of the graph minus 1); in contrast the k-core number is just 1. Note that this automatically gives a 2 upper bound (the k-core number incremented by one) for the clique number of the network as well.</p></div><div><span
+style="color: #262626;">Pablo San Segundo, the chess grand master, expert in graphs and PhD IN Artificial Intelligence, has </span>uploaded in the <a
+href="https://www.biicode.com/pablodev/pablodev/graph/master">GRAPH repository</a> a SW tool to analyse graph properties. It is located in the pablodev/graph block and has been released as part of the GRAPH library. The aim of this, as yet, small C++ library is to show how to apply the bitstring library <a
+href="https://www.biicode.com/pablodev/bitscan">BITSCAN</a> (available exclusively at Biicode) to encode graphs efficiently.  A recent post on basic GRAPH functionality can be found <a
+href="http://blog.biicode.com/bit-encoded-graph/">here</a>. More information on how to use GRAPH and BITSCAN to compute k-core decomposition coming soon!</div><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><h3>Footnotes</h3><p><sup
+id="fn1">1. V. Batagelj and M. Zaversnik, An O(m) algorithm for cores decomposition of networks, cs.DS/0310049, 2003.    <a
+title="Jump back to footnote 1 in the text." href="#ref1">↩</a></sup></p><p><sup
+id="fn2">2.S. B. Seidman, Network structure and minimum degree, Social Networks, 1983.&#8221;.<a
+title="Jump back to footnote 2 in the text." href="#ref2">↩</a></sup></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/k-cores-analysis-bitscan/">Determining k-cores in a network: a new BITSCAN application</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/k-cores-analysis-bitscan/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; c++ learning curve</title> <atom:link href="http://blog.biicode.com/tag/c-learning-curve/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>The Pragmatic C++ Programmer</title><link>http://blog.biicode.com/the-pragmatic-cpp-programmer/</link> <comments>http://blog.biicode.com/the-pragmatic-cpp-programmer/#comments</comments> <pubDate>Tue, 12 May 2015 14:46:11 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[c++ learning curve]]></category> <category><![CDATA[rant]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2242</guid> <description><![CDATA[<p> A couple of days ago I was studying at my university library when my colleague Miguel Madrid got up and started to traverse the library looking for programming books. It&#8217;s a game we usually play, to find out a good quality book in a place full of Java 2 SE manuals&#8230; There are some gems on [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/the-pragmatic-cpp-programmer/">The Pragmatic C++ Programmer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+id="the-pragmatic-c-programmer"> A couple of days ago I was studying at my university library when my colleague Miguel Madrid got up and started to traverse the library looking for programming books. It&#8217;s a game we usually play, to find out a good quality book in a place full of Java 2 SE manuals&#8230;</p><p>There are some gems on that library though. There&#8217;s a couple of copies of Alexandrescu&#8217;s <a
+href="http://www.amazon.es/Modern-Design-Applied-Generic-Patterns/dp/0201704315/ref=pd_sim_14_1?ie=UTF8&amp;refRID=10BQM5HP4J8VDY2P21J6">&#8220;Modern C++ Design&#8221;</a> (No longer that Modern, right?) and <a
+href="http://www.amazon.es/Template-Metaprogramming-Concepts-Techniques-Beyond/dp/0321227255">&#8220;C++ Template Metaprogramming&#8221;</a>, the latter only borrowed by me in the last five years according to the registry. I always try to have a copy of both, it&#8217;s easy since there are only a few people doing C++ there, never reaching the <em>&#8220;TMP mental asylum&#8221;</em> I&#8217;m usually in.</p><p>But that day, Miguel reached me with a copy of &#8220;The Pragmatic Programmer&#8221;. <em>&#8220;One of the most influential books in the history of software engineering&#8221;</em> the cover says. <strong>I&#8217;m so scared of how software engineering examples look like</strong>&#8230;</p><p>&nbsp;</p><p><span
+id="more-2242"></span></p><h2 id="software-engineering-books">Software engineering books</h2><p>Ignore the fact that I didn&#8217;t like the book at all. For me, it&#8217;s only another example of how someone sells his own experiences as a &#8220;how you should do&#8221; book. What really matters for me are the code examples and guidelines.</p><p>I always suspect from a book of this kind that provides examples in multiple programming languages. I&#8217;m sorry guys, but <strong>each language has its own rules, design decisions, optimal ways to perform a task</strong>. A language is designed to be used in a specific way. Of course you can use a chainsaw as a toothbrush, but don&#8217;t expect that things will work as optimal as expected&#8230;</p><p>There&#8217;s nothing wrong in providing multiple examples in different programming languages at the beginning, but things start to stink when a guideline is implemented in almost exactly the same way in two completely different languages. What&#8217;s wrong with <em>&#8220;The Pragmatic Programmer&#8221;</em>? In the fact that <strong>the only main differences between its examples are that in Java the author uses dots, and in C++ arrows.</strong></p><h2 id="people-dont-understand-c">People don&#8217;t understand C++</h2><p>C++ is hard, I will not deny it. But there are a lot of people who do not understand how C++ works, and even when considering C++ an object oriented language (I&#8217;m afraid it&#8217;s not), C++ OOP has nothing to do with Java-like OOP.</p><p><a
+href="http://c2.com/cgi/wiki?AlanKayOnMessaging">OOP is not about objects and classes</a>, but about program modules intercommunication, but we usually forget that and try to map everything as an object. And since people is used to GCed OO languages, most of them think that objects live <em>elsewhere</em> and should be <em>referenced</em>. So they usually do the horrible <code>Class* ptr = new Class();</code> pattern by default, and never get the role of constructors and destructors except in <em>wrapper classes that manage <code>new/delete</code> automatically</em>.</p><p>From &#8220;The Pragmatic Programmer&#8221;:</p><blockquote><p>If circumstances permit we can change from a pointer var to an actual node object</p></blockquote><p>Here the author realizes that C++ has ctors and dtors and hence you can write a wrapper class that manages that <em>object instantiation/destruction</em> for you. That&#8217;s the point when I started to cry. No, being in the pre move semantics era is not a reason to Javaize every variable in a way to boost object passing. And I&#8217;m sure the author didn&#8217;t write the examples in Java++ because of performance concerns.</p><p>Last year I had a teacher that, when teaching OpenGL, showed this as an example of how a 2d vector class should look like:</p><pre class="crayon-plain-tag">class vector2d
+{
+    vector2d* add(vector2d* a, vector2d* b)
+    {
+        return new vector2d(a-&gt;x + b-&gt;x, a-&gt;y + b-&gt;y);
+    }
+private:
+    float x, y;
+};</pre><p>Then I got up in the middle of the classroom and shouted &#8220;THAT&#8217;S JAVA!!!&#8221;. Not kidding, everybody there looked at me while saying &#8220;What this f&#8230; idiot is talking about?&#8221;. Then I reached my teacher and asked him why he was doing C++ in that way:</p><blockquote><p>I usually write C, C++, and Java in exactly the same way because I find it&#8217;s the most elegant.</p></blockquote><p>Ok so you write three of the most different programming languages in the world in exactly the same way&#8230;</p><p>Also the &#8220;Ok guys you can optimize your regular polygon function by storing sin and cos results in a variable instead of computing that on each loop iteration&#8221; example, ignoring optimizer capabilities that completely outperform us by doing sin and cos at the same time in one instruction only, plus loop hoisting. But I don&#8217;t expect any good C/C++ advice from a place where people still think that manual assembly outperforms any compiler, and boast themselves by discarding OpenCV in favor of their own &#8220;fast square root routine&#8221; for image processing.</p><p>Things started to get weird when some mates asked me how they could implement <code>operator+()</code>, since their compiler didn&#8217;t allowed them to write <code>vector2d* operator+(vector2d*, vector2d*)</code>&#8230;</p><p>The point is that they don&#8217;t understand C++ object model. Objects live on the stack except explicitly stated. This is one of the first topics I usually cover when teaching C++, to make people understand that C++ objects are tied to its scope, and cannot be moved from there. When returning a value from a function, the object does not fly out the function and reaches the caller, but there&#8217;s a value interchange between an object living on the callee, an object living on the caller, and an intermediary object between the two contexts that we usually don&#8217;t care about. Think of C++ objects as plants, not as bees flying around.</p><p>I don&#8217;t expect any C++ class to have a <code>sizeof()</code> greater than 60 bytes. That nearly fits a L1 cache line. And I trust RVO for in deep copy. Of course always profile first, but you may notice that it&#8217;s hard to get a context when copy elision is not applied by the compiler. <strong>Long live value semantics</strong>. Even better with modern C++, where you don&#8217;t worry about object passing anymore since the last corner cases don&#8217;t covered by N/RVO are handled by move semantics.</p><h2 id="but-why-why-is-c-that-hard-to-get">But why? Why is C++ that hard to get?</h2><p>Ask this to yourselves. At least for me, when I ask people why they feel C++ that hard, they answer something in the form of:</p><blockquote><p>Manual memory management. C++ has no GC.</p></blockquote><p>Garbage collection&#8230;. Why do we need garbage collection if we have our beloved</p><p><img
+class="alignnone" title="Who needs garbage collectors when we have }?" src="http://www.decodeunicode.org/data/glyph/196x196/007D.gif" alt="Garbage collectors aren't required in C++ when there is }" width="196" height="196" /></p><p>?</p><p>Also consider class special functions: Ctors, dtor, assignment operators. I&#8217;m always surprised looking at people reinventing the wheel, when aggregation of STL resource handlers do the work automatically. The very well known Rule Of Zero.</p><p>Here&#8217;s some real code:</p><pre class="crayon-plain-tag">class Class{
+...
+protected:
+    vector&lt;T&gt; m_g;
+    int m_size;
+    int m_BB;
+    std::string m_name;
+};
+Class::Class(void){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+}
+Class::Class(const Class::Class&amp; c){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+    (*this)=c;
+}
+Class::Class(int size){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+    init(size);
+}
+Class&amp; Class::operator= (const Class&amp; g){
+    init(g.m_size);
+    for(int i=0; i&lt;m_size; i++){
+        m_g[i]=g.m_g[i];
+    }
+    this-&gt;m_name=g.m_name;
+    return *this;
+}
+void Class::clear(){
+    m_g.clear();
+    m_size=0;
+    m_BB=0;
+    m_name.clear();
+}
+int Class::init(int size){
+    //deallocates previous
+    clear();
+    try{
+        m_g.resize(size);
+    }catch(...){
+        cout&lt;&lt;"memory not allocated";
+        return -1;
+    }
+    m_size=size;
+    ...
+    return 0;
+}</pre><p>Clearly the author comes from C background. This class suffers from a lot of repetitive code, code that mimics the job the compiler already does for class member variables (Look at the <code>init()</code> function and where it&#8217;s called from), etc. I&#8217;m not worried about performance here, you may be surprised this was extracted from a library that has the merit of being the faster lib in its field, outperforming even C++ gurus Boost code. Imagine what this lib can do with an in depth C++ guidelines review.</p><p>C++ is hard, but it&#8217;s not hard on &#8220;mundane&#8221; tasks like defining a class and its special members. <strong>It&#8217;s the programmer who make it hard by ignoring how the language works</strong>. I always say this to my C++ pupils: I don&#8217;t remember the last time I wrote a C++ destructor, assignment operator, etc; except for freaking purposes.</p><p>Dealing with templates could be hard. Dealing with name lookup rules is hard. But dealing with the implementation of object value semantics in a class that&#8217;s just an aggregate of other objects is not hard. You just should rely on the language.</p><h2 id="so-what-we-should-do">So, what we should do?</h2><p>That depends on the context of course. But my main advice is to known how something works before buzzing about how horrible it is. Do C in C++ if you like, even Java++, but then don&#8217;t cry when your codebase starts going crazy.</p><p>Here are some advices from my own:</p><ul><li><strong>Know the language</strong>: <a
+href="https://docs.google.com/viewer?a=v&amp;pid=sites&amp;srcid=YXVzdGluLWNzLm9yZ3x3ZWJ8Z3g6MzBhNDk2M2JiZTA5NTU0ZA">C++ is a huge elephant</a>, but the elephant is not exactly what you are used to in other OO languages. I don&#8217;t even consider C++ an object oriented language since it&#8217;s not object/class centered. Choose the tool (functional programming, generic algorithms, objetc, whatever) that best fits to your problem. If you strip some of that paradigms using a little subset of the language only, it does not play as well and easy as it would.</li><li><strong>Understand how it works</strong>: If you try to do things in the same way you learned for other languages, things go wrong. Each language is different. In case of software engineering guidelines, OO patterns, etc; pay special attention since these are usually written for usual OO languages based on reference semantics. They may work, but can be non optimal on C++ value semantics. Doing reference semantics, i.e. Javaize everything with pointers/smart pointers, does not work since C++ is not designed to do that intensive use of dynamic allocation. Take into account that in OO reference languages such as Java, doing <code>new</code> has almost zero cost since the whole language and its runtime its designed to work in that way. That&#8217;s not the case for C++.</li><li><strong>Trust the compiler</strong>: The ages when a compiler was a mere code translator are gone. When doing optimizations by hand you are trying to beat the result of almost 30 years of compiler and optimization algorithms research boxed in a thing that runs on a chip that measures its computational power at MFLOPS. Even if you have an awesome brain that can compete with that power, you will be doomed at the point of code generation since you play in an ecosystem where CPU instruction sets and architectures are too far for being that &#8220;fetch, decode, execute&#8221; schema we all learned at the school/college. The <em>Ford factory pipeline</em> is not a valid metaphor to describe how CPUs work these days. This is reflected in the fact that if you think of C++ as a &#8220;syntactical abstraction layer hiding a couple of assembly instructions&#8221; you are wrong 99% of times. That&#8217;s no longer the case, since hardware is not that simple. <strong>Think of your C++ code as a high level description of what the program should do, not how really does it</strong>.<br
+/> But be careful! Don&#8217;t treat the compiler as a genius! Check its assembly output from time to time to see what it actually did. The cool point here is that the more readable the code is, more optimizable is since the optimizer understands your intention. Write convoluted code like a fast square root routine that I&#8217;m sure relies on Undefined Behavior and you will get a code that runs 30% slower than what GCC would generate by its own, considering <a
+href="http://developerblog.redhat.com/2015/01/02/improving-math-performance-in-glibc/">the effort glibc guys put</a> on efficient floating point code generation.</li></ul><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/the-pragmatic-cpp-programmer/">The Pragmatic C++ Programmer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/the-pragmatic-cpp-programmer/feed/</wfw:commentRss> <slash:comments>9</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; register</title> <atom:link href="http://blog.biicode.com/tag/register/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>bii internals: How to do your own Windows Installer</title><link>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/</link> <comments>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/#comments</comments> <pubDate>Fri, 13 Jun 2014 08:00:04 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[Innosetup]]></category> <category><![CDATA[python]]></category> <category><![CDATA[register]]></category> <category><![CDATA[windows installer]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=632</guid> <description><![CDATA[<p>As a continuation of the previous post, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows. The main tool used for packaging and installing the client binaries for Windows is the popular Inno Setup program. This tool is completely free of charge and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/">bii internals: How to do your own Windows Installer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a continuation of the <a
+href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">previous post</a>, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows.<br
+/> The main tool used for packaging and installing the client binaries for Windows is the popular <a
+title="Inno Setup Home Page" href="http://www.jrsoftware.org/isinfo.php" target="_blank">Inno Setup </a>program. This tool is completely free of charge and supports almost every windows release since 2000.</p><p><span
+id="more-632"></span></p><p>Installators are created by means of scripts, which are ASCII text files with an &#8220;.iss&#8221; extension. The concept is quite similar to the distribution definition file described for MacOS.<br
+/> The <em>script file</em> controls every aspect of the installation.  It specifies which files have to be installed and where, what short-cuts have to be created and what are they in order to be named, and so on. It &#8216;s arranged into sections and each section controls a different part of the installation.<br
+/> A quite simple and small script could be the next one:</p><pre class="crayon-plain-tag">&lt;
+; -- Example1.iss --
+; Demonstrates copying 3 files and creating an icon.
+; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
+[Setup]
+AppName=My Program
+AppVersion=1.5
+DefaultDirName={pf}\My Program
+DefaultGroupName=My Program
+UninstallDisplayIcon={app}\MyProg.exe
+Compression=lzma2
+SolidCompression=yes
+OutputDir=userdocs:Inno Setup Examples Output
+[Files]
+Source: "MyProg.exe"; DestDir: "{app}"
+Source: "MyProg.chm"; DestDir: "{app}"
+Source: "Readme.txt"; DestDir: "{app}"; Flags: isreadme
+[Icons]
+Name: "{group}\My Program"; Filename: "{app}\MyProg.exe"
+;</pre><p>The <em>script</em> could have a lot of different sections that allow almost all the operations required for a correct installation and uninstallation in windows systems. It includes a integrated <a
+title="JRSowtware Scripting" href="http://www.jrsoftware.org/ishelp/topic_scriptintro.htm" target="_blank">Pascal scripting</a> engine for advanced run-time customization. For example, we use that section to make a nice uninstalling and to modify the register in an intelligent way, avoiding unnecessary register operations.</p><p>As it&#8217;s done in MacOS installers, in our automation repo we have prepared  a resource file that contains all the files used by the script (images, icons, text files, and the script itself) :</p><pre class="crayon-plain-tag">resources
+├── windows
+   ├── Docs
+   │   └── readme.txt
+   ├── Images
+   │   ├── biiconsole.ico
+   │   ├── installlerimage.bmp
+   │   └── logobii.bmp
+   ├── license.txt
+   └── biicodeinstaller.iss</pre><p>Before calling the external tool (InnoSetup) all the required files (installer resources and biicode binaries) are copied into a temporal folder. The main python script that automates the process is executed in a windows virtual machine in which InnoSetup is installed. In order to avoid the hard-coding of the external command  we are retreiving that info through a registry request for both, win32 and win64:</p><p>&nbsp;</p><pre class="crayon-plain-tag">if platform.system() == 'Windows':
+    import _winreg
+def innoexepath():
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion'
+            '\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows'
+            '\\CurrentVersion\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        return 'ISCC.exe'</pre><p>Finally, an important but simple pre-build step: we update the version info through a simple but effective search and replace text operation, looking for a key string included into the script and the text documents.</p><pre class="crayon-plain-tag">from biicode.utils.pack import create_client_binary
+from biicode.client.command.process_executor import execute
+from biicode.common.utils.file_utils import search_and_replace
+from biicode.common import __version__ as version
+    search_and_replace(iss_path, '%VERSION%', version)
+    command = []
+    command.append(innoexepath())
+    command.append(os.path.join(folder_tmp, 'installdata', 'biicodeinstaller.iss'))
+    execute(command)
+    shutil.copy(os.path.join(folder_tmp, 'setup.exe'), 'C:/bii-setup.exe')</pre><p>As you can see, a product executable has been created and renamed as &#8220;bii-setup&#8221; and placed in a convenient directory for publishing.<br
+/> The InnoSetup tool creates a wonderful installer with a brief and simple script file:</p><p><img
+class="alignnone wp-image-640" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura.gif" alt="Biicode Wizard Windows" width="630" height="486" /></p><p>Hope you enjoy installing!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/">bii internals: How to do your own Windows Installer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

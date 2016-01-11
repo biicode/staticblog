@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; c++ metaprogramming</title> <atom:link href="http://blog.biicode.com/tag/c-metaprogramming/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>A Tiny Metaprogramming Library: Boxing &#8211; Part 1</title><link>http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/</link> <comments>http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/#comments</comments> <pubDate>Fri, 23 Jan 2015 18:47:56 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[boxing]]></category> <category><![CDATA[c++ metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2042</guid> <description><![CDATA[<p>A Tiny Metaprogramming Library episode 3: Last time we introduced the mathematical concept of function as an entity that takes an input, generating an output. In that process, the function does not change any external state. We also talked about metafunctions, a way to represent functions operating on C++ types using C++ templates. After the theory, [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/">A Tiny Metaprogramming Library: Boxing &#8211; Part 1</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>A Tiny Metaprogramming Library episode 3:</h2><p><a
+href="http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/">Last time</a> we introduced the mathematical concept of function as an entity that takes an input, generating an output. In that process, the function does not change any external state.</p><p>We also talked about <em>metafunctions</em>, a way to represent functions operating on C++ types using C++ templates.</p><p>After the theory, we followed with some conventions about the specific implementation of metafunctions in our tiny metaprogramming library. We decided that:</p><ul><li><strong>Any type with a <code>type</code> public member type is considered a metafunction</strong>, where <code>type</code> represents the result of that metafunction.That means to take the result of a metafunction we should say <code>typename F::type</code> in most of the situations. We introduced a simple tool <code>tml::eval</code> to help a bit.</li><li>Our metafunctions are templates, but these are constrained to <strong>take type parameters only</strong>.</li></ul><p>In this post we will learn how to use boxing to pass value parameters as type parameters for our metafunctions. This is not something new but a way to understand what <a
+href="http://en.cppreference.com/w/cpp/types/integral_constant"><code>std::integral_constant</code></a>, one of the fundamentals of <code>&lt;type_traits&gt;</code>, is and what can be used for.<br
+/> <img
+class="aligncenter" src="https://31.media.tumblr.com/e4da3090e08789c6432b034c9d2591c0/tumblr_mzi7ktPV6s1r6jnjdo1_400.gif" alt="Tiny Metaprogramming library episode 3: boxing." width="384" height="256" /></p><p><span
+id="more-2042"></span></p><h2 id="boxing-values">Boxing values</h2><p>We need a way to represent a value with a type. This is simple: Put a <code>static</code> public constant on a type, meaning the value of that constant is the value represented by that type. Something like this:</p><pre class="crayon-plain-tag">template&lt;typename T, T V&gt;
+struct value_holder
+{
+    static constexpr T value = V;
+};</pre><p>Here we defined a template <code>value_holder</code>, which takes a type and a value of that type as parameters. Then it defines a public compile-time constant (Note the <code>constexpr</code>, not strictly needed, but more elegant than <code>const</code> or the old <a
+href="http://cpptrivia.blogspot.com.es/2010/12/enum-hack.html"><em>enum hack</em></a>) which holds the value <code>V</code>. After instantiating that template, you can get the value the instance holds via its <code>value</code> public member constant:</p><pre class="crayon-plain-tag">using i = value_holder&lt;int,1&gt;; // i = 1
+static_assert(i::value == 1, "i should be 1");</pre><p><em>For the C++11 newbies, <code>static_assert()</code> is like the good old C <code>assert()</code>, but at compile-time.</em></p><p>Now we can implement simple metafunctions operating on &#8220;values&#8221;:</p><pre class="crayon-plain-tag">template&lt;typename a, typename b&gt;
+struct add
+{
+    using result = value_holder&lt;¿?,a::value, b::value&gt;;
+};
+using a = value_holder&lt;int,1&gt;;
+using b = value_holder&lt;int,2&gt;;
+using c = tml::eval&lt;add&lt;a,b&gt;&gt;;
+static_assert(c::value == 3, "Ok?");</pre><p>Now let&#8217;s get, let&#8217;s deeply understand, what we have written above: We are not just computing integer addition at compile-time, but hacking the C++ type system to do some computations for us! Cool, isn&#8217;t?</p><p>Of course is not that simple. We are doing C++ template metaprogramming, not playing with Java generics.</p><h3 id="the-type-of-the-result">The type of the result</h3><p>I&#8217;m sure you noticed that where I should place the type of the result value inside the <code>add</code> metafunction, I just wrote <code>¿?</code>. As we have seen, <code>value_holder</code> expects the type of the value first, then the value.</p><p>But, <strong>what&#8217;s the type of <code>a::value + b::value</code>?</strong></p><p>Hopefully, the old days of C++98/03 are gone, and C++11 ships with a tool to solve our problem easily: <code>decltype()</code>.</p><p><code>decltype()</code> takes an expression and returns the type of the result of evaluating that expression.</p><p><em>&#8220;The type of the result of evaluating that expression&#8221;</em> How can the C++ compiler know what that type is if the expression is not (And usually it cannot be) evaluated at compile time?</p><p>Remember that we are working on a language with a strict and static type system. This is not javascript. A C++ compiler knows perfectly the type of every expression you wrote in your program. That&#8217;s a lot of information, and the source of most of the sorcery modern optimizers apply to your C++ programs.</p><p>So our addition metafunction should be:</p><pre class="crayon-plain-tag">template&lt;typename a, typename b&gt;
+struct add
+{
+    using result = value_holder&lt;decltype(a::value + b::value),
+                                a::value + b::value&gt;;
+};</pre><p></p><h3 id="the-value-member-its-really-a-good-idea">The <code>::value</code> member. It&#8217;s really a good idea?</h3><p>Well, that depends on your point of view. Having a boxing type <code>T</code> and getting its value with <code>::value</code> is so convenient:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+constexpr unbox = T::value;</pre><p><em>Sorry, I had to write an example using C++14 variable-templates :)</em></p><pre class="crayon-plain-tag">static_assert(std::is_integral&lt;int&gt;::value, "???? int is not integral?");</pre><p>But consider our functional metaphor. The <code>add</code> metafunction defined above has its result written like this:</p><pre class="crayon-plain-tag">using result = value_holder&lt;decltype(a::value + b::value),
+                            a::value + b::value&gt;;</pre><p>which works perfectly with <code>value_holder</code>-like things.</p><p>But now I want to do <code>a = 1 + (2 + 3)</code>:</p><pre class="crayon-plain-tag">using a = typename add&lt;value_holder&lt;int,1&gt;,
+                       add&lt;value_holder&lt;int,2&gt;,
+                           value_holder&lt;int,3&gt;
+                          &gt;
+                      &gt;::type;</pre><p><em>Ignore the Haskell-bastard syntax&#8230; Hopefully along this series we will learn some mechanisms to improve this. As usually, stay tuned.</em></p><p>Of course this does not compile. <code>add</code> has no <code>value</code> member. I know, I should evaluate the metafunction first:</p><pre class="crayon-plain-tag">using a = typename add&lt;value_holder&lt;int,1&gt;,
+                       typename add&lt;value_holder&lt;int,2&gt;,
+                                    value_holder&lt;int,3&gt;
+                                   &gt;::type
+                      &gt;::type;</pre><p>But we are trying to make TMP something readable with our Tiny Metaprogramming Libraries, and one of the points we should improve is metafunction evaluation. No more chained <code>typename ::type</code>s please.</p><p>But there&#8217;s a problem here: Even if we develop a generic tool for expression evaluation (Do you remember <code>tml::eval</code>?) we cannot write nested metafunctions if those are implemented in that way:</p><pre class="crayon-plain-tag">using a = tml::eval&lt;add&lt;value_holder&lt;int,1&gt;,
+                        add&lt;value_holder&lt;int,2&gt;,
+                            value_holder&lt;int,3&gt;
+                           &gt;
+                      &gt;
+                   &gt;;</pre><p>This will never work since to evaluate that expression, it should be instanced first. And <code>add</code> is expecting <code>::value</code> in its operands. That will be a problem in the future, keep it in mind. We will see different approaches to solve this.</p><h2 id="plz-send-teh-codez">Plz send teh codez</h2><p>I you check <a
+href="https://github.com/Manu343726/tiny-metaprogramming-library/tree/4a173b187226a9cb32fa4639f8cb5283ddaf5365/blocks/manu343726/tiny">my Tiny Metaprogramming Library</a>, I currently have two files: <code>core/eval.hpp</code> and <code>core.hpp</code>. The first is the header containing <code>tml::eval</code> and the second is an umbrella header with all the core features of the library.</p><p>As part of the library core features, I will add a new header, <code>integral_constant.hpp</code>, with a template similar to <code>value_holder</code> example given here. Let&#8217;s keep it simple and just alias <code>std::integral_constant</code> :)</p><pre class="crayon-plain-tag">#include &lt;type_traits&gt;
+namespace tml
+{
+    template&lt;typename T, T V&gt;
+    using integral_constant = std::integral_constant&lt;T,V&gt;;
+}</pre><p></p><h2 id="whats-next">What&#8217;s next?</h2><p>Now we are able to pass values to our type-only metafunctions, using the standard <code>std::integral_constant</code> template.</p><p>The next step is to write such thing for templates, something that takes a template and holds it on a type. Of course that boxed template should be instantiable.</p><p>Are you ready?</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/">A Tiny Metaprogramming Library: Boxing &#8211; Part 1</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/tiny-metaprogramming-library-boxing-1/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> </channel> </rss>

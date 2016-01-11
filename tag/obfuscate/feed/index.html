@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; obfuscate</title> <atom:link href="http://blog.biicode.com/tag/obfuscate/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>bii internals: C vs Python efficiency</title><link>http://blog.biicode.com/bii-internals-c-vs-python/</link> <comments>http://blog.biicode.com/bii-internals-c-vs-python/#comments</comments> <pubDate>Sat, 12 Jul 2014 08:00:57 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[cython]]></category> <category><![CDATA[efficency]]></category> <category><![CDATA[obfuscate]]></category> <category><![CDATA[python]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=846</guid> <description><![CDATA[<p>In our bii internal series we’ve walked through the process to convert our python code into C code, compile it as a python native extension to distribute it for different platforms. One of the major drawbacks of using native code is that we are not supporting all systems but, on the other side, we gain in [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-c-vs-python/">bii internals: C vs Python efficiency</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In our bii internal series we’ve walked through the process to convert our <a
+title="compiling your python app with cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">python code into C code</a>, compile it as a python native extension to <a
+title="automating pkg genration biicode" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/" target="_blank">distribute it for different platforms</a>. One of the major drawbacks of using native code is that we are not supporting all systems but, on the other side, we gain in efficiency and have more control over the environments where the app runs. We’re doing some benchmark to see how much faster is biicode processing projects: running all in python code or with the native extensions.</p><p><span
+id="more-846"></span></p><p>First of all, let’s explain a bit what biicode does on every operation. At first it makes a <b>check in</b> to read files from the hard disk and it checks if they’ve changed and caches them. Then, if any files have changed, it <b>processes</b> your project which means that it parses source code, searching for dependencies, analyzes your dependencies, configuration etc. The final step is <b>checking out</b> to disk file changes and external dependencies that were already in local cache.</p><p>We’ve tested how biicode processes different libraries: running python code vs cythonized code. We’ve measured following times:</p><ul><li>Check-In: Time to read all files and cache them in memory.</li><li>Process: Time to parse code, and analyze dependencies.</li><li>Reprocess: Time to reprocess files without changes.</li></ul><p>These are the results (in seconds) for SDL library, which contains 2130 files:</p><table><tbody><tr><td></td><td><strong>Python</strong></td><td><strong>Native extensions</strong></td></tr><tr><td><strong>Check-In</strong></td><td>0.26206111908 s</td><td>0.262398004532 s</td></tr><tr><td><strong>Process</strong></td><td>9.54270887375 s</td><td>6.47844004631 s</td></tr><tr><td><strong>Reprocess</strong></td><td>1.45510792732 s</td><td>1.36480784416 s</td></tr></tbody></table><p>As you can see that check-in time is the same in both cases as it involves reading tons of files from disk so it&#8217;s IO bounded not processor bounded.</p><p>Also reprocess time is very similar, with a slightly improvement in native extensions. Reprocess makes sure there’s no need to calculate anything new.</p><p>Where you can notice major improvements is in processing time where native extensions take the 68% of the time of plain python code, 3 seconds of extra time mean a lot in terms of user experience.</p><p>Performance gain is not constant  for every library, but it increases along with number of files/relations being processed. For projects smaller than 500 files performance gain is between 7% and 8%, for larger projects it boosts up to 32%  as observed in SDL case.</p><div
+id="attachment_847" style="width: 610px" class="wp-caption alignnone"><img
+class="wp-image-847 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/image.png" alt="Same code running on python or python native extension" width="600" height="371" /><p
+class="wp-caption-text">Same code running on python or python native extension</p></div><p>So, is it worth compiling to C code? Well, depends on your project, of course. If your program is IO bounded then probably it isn&#8217;t worthy, but if you need to do tons of processing then you might consider it,  setting up the <a
+title="compiling your python app with cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">compile</a>&#8211;<a
+title="packaging a compiled app with pi installer" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/" target="_blank">package</a> process is very easy.</p><p>You can check all the posts in the series, and in case of doubts, I’ll be happy to help you, <a
+title="google plus Julia" href="https://plus.google.com/+JuliaSSimon" target="_blank">contact me</a>.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-c-vs-python/">bii internals: C vs Python efficiency</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-c-vs-python/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>bii internals: Compiling your python application with Cython</title><link>http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/</link> <comments>http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/#comments</comments> <pubDate>Tue, 13 May 2014 14:19:17 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[cython]]></category> <category><![CDATA[obfuscate]]></category> <category><![CDATA[python]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=429</guid> <description><![CDATA[<p>We are starting a series of blog posts about how we package biicode. We are starting from grounds up, we will discuss compilation, packaging and last but not least installers creation. Cython Distributing your python app to clients it’s a common task that can become hard when &#8220;obfuscated code&#8221; come as requirement. Common answers in [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/">bii internals: Compiling your python application with Cython</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We are starting a series of blog posts about how we package biicode. We are starting from grounds up, we will discuss compilation, packaging and last but not least installers creation.</p><h2>Cython</h2><p>Distributing your python app to clients it’s a common task that can become hard when &#8220;obfuscated code&#8221; come as requirement. Common answers in forums are on the lines of “Python is not the language you’re looking for” or &#8220;What are you trying to hide?&#8221; which are a way of trying to avoid the problem, not to solve it. This task can be easily achieved with Cython.</p><div
+id="attachment_1920" style="width: 450px" class="wp-caption aligncenter"><img
+class="wp-image-1920 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/Cython-logo.png" alt="Cython can be used to compile your python app with biicode" width="440" height="196" /><p
+class="wp-caption-text">&#8220;<a
+href="http://en.wikipedia.org/wiki/File:Cython-logo.svg#mediaviewer/File:Cython-logo.svg">Cython-logo</a>&#8221; by The logo may be obtained from Cython.. Licensed under <a
+title="&lt;a href=&quot;//en.wikipedia.org/wiki/Wikipedia:Non-free_use_rationale_guideline&quot; title=&quot;Wikipedia:Non-free use rationale guideline&quot;&gt;Fair use&lt;/a&gt; of copyrighted material in the context of &lt;a href=&quot;//en.wikipedia.org/wiki/Cython&quot; title=&quot;Cython&quot;&gt;Cython&lt;/a&gt;" href="//en.wikipedia.org/wiki/File:Cython-logo.svg">Fair use</a> via <a
+href="//en.wikipedia.org/wiki/">Wikipedia</a>.</p></div><p><span
+id="more-429"></span></p><p>Cython is a static compiler for both Python and their own extended Cython programming language that allows us creating C extensions for Python. I generates C code taking your source python code as input and then compiles it into python extensions with all major C/C++ compilers. We are using clang, gcc and MS Visual 9.0 for our different clients.</p><p>Compiling your app with cython is an easy task, you just need to know what do you want to include and what do you want to exclude from your build.</p><p>In biicode, for example, we just compile code under biicode.client and biicode.common modules, we want to exclude tests and also we want to keep __init__.py files as python files because we later package the app with PyInstaller. We need to define following variables:</p><pre class="crayon-plain-tag">biicode_pkg_path = PATH_TO_BIICODE_MODULE
+biicode_python_path = os.path.dirname(biicode_pkg_path)
+build_dir = FOLDER_OF_YOUR_CHOICE
+src_dir = os.path.abspath(os.path.join(build_dir, 'src'))
+if not os.path.exists(src_dir):
+   os.makedirs(src_dir)
+ignored_files = ['__init__.py']
+included_dirs = [os.path.join(biicode_pkg_path, dir_) for dir_ in ['client', 'common']]</pre><p>Then you can traverse your source tree, for every file cython will analyze it’s dependencies tree and recompile only if needed.</p><pre class="crayon-plain-tag">from Cython.Build import cythonize
+def bii_cythonize(force_compile):
+   '''
+   Creates c files from your source python
+   Params:
+       force_compile: boolean, if true compiles regardeless
+                      of whether the file has changed or not
+   Returns:
+       list of c files relative to biicode_pkg_path
+   '''
+   c_files = []
+   for dir_ in included_dirs:
+       for dirname, dirnames, filenames in os.walk(dir_):
+           if 'test' in dirnames:
+               dirnames.remove('test')
+           for filename in filenames:
+               file_ = os.path.join(dirname, filename)
+               stripped_name = os.path.relpath(file_, biicode_python_path)
+               file_name, extension = os.path.splitext(stripped_name)
+               if extension == '.py':
+                   target_file = os.path.join(src_dir, file_name + '.c')
+                   if filename not in ignored_files:
+                       c_files.append(stripped_name.replace('.py', '.c'))
+                       file_dir = os.path.dirname(target_file)
+                       if not os.path.exists(file_dir):
+                           os.makedirs(file_dir)
+                       extension = cythonize(stripped_name,
+                                             force=force_compile,
+                                             build_dir=src_dir)
+   return c_files</pre><p>After this function executes you will have a source tree equivalent to your python one but in C inside your build_dir/src. Then c files that do not longer match to an existing py file need to be deleted (that’s an easy one to automate as you have the list of c_files). You can avoid that last step if you don’t need incremental builds and you always clean your build dir before recompiling.</p><p>Now that we have the list of c files we want to compile them into python extensions but before we may want to ignore python asserts and remove debug flags:</p><pre class="crayon-plain-tag">from distutils import sysconfig
+   modules = []
+   for c_file in abs_path_c_files:
+       relfile = os.path.relpath(c_file, src_dir)
+       filename = os.path.splitext(relfile)[0]
+       extName = filename.replace(os.path.sep, ".")
+       extension = Extension(extName,
+                             sources=[c_file],
+                             define_macros=[('PYREX_WITHOUT_ASSERTIONS',
+                                             None)]  # ignore asserts in code
+                             )
+       modules.append(extension)
+   if platform.system() != 'Windows':
+       cflags = sysconfig.get_config_var('CFLAGS')
+       opt = sysconfig.get_config_var('OPT')
+       sysconfig._config_vars['CFLAGS'] = cflags.replace(' -g ', ' ')
+       sysconfig._config_vars['OPT'] = opt.replace(' -g ', ' ')
+   if platform.system() == 'Linux':
+       ldshared = sysconfig.get_config_var('LDSHARED')
+       sysconfig._config_vars['LDSHARED'] = ldshared.replace(' -g ', ' ')
+   elif platform.system() == 'Darwin':
+       #-mno-fused-madd is a deprecated flag that now causes a hard error
+       # but distuitls still keeps it
+       # it was used to disable the generation of the fused multiply/add instruction
+       for flag, flags_line in sysconfig._config_vars.iteritems():
+           if ' -g' in str(flags_line):
+               sysconfig._config_vars[flag] = flags_line.replace(' -g', '')
+       for key in ['CONFIG_ARGS', 'LIBTOOL', 'PY_CFLAGS', 'CFLAGS']:
+           value = sysconfig.get_config_var(key)
+           if value:
+               sysconfig._config_vars[key] = value.replace('-mno-fused-madd', '')
+               sysconfig._config_vars[key] = value.replace('-DENABLE_DTRACE',  '')</pre><p>Now you are ready to compile your native extensions!</p><pre class="crayon-plain-tag">from distutils.extension import Extension
+ from distutils.core import setup
+ abs_path_c_files = [os.path.join(src_dir, c) for c in c_files]
+ setup(
+       name="bii",
+       version=VERSION,
+       script_name='setup.py',
+       script_args=['build_ext'],
+       packages=['biicode'],
+       ext_modules=modules,
+       )</pre><p>Now you have your python extensions in build_dir/lib.ARCHITECTURE If you wish to later package them with PyInstaller you now need to copy all your __init__.py to their correspondant folders in build_dir/src but we will cover it in a future post.<br
+/> If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/">bii internals: Compiling your python application with Cython</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/feed/</wfw:commentRss> <slash:comments>8</slash:comments> </item> </channel> </rss>

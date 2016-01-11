@@ -1,0 +1,601 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/introducing-open-command/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:59:14 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>Introducing the open command - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="The open command gets a block from biicode servers and places the code into your folder. The source code is available for edition always and anywhere."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="Introducing the open command - biicode Blog" /><meta
+property="og:description" content="The open command gets a block from biicode servers and places the code into your folder. The source code is available for edition always and anywhere." /><meta
+property="og:url" content="http://blog.biicode.com/introducing-open-command/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="biicode" /><meta
+property="article:tag" content="open" /><meta
+property="article:section" content="biicode" /><meta
+property="article:published_time" content="2014-03-25T08:46:08+00:00" /><meta
+property="article:modified_time" content="2015-03-10T12:58:01+00:00" /><meta
+property="og:updated_time" content="2015-03-10T12:58:01+00:00" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="Introducing the open command"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Introducing the open command Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../indexc9bf.html?p=355' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-355 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/biicode/index.html" rel="v:url" property="v:title">biicode</a> » <strong
+class="breadcrumb_last">Introducing the open command</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-355" class="post-355 post type-post status-publish format-standard hentry category-biicode tag-biicode tag-open"> <header
+class="entry-header"><h1 class="entry-title">Introducing the open command</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="08:46" rel="bookmark"><time
+class="entry-date" datetime="2014-03-25T08:46:08+00:00">March 25, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/julia/index.html" title="View all posts by julia" rel="author">julia</a></span></span></div> </header><div
+class="entry-content"><p
+dir="ltr">Today we are introducing the open command. If you’ve already played a bit with biicode you have seen <a
+title="Libraries mess biicode" href="../road-out-libraries-mess/index.html" target="_blank">how easy is to reuse</a> code that other people have published: You just write the <em>#include</em> directive (or <em>require</em>, or <em>import</em>&#8230; dependending on your programming language), and the code gets downloaded into your <em>deps</em> folder.</p><p
+dir="ltr">Now we are going to talk about how to continue improving code that you have already published. There are two possible scenarios here: If you still have the <em>hive</em> where your published your <em>block</em> from, you can keep editing it there and carry on publishing new versions. But what if you formatted your computer, or want to publish from Bahamas and you didn’t bring your laptop with you? Here is where the open command comes in handy.</p><p
+dir="ltr"><span
+id="more-355"></span></p><p
+dir="ltr">The <em>open</em> command gets a <em>block</em> from biicode servers and places the code into your <em>blocks</em> folder. It will get the last version or the version you’re using if the <em>block</em> is among your dependencies. Once the <em>block</em> is open you can edit it and publish new versions. In other words, opening a <em>block</em> means that its source code is available for edition inside the <em>blocks</em> folder of a local hive. As simple as that!</p><p
+dir="ltr">Let’s see it with an example:</p><p></p><div
+id="crayon-568870eaa63dd707958969" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ cd my_project
+$ tree blocks
+blocks
+0 directories, 0 files
+$ bii open sparkfun/rf_links
+Opened sparkfun/rf_links
+INFO: Saving files on disk
+INFO: Retrieving resources from server
+INFO: Retrieving resources from server
+INFO: Computing dependencies
+INFO: Saving dependences on disk
+$ tree blocks
+blocks
+└── sparkfun
+   └── rf_links
+       ├── readme.md
+       ├── rflink_rx.cpp
+       └── rflink_tx.cpp
+2 directories, 3 files</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-2">2</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-4">4</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-6">6</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-8">8</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-10">10</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-12">12</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-14">14</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-16">16</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-568870eaa63dd707958969-18">18</div><div
+class="crayon-num" data-line="crayon-568870eaa63dd707958969-19">19</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cd </span><span
+class="crayon-v">my</span><span
+class="crayon-sy">_</span>project</div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-2"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">tree </span><span
+class="crayon-e">blocks</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-3"><span
+class="crayon-i">blocks</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-4"><span
+class="crayon-cn">0</span><span
+class="crayon-h"> </span><span
+class="crayon-v">directories</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-h"> </span><span
+class="crayon-i">files</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-5"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">open </span><span
+class="crayon-v">sparkfun</span><span
+class="crayon-o">/</span><span
+class="crayon-e">rf_links</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-6"><span
+class="crayon-e">Opened </span><span
+class="crayon-v">sparkfun</span><span
+class="crayon-o">/</span><span
+class="crayon-e">rf_links</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-7"><span
+class="crayon-v">INFO</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Saving </span><span
+class="crayon-e">files </span><span
+class="crayon-e">on </span><span
+class="crayon-e">disk</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-8"><span
+class="crayon-v">INFO</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Retrieving </span><span
+class="crayon-e">resources </span><span
+class="crayon-e">from </span><span
+class="crayon-e">server</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-9"><span
+class="crayon-v">INFO</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Retrieving </span><span
+class="crayon-e">resources </span><span
+class="crayon-e">from </span><span
+class="crayon-e">server</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-10"><span
+class="crayon-v">INFO</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Computing </span><span
+class="crayon-e">dependencies</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-11"><span
+class="crayon-v">INFO</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Saving </span><span
+class="crayon-e">dependences </span><span
+class="crayon-e">on </span><span
+class="crayon-i">disk</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-12"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">tree </span><span
+class="crayon-e">blocks</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-13"><span
+class="crayon-i">blocks</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-14">└──<span
+class="crayon-h"> </span><span
+class="crayon-i">sparkfun</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-15">   └──<span
+class="crayon-h"> </span><span
+class="crayon-v">rf</span><span
+class="crayon-sy">_</span>links</div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-16">       ├──<span
+class="crayon-h"> </span><span
+class="crayon-v">readme</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">md</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-17">       ├──<span
+class="crayon-h"> </span><span
+class="crayon-v">rflink_rx</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">cpp</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-568870eaa63dd707958969-18">       └──<span
+class="crayon-h"> </span><span
+class="crayon-v">rflink_tx</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">cpp</span></div><div
+class="crayon-line" id="crayon-568870eaa63dd707958969-19"><span
+class="crayon-cn">2</span><span
+class="crayon-h"> </span><span
+class="crayon-v">directories</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">3</span><span
+class="crayon-h"> </span><span
+class="crayon-v">files</span></div></div></td></tr></table></div></div><p></p><p
+dir="ltr">As you can see, all source files fo the <a
+title="sparkfun/rf_links block [biicode]" href="https://www.biicode.com/sparkfun/blocks/sparkfun/rf_links/branches/master#.UzFMj61dXc4" target="_blank">rf_links <em>block</em> of user sparkfun</a> are automatically downloaded into the <em>blocks</em> folder of your <em>hive</em>. Now one might ask a few questions:</p><ul><li><p
+dir="ltr">Can I open a <em>block</em> owned by another user? Yes, you can. You can open any published <em>block</em> and make your modifications and improvements locally in your hive.</p></li><li><p
+dir="ltr">Can I publish my modifications for an opened block? Yes, but they will be published to a new branch <em>&lt;your_user_name&gt;/&lt;branch_name&gt;.</em> This new branch will be accessible from your own profile, browsing the biicode web, and other users will need to edit their <a
+title="Policies [biicode documentation]" href="http://docs.biicode.com/biicode/reference/configuration_files/policies.html?highlight=policies" target="_blank">policies</a> to be able to use your version of the <em>block</em>. We will talk about branching in more detail in a future post.</p></li></ul><p>Finally, you might find interesting these resources in the biicode documentation, and continue learning:</p><ul><li><a
+title="bii open command [biicode documentation]" href="http://docs.biicode.com/c++/reference/commands/open.html" target="_blank">The open command reference</a>. Describes this command and use cases.</li><li><a
+title="Workspaces and hives layouts [biicode documentation]" href="http://docs.biicode.com/c++/using_biicode/project.html" target="_blank">Project layout</a>. Describes the <a
+title="folders layout biicode project" href="http://docs.biicode.com/c++/using_biicode/project.html#customize-your-layout">general folders layout for your biicode project</a>. Each one of them, contains a <em>deps</em> folder, with your code dependencies, and a <em>blocks</em> folder, containing the code you are currently working on.</li></ul><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../bii-internals-c-vs-python/index.html" title="bii internals: C vs Python efficiency">bii internals: C vs Python efficiency</a></li><li><a
+href="../openexpoday-is-over/index.html" title="OpenExpoDay is over!">OpenExpoDay is over!</a></li><li><a
+href="../bii-internals-automating-deb-pkg-generation/index.html" title="bii internals: Automating DEB pkg generation">bii internals: Automating DEB pkg generation</a></li><li><a
+href="../bii-internals-how-to-do-your-own-windows-installer/index.html" title="bii internals: How to do your own Windows Installer">bii internals: How to do your own Windows Installer</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/introducing-open-command/' addthis:title='Introducing the open command' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/biicode/index.html" rel="category tag">biicode</a> and tagged <a
+href="../tag/biicode/index.html" rel="tag">biicode</a>, <a
+href="../tag/open/index.html" rel="tag">open</a>. Bookmark the <a
+href="index.html" title="Permalink to Introducing the open command" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../road-out-libraries-mess/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> The road out of Arduino libraries-mess</a></div><div
+class="next"><a
+href="../arduino-day-project-persistent-state-machine/index.html" rel="next">Arduino day project: Persistent state machine <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '355%20http_/blog.biicode.com/indexc9bf.html?p=355';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "Introducing the open command";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'indexf001.html?cf_action=sync_comments&amp;post_id=355';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/introducing-open-command/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:59:15 GMT -->
+</html>

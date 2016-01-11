@@ -1,0 +1,1584 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/zeromq-cpp-biicode/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:50:00 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>How to prototype and teach ZeroMQ in C++ - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="A new way of rapid prototyping and teaching ZeroMQ in C++ with biicode, includes a simple C++ client-server example and a how to build guide."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="How to prototype and teach ZeroMQ in C++ - biicode Blog" /><meta
+property="og:description" content="A new way of rapid prototyping and teaching ZeroMQ in C++ with biicode, includes a simple C++ client-server example and a how to build guide." /><meta
+property="og:url" content="http://blog.biicode.com/zeromq-cpp-biicode/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="0MQ" /><meta
+property="article:tag" content="c++" /><meta
+property="article:tag" content="cpp" /><meta
+property="article:tag" content="Pieter Hintjens" /><meta
+property="article:tag" content="ZeroMQ" /><meta
+property="article:tag" content="ZMQ" /><meta
+property="article:section" content="try this out" /><meta
+property="article:published_time" content="2014-09-16T15:07:43+00:00" /><meta
+property="article:modified_time" content="2015-04-13T10:08:14+00:00" /><meta
+property="og:updated_time" content="2015-04-13T10:08:14+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/zeromq1-300x115.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/libro-code-connected-volume-1-learning-zeromq-16651-MLM6571115728_072014-O.jpg" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="How to prototype and teach ZeroMQ in C++ - biicode Blog"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/zeromq1-300x115.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Rapid prototyping and teaching ZeroMQ in C++ with biicode. Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index497f.html?p=1600' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-1600 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/try-this-out/index.html" rel="v:url" property="v:title">try this out</a> » <strong
+class="breadcrumb_last">Rapid prototyping and teaching ZeroMQ in C++ with biicode.</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-1600" class="post-1600 post type-post status-publish format-standard has-post-thumbnail hentry category-try-this-out category-zeromq tag-0mq tag-c tag-cpp tag-pieter-hintjens tag-zeromq tag-zmq"> <header
+class="entry-header"><h1 class="entry-title">Rapid prototyping and teaching ZeroMQ in C++ with biicode.</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="15:07" rel="bookmark"><time
+class="entry-date" datetime="2014-09-16T15:07:43+00:00">September 16, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/diego/index.html" title="View all posts by diego" rel="author">diego</a></span></span></div> </header><div
+class="entry-content"><p>ZMQ or ZeroMQ is one of the coolest open source libraries out there. It fills a real necessity in a new, brilliant way. It is very active, has bindings to many languages… that’s why it is so popular.</p><p><img
+class="alignright size-full wp-image-1603" src="../wp-content/uploads/sites/2/2014/09/zeromq1-300x115.png" alt="ZeroMQ is already in biicode" width="300" height="115" /></p><p>I was a professor in university, teaching C/C++, software engineering, distributed systems (plain old sockets, SOAP, web…), and I really enjoyed keeping my classes up to date and teaching last trends and technologies. If I was still a teacher, I would definitely teach some sessions using ZeroMQ.</p><p><span
+id="more-1600"></span></p><p>But I suffered many problems when using third party source code in the classroom, and not only there, but also in my real projects. In the classroom, most of the time could be spent configuring and installing external dependencies, and the problem would became worse when students tried to repeat the process at home or in their laptops, maybe in another OS. This is one of the reasons we started the biicode project.</p><p>Today, if you try to build the basic C++ client-server example that ZeroMQ provides in their site, you might encounter some problems. You have to guess that the C++ binding is not in the library, instead, it’s inside another repo (zmqcpp). I had to google it myself to find it. You have to get, configure and build the library, then setup your own project to use it.</p><p>The question is: Given some example source code snippets that use zmq, can anyone, even unexperienced developers build them quickly and easily, even without writing a single line of configuration, in any of the major OS? We think that it can be done, in a few simple steps.</p><h2>A simple client-server example with ZeroMQ</h2><p>We have the source code we want to build:</p><p><strong>hwclient.cpp</strong></p><div
+id="crayon-56886d269a21b361943506" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+//
+//  Hello World client in C++
+//  Connects REQ socket to tcp://localhost:5555
+//  Sends "Hello" to server, expects "World" back
+//
+#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+int main ()
+{
+    //  Prepare our context and socket
+    zmq::context_t context (1);
+    zmq::socket_t socket (context, ZMQ_REQ);
+    std::cout &lt;&lt; "Connecting to hello world server…" &lt;&lt; std::endl;
+    socket.connect ("tcp://localhost:5555");
+    //  Do 10 requests, waiting each time for a response
+    for (int request_nbr = 0; request_nbr != 10; request_nbr++) {
+        zmq::message_t request (6);
+        memcpy ((void *) request.data (), "Hello", 5);
+        std::cout &lt;&lt; "Sending Hello " &lt;&lt; request_nbr &lt;&lt; "..." &lt;&lt; std::endl;
+        socket.send (request);
+        //  Get the reply.
+        zmq::message_t reply;
+        socket.recv (&amp;reply);
+        std::cout &lt;&lt; "Received World " &lt;&lt; request_nbr &lt;&lt; std::endl;
+    }
+    return 0;
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-4">4</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-6">6</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-8">8</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-10">10</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-12">12</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-14">14</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-16">16</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-18">18</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-20">20</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-22">22</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-24">24</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-26">26</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-28">28</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-30">30</div><div
+class="crayon-num" data-line="crayon-56886d269a21b361943506-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a21b361943506-32">32</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a21b361943506-1"><span
+class="crayon-c">//</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-2"><span
+class="crayon-c">//&nbsp;&nbsp;Hello World client in C++</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-3"><span
+class="crayon-c">//&nbsp;&nbsp;Connects REQ socket to tcp://localhost:5555</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-4"><span
+class="crayon-c">//&nbsp;&nbsp;Sends "Hello" to server, expects "World" back</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-5"><span
+class="crayon-c">//</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-6"><span
+class="crayon-p">#include "diego/zmqcpp/zmq.hpp"</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-7"><span
+class="crayon-p">#include &lt;string&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-8"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-9">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-10"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-11"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-12"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Prepare our context and socket</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-13"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">context_t </span><span
+class="crayon-e">context</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-14"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">socket_t </span><span
+class="crayon-e">socket</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">context</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ZMQ_REQ</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-15">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Connecting to hello world server…"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-17"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">socket</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">connect</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"tcp://localhost:5555"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-18">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-19"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Do 10 requests, waiting each time for a response</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-20"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">for</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">request_nbr</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">request_nbr</span><span
+class="crayon-h"> </span><span
+class="crayon-o">!=</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">10</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">request_nbr</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-21"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">message_t </span><span
+class="crayon-e">request</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">6</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-22"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">memcpy</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-o">*</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-v">request</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">data</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Hello"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-23"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Sending Hello "</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">request_nbr</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"..."</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-24"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">socket</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">send</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">request</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-25">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-26"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Get the reply.</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-27"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">message_t </span><span
+class="crayon-v">reply</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-28"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">socket</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">recv</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">reply</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-29"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Received World "</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">request_nbr</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-30"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886d269a21b361943506-31"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a21b361943506-32"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p><strong>hwserver.cpp</strong></p><div
+id="crayon-56886d269a237070432167" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#ifndef _WIN32
+#include &lt;unistd.h&gt;
+#else
+#include &lt;windows.h&gt;
+#define sleep(n)    Sleep(n)
+#endif
+int main () {
+    //  Prepare our context and socket
+    zmq::context_t context (1);
+    zmq::socket_t socket (context, ZMQ_REP);
+    socket.bind ("tcp://*:5555");
+    while (true) {
+        zmq::message_t request;
+        //  Wait for next request from client
+        socket.recv (&amp;request);
+        std::cout &lt;&lt; "Received Hello" &lt;&lt; std::endl;
+        //  Do some 'work'
+        sleep(1);
+        //  Send reply back to client
+        zmq::message_t reply (5);
+        memcpy ((void *) reply.data (), "World", 5);
+        socket.send (reply);
+    }
+    return 0;
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-4">4</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-6">6</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-8">8</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-10">10</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-12">12</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-14">14</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-16">16</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-18">18</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-20">20</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-22">22</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-24">24</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-26">26</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-28">28</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-30">30</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-32">32</div><div
+class="crayon-num" data-line="crayon-56886d269a237070432167-33">33</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a237070432167-34">34</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a237070432167-1"><span
+class="crayon-p">#include "diego/zmqcpp/zmq.hpp"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-2"><span
+class="crayon-p">#include &lt;string&gt;</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-3"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-4"><span
+class="crayon-p">#ifndef _WIN32</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-5"><span
+class="crayon-p">#include &lt;unistd.h&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-6"><span
+class="crayon-p">#else</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-7"><span
+class="crayon-p">#include &lt;windows.h&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-8">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d269a237070432167-9"><span
+class="crayon-p">#define sleep(n)&nbsp;&nbsp;&nbsp;&nbsp;Sleep(n)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-10"><span
+class="crayon-p">#endif</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-11">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-12"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-13"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Prepare our context and socket</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-14"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">context_t </span><span
+class="crayon-e">context</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-15"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">socket_t </span><span
+class="crayon-e">socket</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">context</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ZMQ_REP</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">socket</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">bind</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"tcp://*:5555"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-17">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-18"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">while</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-t">true</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-19"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">message_t </span><span
+class="crayon-v">request</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-20">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d269a237070432167-21"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Wait for next request from client</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-22"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">socket</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">recv</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">request</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-23"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Received Hello"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-24">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d269a237070432167-25"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Do some 'work'</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-26"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">sleep</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-27">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-28"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//&nbsp;&nbsp;Send reply back to client</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-29"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">zmq</span><span
+class="crayon-o">::</span><span
+class="crayon-e">message_t </span><span
+class="crayon-e">reply</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-30"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">memcpy</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-o">*</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-v">reply</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">data</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"World"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-31"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">socket</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">send</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">reply</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-32"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886d269a237070432167-33"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a237070432167-34"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>Note that these are exactly the examples hosted in <a
+title="ZeroMQ" href="http://zeromq.org/" target="_blank">http://zeromq.org/</a>, except for the #include directives.</p><h2>Let’s build the examples</h2><p>Building this example is straightforward with biicode. If you haven’t installed it yet, you might want to try <a
+href="http://docs.biicode.com/c++/gettingstarted.html">the C++ getting started</a> first.</p><p>The first step is to create a project (e.g. myzmqproject) and a block (a folder inside your project) named myuser/zmqexamples. You don’t need to be actually registered, you can type exactly “myuser”, or any other name.</p><div
+id="crayon-56886d269a249156957203" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii init myzmqproject
+$ cd myzmqproject
+$ bii new myuser/zmqexamples</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a249156957203-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a249156957203-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a249156957203-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a249156957203-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">init </span><span
+class="crayon-i">myzmqproject</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a249156957203-2"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cd </span><span
+class="crayon-i">myzmqproject</span></div><div
+class="crayon-line" id="crayon-56886d269a249156957203-3"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">myuser</span><span
+class="crayon-o">/</span><span
+class="crayon-v">zmqexamples</span></div></div></td></tr></table></div></div><p>Copy the files above, inside the folder <em>blocks/myuser/zmqexamples</em></p><div
+id="crayon-56886d269a257465429891" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii find</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a257465429891-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a257465429891-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">find</span></div></div></td></tr></table></div></div><p>This command checks your <em>#includes</em> and tries to find a compatible zmq version in biicode, and then it will automatically generate a <strong>requirements.bii</strong> file, with the contents:</p><div
+id="crayon-56886d269a266967017890" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+diego/zmqcpp: 0</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a266967017890-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a266967017890-1"><span
+class="crayon-v">diego</span><span
+class="crayon-o">/</span><span
+class="crayon-v">zmqcpp</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span></div></div></td></tr></table></div></div><p>This file defines your block’s requirements, in this case, the block required is <a
+href="http://www.biicode.com/diego/zmqcpp">www.biicode.com/diego/zmqcpp</a>, version number 0, which holds the ZeroMQ C++ binding. Of course, you can also write this file manually instead of relying on the finder, and this file can also be used to resolve dependencies conflicts. In turn, this zmqcpp biicode block has a dependency to version 0 of libzmq in <a
+title="diego/libzmq" href="http://www.biicode.com/diego/libzmq">http://www.biicode.com/diego/libzmq</a></p><p>You might want to check what biicode has retrieved into your project “<em>deps</em>” folder. There you can find the zmqcpp binding, as well as the libzmq library. Interestingly for the library, it has only retrieved the necessary files but skipped, for example, unnecessary test code. This is an advantage of biicode, and I will show interesting use cases for this feature in forthcoming posts.</p><p>Building and running the project is also fairly simple:</p><div
+id="crayon-56886d269a276065218137" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii configure //if in windows, add -G “Visual Studio 12”, to build with VS</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a276065218137-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a276065218137-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">configure</span><span
+class="crayon-h"> </span><span
+class="crayon-c">//if in windows, add -G “Visual Studio 12”, to build with VS</span></div></div></td></tr></table></div></div><p>We use the de-facto standard CMake build system,  you can pass also other generators to the -G option. Building the project will create 2 executables inside the <em>“bin”</em> folder.</p><div
+id="crayon-56886d269a285500144413" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii build</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a285500144413-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a285500144413-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">build</span></div></div></td></tr></table></div></div><p>Run first  your server, then your client, you can find both inside the <em>bin</em> folder</p><h2>How was libzmq uploaded?</h2><p>This functionality is great, but before taking advantage of it, it is necessary to upload the necessary code to biicode. The code that has been retrieved in this example can be found in :</p><ul><li><a
+href="http://www.biicode.com/diego/diego/libzmq/master">http://www.biicode.com/diego/diego/libzmq/master</a></li><li><a
+href="http://www.biicode.com/diego/diego/zmqcpp/master">http://www.biicode.com/diego/diego/zmqcpp/master</a></li></ul><p>Uploading code is absolutely trivial for simple code (e.g. the zmqcpp C++ binding), but can take some more time to do for configuration-intensive projects. I will summarize here the steps I did to upload libzmq.</p><p>The first step is usually to create a fork of the origin project, to manage changes and versions and keep synchronized with the original project.  You can check the fork of libzmq here: <a
+href="https://github.com/drodri/libzmq">https://github.com/drodri/libzmq</a>, and you can compare with the upstream repo to see the differences involved.</p><p>Usually the required changes are just limited to the <em>CMakeLists.tx</em>t file. Biicode provides a variable that can be used to leave the original <em>CMakeLists.txt</em> unaltered in functionality:</p><div
+id="crayon-56886d269a295919479466" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+IF(BIICODE)
+  INCLUDE(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  INIT_BIICODE_BLOCK()
+ENDIF()</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a295919479466-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a295919479466-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a295919479466-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a295919479466-4">4</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a295919479466-1"><span
+class="crayon-st">IF</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">BIICODE</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a295919479466-2"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">INCLUDE</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">CMAKE_HOME_DIRECTORY</span><span
+class="crayon-sy">}</span><span
+class="crayon-o">/</span><span
+class="crayon-v">biicode</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">cmake</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886d269a295919479466-3"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">INIT_BIICODE_BLOCK</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a295919479466-4"><span
+class="crayon-st">ENDIF</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>The unique major changes ZeroMQ required in the main <em>CMakeLists.txt</em> are:</p><div
+id="crayon-56886d269a2a4525669854" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+IF(BIICODE)
+  IF(BII_BLOCK_EXES)
+    list(REMOVE_ITEM BII_BLOCK_EXES builds_zos_test_fork) # Not supporting ZOS
+    IF(WIN32)
+      list(REMOVE_ITEM BII_BLOCK_EXES tests_test_fork</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a2a4525669854-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2a4525669854-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a2a4525669854-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2a4525669854-4">4</div><div
+class="crayon-num" data-line="crayon-56886d269a2a4525669854-5">5</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a2a4525669854-1"><span
+class="crayon-st">IF</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">BIICODE</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2a4525669854-2"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">IF</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">BII_BLOCK_EXES</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886d269a2a4525669854-3"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">list</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">REMOVE_ITEM </span><span
+class="crayon-e">BII_BLOCK_EXES </span><span
+class="crayon-v">builds_zos_test_fork</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-p"># Not supporting ZOS</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2a4525669854-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">IF</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">WIN32</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886d269a2a4525669854-5"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">list</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">REMOVE_ITEM </span><span
+class="crayon-e">BII_BLOCK_EXES </span><span
+class="crayon-v">tests_test_fork</span></div></div></td></tr></table></div></div><p>This code removes (do not build), executables not intended to be build in that platform. Note the check for BII_BLOCK_EXES (this is a variable defined by biicode) to exist because when we depend on this code, executables might not exist, just the library.</p><p>Also the  build directory has to be included, as <em>config.h</em> is generated there, and some definitions have to be added in case of building with MSVC.</p><div
+id="crayon-56886d269a2b3119835239" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+  ADD_BIICODE_TARGETS()
+  target_include_directories(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+  if(MSVC)
+    target_compile_definitions(${BII_LIB_TARGET} PUBLIC -DWIN32
+                                                        -DDLL_EXPORT
+                                                        -DFD_SETSIZE=1024
+                                                        -D_CRT_SECURE_NO_WARNINGS)
+  endif()</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a2b3119835239-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2b3119835239-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a2b3119835239-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2b3119835239-4">4</div><div
+class="crayon-num" data-line="crayon-56886d269a2b3119835239-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2b3119835239-6">6</div><div
+class="crayon-num" data-line="crayon-56886d269a2b3119835239-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2b3119835239-8">8</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a2b3119835239-1"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">ADD_BIICODE_TARGETS</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2b3119835239-2"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">target_include_directories</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_LIB_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-m">PUBLIC</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">CMAKE_CURRENT_BINARY_DIR</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886d269a2b3119835239-3"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">MSVC</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2b3119835239-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">target_compile_definitions</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_LIB_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-m">PUBLIC</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">DWIN32</span></div><div
+class="crayon-line" id="crayon-56886d269a2b3119835239-5"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-v">DDLL_EXPORT</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2b3119835239-6"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-v">DFD_SETSIZE</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">1024</span></div><div
+class="crayon-line" id="crayon-56886d269a2b3119835239-7"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-v">D_CRT_SECURE_NO_WARNINGS</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2b3119835239-8"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">endif</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>Finally, the <em>tests</em> subdirectory is added only if it exists (it might not when this block is being reused).</p><div
+id="crayon-56886d269a2c3181131403" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")
+    ADD_SUBDIRECTORY(tests)
+  endif()</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a2c3181131403-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2c3181131403-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a2c3181131403-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a2c3181131403-1"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-i">EXISTS</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"${CMAKE_CURRENT_SOURCE_DIR}/tests"</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2c3181131403-2"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">ADD_SUBDIRECTORY</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">tests</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886d269a2c3181131403-3"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">endif</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>You can check the file <em>tests/CMakeLists.txt </em>to see required changes, that are very simple in this case.</p><p>This <em>CMakeLists.txt</em> changes are not only for managing ZeroMQ as a dependency, but also for full development. At any time you can “bii open” a block you depend on, and you will get that block inside your blocks folder, with full source code, and all executables including tests.</p><p>In this ocassion, I had to manually add some dependencies. This can be done in the file <em>“bii/dependencies.bii”</em>:</p><div
+id="crayon-56886d269a2d9685761016" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+CMakeLists.txt + builds/cmake/Modules/TestZMQVersion.cmake
+     builds/cmake/Modules/ZMQSourceRunChecks.cmake
+     builds/cmake/platform.hpp.in
+     src/version.rc.in
+     src/libzmq.pc.cmake.in
+     copying
+     copying.lesser</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d269a2d9685761016-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2d9685761016-2">2</div><div
+class="crayon-num" data-line="crayon-56886d269a2d9685761016-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2d9685761016-4">4</div><div
+class="crayon-num" data-line="crayon-56886d269a2d9685761016-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d269a2d9685761016-6">6</div><div
+class="crayon-num" data-line="crayon-56886d269a2d9685761016-7">7</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d269a2d9685761016-1"><span
+class="crayon-v">CMakeLists</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">txt</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+</span><span
+class="crayon-h"> </span><span
+class="crayon-v">builds</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Modules</span><span
+class="crayon-o">/</span><span
+class="crayon-v">TestZMQVersion</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">cmake </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2d9685761016-2"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">builds</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Modules</span><span
+class="crayon-o">/</span><span
+class="crayon-v">ZMQSourceRunChecks</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">cmake</span></div><div
+class="crayon-line" id="crayon-56886d269a2d9685761016-3"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">builds</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">/</span><span
+class="crayon-v">platform</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">hpp</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">in</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2d9685761016-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">src</span><span
+class="crayon-o">/</span><span
+class="crayon-v">version</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">rc</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">in</span></div><div
+class="crayon-line" id="crayon-56886d269a2d9685761016-5"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">src</span><span
+class="crayon-o">/</span><span
+class="crayon-v">libzmq</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">pc</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">cmake</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">in</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d269a2d9685761016-6"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-e">copying</span></div><div
+class="crayon-line" id="crayon-56886d269a2d9685761016-7"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">copying</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">lesser</span></div></div></td></tr></table></div></div><p>Biicode parses and detect dependencies via <em>#includes</em> and automatically detecting implementations (a header implemented in a source file), but <em>CMakeLists.txt</em> are not parsed yet. If we want auxiliary cmake and config files to be detected as a dependency of <em>CMakeLists.txt</em>, and always be retrieved when we depend on libzmq, we just add the file names in that file.</p><h2>Ongoing work</h2><p>This example has been tested in Mac, Win (with VS 2012) and Ubuntu 14, but further testing might be necessary, and also checking other compilers as MinGW. Included unit tests pass also except a single test in VS2012, which I am investigating.</p><p>Libsodium dependency is not handled now. I have disabled the default use of TweetNaCL, so it is not really required in Linux. I am working in uploading Libsodium to biicode, so it can also be managed easily. Also OpenPGM is not available yet.</p><p>It is easy to set-up a <a
+href="https://travis-ci.org/">travis-ci</a>  to automatically pull last github version, download biicode (and a more modern version of Cmake, as the one included is a little bit outdated), build the project, run tests, and finally publish to biicode, so everybody else can easily upgrade to the most recent version if they want to. I will post about all these things soon, stay tuned.</p><p><a
+href="http://hintjens.com/books"><img
+class="aligncenter wp-image-1609 size-full" src="../wp-content/uploads/sites/2/2014/09/libro-code-connected-volume-1-learning-zeromq-16651-MLM6571115728_072014-O.jpg" alt="ZeroMQ books by Pieter Hintjens" width="131" height="187" /></a></p><h2>Conclusion</h2><p>I have shown how easy is to build C++ ZeroMQ examples with the use of biicode, as it manages to retrieve and configure it in your project, and only requiring very few changes to the <em>CMakeLists.txt</em> while also avoiding any lock-in.</p><p>But biicode is a little bit more than a plain dependency manager. You can develop in one of your projects a server, a client and some serialization classes, and let&#8217;s say that your server has some functionality only available in Linux. You don&#8217;t have to worry about creating different projects/repositories/libraries for client, server and serialization. A windows application can just directly <em>#include</em> the client and it will be able to build correctly very easily.</p><p>&nbsp;</p><p>I will show it in next posts, meanwhile I would love to<strong> hear your feedback, please try this example and tell me!</strong></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../flappy-bii-game/index.html" title="Flappy Bii game">Flappy Bii game</a></li><li><a
+href="../open-source-arduino-smart-watch/index.html" title="Open Source Arduino Smart Watch">Open Source Arduino Smart Watch</a></li><li><a
+href="../quick-approach-bitscan/index.html" title="A quick approach to BITSCAN">A quick approach to BITSCAN</a></li><li><a
+href="../build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/index.html" title="Build a smiley mechatronic face today with biicode and arduino!">Build a smiley mechatronic face today with biicode and arduino!</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/zeromq-cpp-biicode/' addthis:title='Rapid prototyping and teaching ZeroMQ in C++ with biicode.' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/try-this-out/index.html" rel="category tag">try this out</a>, <a
+href="../category/zeromq/index.html" rel="category tag">ZeroMQ</a> and tagged <a
+href="../tag/0mq/index.html" rel="tag">0MQ</a>, <a
+href="../tag/c/index.html" rel="tag">c++</a>, <a
+href="../tag/cpp/index.html" rel="tag">cpp</a>, <a
+href="../tag/pieter-hintjens/index.html" rel="tag">Pieter Hintjens</a>, <a
+href="../tag/zeromq/index.html" rel="tag">ZeroMQ</a>. Bookmark the <a
+href="index.html" title="Permalink to Rapid prototyping and teaching ZeroMQ in C++ with biicode." rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../template-metaprogramming-with-modern-cpp-introduction/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Template Metaprogramming with Modern C++: Introduction</a></div><div
+class="next"><a
+href="../our-story-ii/index.html" rel="next">Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="post pingback"><p>Pingback: <a
+href='../file-based-cpp-dependency-manager/index.html' rel='external nofollow' class='url'>Why a FILE-BASED dependency manager rocks for C/C++</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='http://plagatux.es/2014/10/an-experiment-with-biicode-a-c-dependency-manager/' rel='external nofollow' class='url'>An experiment with biicode (A c++ dependency manager) | La plaga Tux</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='../elecnor-deimos-premium-accounts/index.html' rel='external nofollow' class='url'>C++ programming in Elecnor Deimos empowered with biicode</a>()</p></li></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '1600%20http_/blog.biicode.com/index497f.html?p=1600';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "Rapid prototyping and teaching ZeroMQ in C++ with biicode.";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'indexd078.html?cf_action=sync_comments&amp;post_id=1600';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/zeromq-cpp-biicode/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:50:01 GMT -->
+</html>

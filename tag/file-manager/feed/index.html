@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; file manager</title> <atom:link href="http://blog.biicode.com/tag/file-manager/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Arduino File Manager and Editor project</title><link>http://blog.biicode.com/arduino-file-manager-editor-project/</link> <comments>http://blog.biicode.com/arduino-file-manager-editor-project/#comments</comments> <pubDate>Tue, 02 Sep 2014 10:00:22 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[editor]]></category> <category><![CDATA[file manager]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source]]></category> <category><![CDATA[project]]></category> <category><![CDATA[reuse]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1053</guid> <description><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard. Thanks to Juan who developed this project called blocporc! List of Arduino file manager and editor parts: Arduino Mega 2560 GLCD display: preferably a KS0108 based. Depending on the type [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard.</p><p>Thanks to <a
+title="Mrquesito twitter" href="https://twitter.com/mrquesito" target="_blank">Juan</a> who developed this project called blocporc!</p><p><img
+class="aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/arduino-file-manager.png" alt="arduino file manager" width="630" height="352" /></p><p><span
+id="more-1053"></span></p><h2>List of Arduino file manager and editor parts:</h2><ul><li><strong>Arduino Mega 2560</strong></li><li><strong>GLCD display</strong>: preferably a KS0108 based. Depending on the type of panel (A, B or C) the connections will vary, but it&#8217;s really well explained at the docs of the glcd library (<a
+style="color: #f48123;" href="https://www.biicode.com/mrquesito/blocks/mrquesito/glcd_v3rc3/branches/master#.U0rkJPl_vCc">https://www.biicode.com/mrquesito/glcd_v3rc3</a>).</li><li><strong>SD card reader</strong> (remember that SD cards are 3.3v-powered devices! You can accomplish by using a voltage divider implemented with two resistors):<br
+/><table><tbody><tr><td><b>SD Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>DO</td><td>50</td></tr><tr><td>CLK</td><td>52</td></tr><tr><td>DI</td><td>51</td></tr><tr><td>CS</td><td>53</td></tr></tbody></table></li><li><strong>PCF8583</strong>: it uses the I2C bus. Since this IC can be powered from 3 to 5 volts, you can use two diodes for adding the 3v cell battery. <strong>Note</strong>: due to the high speed of this bus and to the proximity of a lot of signals (SD, Keyboard&#8230;) it&#8217;s highly likely that you will need to twist and shield the wires. I&#8217;ve shielded them with a lot of aluminium foil; it works great!</li><li><strong>Keyboard</strong>:<br
+/><table><tbody><tr><td><b>Keyboard Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>Data</td><td>4</td></tr><tr><td>IRQ</td><td>3</td></tr></tbody></table></li><li><strong>Enclosure</strong>: a wooden or plastic box.</li></ul><h2>The coding.</h2><p>Open the terminal and execute these commands to see everything on your computer and then compile it and upload to your Arduino.</p><pre class="crayon-plain-tag">~/$ bii init blocporc</pre><p></p><pre class="crayon-plain-tag">~/$ cd blocporc
+~/blocporc$ bii open mrquesito/blocporc
+~/blocporc$ bii find
+~/blocporc$ bii arduino:build
+~/blocporc$ bii arduino:upload</pre><p>Broadly speaking, with blocporc you can create and edit .txt files that are stored in a SD card.</p><p>To read a step by step guide and the code used to build this project, take a look into its biicode repository online: <a
+title="arduino file manager code" href="//www.biicode.com/mrquesito/blocporc" target="_blank"> https://www.biicode.com/mrquesito/blocporc</a></p><p>Happy hacking!</p><p><object
+width="729" height="410"><param
+name="movie" value="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0"></param><param
+name="allowFullScreen" value="true"></param><param
+name="allowscriptaccess" value="always"></param><embed
+src="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0" type="application/x-shockwave-flash" width="729" height="410" allowscriptaccess="always" allowfullscreen="true"></embed></object><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-file-manager-editor-project/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

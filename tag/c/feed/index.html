@@ -1,0 +1,1247 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; c++</title> <atom:link href="http://blog.biicode.com/tag/c/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>About non-intrusive polymorphism</title><link>http://blog.biicode.com/about-non-intrusive-polymorphism/</link> <comments>http://blog.biicode.com/about-non-intrusive-polymorphism/#comments</comments> <pubDate>Tue, 19 May 2015 14:59:48 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[java]]></category> <category><![CDATA[polymorphism]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2266</guid> <description><![CDATA[<p>Polymorphism in C++ C++ implements subtyping polymorphism in the form of virtual functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function: [crayon-56886bf5f3384967360366/] In the example above, the Interface class defines a pure virtual function f() that all the hierarchy members should override. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Polymorphism in C++</h2><p>C++ implements <a
+href="http://en.wikipedia.org/wiki/Subtyping">subtyping polymorphism</a> in the form of <code>virtual</code> functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function:</p><pre class="crayon-plain-tag">struct Interface
+{
+    virtual void f() = 0;
+    virtual ~Interface() = default;
+};
+struct A : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "A!" &lt;&lt; std::endl;
+    }
+};
+struct B : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "B!" &lt;&lt; std::endl;
+    }
+};</pre><p><span
+id="more-2266"></span></p><p>In the example above, the <code>Interface</code> class defines a pure virtual function <code>f()</code> that all the hierarchy members should override. Now you can play with objects of that hierarchy in a uniform way, being sure all of those have a <code>f()</code> function of its own.</p><pre class="crayon-plain-tag">void call_f(Interface&amp; i)
+{
+    return i.f();
+}
+int main()
+{
+    A a;
+    B b;
+    call_f(a);
+    call_f(b);
+}</pre><p>One of the most common uses cases of polymorphism is to be able to store multiple heterogeneous objects into the same container and then operate on them on the same way. While <code>virtual</code> ensures each object acts with its correct behavior. This is usually achieved with dynamic allocation: Allocating objects and the use pointers to the base class to refer to them. This way we can refer to any object of the hierarchy using the same pointer type.</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Interface&gt; objects;
+    objects.emplace_back(new A{});
+    objects.emplace_back(new B{});
+    ...
+    for(Interface* o : objects)
+        o-&gt;f();
+}</pre><p>This simple <em>&#8220;Inherit and dynamically allocate&#8221;</em> approach works like a charm, but is very error prone. Did you noticed the memory leak in the example? Also suffers from a little culprint that, IMHO, is not that little: Inheritance. To make all the sorcery work, you should belong to a class hierarchy. What if I want polymorphic behavior for existing types? What if I want polymorphic functions for <code>int</code>? Being bound to a class hierarchy is not the way to go. <em>I&#8217;m looking at you Java</em>.</p><p>Fortunately we are using C++, a multi-paradigm programming language that allows you to write very smart tricks. Meet <span
+style="text-decoration: underline;">non-intrusive polymorphism</span>.</p><h2 id="to-or-not-to-">To <code>:</code> or not to <code>:</code></h2><p>What if you can find a way to provide that kind of polymorphism, <em>a function with a specific implementation for each type</em> and at the same type have easy heterogeneous storage?</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(1);
+    objects.emplace_back("hello world!"s);
+    for(Poly&amp; o : objects)
+        o.f();
+}</pre><p>Bonus: No dynamic memory management, just RAIIfied polymorphism from the beginning.</p><p>The fundamentals are simple: <strong>Hide all the polymorphism intricacies to the user</strong>. We will do exactly the same inheritance, base class, dynamic allocation as above, but all closed inside the <code>Poly</code> class.</p><p>Lets look at the internals of <code>Poly</code>:</p><pre class="crayon-plain-tag">struct Poly
+{
+    void f()
+    {
+        ptr-&gt;f();
+    }
+private:
+    base* ptr;
+};</pre><p>A pointer to a dynamically-allocated object and a <code>f()</code> member function that calls the <code>f()</code> from the object. As I said, all polymorphism will be managed inside the <code>Poly</code> class internally. The point is that having to inherit from a base class to achieve polymorphism <strong>is an implementation detail</strong>, only based on how the language works.</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    base* ptr;
+};</pre><p>The trick consists in being able to store any kind of data dynamically, instead of explicitly asking that type to belong to the <code>base</code> hierarchy. Come in templates!</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    template&lt;typename T&gt;
+    struct derived
+    {
+        T data;
+        void f() overrides
+        {
+            ::f(data);
+        }
+    };
+    base* ptr;
+};</pre><p>Now each type we introduce into <code>Poly</code> has its own implementation of <code>f()</code>. In this example, I supposed there&#8217;s a viable free <code>f()</code> function taking a <code>T</code> as parameter. As long as your type has a valid <code>f()</code> overload, template, whatever, your type can be used in <code>Poly</code>.<br
+/> Here&#8217;s an example:</p><pre class="crayon-plain-tag">void f(int i)
+{
+    std::cout &lt;&lt; "int: " &lt;&lt; i &lt;&lt; std::endl;
+};
+void f(vonst std::string&amp; str)
+{
+    std::cout &lt;&lt; "std::string: " &lt;&lt; str &lt;&lt; std::endl;
+}
+int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(0);
+    objects.emplace_back("hello!"s);
+    for(auto&amp; o : objects)
+        o.f();
+};</pre><p></p><h2 id="some-details">Some details</h2><p>The constructor of <code>Poly</code> does part of the trick: It gets a value and instances the correct derived class dynamically:</p><pre class="crayon-plain-tag">struct Poly
+{
+    template&lt;typename T&gt;
+    Poly(T&amp;&amp; data) :
+        _ptr{ new derived&lt;T&gt;{std::forward&lt;T&gt;(data)}
+    {}
+    ...
+};</pre><p>&nbsp;</p><p>Also don&#8217;t forget to follow <a
+href="http://stackoverflow.com/questions/4782757/rule-of-three-becomes-rule-of-five-with-c11">The Rule Of Five/Three</a> and implement all the special member functions required for correct value semantics of <code>Poly</code> objects. Use a smart pointer instead or raw <code>new</code>/<code>delete</code> if you like.</p><h2 id="references">References</h2><p><a
+href="http://channel9.msdn.com/Events/GoingNative/2013/Inheritance-Is-The-Base-Class-of-Evil">&#8220;Inheritance is The Base Class of Evil&#8221;, Sean Parent</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/about-non-intrusive-polymorphism/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>Criticizing the Rust Language, and Why C and C++ Will Never Die</title><link>http://blog.biicode.com/cpp-will-never-die/</link> <comments>http://blog.biicode.com/cpp-will-never-die/#comments</comments> <pubDate>Wed, 13 May 2015 15:25:31 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[Haskell]]></category> <category><![CDATA[Rust]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2248</guid> <description><![CDATA[<p>This is an original text by Eax Melanhovich that was rigourosly translated and kindly shared by Andrey Karpov. The original translation can be found here. Many thanks to both.  Why C and C++ Will Never Die I couldn’t but notice how much interest the readers of this blog [the author&#8217;s blog] had shown in the topic &#8220;should [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-will-never-die/">Criticizing the Rust Language, and Why C and C++ Will Never Die</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><em>This is an original text by <a
+href="https://twitter.com/afiskon">Eax Melanhovich</a> that was rigourosly translated and kindly shared by <a
+href="https://twitter.com/code_analysis">Andrey Karpov</a>. The original translation can be found <a
+href="http://www.viva64.com/en/b/0324/">here</a>. Many thanks to both. </em></p><h2>Why C and C++ Will Never Die</h2><p>I couldn’t but notice how much interest the readers of <a
+href="http://eax.me/">this blog</a> [the author&#8217;s blog] had shown in the topic &#8220;should we let kittens play with new balls of wool?&#8221; So I felt like sharing a few more of my reflections on a related subject in regard to the C and C++ languages and the odds that Rust will kill them. No need to tell you that it will inevitably cause a big holy war, so before you proceed, think twice if you really want to go on reading this post and especially participate in a &#8220;constructive debate&#8221; via comments.</p><p><span
+id="more-2248"></span></p><p>The original article can be found <a
+href="http://www.viva64.com/go.php?url=733">here</a> (in Russian). It was translated and published in our blog by the author’s permission.</p><p><em>Note</em>: Further in this text, I am presuming that Rust is a conscious attempt to create a <em>fast </em>and safe language. After all, it was initially conceived by the guys from Mozilla as a tool to develop a <a
+href="http://www.viva64.com/go.php?url=1539">browser engine</a>. But if it proves to be yet another <em>just </em>safe language, then I just don’t get the whole thing. There is plenty of very different safe languages to choose from to any taste, and if Rust is not meant to replace C++, then (1) why does it need to include an unsafe subset?; and (2) why did the authors <a
+href="http://www.viva64.com/go.php?url=1540">throw away lightweight processes from Rust</a>? They are convenient, after all, aren’t they? In other words, if I’m wrong in my assumption, then the whole affair just doesn’t seem to make any sense at all.</p><p>If you happen to occasionally drop by the linux.org.ru forum, be warned that this post doesn’t have to do with the list of 10 purely technical reasons for not liking <a
+href="http://www.viva64.com/go.php?url=1541">Rust</a> that was <a
+href="http://www.viva64.com/go.php?url=1542">discussed in this thread</a>. A Skype conversation with <a
+href="http://www.viva64.com/go.php?url=1543">dear comrade @sum3rman</a> has revealed that there is more than one opinion on how much &#8220;technical&#8221; those reasons are. So I have to admit that the list I composed is a lousy one but I’m still taking a risk to cite some of the most interesting clauses from it here. Actually, the number of plain common sense reasons alone is big enough to not care about the technical ones.</p><p>It is crystal clear for every sane programmer that C/C++ is not going to die in the nearest future. No one is going to rewrite almost all of the existing desktop applications, operating system kernels, compilers, game and browser engines, virtual machines, databases, archivers, audio and video codecs, tons of other C-libraries, and so on and so forth, into other languages. This is a huge mass of fast, debugged, and time-proven code. Rewriting it is way, way too expensive, risky, and, honestly, doesn’t seem to make sense except in the heads of the most frantic Rust fans. The demand for C/C++ programmers has always been high and will remain so for a long time to come.</p><p>OK, what about using Rust to write new code then?</p><p>Well, as you probably remember, it is far not the first attempt to create a &#8220;better&#8221; C/C++. Take the D language, for instance. It was released in 2001 and is a good language indeed. But there are no vacancies, no decent development tools, no remarkable success stories associated with it. The <a
+href="http://www.viva64.com/go.php?url=1544">OpenMW</a> project was initially started in D but then the authors suddenly decided to <a
+href="http://www.viva64.com/go.php?url=1545">completely rewrite it into C++</a>. As they <a
+href="http://www.viva64.com/go.php?url=1546">confessed</a>, they’d been receiving piles of emails where people would say, &#8220;you are making a cool project and we’d like to contribute to it, but we don’t know and neither feel like studying this silly D&#8221;. Wikipedia tells us that there were a lot of other attempts besides D to kill C++ – for example <a
+href="http://www.viva64.com/go.php?url=1547">Vala</a>, Cyclone, Limbo, BitC. How many of you have even heard of these languages?</p><p>I think it’s high time we started learning lessons of history. No one sane will ever start using a new language in their projects until you show them a few cool development tools supporting it, tell them a couple of success stories, and show a dozen of programmers working with that language and living close by. As for programmers, they will never – except probably for the youngest ones – spend their time and health on learning another &#8220;very best&#8221; language until you show them a few cool development tools (not a frob like Racer) and a couple of <em>tens of thousands </em>of ready-made libraries (not &#8220;experimental&#8221; or &#8220;unstable&#8221; or stuff like that), tell them a couple of success stories, and show them a dozen of open vacancies in their city or town. You know, it’s like the &#8220;Chicken or the Egg&#8221; dilemma. On very rare occasions, this problem does get resolved (relatively representative examples are <a
+href="http://www.viva64.com/go.php?url=1548">Go</a> and <a
+href="http://www.viva64.com/go.php?url=1549">Scala</a>) – mostly thanks to investments of time and money from some large company (Google, Typesafe) who for some reason finds it worthy to popularize a new language.</p><p>As I already mentioned, there are too many <a
+href="http://www.viva64.com/go.php?url=1550">non-technical reasons</a> alone to feel skeptical about Rust. But let’s imagine for a moment they just do not exist. Then there would be no reasons to <em>not </em>write in Rust, right? Well, this too is very arguable, to say the least.</p><p>C/C++ is criticized for a variety of reasons. By the way, most of the critics have never seen C++ code in production. To put it brief and clear, the issue with C++ is that it is very fast (and also demanding little memory, battery charge, etc.) but not safe in the sense that it allows array overruns, addressing freed memory, and so on. Back in the past, this problem urged programmers to develop a variety of safe languages such as Java, C#, Python, and others. But they have proved to be too resource-demanding compared to C++ and have some other drawbacks as well – take, for instance, the inevitable &#8220;stop the world&#8221; issue during garbage collection. That’s why programmers are struggling to create a language as fast as C++ but also safe. Rust is one of the candidates.</p><p>Rust is safe indeed but, unfortunately, far from fast. By the moment of writing this article, it is <a
+href="http://www.viva64.com/go.php?url=1551">comparable</a> to Java, Go, and Haskell regarding performance:</p><p><img
+class="aligncenter wp-image-2249 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/Ten-tiny-exmaples.png" alt="C++ will never die" width="516" height="324" /></p><p>I sincerely hope that programmers will find a way to speed it up in time, but until then, it’s going to be of hardly more interest than Scala or Go from the viewpoint of the safety/speed compromise. The question is still open if it is possible at all to make a language both fast and safe or if it is automatically doomed to be twice slower than C/C++ because of the constant checks for array overruns, safe wraps of bindings to C-libraries, and other stuff like that.</p><p>And what actually makes Rust safe, by the way? To put it simple, this is a language with a built-in code analyzer and it’s a pretty tough one: it can catch all the bugs typical of C++ and <a
+href="http://www.viva64.com/go.php?url=1552">dealing not only with memory management, but multithreading as well</a>. Pass a reference to an assignable object through a pipe to another thread and then try to use this reference yourself – the program just will refuse to compile. And that’s really cool.</p><p>But C++ too hasn’t stood still during the last 30 years, and plenty of both <a
+href="http://www.viva64.com/ru/pvs-studio/">static</a> and dynamic analyzers supporting it have been released during this time. Just as one example, watch a short video about <a
+href="http://www.viva64.com/go.php?url=1554">Google sanitizers</a> – they are really <em>very</em> tough. Anyway, in any serious project, you use a <a
+href="http://www.viva64.com/go.php?url=1555">continuous integration system</a> and run tons of tests when compiling builds. If you don’t, then your troubles are much worse than the language’s lack of safety because static typing doesn’t guarantee correct execution logic! So, since you run tests anyway, why not use sanitizers as well? True, they don’t find all the bugs. On the other hand, if you don’t have a check for an array overrun somewhere at the deeper levels of your code and a sanitizer doesn’t report the bug, maybe it’s just because all the necessary checks are already provided one level higher and another one would only slow down the program? Even without sanitizers, you’ll find lots of stuff just building the project with various compilers on different platforms with assert’s checking your code’s invariants in the &#8220;assert(obj-&gt;isValid)&#8221; fashion and with proper fuzzing. Put rough, the question actually comes down to the good old holy war about the <a
+href="http://www.viva64.com/go.php?url=1556">(t)he(o)retic and kolkhoz approaches</a> to software development (<em>that is, an innovative yet too idealistic approach and a traditional empirical approach thought to be careless and simplistic by the supporters of the former – note by translator</em>).</p><p>You can often hear an argument that <a
+href="http://www.viva64.com/go.php?url=1557">90% of the execution time is spent executing only 10% of the code</a> (which is, as far as I get, just an empirical law – a quick scan through the Web has failed to reveal any strict scientific researches on this subject). Therefore, you can write most of your code in safe Rust and the rest 10% (the &#8220;hot&#8221; code) in its unsafe subset, so the bad performance of the current Rust implementation is actually not a problem. OK, but doesn’t it imply that I do not need Rust at all because I could write 90% of my code in Go and the rest 10% in C? Only silver bullet seekers and airy-fairy (t)he(o)retics will use Rust just for the sake of feeling contented about having 100% of a program written in seemingly one language. But these are actually two dialects of one language, which doesn’t look much different from the &#8220;Java + C&#8221; or &#8220;Go + C&#8221; combos.</p><p>But the 90/10 law is rubbish anyway. Following its logic, we could rewrite 90% of WebKit or VirtualBox or GCC into Java and get the same result. But it is obviously wrong. Even if it’s not because the ratio is very much different in some programs, let’s do some calculations and see. Suppose an entire program is written in unsafe C/C++ and its execution time is, say, 0.9*1 (a small portion of hot code) + 0.1*1 (a bulk of cold code) = 1. Now compare it to a program written in a safe language with C inserts: 0.9*1 + 0.1*2 = 1.1, which, theoretically speaking, makes the difference of 10%. Is it much or little? Well, it depends on the project scale. For Google, even a few percent may <a
+href="http://www.viva64.com/go.php?url=1558">help save millions of dollars</a> (see Section 5, &#8220;Utilization&#8221;, in the paper). Or imagine that with a next update, JVM will suddenly start requiring 10% more resources! I’m scared to even make any guesses about how many zeroes they’ll get in the figure after converting those percent into dollars! 10% is a whole lot for tasks where C and C++ are used.</p><p>We keep chanting the phrase &#8220;premature optimization is the root of all evil&#8221; like a mantra. But if we want to follow it word for word, why not use bubble sort instead of quicksort in all of the code? After all, we can’t know for sure where we’ll get a bottleneck, can we? Why wrap regular action counters into actors or transactional memory when we can use more efficient atomics right away? And, generally speaking, in <em>trivial cases</em>, it doesn’t make sense at all to forcedly initialize each and every single variable, implement a pile of auxiliary checks, and so on. Let there even be a 2-5% performance boost instead of 10%, but it’s not that bad if it took you just an extra couple of minutes to think over. Besides, as we have already figured out, it can make a huge difference in C/C++ programs! After all, who will dare to argue that finding a hot spot, rewriting the code (perhaps tons of it) and proving it has become really faster is an easier job than think about performance in advance?</p><p>Even apart from that speed/safety compromise issue, I’m also skeptical about the language’s design as such. In particular as regards to the five types of pointers used in it. On the one hand, it’s not bad to make programmers ponder if their variables are stored in the stack or heap and if they can or cannot be handled by several threads at a time. But on the other hand, imagine you are writing a program and discover at one moment that some variable should be stored in the heap instead of the stack. So you rewrite the code to use Box. Then you figure out that you actually need Rc or Arc. Again, you rewrite all that code. And then, once again, you rewrite it all to have an ordinary variable in the stack. All of that you have to do without a decent IDE at hand. Regular expressions won’t help. Or you might just <a
+href="http://www.viva64.com/go.php?url=1559">end up with a nightmare</a> like &#8220;Vec&lt;Rc&lt;RefCell&lt;Box&lt;Trait&gt;&gt;&gt;&gt;&#8221; – say hello to Java! But the saddest thing about it is that the compiler already knows everything about the lifetime of every variable and could automatically insert all those Box’s, Arc’s, etc. But for some reason, this duty was shifted on to the programmer. It would be much more convenient to let the programmer simply write val (we are living in the third millennium, after all!) and explicitly specify Box or Rc where necessary. From this viewpoint, Rust’s developers have screwed up the whole thing.</p><p>This, in particular, makes Rust’s scope much narrower. No one sane will write web and server-side software in a language like<em> that </em>– especially considering that it doesn’t offer any significant advantages over those languages for JVM. Even Go – with <em>normal </em>lightweight processes (not <a
+href="http://www.viva64.com/go.php?url=1560">futures</a>) – seems a way better choice for solving these tasks. As for futures, you have to learn how to handle them right not to shoot yourself in the foot – and you are talking of &#8220;safe languages&#8221;, huh? Sure, all these languages have their own peculiarities – take that very &#8220;stop the world&#8221;, for example. But this problem can be solved both by splitting the code into <a
+href="http://www.viva64.com/go.php?url=1561">micro services</a> and through <a
+href="http://www.viva64.com/go.php?url=1562">other techniques</a>. And yes, no one will be willing to translate Rust into JavaScript, use it to write scripts for AWS or as a query language for MongoDB. For Android, it’s also hardly probable, but for a different reason: there is way more than one architecture there, so JVM will do much better. So if you happen to think that Rust is &#8220;good for any task&#8221;, I have to disappoint you.</p><p>And here’s a few more reasons to finish it off:</p><ul><li>Macros used as a crutch to make up for the excessive verbosity caused by the absence of normal exceptions. I already wrote about the <a
+href="http://www.viva64.com/go.php?url=1563">metaprogramming issues</a> – it is because of them, in particular, that we are hardly ever to get a decent IDE for Rust. Also, though I’m not sure, it seems that macros in Rust don’t even have namespaces.</li><li>People are idiots and cargo actively encourages downloading packages directly from git repositories, bypassing Crates.io. As a result, we risk ending up with a huge mess with packages like in the Erlang world with its Rabar. By the way, I suspect the Go world has a similar trouble.</li><li>Like many of new languages, Rust is walking the path of simplification. I can generally understand why it doesn’t have a decent inheritance and exceptions, but the fact itself that someone is making decisions for me regarding things like that makes me feel somewhat displeased. C++ doesn’t restrict programmers regarding what they can or cannot use.</li><li>Now, since we have taken the path of simplification, why not throw away all those language extensions? The current state of things resembles the Haskell world where every programmer is coding in their own dialect.</li><li>Smart pointers, for you to know, are far not free of charge and <em>do not ensure </em>a fixed time of garbage collection. What if some thread gets honor to free a very deep data structure? While it is wandering a labyrinth of dead references, all the other threads depending on it are patiently waiting dumb. Erlang with its small pieces has a similar trouble – I’ve faced it myself many times. Smart pointers also have problems of their own – for example memory fragmentation and leaks. Just leave a weak pointer in a loop structure – the whole thing is screwed up. And all that in a language pretending to be safe&#8230; If you want a fixed GC time, study your program’s behavior under load and take precautions (for example, provide for object pools) if you are not satisfied with the figures, or manage memory manually.</li><li>Has anyone seen a <em>strict </em>description of Rust’s semantics? Does it have a memory model at least? And you call it a &#8220;safe&#8221; language &#8220;ensuring correctness&#8221; of programs, especially considering that it can interpret the source code in ten different ways?</li><li>I can’t but remind you for one more time that <strong>the source of troubles is usually in humans, not technology</strong>. If your C++ code is not good enough or Java code is painfully slow, it’s not because the technology is bad – it’s because you haven’t learned how to use it right. That way, you won’t be satisfied with Rust either, but just for some other reasons. Isn’t it easier to learn how to use more popular tools and start liking them?</li></ul><p>So, to sum it up, personally I will be investing my time into studying C/C++ rather than Rust in the next 5 or so years. C++ is an <em>industrial standard.</em> Programmers have been using it to solve a huge variety of tasks for over 30 years now. As for Rust and stuff like that – they are just odd toys with vague future. People have been predicting C++’s soon death since the 2000-s, but C/C++ hasn’t become less used and demanded for since then. Quite on the contrary, in fact. It is evolving (C ++11, C++14), new tools are released (take <a
+href="http://www.viva64.com/go.php?url=1564">CLion</a> and Clang, for example), and the number of vacancies is just huge.</p><p>A C++ programmer will hardly ever have any difficulties finding a job with a <a
+href="http://www.viva64.com/go.php?url=1565">more than worthy salary</a> and, if necessary, can quickly <a
+href="http://www.viva64.com/go.php?url=1566">learn</a> Rust. But the opposite scenario is very, very unlikely. By the way, the language choice is far not the only and most important factor when picking a new job. Besides, a skilled C/C++ programmer can easily find their way in PostgreSQL’s or Linux kernel’s source code, has access to modern powerful development tools, and has a pile of books and articles at hand (for example on OpenGL).</p><p>So, take care of your health and don’t waste your time – you have less of those than you think!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-will-never-die/">Criticizing the Rust Language, and Why C and C++ Will Never Die</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-will-never-die/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Boost libraries are now supported in biicode</title><link>http://blog.biicode.com/dependency-management-boost-libraries/</link> <comments>http://blog.biicode.com/dependency-management-boost-libraries/#comments</comments> <pubDate>Fri, 20 Feb 2015 08:29:13 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[boost]]></category> <category><![CDATA[boost c++ libraries]]></category> <category><![CDATA[c++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086</guid> <description><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices. However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices.</p><p>However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular dependencies, and that&#8217;s only for header-only libraries (thankfully 80% of Boost is header-only). For non header-only libs, it&#8217;s a true pain. You should compile those and then link against, being careful about what you are doing.<br
+/> Even if setting up Boost manually could be a bit hard, when it works it&#8217;s a pleasure to develop with it.</p><p>At biicode we have been working hard to simplify the process, to make Boost available for any C++ programmer with just an include. But this is only the start, the project has been <a
+href="https://github.com/Manu343726/boost-biicode">released as open source</a> to allow everyone contribute and help.</p><p>I hope you like it.<br
+/> <img
+class=" wp-image-2094 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/Boost.png" alt="Boost libraries are finally supported in biicode" width="277" height="86" /></p><h2></h2><p><span
+id="more-2086"></span></p><h2 id="working-with-boost">Working with Boost libraries</h2><p></p><pre class="crayon-plain-tag">$ sudo apt-get install boost</pre><p>That&#8217;s what most of us do to work with Boost. There&#8217;s no easy way to change the Boost version though, or even have multiple coexistent Boost versions. In addition to the fact that the package-manager way doesn&#8217;t work on Windows.</p><p>The main purpose of biicode is to handle dependencies and improve the development workflow. That means one should take into account:</p><ul><li>A user may want to work <strong>with different versions of Boost</strong>. It should be <strong>easy to switch between Boost versions during development</strong>.</li><li>When dealing with Standard C++, that is, with true portable C++, one should care about multiple compilers and test his/her code with all of them. <strong>It should be easy to switch Boost to work with different compilers</strong>. In our case, that means GCC, Clang, MSVC, MinGW GCC, and the different versions of each one.</li></ul><p>That were the two main objectives I had when I started to work in Boost support for biicode. To <strong>make Boost setup portable across versions, compilers, and platforms</strong>, and at the same time make the <strong>process fully transparent to the user</strong>.</p><h2 id="our-approach">Our approach</h2><p>The biicode Boost setup is very simple: Install each Boost version on a dedicated folder inside the biicode environment, and then rely on Boost&#8217;s bjam to handle the different compilers.</p><p>The setup should also handle all the installation process, which means:</p><ol><li>Download the requested Boost version if it&#8217;s not currently in the biicode environment.</li><li>Bootstrap it.</li><li>Build the libraries.</li><li>Configure <code>FindBoost.cmake</code> to track the installation.</li></ol><p>But how should that look like in user code? I was thinking about it for a long time. Actually, the current interface is just the last of a very long process of testing different approaches.<br
+/> I finally ended up trying not to force the user to learn new commands. Instead, try to mimic the current Boost setup with CMake: Instead of calling <code>find_package(Boost COMPONENTS...)</code>, call <code>bii_find_boost(COMPONENTS...)</code>. <strong>The rest of the <code>CMakeLists.txt</code> is almost the same.</strong></p><p><code>bii_find_boost()</code> wraps the <code>find_package(Boost)</code> call by first setting up the required boost version (Steps 1 and 2 above), building the requested <code>COMPONENTS</code> on demand, finally calling <code>find_package(Boost COMPONENTS ...)</code>.</p><h2 id="a-boost-example-with-biicode">A Boost example with biicode</h2><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p>That&#8217;s an example of the Boost.Coroutine library extracted from the Boost docs. It&#8217;s so simple, it just takes a coroutine to print the string &#8220;<em>Hello, world!&#8221;</em> in two steps to see how the coroutine <em>continues</em> its execution on consecutive calls.</p><p>This is the <code>CMakeLists.txt</code> file of the <a
+href="http://www.biicode.com/examples/boost-coroutine"><code>examples/boost-coroutine</code></a> block available in our cloud:</p><pre class="crayon-plain-tag">include(biicode/boost/setup)
+    INIT_BIICODE_BLOCK()
+    ADD_BIICODE_TARGETS()
+    set(Boost_USE_STATIC_LIBS ON)
+    bii_find_boost(COMPONENTS system coroutine context thread REQUIRED)
+    target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+    if(MSVC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    else()
+        target_compile_options(${BII_BLOCK_TARGET} INTERFACE -std=c++11)
+    endif()</pre><p>Let&#8217;s open and run the example:</p><pre class="crayon-plain-tag">$ bii init boost-examples
+$ bii open examples/boost-coroutine
+$ bii find
+$ bii cpp:configure
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 4.9.2
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+      examples/boost-corutine
+---------------------------------
+-- Setting up Biicode Boost...
+-- Downloading Boost 1.57.0...
+-- Bootstrapping Boost 1.57.0...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.2...
+-- Building system library...
+-- Building coroutine library...
+-- Building context library...
+-- Building thread library...
+-- Boost 1.57.0
+Found the following Boost libraries
+    system
+    coroutine
+    context
+    thread
+...
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p><strong>Issue with MinGW: </strong>To compile Boost.Context, MinGW depends on the Microsoft assembler. Be sure you have ml or ml64 (Depending on your platform) in your PATH. Those executables are usually shipped within Visual Studio, check the Visual Studio Directory/VC/bin/ folder.</p><p><strong>Issue with CMake configure: </strong>Seems that CMake has problems with long-running configures. In some cases, even if the libraries were built successfully, find_package() is not able to find the Boost components. Just rerun bii cpp:configure.</p><p><strong>Header only libraries: </strong>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost(). Try with a naked <code>bii_find_boost()</code> call.</p><p>We currently maintain a <code>biicode/boost</code> block with the scripts, which has four different tracks representing the four (three) different Boost versions we have tested: <code>master</code> (The latest version available, currently Boost 1.57.0), <code>1.57.0</code>, <code>1.56.0</code>, and <code>1.55.0</code>. Want to change the Boost version you want? Just go to the <code>biicode.conf</code> of your block and change the <code>biicode/boost</code> track in the <code>requirements</code> entry.</p><p>Refer to <a
+href="http://docs.biicode.com/c++/examples/boost.html">the docs</a> for more info.</p><h2 id="whats-next">What&#8217;s next?</h2><p>I want to see what people say about this. The main reason we released this as an open source project is to allow the community to improve it with us. This is a first working version, but I&#8217;m sure it could be improved a lot thanks to your feedback and thoughts. Check the <a
+href="https://github.com/Manu343726/boost-biicode#issues">README&#8217;s issues entry</a> and the project issues page.<br
+/> There are people who already were helping us. I specially thank <a
+href="http://thetoeb.de/">Tobias Becker</a> for his feedback on the last steps of the development. His <a
+href="http://www.biicode.com/toeb/cmakepp">cmakepp</a> library is a great tool and something I want to use in our Boost scripts in the near future. cmakepp is <em>batteries included</em> CMake!</p><p>I think dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward.<br
+/> Let&#8217;s continue working until a modern C++ development environment becomes reality.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/dependency-management-boost-libraries/feed/</wfw:commentRss> <slash:comments>7</slash:comments> </item> <item><title>A Tiny Metaprogramming Library</title><link>http://blog.biicode.com/tiny-metaprogramming-library/</link> <comments>http://blog.biicode.com/tiny-metaprogramming-library/#comments</comments> <pubDate>Tue, 16 Dec 2014 11:14:14 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[code design]]></category> <category><![CDATA[functions]]></category> <category><![CDATA[template metaprogramming]]></category> <category><![CDATA[tmp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1975</guid> <description><![CDATA[<p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++. It&#8217;s not a funny way to play with the compiler only, template metaprogramming is a powerful tool for C++ [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library/">A Tiny Metaprogramming Library</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++.</p><p>It&#8217;s not a funny way to play with the compiler only, <strong>template metaprogramming is a powerful tool for C++ developers and something that many of us must deal with everyday.</strong></p><div
+id="attachment_1977" style="width: 1034px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1977" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/metaprogramming.jpg" alt="Template metaprogramming in C++ with biicode" width="1024" height="768" /><p
+class="wp-caption-text">by <a
+href="http://photo.net/photodb/photo?photo_id=6522423&amp;size=lg">Shane Willis</a></p></div><p><span
+id="more-1975"></span></p><h2>Why is metaprogramming important?</h2><p>C++ is a great language to write applications in, but it&#8217;s even better to write libraries. You can write abstract, natural (readable) and performant generic APIs.<br
+/> To me the best example is the <code>vector</code> template (The algebraic vector, not the C++ <code>std::vector</code> one):</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct vector3
+{
+    vector3() : vector3{0, 0, 0} {}
+    vector3(T xx, T yy, T zz) :
+        x{xx},
+        y{yy},
+        z{zz}
+    {}
+    vector3&amp; operator+=(const vector3&amp; v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
+    friend vector3 operator+(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        //Want speed, pass by value?
+        //I prefer to have a clear interface,
+        //but that's another topic...
+        vector3 cpy{lhs};
+        return cpy += rhs;
+    }
+    friend bool operator==(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        return std::tie(lhs.x,lhs.y,lhs.z) == std::tie(rhs.x,rhs.y,rhs.z);
+    }
+    T x, y, z;
+};</pre><p>Using that <code>vector3</code> template is easy and it resembles algebraic notation:</p><pre class="crayon-plain-tag">vector3&lt;int&gt; a{1,2,3}, b{4,5,6};
+vector3&lt;int&gt; c = a + b;
+bool eq = c == vector3&lt;int&gt;{5,7,9};</pre><p>The same for a hypothetical <code>matrix</code> template:</p><pre class="crayon-plain-tag">matrix&lt;int,2,2&gt; m{ {1,2}, {3,4} };
+m.row(0) = m.row(0)*4 + m.row(1);</pre><p><em>Bjarne Stroupstrup does a great in-depth description of the design of this kind of matrix template in his book &#8220;The C++ Programming Language, 4th Edition&#8221;</em></p><p>Compare that with the <em>pure OO</em> alternative of other languages:</p><pre class="crayon-plain-tag">Matrix&lt;int&gt; a = new Matrix&lt;int&gt;(2,2, 1,2,3,4);
+Matrix&lt;int&gt; b = new Matrix&lt;int&gt;(2,2, 5,6,7,8);
+Matrix&lt;int&gt; c = new Matrix&lt;int&gt;(2,2);
+c = a.add(b); a.row(0) = a.row(0).mul(4).add(a.row(0));</pre><p>There are a few points that should be noted here:</p><h4>Don&#8217;t leave to runtime decisions based on properties you know at compile-time</h4><p>In general that only serves to increase runtime overhead.</p><p>In the matrix example, the matrix dimensions are known at compile time. Despite having some kind of <a
+href="http://en.wikipedia.org/wiki/Variable-length_array">VLA</a> allocated on the stack, it hasn&#8217;t got much sense to introduce dynamic memory allocation here, with all its cache misses, alloc/dealloc/memory-footprint overheads, etc.</p><p>Consider also the matrix&#8217;s design. How you would implement this?<br
+/> What comes to my mind is a <code>matrix_slice</code> class with all the algebraic operations between matrix slices, where a slice is only a portion of a matrix (Maybe <code>matrix_view</code> is a common name for this thing with non-owning semantics).<br
+/> The key point here is that a matrix row can bee seen as a slice, a submatrix can be seen as a slice, and even a matrix can be seen as a slice. Implement matrix ops only in one site (the <code>slice</code>) then propagate them along your implementation via composition, inheritance, type aliasing, whatever you like.</p><p>Even if we decide to use the inheritance approach (<code>matrix</code> inherits from <code>slice</code>, <code>row</code> inherits from <code>slice</code>, etc), C++ has great (crazy) things to achieve this in a performant way, like <a
+href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">CRTP</a>; or going further enough, using the classic dynamic dispatch <a
+href="http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html">the right way</a>.</p><p><strong>Performance matters. C++ is a language for performance.</strong> If that was not the case, I would be using python or even ruby. But we are here because we need to squeeze down each CPU cicle. Nowadays that performance is only provided when understanding how hardware works and giving enough information to your compiler. C++ does both thing pretty well, or at least it gives you the opportunity to do them properly.</p><p>Don&#8217;t throw away those opportunities writing oh-my-runtime designs. Use your type system (literally); understand your compiler capabilities.</p><h4>OO is not the 42 of programming</h4><p>&#8220;<em>Everything must be an object, there are only classes, classes with their methods. Model your system with objects talking each other&#8221;</em> That&#8217;s <strong>The Big Lie Of Object Oriented Programming</strong>.</p><p>You can&#8217;t model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an &#8220;<em>object</em>&#8220;. A function is a function, don&#8217;t force it to be something else. I want a set of functions, not a class full of static methods.It&#8217;s true. It all boils down to <code>std::cos()</code> vs. <code>Math.cos()</code> but what&#8217;s relevant to me is the design of the code.</p><p>Take a look at the above OO example again:</p><pre class="crayon-plain-tag">c = a.add(b);
+a.row(0) = a.row(0).mul(4).add(a.row(0));</pre><p><code>b</code> is added to <code>a</code>? Addition is a binary operation, that means that neither of their operands have more importance than the other, they just participate in the operation. <code>b</code> is not being added to <code>a</code>, it&#8217;s the addition of <code>a</code> and <code>b</code> what produces a result, <code>c</code>.</p><p>That&#8217;s a problem. Modeling a binary operation as an object method is a very big mistake. There are really three things playing here: the operator, the first operand, and the second operand. <strong>OO forgets about the first one, with one object playing two roles at the same time</strong>.</p><p>Am I being pedant? Consider this:</p><pre class="crayon-plain-tag">c = b.add(a);</pre><p>Is there any semantic difference with the previous example?</p><p>As I said, there aren&#8217;t objects only in a system. Thankfully, syntax apart, C++ takes this the right way, differentiating between functions and objects. In C++ addition there are three things: two object operands and the operator; where a C++ operator is just a fancy syntax for a non-member function.</p><p><strong>There are different categories in a system, everything cannot be modeled directly as an object</strong>. The power of C++ comes from its multiparadigm spirit, allowing us to decide what programming paradigm (OO, structured, functional, generic&#8230;) is better for each situation.</p><h3>Ok, a cool dissertation about C++ over Java, but why metaprogramming?</h3><p>Because implementing these clear, performant, and almost-static interfaces is not that easy.</p><p>You want to automate the implementation of those libraries, or at least describe the most common cases in a generic way, where being generic does not mean parametrizing the element type only&#8230; Generics are only a simple toy for kids, to make them think that their libraries are generic, but it&#8217;s really a casting party at Mr. Autoboxing house.<br
+/> Being generic means that if I manage a dynamic array, I don&#8217;t know the specific policy for dynamic memory the user wants. I just parametrize it:</p><pre class="crayon-plain-tag">template&lt; class T,
+          class Allocator = std::allocator&lt;T&gt;
+&gt; class vector;</pre><p>The problem is that that&#8217;s only the cool interface. The implementation is full of template madness like policy classes, multiple inheritance, template specializations, etc.</p><p>Template meta-programming helps to describe and implement that kind of generic designs, but its syntax makes your maintainer commit suicide just after approaching the codebase.</p><h2>What can we do?</h2><p>TMP is an ugly metalanguage. But its usage can be improved a lot if you think of it as a bastard version of Haskell, what I coined as <a
+href="http://isocpp.org/blog/2014/11/metaprogramming-with-modern-c-the-haskell-metaphor">&#8220;<em>The Haskell Metaphor</em>&#8220;</a>.</p><p>Since a pure bottom-up approach <a
+href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/">didn&#8217;t work as expected</a>, let&#8217;s try another approach: <strong>Learn high-level template metaprogramming developing your own <code>Tiny Metaprogramming Library</code></strong>.</p><h3>The Tiny Metaprogramming Library</h3><p>I&#8217;m a big fan of GitHub, so my version of the Tiny Metaprogramming Library <a
+href="https://github.com/Manu343726/tiny-metaprogramming-library">will be hosted on my github account</a>.</p><p>Hosting the library is one thing, but using it is a completely different beast.<br
+/> Deployment of C and C++ libraries is a so complex process, since each platform needs its own binary that should be compiled and linked with specific settings. Having a truly portable C++ library is a mess. Meanwhile most modern languages are shipped with their own dependency management system, where setting up a library just becomes using it via an <code>import</code>-like sentence and a <code>install dependencies</code> command.</p><p><a
+href="https://www.biicode.com">biicode</a> is a tool focused on giving the power of automatic dependency management to C and C++. It&#8217;s CMake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.<br
+/> The tool works like a charm, resolving all the dependencies and generating pretty projects via CMake generators just <code>#include</code>ing what you need:</p><pre class="crayon-plain-tag">include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+include(boost/install/install) #Magic happens here
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+# Actually create targets: EXEcutables and libraries.
+ADD_BIICODE_TARGETS()
+BII_BOOST(1.57.0)
+find_package(Boost COMPONENTS system coroutine REQUIRED)
+target_link_libraries(${BII_BLOCK_TARGETS} PUBLIC ${Boost_LIBRARIES})
+target_compile_options(${BII_BLOCK_TARGETS} PUBLIC -std=c++11)</pre><p></p><hr
+/><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p></p><hr
+/><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:configure -G "Unix Makefiles"
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p>So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, <a
+href="https://www.biicode.com/manu343726/tiny"><code>manu343726/tiny</code></a>, and all the examples provided in the blogposts will be using biicode for setup and building.<br
+/> I have developed a metaprogramming library before, the <a
+href="https://github.com/Manu343726/Turbo">Turbo Metaprogramming Library</a>. Many of my examples and guidelines may resemble the design of Turbo. Others may not, being fixes to bad design decisions.</p><p>The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library, in a way that each one is implementing and trying the lessons learned.<br
+/> Of course you can ask me whatever questions you like, post comments in the blogposts about specific questions covered there, or questions about my reference implementation on github via the issues system.</p><h3>The blogposts</h3><p>Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library.<br
+/> Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learnt and implemented before.</p><p>As the series and the libraries evolve my criteria may change, depending on your feedback, but this is the main set of bullets I&#8217;m thinking for the posts:</p><ul><li>Templates, basic concepts (Just re-read <a
+href="http://www.codeproject.com/Articles/826229/Template-Metaprogramming-with-Modern-Cplusplus-tem">this</a>)</li><li>Type parameters vs non-type parameters. Value boxing and template boxing (i.e. <code>std::integral_constant</code> and <code>tml::lazy</code>).</li><li>Mastering the Haskell bastard: Values and expressions</li><li>Improving expression evaluation.</li><li>Lists</li><li>Algorithms</li><li>Iterators</li><li>Lambda expressions</li><li>Monads</li></ul><h2>Are you ready for some cool metaprogramming?</h2><p>I hope you like this idea. It&#8217;s not only me writing crazy meta-stuff, but everybody developing their own metaprogramming library, learning something new each week, and comparing the different approaches each one is taking. I&#8217;m the guy who writes this posts, but I can learn a lot with your Tiny Metaprogramming Libraries and your feedback.</p><p>Hope you enjoy this metaprogramming post and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library/">A Tiny Metaprogramming Library</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/tiny-metaprogramming-library/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>CMake Tutorial to build better biicode projects</title><link>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/</link> <comments>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/#comments</comments> <pubDate>Thu, 27 Nov 2014 14:34:28 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[linux]]></category> <category><![CDATA[mac]]></category> <category><![CDATA[OSX]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[Visual]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1929</guid> <description><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses CMake to configure and build your projects. Hope there are no surprises here! This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt. Develop as usual To [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses <a
+title="CMake" href="http://www.cmake.org/" target="_blank">CMake</a> to configure and build your projects. Hope there are no surprises here!</p><p>This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt.</p><p><img
+class="aligncenter size-full wp-image-1848" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/cmakebanner1.jpg" alt="Custom CMake toolchain is now a feature in biicode" width="280" height="77" /></p><p><span
+id="more-1929"></span></p><h2>Develop as usual</h2><p>To start, let’s configure a biicode project to work with your usual editor, compiler and IDE.<br
+/> Execute:</p><pre class="crayon-plain-tag">$ cmake --help</pre><p>to show a list of CMake generators available in your system, these might be “<code>Eclipse CDT4 - Ninja</code>”, “<code>Unix Makefiles</code>”, “<code>Visual Studio 10</code>”, “<code>Sublime Text 2</code>” or others. Choose yours and tell bii to configure:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G “Visual Studio 10”</pre><p>Is it an arduino project? Write <code>bii arduino:configure -G “Eclipse CDT4 - Unix Makefiles”</code></p><p>Want to debug? <code>$ bii cpp:configure -D CMAKE_BUILD_TYPE=DEBUG</code></p><p>Use them all together:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 9 2008" -D CMAKE_BUILD_TYPE=DEBUG”</pre><p>Note that <code>bii cpp:configure </code>admits any CMake directives</p><p><code>bii clean</code> to restore default project settings, those are MinGW Makefiles (Windows) or UNIX Makefiles (MacOS and Linux) and no IDE.</p><h2>Advanced CMake configuration through CMakeLists.txt</h2><p>It’s usual to have a previous build config in which some parts are shared with biicode and others are specific for the old way out of dependency hell. We’ve developed a way to maintain both ways on your CMakeLists.txt:</p><pre class="crayon-plain-tag">#shared configuration here
+IF(BIICODE)
+   include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+   INIT_BIICODE_BLOCK()
+   ADD_BIICODE_TARGETS()
+ELSE()
+      # Your old project configuration here
+ENDIF()</pre><p>And that’s it, as you can see in previous posts , this process is more or less straight forward depending on the library’s complexity: Json11 by Dropbox, Box2D by Erin Catto, Little CMS by Marti Maria or Oscpack by Ross Bencina.</p><h4>INIT_BIICODE_BLOCK()</h4><p>This function defines these variables:</p><ul><li><code>${BII_BLOCK_NAME} </code>The name of the current block (e.g. &#8220;box2d&#8221;)</li><li><code>${BII_BLOCK_USER} </code>The user&#8217;s name (e.g. &#8220;phil&#8221;)</li><li><code>${BII_BLOCK_PREFIX} </code>The directory where the block is located (&#8220;blocks&#8221; or &#8220;deps&#8221;)</li></ul><p>It also loads variables and  you can use or modify them. Check the default CMakeLists.txt comments to learn more.</p><h4>ADD_BIICODE_TARGETS()</h4><p>A CMake <code>TARGET</code> represents each one of the executables or libraries CMake compiles. This function defines these variables:</p><ul><li><code>${BII_BLOCK_TARGETS} </code>List of targets defined in this block</li><li><code>${BII_LIB_TARGET} </code> This is the library biicode builds for each one of the blocks within your project. Just the target library name, usually in the form &#8220;user_block&#8221;</li><li> You can also use directly the name of the executable target (e.g. user_block_main)</li></ul><h2>10 CMake Tips</h2><h3>#1 Variable declaration</h3><p>STRING is a basic CMake variable. It can be used as part of any other identificator.<br
+/> Like the preprocessor, if the var name is enclosed between {} and preceded by $, that expression is equal to the contents of the variable:</p><pre class="crayon-plain-tag">set(MYVAR /var/run/bootstamp)
+# is equivalent to:
+set(MYVAR “/var/run/bootstamp”)
+# list and text substitution examples:
+set(MYVAR “element1” )
+set(${MYVAR}_name “hello”)
+set(MYVAR2 element1 “${MYVAR}_name” element3 ${${MY_VAR}_name}})</pre><p>As CMake stores the sets as a string where elements are separated by &#8220;;&#8221;-&gt; MYVAR2 contains the string <code>“element1;element1_name;element3;hello”</code></p><h3>#2 Logging to Screen</h3><p>Fatal error messages interrupt the CMake execution:</p><pre class="crayon-plain-tag">message("hello world MYVAR=${MYVAR}")
+message(SEND_ERROR "Should not have got here")
+message(FATAL_ERROR "Something bad happened")</pre><p></p><h3>#3 Relevant CMake vars</h3><h4>DIRECTORIES</h4><ul><li><b><code>CMAKE_CURRENT_SOURCE_DIR</code></b>: source directory currently being processed</li><li><b><code>CMAKE_CURRENT_BINARY_DIR</code></b>: binary directory currently being processed</li><li><b><code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code></b>: directory being used as IDE run</li></ul><h4>SYSTEM DESCRIPTION</h4><ul><li><b><code>APPLE</code></b>: True if running on Mac OS X</li><li><b><code>UNIX</code></b>: True for UNIX and UNIX like operating systems (i.e.: APPLE and CYGWIN)</li><li><b><code>MSVC:</code></b> True when using Microsoft Visual C</li><li><b><code>WIN32</code></b>: True on windows systems, including win64</li><li><b><code>MINGW</code></b>: True when generating MinGW Makefiles</li><li><b><code>CMAKE_SYSTEM_NAME</code></b>: Name of system cmake is being run on</li></ul><p><a
+title="SDL CMakeLists.txt" href="http://www.biicode.com/miguel/miguel/sdl2/master/1/CMakeLists.txt" target="_blank">SDL CMakeLists.txt </a> is a clarifying example of use, take a look at from line 193 and on to see CMake vars in use.</p><h3>#4 Conditionals</h3><p>CMake Control Statements have an opening and a closing keyword that must be placed in exclusive lines. Also, CMake commands always have to include “()”</p><pre class="crayon-plain-tag">if(expression)
+  	...
+elseif(expression)
+  	...
+else()
+  	...
+endif()</pre><p></p><h4>Here&#8217;s some common if expressions:</h4><ul><li><b><code>if(MSVC)</code></b><b>  </b>True if the compiler is visual studio</li><li><b><code>if(NOT APPLE)</code></b> True if Linux, Windows, &#8230;</li><li><b><code>if(WIN32 AND NOT MSVC)</code></b> True  on MinGW compiler env</li><li><b><code>if(TARGET target-name) </code></b> True if the given name is an existing target.</li><li><b><code>if(CMAKE_SYSTEM_NAME MATCHES “.*Linux”)</code></b> true for linux systems</li><li><b><code>if(MINGW</code>)</b> useful for MinGW detection</li><li><b><code>if(UNIX AND NOT APPLE)</code></b><br
+/> <b>   <code>set(UNIX_SYS ON)</code></b><br
+/> <b><code>else()</code></b><br
+/> <b>   <code>set(UNIX_SYS OFF)</code></b><br
+/> <b><code>endif() </code>  </b>Simple way to differentiate between Apple and UNIX</li><li><code><b>if(MSVC_VERSION GREATER 1600)</b> </code>True for MSVC 12 and more recent versions</li></ul><h3>#5 Operations with lists</h3><h4>Removing elements from a &#8220;;&#8221; list:</h4><p></p><pre class="crayon-plain-tag">SET(MYLIST "elem1;elem2;elem3;elem4")
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p>Or (removing elements from a list)</p><pre class="crayon-plain-tag">SET(MYLIST  elem1 elem2 elem3 elem4)
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p></p><h4>Remove “UDPwin32.cpp” source file on compilation time:</h4><p></p><pre class="crayon-plain-tag">list(REMOVE_ITEM BII_LIB_SRC “src/nat/UDPwin32.cpp”)</pre><p>This one is pretty useful when you don&#8217;t want to consider or not a file depending on the OS compiling.</p><h4>Adding elements to a list</h4><p></p><pre class="crayon-plain-tag">list(APPEND MYLIST elem5 elem6)</pre><p></p><h4>Check if a list contains a value</h4><p></p><pre class="crayon-plain-tag">list(FIND MYLIST_VAR "src/google.cpp" HasGoogleFile)
+IF(HasGoogleFile EQUAL -1)
+	message(FATAL_ERROR "I could not find google.cpp")
+ENDIF()</pre><p></p><h3>#6 Setting the directories used by the compiler</h3><h4>Adding an include path to the compiler for the current project.</h4><p>This syntax is better for directories needed only in compilation phase, not to be reused.</p><pre class="crayon-plain-tag">INCLUDE_DIRECTORIES(/some/directory)
+INCLUDE_DIRECTORIES(/some/onedirectory /other/directory)</pre><p></p><h4>View the directories that are set in the path</h4><p></p><pre class="crayon-plain-tag">get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+message("inc_dirs = ${inc_dirs}")</pre><p></p><h4>Per-target public include directories.</h4><p>Include the PUBLIC keyword to transitively transmit the directories property to all the targets using the lib. Use it to transmit a public header path.</p><pre class="crayon-plain-tag">TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CURRENT_SOURCE_DIR}/include )</pre><p></p><h3>#7 Set the compile flags used by the compiler</h3><h4>Add a preprocessor definition for the current project</h4><p></p><pre class="crayon-plain-tag">ADD_DEFINITIONS(MY_OPTION)</pre><p></p><h4>Per-target public/private definitions</h4><p>On the 3rd point of tip #6, PUBLIC modifier is used to transmit a “include directory” to dependent targets. Here we use the PRIVATE modifier instead with target_compile_definitions so the DO_GNU_TESTS is only used for the specific target compilation, and it is not transmitted to its dependent targets .</p><pre class="crayon-plain-tag">target_compile_definitions(target_name PRIVATE DO_GNU_TESTS)</pre><p></p><h4>Per-target public/private compile flags</h4><p>Several flags are compiler specific, and are not preprocessor definitions. Use this command for non-standard flags:</p><pre class="crayon-plain-tag">target_compile_options(target_name PUBLIC "-Wall")</pre><p></p><h3>#8 Set linker Flags</h3><h4>Setting Windows application linker option</h4><p></p><pre class="crayon-plain-tag">if(MSVC)
+   set_target_properties(exe_target PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h4>Per-target public/private linker flags and libs</h4><p></p><pre class="crayon-plain-tag">TARGET_LINK_LIBRARIES(${TARGET_NAME} LINK_PUBLIC ${SOME_LIBRARY})
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC jpeg)
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC tiff X11)
+  	SET(PLATFORM_LIBS odbc32.lib odbccp32.lib shlwapi.lib)
+  	target_link_libraries(${BII_LIB_TARGET} PUBLIC ${PLATFORM_LIBS} ${PLATFORM_LDFLAGS})</pre><p></p><h3>#9 Finding and using external libs</h3><h4>OpenGL example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE(OpenGL QUIET)
+IF(OPENGL_FOUND)</pre><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})
+ADD_DEFINITIONS(-DHAVE_OPENGL)
+TARGET_INCLUDE_DIRECTORIES(${TARGET_NAME} PUBLIC
+${OPENGL_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${TARGET_NAME} PUBLIC
+${OPENGL_LIBRARIES})
+ENDIF()</pre><p></p><h4>Boost components example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE (Boost COMPONENTS system filesystem REQUIRED) INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
+TARGET_LINK_LIBRARIES(${BII_main_TARGET} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES( ${BII_LIB_TARGET} PUBLIC ${Boost_LIBRARIES} )</pre><p></p><h3>#10 Copying files</h3><h4>Copying files of some type to the binary and runtime directories</h4><p></p><pre class="crayon-plain-tag">file(GLOB pngFiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+            	${CMAKE_CURRENT_SOURCE_DIR}/*.png *.ttf)
+foreach(imgFile ${imgFiles})
+   message(STATUS "Copying file ${imgFile}")
+   file(COPY ${imgFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+   file(COPY ${imgFile} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endforeach(imgFile)</pre><p></p><h4>Copying a directory to the binary dir</h4><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})</pre><p>Hope you enjoy this CMake Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Bit-parallel approximate coloring</title><link>http://blog.biicode.com/bit-parallel-approximate-coloring/</link> <comments>http://blog.biicode.com/bit-parallel-approximate-coloring/#comments</comments> <pubDate>Wed, 26 Nov 2014 14:34:26 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit parallelism]]></category> <category><![CDATA[bit-parallel transmission]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[Maximum Cliqué Problem]]></category> <category><![CDATA[SEQ]]></category> <category><![CDATA[sequential greedy coloring]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1914</guid> <description><![CDATA[<p>The vertex coloring problem (VCP) is an NP-hard classical problem in graph theory which can be traced back to a letter written to W.R. Hamilton by A. de Morgan in 1852 in which the famous Four Color Theorem has its roots. Besides its obvious theoretical relevance, it has found practical applications connected to scheduling and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-parallel-approximate-coloring/">Bit-parallel approximate coloring</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The vertex coloring problem (VCP) is an NP-hard classical problem in graph theory which can be traced back to a letter written to W.R. Hamilton by A. de Morgan in 1852 in which the famous <em>Four Color Theorem</em> has its roots. Besides its obvious theoretical relevance, it has found practical applications connected to scheduling and allocation of resources (i.e. memory for different processes, frequencies for WLANs etc.).<br
+/> A (proper) vertex coloring of a simple undirected graph G=(V, E) is an assignment of color numbers to all vertices such that pairwise adjacent vertices have different colors. The size of the coloring is the number of different colors employed. The chromatic number of a graph χ(G) is the minimum number of colors required to color G, i.e. the size of its optimum coloring. The VCP can be formulated as finding a minimum coloring for a given graph.<br
+/> Compared with other related graph optimization problems such as the maximum clique problem (i.e. finding the largest possible subgraph in a given graph), VCP is considerably more challenging; for example it is possible to compute a maximum clique exactly in massive sparse graphs with millions of vertices, whereas fast exact coloring of a random graph with 80 vertices and 0.5 edge density already requires efficient algorithms and a powerful CPU.</p><p><span
+id="more-1914"></span></p><h2>Sequential greedy approximate coloring (SEQ)</h2><p>This post is concerned with a specific approximate coloring procedure called sequential greedy coloring (usually referred to as SEQ). It is a very useful and simple heuristic which produces reasonably tight colorings. A typical implementation runs in O(|V|* |V|) although procedures in O(|E|) are also known and employed in large sparse graphs.<br
+/> SEQ assigns the smallest possible color number to each vertex in order consistent with the current partial coloring. Pseudocode for SEQ appears in listing 1.</p><pre class="crayon-plain-tag">SEQ (G(V={v1, v2, …, vn} , E))
+1. for v≔v1 to vn
+2.   assign the smallest possible color to v
+3. endfor</pre><p><strong>Listing 1</strong>. Sequential greedy coloring.</p><p
+align="justify"><span
+lang="en-US"><b>Figure 1</b></span><span
+lang="en-US"> below shows an example of a coloring produced by SEQ. The numbers inside the vertices indicate the predefined ordering. In the example SEQ starts by labelling vertex 1 with color number 1 (green) and then proceeds to label vertex 2 with color number 2 (yellow) because it is adjacent to 1. Thereafter the smallest possible color for vertex 3 is green, vertex 4 is colored yellow and finally vertex 5 requires an additional color number (cyan) because it is adjacent to 1 and 4.</span></p><p>&nbsp;</p><table
+width="100%" cellspacing="0" cellpadding="7"><tbody><tr><td
+width="51%"><img
+class="aligncenter wp-image-1915 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/greedy-coloring1.png" alt="Examples of SEQ " width="341" height="299" /></td><td
+width="49%"><img
+class="aligncenter wp-image-1916 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/greedy-coloring2.png" alt="Example 2 of SEQ" width="342" height="300" /></td></tr><tr><td
+colspan="2" valign="top" width="100%"><b>Figure 1</b>. An example of sequential greedy coloring (in this case also a minimum coloring and solution to the VCP)</td></tr></tbody></table><p
+style="text-align: left;"> <span
+lang="en-US">The resulting coloring C(G)={C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US">, C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US">, C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">} has size three with color sets C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US">={1, 3}, C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US">={2, 4} and C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">={5}. Note that each color set is an </span><span
+lang="en-US"><i>independent set</i></span><span
+lang="en-US">, i.e. all its members are pairwise non-adjacent. This is a common property of all vertex colorings.</span></p><h2>An efficient bit-parallel implementation of SEQ</h2><p>We will now show a very efficient way of implementing SEQ in a bit-encoded graph to exploit bit-parallel transmission. We assume the reader has a minimum knowledge of both  <a
+title="GRAPH block in Biicode repository" href="https://www.biicode.com/pablodev/graph">GRAPH</a> and <a
+title="BITSCAN block in Biicode repository" href="https://www.biicode.com/pablodev/bitscan">BITSCAN</a> C++ libraries. If this is not the case we refer the reader to the documentation in the corresponding blocks in the Biicode repository.</p><p
+align="justify"><span
+lang="en-US">The bit-encoded graph encoded by GRAPH contains |V| bitarrays which map the neighbor sets of every vertex (i.e. each row of the adjacency matrix). In the example of </span><span
+lang="en-US"><b>figure 1</b></span><span
+lang="en-US"> the graph is encoded with the following 5 bitstrings: B{1} = 01011, B{2}=10101, B{3}=01011, B{4}=10101 and B{5}=11110. In a similar fashion, vertex sets and induced subgraphs are mapped to bitstrings when needed making use of BITSCAN.</span></p><p
+align="justify"><span
+lang="en-US">When exploiting bit-parallelism it is important that algorithms are carefully designed so that the critical operations are computed through bitmasks. Typical </span><span
+lang="en-US"><i>good</i></span><span
+lang="en-US"> operations when working with bit-encoded sets are </span><span
+lang="en-US"><i>set-intersection</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>set-difference</i></span><span
+lang="en-US">. A </span><span
+lang="en-US"><i>bad</i></span><span
+lang="en-US"> operation frequently needed is </span><span
+lang="en-US"><i>set element enumeration</i></span><span
+lang="en-US"> (i.e. determining the position of all 1-bits in the bitarray). </span></p><p
+align="justify"><span
+lang="en-US">In the case of SEQ a good compromise between </span><span
+lang="en-US"><i>good</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>bad</i></span><span
+lang="en-US"> operations is achieved by changing the control flow </span><span
+lang="en-US"><i>to produce color sets sequentially </i></span><span
+lang="en-US">(in the example first C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US"> then C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US"> and finally C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">). Note that now no vertex is assigned color number </span><span
+lang="en-US"><i>k</i></span><span
+lang="en-US"> until all color sets below </span><span
+lang="en-US"><i>k</i></span><span
+lang="en-US"> have been completed. </span><span
+lang="en-US"><b>Listing 2</b></span><span
+lang="en-US"> describes the proposed modification for the SEQ algorithm.</span></p><p></p><pre class="crayon-plain-tag">BIT_PARALLEL_SEQ (G)
+Initial step: U≔V, k:=1, C:= EMPTY
+Output: A greedy sequential class coloring C(G)
+1. while U is not empty
+2.    Ck≔U                                                              //candidate set to color
+3.    repeat until all vertices in Ck have been selected
+4.      choose the first vertex v from Ck not previously selected
+5.      remove from Ck vertices not adjacent to v                       //main coloring operation
+6.      remove v from U                                                 //mark v as colored
+7.    endrepeat                                                         //end of color Ck
+8. add Ck to the output coloring C
+9. k≔k+1                                                                //next color set
+10.endwhile</pre><p><strong>Listing 2.</strong> BIT_PARALLEL_SEQ. It computes color classes sequentially.</p><p
+align="justify"><span
+lang="en-US"><b>Listing 3</b></span><span
+lang="en-US"> describes an efficient implementation of BIT_PARALLEL_SEQ with GRAPH. The procedure receives as input the graph to be colored (encoded as the</span><span
+lang="en-US"><i> ugraph</i></span><span
+lang="en-US"> type from GRAPH) and returns the size of the coloring and the concrete color assignments (in vector </span><span
+lang="en-US"><i>color</i></span><span
+lang="en-US"> passed as parameter). The procedure uses two auxiliary vertex sets </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> bit-encoded with BITSCAN. </span><span
+lang="en-US"><i>m_unsel</i></span> <i> </i><span
+lang="en-US">refers to the</span><i> </i><span
+lang="en-US">remaining uncolored vertices; </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> contains the candidate vertices which can enlarge the current color class. Initially </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> is mapped to V (i.e. all bits are set to one).</span></p><p></p><pre class="crayon-plain-tag">#include "pablodev/graph/graph.h"		//header for GRAPH in Biicode repository
+int BIT_PARALLEL_SEQ (ugraph&amp; G, vector&lt;int&gt;&amp; color){
+  //initial values
+  int N=G.number_of_vertices(), k=0, v= EMPTY_ELEM, from=EMPTY_ELEM;
+  color.assign(N, EMPTY_ELEM);
+  m_unsel.set_bit(0, N-1);                       //initially maps to V: all bits to 1
+  //main loop
+  while(true){
+    m_sel=m_unsel;
+    m_sel.init_scan(bbo::DESTRUCTIVE);
+    while(true){
+       if((v=m_sel.next_bit_del(from, m_unsel))==EMPTY_ELEM) break;
+       color[v]=k;                                //stores the vertex color number
+       if((--N)==0)
+               return k;                          //exit point
+       //computes next vertex of the current color class
+       m_sel.erase_block(from, G.get_neighbors(v));
+    }
+    ++k;                                          //next color
+  }
+  return k;                                       //should not reach here
+}</pre><p><strong>Listing 3.</strong> The proposed BIT_PARALLEL_SEQ implementation.</p><p
+align="justify"><span
+lang="en-US">The procedure is made up of two nested loops. The outer loop sets the candidate vertices of a new color set C</span><sub><span
+lang="en-US">k</span></sub><span
+lang="en-US"> in</span><span
+lang="en-US"><i> m_sel</i></span><span
+lang="en-US">, while the inner loop computes C</span><sub><span
+lang="en-US">k</span></sub><span
+lang="en-US">. Critical operations that make use of bit-parallel transmission are:</span></p><ol><li><p
+align="justify"><span
+lang="en-US">Copy of uncolored vertices from </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> to </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> at the beginning of the outer loop.</span></p></li><li><p
+align="justify"><span
+lang="en-US">Filtering of candidate vertices for the current color set by the BITSCAN </span><span
+lang="en-US"><i>erase_block</i></span><span
+lang="en-US"> function (computed as a set_difference operation).</span></p></li></ol><p
+align="justify"><span
+lang="en-US">Enumeration of vertices in </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> is one of the </span><span
+lang="en-US"><i>bad </i></span><span
+lang="en-US">operations but is implemented as an efficient </span><span
+lang="en-US"><i>destructive BITSCAN loop</i></span><span
+lang="en-US"> (see BITSCAN reference) in the inner loop of BIT_PARALLEL_SEQ:</span></p><p></p><pre class="crayon-plain-tag">m_sel.init_scan(bbo::DESTRUCTIVE);
+while(true){
+  if((v=m_sel.next_bit_del(from, m_unsel))==EMPTY_ELEM) break;
+  //…
+}</pre><p></p><p
+align="justify"><span
+lang="en-US">Inside the inner loop, each time a vertex </span><span
+lang="en-US"><i>v </i></span><span
+lang="en-US">is selected it is deleted simultaneously from </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>m_unsel </i></span><span
+lang="en-US">in </span><span
+lang="en-US"><i>next_bit_del</i></span><span
+lang="en-US"> which is a useful optimization. Afterwards </span><span
+lang="en-US"><i>color </i></span><span
+lang="en-US">is updated with the new label for </span><span
+lang="en-US"><i>v </i></span><span
+lang="en-US">(color[v]=k) and the empty set condition is evaluated (&#8211;N==0) to check if all vertices are colored. If this is not the case the procedure enters into the </span><span
+lang="en-US"><i>erase_block</i></span><span
+lang="en-US"> coloring operation which removes those vertices which cannot now make part of the current color class and proceeds with the next iteration. Noteworthy is that </span><span
+lang="en-US"><i>erase_block </i></span><span
+lang="en-US">has been optimized in BITSCAN so that only blocks in </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> containing the current vertex </span><span
+lang="en-US"><i>v</i></span><span
+lang="en-US"> (index block </span><span
+lang="en-US"><i>from</i></span><span
+lang="en-US">) and higher are considered in the filter.</span></p><p
+align="justify"><span
+lang="en-US">We hope readers enjoy BIT_PARALLEL_SEQ. It is extremely fast and is currently being used as part of <em>state-of-the-art</em> maximum clique algorithm <a
+title="Reference to BBMC algorithm" href="http://dl.acm.org/citation.cfm?id=1860369">BBMC</a> in to compute clique upper bounds. The implementation described here is available in the combinatorial optimization block <a
+title="Combinatorial block in Biicode repository" href="https://www.biicode.com/pablodev/copt">pablodev/copt </a> in the Biicode repository.</span></p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p><p><a
+href="http://www.codeproject.com/script/Articles/BlogFeedList.aspx?amid=<11052799>&#8221; rel=&#8221;tag&#8221;>CodeProject style=&#8221;display:none&#8221;</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-parallel-approximate-coloring/">Bit-parallel approximate coloring</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bit-parallel-approximate-coloring/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>BITSCAN: a C++ library for bit strings</title><link>http://blog.biicode.com/bitscan-cpp-library-bit-strings/</link> <comments>http://blog.biicode.com/bitscan-cpp-library-bit-strings/#comments</comments> <pubDate>Fri, 17 Oct 2014 11:03:03 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[bitscanning]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1840</guid> <description><![CDATA[<p>A comprehensive view of BITSCAN BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>A comprehensive view of BITSCAN</h2><p>BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is identified by a bit in the chain. In previous posts I have repeatedly stated that BITSCAN “is a useful library to manage bit strings”, and that was that. Readers of our blog have questioned the usefulness of bit strings in practice so I will start this post explaining some common situations in which bit strings may be an alternative to more common data structures.</p><p><img
+class="aligncenter wp-image-1841 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bitstring_logo.png" alt="Bit strings can now be processed more powerfully with BITSCAN hosted in biicode" width="359" height="123" /></p><p><span
+id="more-1840"></span></p><h2>Bit strings in practice</h2><p>Say you need to store and compare subsets of <em>different</em> numbers from 1 to N; or possibly you need to encode that a collection of objects belong to a set, or perhaps reason with two such collections and find those common to both. These situations are quite frequent in practice and commonly solved by mapping objects to identifiers, storing them (typically in some predefined order) in containers and employ their built-in methods to make the required inferences.</p><p>Here is an example: a subset of students takes an exam; each student has a different ID and writes it on the exam. A possible (non-efficient) solution to the query as to which students did not assist using STL collections appears below:</p><pre class="crayon-plain-tag">//… appropiate headers
+template&lt;class Collection&gt;
+void printCol(Collection&amp; col){
+	copy(col.begin(), col.end(), ostream_iterator&lt;Collection::value_type&gt;(cout, " "));
+}
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	set&lt;int&gt; s_ids;		// student ids
+	set&lt;int&gt; e_ids;		// exam ids
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		s_ids.insert(i);
+		if((i%2)==0)
+			e_ids.insert(i);
+	}
+	//students which did not assist
+	set&lt;int&gt; s_not_assist;
+  	set_difference(s_ids.begin(), s_ids.end(), e_ids.begin(), e_ids.end(),
+                             insert_iterator&lt;set&lt;int&gt;&gt; (s_not_assist, s_not_assist.begin()) );
+	printCol(s_not_assist);
+}</pre><p>&nbsp;</p><p>In the PREVIOUS example  each call to <code>insert</code> is logarithmic and <code>set_difference</code> is linear in the number of total students. Now compare with a bit string encoding for exams and students (a 1-bit indicates membership):</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"		//BITSCAN header in biicode repository
+using namespace std;
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	bitarray s_ids(NUMBER_OF_STUDENTS);	// student ids
+	bitarray e_ids(NUMBER_OF_STUDENTS);	// exam ids
+	s_ids.set_bit(0,NUMBER_OF_STUDENTS-1);
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		if((i%2)==0)
+		e_ids.set_bit(i-1);		//id is 0 based
+	}
+	//students which passed the exam
+	bitarray s_not_assist(s_ids);
+	s_not_assist.erase_bit(e_ids);
+	//I/O
+	s_not_assist.print();
+}</pre><p>From the point of view of efficiency, students are inserted in the (bit) sets in constant time. The reasoning is computed in the <code>erase_bit</code> function in linear time, but there is a reduction by a constant factor related to register word size (typically 64 in today’s computers) because processing occurs in chunks of bit blocks. Moreover, the code is no less readable (possibly <em>more</em> readable) than its counterpart and slightly more compact.</p><p>Note that the example did not intend to suggest that bit strings are better than typical STL collections (exlcude std::bitset) or anything like that. It only shows that bit strings can be a useful alternative to consider in everyday programming.</p><h2>Data types available in BITSCAN</h2><p>Having made a case in favor of bit strings I will now comment briefly on the data types available in BITSCAN and the kind of problems they address. As stated in <a
+href="http://blog.biicode.com/category/bitscan-2/">previous posts</a>, I developed BITSCAN to deal with hard combinatorial optimization problems in the graph domain. Why did I not use other common solutions such as <code>std</code><code>∷</code><code>bitset</code> or boost<code>∷</code><code>dynamic_bitset</code> containers? Simply because the majority of functions I required back then (say almost a decade ago) were not built-in (they still aren&#8217;t, specifically those related to different types of efficient bit scanning) not to mention the fact that the size of <code>std</code><code>∷</code><code>bitset</code> has to be hard wired at compile time. Also some critical optimization issues appeared which required ad hoc solutions. I therefore decided to start from scratch at my own risk. The types in BITSCAN are a result of a decade of experience in algorithmic optimization. The current release is intended to share this knowledge in the hope that it is useful to others and that it may be improved. In this sense I find Biicode ideal for managing and sharing the code.</p><p>Back to business, and sorry for the digression. The main types in BITSCAN are <em>bitblock</em>, <em>bitarray</em> and <em>sparse_bitarray</em> and most of the time you will only be using these. Other types are meant for compilers which do not accept assembly or intrinsic instructions (i.e. <em>simple_bitarray</em>, <em>simple_sparse_array</em>) or some specific optimization (i.e. <em>watched_bitarray</em>). I will leave the latter types for a future post.</p><h3>TYPE bitblock</h3><p>The <em>bitblock</em> type is a wrapper for bit twiddling inside 64 bit numbers. It includes typical least- significant-bit (LSB) and most-significant-bit (MSB) functions as well as different implementations of population counts (i.e. number of 1-bits in the number).  Useful inline macros are MASK_1 and MASK_0 which change bits in a predefined range (see example below).</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+void main(){
+	BITBOARD bb=0xFFFF;
+	cout&lt;&lt;"number of 1-bits in bb:"&lt;&lt;bitblock::popc64(bb)&lt;&lt;endl;
+	//useful masks
+	bitblock::print(bb &amp; bitblock::MASK_0(4,8));    //removes bits 4-8 from bb
+	bitblock::print(bb | bitblock::MASK_1(4,8));    //sets bits 4-8 in bb
+}</pre><p></p><h3>TYPE bitarray</h3><p><em>bitarray</em> extends the <em>bitblock</em> type to arrays of bitblocks and it is BITSCAN&#8217;s basic type. Besides typical operations which may be found elsewhere (bit masks etc.), the wrapper contains a number of optimizations mainly concerned with extracting the information from bit strings (alias bitscanning) which I have found pretty useful when solving combinatorial problems. In particular:</p><ul><li>Caching bitblock index and position of the last bit scanned in a bit scanning loop.</li><li>Specific implementation for destructive (simultaneous scanning and deletion) scans.</li><li>Specific implementation for reverse scans (i.e. from last to least significant bit of the bitstring).</li></ul><p>Here is a simple example of how to implement normal and destructive scanning loops with BITSCAN:</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATON_SIZE-1);     //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::NON_DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+	cout&lt;&lt;endl;
+	//bit scanning loop (destructive)
+	nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit_del();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+}</pre><p><span
+style="font-size: 13px;">It is worth noting that bit scanning introduces critical overhead compared to standard data structures. I strongly recommend to avoid it as much as possible in critical problem solving routines  in favor of reasoning with bit masks (the good part). Still, at some point you will surely need to enumerate the elements (1-bits) in the bit sets and the above functions (and others available in BITSCAN) will come in handy.</span></p><h3>TYPE sparse_bitarray</h3><p>This type introduces specific functionality to deal with the sparse case. A sparse bit string typically holds many more 0-bits than 1-bits (usually the useful chunks of information) and using  the general purpose <em>bitarray</em> type will generally lead to dealing with a lot of useless chunks of 0-bits. I recommend to use the <em>sparse_bitarray</em> type in such cases. The interface for most operations is very much the same. BELOW is the code for the normal bit scanning loop in the previous examples but using the sparse type.</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	sparse_bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATION_SIZE-1);      //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+		while(true){
+			nBit=bba.next_bit();
+			if(nBit==EMPTY_ELEM) break;
+			cout&lt;&lt;nBit&lt;&lt;" ";
+		}
+	}
+	cout&lt;&lt;endl;
+}</pre><p>Notice that the code is exactly the same as for the <em>bitarray</em> type (now <em>sparse_bitarray</em>) with the exception of the empty checking condition at the beginning of the bit scanning loop:</p><pre class="crayon-plain-tag">if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM)(…}</pre><p>This is necessary because sparse bitarrays have empty semantics: an empty bitarray (i.e. with no allocated bitblocks) might just as well not be used as refer to a bitset exent of 1-bits. Either way entering the main scanning loop will result in an error during execution.</p><h2>Current status</h2><p>As indicated in other posts, BITSCAN is still very much in Alpha but it is being actively developed.  As such it suffers from lack of proper doc, non standardization of names and namespaces etc.  Still, it is very simple to use and including it in your projects requires no effort using Biicode (just include the header  #include &#8220;pablodev/bitscan/bitscan.h&#8221; and you are done). It has been tested both in Linux and Windows (64 bit).</p><p>If you are wondering about efficiency,  BITSCAN is in the core of BBMC <sup><a
+href="#fn1" id="ref1">[1]</a></sup><sup><a
+href="#fn2" id="ref2">[2]</a></sup><sup><a
+href="#fn3" id="ref3">[3]</a></sup> and PASS <sup><a
+href="#fn4" id="ref4">[4]</a></sup>, two state of the art algorithms for the NP-hard maximum clique and vertex coloring problems respectively. Also worth reading is a performance comparison with STL and BOOST in <sup><a
+href="#fn5" id="ref5">[5]</a></sup>. If you finally decide that it is worth a try please read the legal stuff. In case you use it for research purposes, please include the indicated citations. Finally, any feedback or improvement is most welcome.</p><p>&nbsp;</p><p><sup
+id="fn1"><a
+href="http://dl.acm.org/citation.cfm?id=1860369%20">[1] An exact bit-parallel algorithm for the maximum clique problem</a></sup></p><p><sup
+id="fn2"><a
+href="http://link.springer.com/article/10.1007%2Fs11590-011-0431-y">[2] An improved bit parallel exact maximum clique algorithm</a></sup></p><p><sup
+id="fn3"><a
+href="http://dl.acm.org/citation.cfm?id=2566230">[3] Relaxed approximate coloring in exact maximum clique search</a></sup></p><p><sup
+id="fn4"><a
+href="/oa.upm.es/11802/2/INVE_MEM_2011_107285.pdf">[4] A new DSATUR-based algorithm for exact vértex coloring</a></sup></p><p><sup
+id="fn5"><a
+href="http://blog.biicode.com/bitscan-efficiency-at-glance/">[5] BITSCAN efficiency at a glance</a></sup></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bitscan-cpp-library-bit-strings/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>C/C++ Madrid meetup @ biicode office</title><link>http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/</link> <comments>http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/#comments</comments> <pubDate>Thu, 02 Oct 2014 14:55:31 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[C/C++ Madrid meetup]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[Clang]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1765</guid> <description><![CDATA[<p>Today is the day! We host the C/C++ Madrid meetup It&#8217;s finally here and full of interesting content. The C and C++ community gathers together to talk about metaprogramming. Manu Sánchez will be talking about template metaprogramming. He already addressed this issue in a couple of posts in our blog (read them HERE and HERE). [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/">C/C++ Madrid meetup @ biicode office</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Today is the day! We host the C/C++ Madrid meetup</h2><p>It&#8217;s finally here and full of interesting content. The C and C++ community gathers together to talk about metaprogramming.</p><div
+id="attachment_1767" style="width: 190px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1767" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/C-C++-Madrid-meetup.jpeg" alt="C/C++ Madrid meetup hosted at biicode" width="180" height="124" /><p
+class="wp-caption-text">On the shoulders of giants</p></div><p><span
+id="more-1765"></span></p><p><a
+href="https://twitter.com/Manu343726">Manu Sánchez</a> will be talking about template metaprogramming. He already addressed this issue in a couple of posts in our blog (read them <a
+href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/">HERE</a> and <a
+href="http://blog.biicode.com/template-metaprogramming-cpp-ii/">HERE</a>).</p><h2>Final templates tips: Duck typing and SFINAE</h2><p>C++ templates are processed in two phases: Declaration and instantiation. First the compiler checks the declaration of the template for syntactical correcness, but what happens to things that depends on template parameters?<br
+/> The compiler doesn&#8217;t know anything about that parameters until template instantiation, so it delays the analysis of such things until the second phase, which is executed after a template is instanced.</p><p>Consider this function template:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+void f( const T&amp; t)
+{
+    t.g();</pre><p><code>T</code> could be any type, so the question is: Has this type a member function <code>f()</code>?<br
+/> The answer is: Nobody knows, and the compiler doesn&#8217;t care. Until template instantiation.<br
+/> So if you use that template correctly, using a type <code>T</code> with a member function <code>f()</code>, the code compiles and works. But, if the type is not correct? Is that a compilation error? Enter SFINAE.</p><h3>SFINAE</h3><p>SFINAE, <em>Specialization Failure Is Not An Error</em>, is the colloquial name of a rule on the C++ Language Standard saying that a failure when trying to instantiate a template is not a compilation error, but the compiler continues trying with other alternatives (More templates or overloads).</p><p>Following with the duck typing example, if we use the function template with a type with no member function <code>f()</code>, that doesn&#8217;t result in a compilation error (And then the compiler aborting compilation), but the compiler continues searching for other template or overload that matches the call.</p><p>That behavior could be used to &#8220;enable&#8221; a template only if the template parameters passed fulfill a certain property or requirement. For example:</p><pre class="crayon-plain-tag">template&lt;typename T , typename = typename std::enable_if&lt;std::is_floating_point&lt;T&gt;::value&gt;::type&gt;
+void compare( T lhs , T rhs );</pre><p>That template could be used with floating-point parameters only. Note the <code>std::enable_if</code> template there. That template provided by the standard library allows us to use SFINAE in an easy way. What it does is to declare a member type <code>::type</code> if a certain boolean condition is true.<br
+/> If we reference that member (<code>typename std::enable_if::type</code> and the condition is false, than the template has no type member, and the template is ill-formed. But do you remember the SFINAE rule? Instead of aborting compilation because the ill-formed template, the compiler continues.</p><p>So the result is that we &#8220;disabled&#8221; that template because the parameter was not a floating-point type. Cool, isn&#8217;t?</p><h3>It&#8217;s never too late to sing up for the C/C++ Madrid meetup!!</h3><p>&nbsp;</p><style type="text/css">#meetup_oembed .mu_clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }* html #meetup_oembed .mu_clearfix, *:first-child+html #meetup_oembed .mu_clearfix { zoom: 1; }#meetup_oembed { background:#eee;border:1px solid #ccc;padding:10px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;margin:0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px; }#meetup_oembed h3 { font-weight:normal; margin:0 0 10px; padding:0; line-height:26px; font-family:Georgia,Palatino,serif; font-size:24px }#meetup_oembed p { margin: 0 0 10px; padding:0; line-height:16px; }#meetup_oembed img { border:none; margin:0; padding:0; }#meetup_oembed a, #meetup_oembed a:visited, #meetup_oembed a:link { color: #1B76B3; text-decoration: none; cursor: hand; cursor: pointer; }#meetup_oembed a:hover { color: #1B76B3; text-decoration: underline; }#meetup_oembed a.mu_button { font-size:14px; -moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;border:2px solid #A7241D;color:white!important;text-decoration:none;background-color: #CA3E47; background-image: -moz-linear-gradient(top, #ca3e47, #a8252e); background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #a8252e), color-stop(1, #ca3e47));disvplay:inline-block;padding:5px 10px; }#meetup_oembed a.mu_button:hover { color: #fff!important; text-decoration: none; }#meetup_oembed .photo { width:50px; height:50px; overflow:hidden;background:#ccc;float:left;margin:0 5px 0 0;text-align:center;padding:1px; }#meetup_oembed .photo img { height:50px }#meetup_oembed .number { font-size:18px; }#meetup_oembed .thing { text-transform: uppercase; color: #555; }</style><div
+id="meetup_oembed" style="height:397px"><div
+style="overflow:hidden;max-height:357px"><h3>Madrid C/C++</h3><p
+style="margin:0 0 10px;font-size:12px;line-height:16px;">Madrid, ES <br
+/> <span
+style="font-size:14px;font-weight:bold;">178</span> <em>programadores</em></p><p> <a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank"><img
+src="http://photos4.meetupstatic.com/photos/event/8/c/c/a/600_368916042.jpeg" style="float:right;max-width:150px;margin-right:0;" /></a><div
+style="margin-right:170px;line-height:16px;">Conoce otros programadores C/C++ de Madrid. Haz Networking, aprende, o simplemente disfruta de unas cervezas. Todos los niveles de conocimiento son bienvenidos, incluso princi&#8230;</div><p
+style="font-size:16px;margin:10px 0 5px;line-height:18px;">Next Meetup</p><p
+style="margin-bottom:2px;line-height:16px;font-size:14px;"><a
+title="De 0 a 100 (Taller): metaprogramación con plantillas en C++ moderno (I)" href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/" target="_blank">De 0 a 100 (Taller): metaprogramación con plantillas en C++ &#8230;</a></p><p
+style="line-height:18px;">Thursday, Oct 2, 2014,  7:00 PM<br
+/><span
+style="color:#4F8A10;">39 Attending</span></p></p></div><p
+style="margin:10px 0 5px;"><a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank" class="mu_button">Check out this Meetup Group &rarr;</a></p></div><p>&nbsp;</p><h3>We will try to broadcast the event through hangouts, check below:</h3><p><a
+href="https://plus.google.com/u/1/b/110838391970414654069/events/co6s91ch1obeppkjg6qopea00ig">C/C++ Madrid meetup Hangouts channel</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/">C/C++ Madrid meetup @ biicode office</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-madrid-meetup-template-metaprogramming/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Why a FILE BASED dependency manager rocks for C/C++</title><link>http://blog.biicode.com/file-based-cpp-dependency-manager/</link> <comments>http://blog.biicode.com/file-based-cpp-dependency-manager/#comments</comments> <pubDate>Fri, 26 Sep 2014 15:56:32 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/c++ dependencies manager]]></category> <category><![CDATA[c/c++ dependency manager]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[deps manager]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1729</guid> <description><![CDATA[<p>We have a big problem. We have miserably failed to explain the core value proposition of biicode: a file-based dependency manager. We have tried to communicate it in the homepage, in features landing pages, videos, etc. While we certainly are growing, it is also true that not as fast as we would like. There are [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/file-based-cpp-dependency-manager/">Why a FILE BASED dependency manager rocks for C/C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have a big problem. We have miserably failed to explain the core value proposition of biicode: a file-based dependency manager. We have tried to communicate it in the homepage, in <a
+href="http://web.biicode.com/features/cpp">features landing pages</a>, <a
+href="https://www.youtube.com/biicode">videos</a>, etc. While we certainly are growing, it is also true that not as fast as we would like.</p><p>There are many reasons that explain this: People understand that we are a dependency manager for C/C++, but also realize that we still don&#8217;t have premium accounts (for private code), in-house deployment or that we’re not open-source. This is all true, we are working in <strong>all these features</strong>, including going open-source regarding which we will soon announce something relevant. But we think these are not reasons (stoppers) enough to not engage with the platform now, try it, check how it works, give feedback to help define the tool to your needs.</p><p>We believe that the main problem is that we didn’t explain properly what makes biicode so special, and we failed because we have used the wrong channels. Here, I will explain it with the language we, developers, all love: <strong>source code</strong>.</p><p><img
+class="size-full wp-image-1208 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/03/biicode.jpg" alt="C/C++ dependency manager" width="320" height="320" /></p><p><span
+id="more-1729"></span></p><h2>Hands into the file-based dependency manager</h2><p>I have recently written about how to use <a
+href="http://docs.biicode.com/c++/examples/zmq_protobuf.html">ZMQ and protocol buffers with biicode</a>. Here I will develop a client-server application which components can be very easily reused individually in new projects, without having to write a single line of configuration or having to worry about packaging or installing. [If you want to try it on the go just download biicode <a
+href="https://www.biicode.com/downloads">HERE</a>]</p><blockquote><p>Stop talking, show me the code!</p></blockquote><p><strong>client.h</strong></p><pre class="crayon-plain-tag">#pragma once
+#include "diego/zmqcpp/zmq.hpp"
+#include "person.pb.h"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+class Client{
+public:
+	Client(const char* address);
+	void send(const Person&amp; person);
+private:
+	zmq::context_t context;
+	zmq::socket_t socket;
+};</pre><p><strong>client.cpp</strong></p><pre class="crayon-plain-tag">#include "client.h"
+Client::Client(const char* address) : context(1), socket(context, ZMQ_PAIR){
+	socket.connect(address);
+}
+void Client::send(const Person&amp; person){
+	std::string msg_str;
+	person.SerializeToString(&amp;msg_str);
+	// create a zmq message from the serialized string
+	zmq::message_t request(msg_str.size());
+	memcpy((void *)request.data(), msg_str.c_str(), msg_str.size());
+	socket.send(request);
+}</pre><p>The <code>person.pb.h</code> and <code>person.pb.cc</code> files are generated with the “protoc” binary from the <code>person.proto</code>, as explained in our docs.</p><p><strong>person.proto</strong></p><pre class="crayon-plain-tag">message Person {
+  required string name = 1;
+  optional string phone = 2;
+  optional string email = 3;
+}</pre><p>We will create a simple client application that just creates a Person object, serialize and send it to the server.</p><p><strong>clientapp.cpp</strong></p><pre class="crayon-plain-tag">#include "client.h"
+int main ()
+{
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    Person person; //fill a person data
+    person.set_name("john");
+    person.set_email("john@mycompany.com");
+    person.set_phone("1234567");
+    Client client("tcp://localhost:5555");
+    client.send(person);
+    // Optional:  Delete all global objects allocated by libprotobuf.
+    google::protobuf::ShutdownProtobufLibrary();
+    return 0;
+}</pre><p>&nbsp;</p><p>The server application will continuously receive Person data from clients and send them to a SQLite database.</p><p><strong>severapp.cpp</strong></p><pre class="crayon-plain-tag">#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include "person.pb.h"
+#include &lt;google/protobuf/text_format.h&gt;
+#include "server.h"
+#include &lt;sqlite/sqlite/include/SQLiteCpp/SQLiteCpp.h&gt;
+int main() {
+	SQLite::Database    db("server.db", SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+	std::cout &lt;&lt; "SQLite database file '" &lt;&lt; db.getFilename().c_str() &lt;&lt; "' opened successfully\n";
+	// Create a new table with an explicit "id" column aliasing the underlying rowid
+	db.exec("DROP TABLE IF EXISTS test");
+	db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT, email TEXT, phone TEXT)");
+	//  Prepare our context and socket
+	Server server("tcp://*:5555");
+	while (true) {
+		Person person = server.receive();
+		std::string text_str;
+		SQLite::Statement   query(db, "INSERT INTO test VALUES (NULL, ?, ?, ?)");
+		query.bind(1, person.name());
+		query.bind(2, person.email());
+		query.bind(3,  person.phone());
+		int nb = query.exec();
+		google::protobuf::TextFormat::PrintToString(person, &amp;text_str);
+		std::cout &lt;&lt; text_str &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre><p>with the server being:</p><p><b>server.h</b></p><pre class="crayon-plain-tag">#pragma once
+#include "diego/zmqcpp/zmq.hpp"
+#include "person.pb.h"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+class Server{
+public:
+	Server(const char* address);
+	Person receive();
+private:
+	zmq::context_t context;
+	zmq::socket_t socket;
+};</pre><p><strong><b>server.cpp</b></strong></p><pre class="crayon-plain-tag">#include "server.h"
+Server::Server(const char* address) : context(1), socket(context, ZMQ_PAIR){
+	socket.bind(address);
+}
+Person Server::receive(){
+	zmq::message_t request;
+	//  Wait for next request from client
+	socket.recv(&amp;request);
+	Person person;
+	std::string msg_str(static_cast&lt;char*&gt;(request.data()), request.size());
+	person.ParseFromString(msg_str);
+	return person;
+}</pre><p>Building all this code is pretty simple and can be done with biicode without any configuration, remember to generate the <code>person.pb</code> files with “protoc”, check the documentation <a
+href="http://docs.biicode.com/c++/examples/zmq_protobuf.html">here</a>.</p><pre class="crayon-plain-tag">$ bii init zmqapp
+$ cd zmqapp
+$ bii new diego/clientserver //you can use your username instead of diego
+//copy the above files into the zmqapp/blocks/diego/clientserver folder
+$ bii find // to find and retrieve missing dependencies.
+$ bii cpp:configure -G “Visual Studio 12” //only if in windows
+$ bii cpp:build
+//launch server, then client in another console</pre><p>So far, biicode is a “smart” dependency manager, that figures out which dependencies it needs from #include directives (of course, you can also define them in requirements.bii file). In this case, <strong>ZeroMQ</strong>, <strong>protobufs</strong> and <strong>SQLite</strong>.</p><p>But the key point is not that. It is how easy you can <strong>reuse individual components from this project</strong> into new projects, how simple you can share it with the world without having to worry about packaging or installers. The first step is to upload to biicode:</p><pre class="crayon-plain-tag">$ bii publish</pre><p>This command will create a DEV version (which means that it is not frozen, you can overwrite it; there are other BETA, STABLE tags that freezes a version) in biicode, you can go to <strong>www.biicode.com/yourusername</strong> and check it.</p><p>Imagine that the server side is developed to run only in X systems, but it will not build in Windows, due to some non portable code. In this example we have used SQLite which is portable. In any case, it is clear that if we want to develop a new client application we do not need to build the server or depend on SQLite at all. Lets build such a client:</p><pre class="crayon-plain-tag">$ cd ..
+$ bii init zmqnewclient
+$ cd zmqnewclient
+$ bii new yourusername/newclient</pre><p>Copy the following code inside the “blocks/yourusername/newclient” folder:</p><p><strong>yourClientapp.cpp</strong></p><pre class="crayon-plain-tag">#include "yourusername/clientserver/client.h"
+int main ()
+{
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    Person person; //fill a person data
+    person.set_name("john");
+    person.set_email("john@mycompany.com");
+    person.set_phone("1234567");
+    Client client("tcp://localhost:5555");
+    client.send(person);
+    // Optional:  Delete all global objects allocated by libprotobuf.
+    google::protobuf::ShutdownProtobufLibrary();
+    return 0;
+}</pre><p>And execute:</p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:configure -G “Visual Studio 12” //only if in windows, skip otherwise
+$ bii cpp:build
+//launch server from the other project in another console, then this client</pre><p></p><h2>Let&#8217;s explain what a file-based dependency manager is</h2><p><strong>Now the key point!</strong> Go to the project <em>“deps”</em> folder, and check what is there: There is no server code, and there is no SQLite code!! And we have done it without a single line of configuration. How is this done<img
+class=" wp-image-1732 alignright" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/biicode-package-free.jpg" alt="C/C++ file-based dependency manager " width="426" height="292" />?</p><p>Biicode is a FILE BASED dependency manager. That lets amazing things to happen, such as allowing to reuse individual files from previous projects without having to worry about packaging, setup or installs. <strong>Biicode tracks which files depends on which files</strong>, and use it to automatically define build targets, or <strong>manage dependencies accordingly</strong>. For example, you could just reuse the “Person” object from the previous example in another project, and you will not depend on ZMQ or SQLite at all, as those files do not depend on them. And this is only the beginning, with this file based approach you can also do many other amazing things, stay tuned for next posts.</p><p>We believe this is indeed a new paradigm for dependency management. We are still in beta, releasing based on our users feedback almost every week, towards such a system that could rock for all of us as developers. That means that we are not perfect, as I told you we are working hard and defining the best possible roadmap for our community, including open-sourcing the code and building all the necessary tools for production environments.</p><p
+class="widgettitleFeatures" align="center"><strong>Help us improve, try it out</strong></p><p><a
+href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank"><img
+class="aligncenter" src="/wp-content/uploads/sites/3/2014/05/bt-get-started-features-on.jpg" alt="Get started Now" width="265" height="57" /></a></p><p>If you feel that this makes sense, give feedback, spread the word as much as possible.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/file-based-cpp-dependency-manager/">Why a FILE BASED dependency manager rocks for C/C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/file-based-cpp-dependency-manager/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Template Metaprogramming with Modern C++: templates in depth</title><link>http://blog.biicode.com/template-metaprogramming-cpp-ii/</link> <comments>http://blog.biicode.com/template-metaprogramming-cpp-ii/#comments</comments> <pubDate>Thu, 25 Sep 2014 08:42:40 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[c++11]]></category> <category><![CDATA[c++14]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[metaprogramming]]></category> <category><![CDATA[modern c++]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1682</guid> <description><![CDATA[<p>Template Metaprogramming with Modern C++: Templates in depth The last time  we learnt what metaprogramming was, how metaprogramming in C++ via templates works, and the functional spirit of the embedded language that C++ template metaprogramming is. In this post we will learn C++ templates in depth: Class and function templates, template parameters, variadic templates, all [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-cpp-ii/">Template Metaprogramming with Modern C++: templates in depth</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<article
+class="markdown-body entry-content"><h2><a
+class="anchor" href="#template-metaprogramming-with-modern-c-templates-in-depth" name="user-content-template-metaprogramming-with-modern-c-templates-in-depth"></a>Template Metaprogramming with Modern C++: Templates in depth</h2><p><a
+title="The last time" href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/" target="_blank">The last time </a> we learnt what metaprogramming was, how metaprogramming in C++ via templates works, and the functional spirit of the embedded language that C++ template metaprogramming is.</p><p>In this post we will learn C++ templates in depth: Class and function templates, template parameters, variadic templates, all with in depth examples.<br
+/> <em>SPOILER: Finally, there is no SFINAE explanation on this post. This has a large amount of contents to be read and understood, I think understanding correctly the template system and the different categories of template parameters is good enough for a single (But large) blog post. Of course, if there is any problem feel free to post a comment here.</em></p><p><img
+class="aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/3/2014/05/template-metaprogramming-modern-cplus.jpg" alt="Template Metaprogramming Modern C++ in biicode" width="800" height="329" /><br
+/> <span
+id="more-1682"></span></p><h2><a
+class="anchor" href="#the-template-system-function-and-class-templates" name="user-content-the-template-system-function-and-class-templates"></a>The template system: Function and class templates</h2><p>As we have seen in the first post, the C++ template system generates C++ types and functions from an specification written by the programmer, what we call <em>template</em>. And of course generating a type means generating code too, since normally C++ types are coupled to code (That&#8217;s the concept of a class).</p><p>Lets see how those templates work. First a simple template function:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+T identity( const T&amp; e )
+{
+	return e;
+}</pre><p>This simple template declares a family of functions that take a value of any type <code>T</code> and returns it untouched. Its the runtime version of the metafunction we seen in the first post.<br
+/> When the programmer uses that template:</p><pre class="crayon-plain-tag">int i = identity(0);</pre><p>the compiler instantiates the template using the correct parameters, an <code>int</code> type parameter in this case.<br
+/> <em>Note how template parameters are inferred from the function argumentsassed to the template function. This is why when using function templates is not neccessary nor a good practice to pass template parameters explicitly. Only is needed in some cases when a parameter could not be inferred from the function arguments <a
+href="http://en.cppreference.com/w/cpp/memory/shared_ptr/make_shared"><code>std::make_shared()</code></a> for an example.</em></p><p>Exactly the same occurs for class templates: The compiler generates one type (class) and its corresponding code for each combination of template parameters.</p><p>There is one point to be noted: Its true that the compiler generates one instantation for each combination of parameters, but <strong>modern C++ compilers are smart enough to not generate executable code for templates that are not actually used in the program.</strong> Also, modern compilers perform memoization during template instantiation, which increases the performance of the template system. Both optimizations make invalid the old arargumentaying that C++ templates increase executable size. <strong>That&#8217;s not completely true, since the compiler only generates code for the things that are actually used</strong>, after optimizations like inlining, dead code elimination, etc.</p><p>See for example the classic fibonacci metafunction:</p><pre class="crayon-plain-tag">template&lt;int n&gt;
+struct fibonacci
+{
+	static constexpr int value = fibonacci&lt;n-1&gt;::value + fibonacci&lt;n-2&gt;::value;
+};
+template&lt;&gt;
+struct fibonacci&lt;0&gt;
+{
+	static constexpr value = 0;
+};
+template&lt;&gt;
+struct Fibonacci&lt;1&gt;
+{
+	static conexpr value = 1;
+};</pre><p>This is the instantation tree for a <code>fibonacci&lt;5&gt;</code> template instance:</p><pre class="crayon-plain-tag">+--------+
+                              | fib&lt;5&gt; |
+                              +--------+
+                                  /\
+                                 /  \
+                                /    \
+                               /      \
+                        +--------+  +--------+
+                        | fib&lt;4&gt; |  | fib&lt;3&gt; |
+                        +--------+  +--------+
+                            /\          /\
+                           /  ...      /  \
+                          /           /    \
+                         /           /      \
+                  +--------+  +--------+  +--------+
+                  | fib&lt;3&gt; |  | fib&lt;2&gt; |  | fib&lt;1&gt; |
+                  +--------+  +--------+  +--------+
+                       /\          /\
+                    ...  ...    ...  ...</pre><p>That&#8217;s what you would expect, right? Ok, but <strong>that&#8217;s not what the compiler does</strong>. Enter memoization:</p><pre class="crayon-plain-tag">+--------+
+                              | fib&lt;5&gt; |
+                              +--------+
+                                  /\
+                                 /  *
+                                /
+                               /
+                        +--------+
+                        | fib&lt;4&gt; |
+                        +--------+
+                            /\
+                           /  *
+                          /
+                         /
+                  +--------+
+                  | fib&lt;3&gt; |
+                  +--------+
+                       /\
+                      /  *
+                     /
+                    /
+             +--------+
+             | fib&lt;2&gt; |
+             +--------+
+                 /\
+                /  \
+               /    \
+              /      \
+       +--------+  +--------+
+       | fib&lt;1&gt; |  | fib&lt;0&gt; |
+       +--------+  +--------+</pre><p>where <code>*</code> means the compiler selected the memoized (Instanced previously) template instead of doing the full instantation again.</p><p>Then the fact that the compiler only generates code which actually does something (All syntactic sugar that high-level constructs provide is thrown away):</p><pre class="crayon-plain-tag">int main()
+{
+    return Fibonacci&lt;5&gt;::value;
+}</pre><p><a
+href="http://gcc.godbolt.org/#%7B%22version%22%3A3%2C%22filterAsm%22%3A%7B%22labels%22%3Atrue%2C%22directives%22%3Atrue%2C%22commentOnly%22%3Atrue%7D%2C%22compilers%22%3A%5B%7B%22sourcez%22%3A%22C4UwtgDgNghqA8BLAdsABMgfAKAM7ACcBXAY3QDNEAjAe2RhJMWwG9s0O185ES0S6%2BEAA8IBNCnQA3GFCIg0AXjSVa9RonjIAtAEZMALgMy5CgNQrqdBky3aATIeOz5Abk6dsAX1fZsoSFgEHHxiMks1G00ABhw2D25gXn5BUFFxSTQTeSU0aN8fPwDoOBB4EMJSCit1W31Wdk5E5IFkIXSJVCyXBWVdAt9sTLAYFAAKAEoGjwIQYCICZAjrDXhdWKNskAKgAAA%3D%22%2C%22compiler%22%3A%22%2Fopt%2Fgcc-4.9.0%2Fbin%2Fg%2B%2B%22%2C%22options%22%3A%22-O0%20-std%3Dc%2B%2B11%22%7D%5D%7D"><code>GCC 4.9 -std=c++11 -O0</code> x86 target</a>:</p><pre class="crayon-plain-tag">main:                                   # @main
+	movl	$55, %eax
+	movl	$0, -4(%rsp)
+	ret</pre><p>Only a hardcoded 55. Do you see code bloating there?</p><h2><a
+class="anchor" href="#template-parameters" name="user-content-template-parameters"></a>Template parameters</h2><p>C++ templates can take three kinds of parameters: <strong>Value parameters, type parameters, and template template parameters</strong>. <em>There are more categories (References, pointers, etc) but they are not as interesting as the former from the metaprogramming point of view.</em> Here we will see them in depth.</p><h3><a
+class="anchor" href="#value-parameters" name="user-content-value-parameters"></a>Value parameters</h3><p>First of all, C++ templates can take parameters that are <strong>integral values known at compile time</strong>. Say a <code>char</code>, an <code>unsigned int</code>, a <code>long int</code>, etc. The fibonacci example above is one case of template with value parameters only, an <code>int</code> in that case.</p><p>Lets see a more complex example to introduce you to modern C++ features: Imagine a metafunction that given a character <code>c</code> and a size <code>n</code> generates a string containing the <code>n</code> consecutive characters starting at <code>c</code>, name it <code>build_string</code>:</p><pre class="crayon-plain-tag">template&lt;char c , std::size_t n&gt;
+struct build_string
+{
+};</pre><p>Whats the return type of <code>build_string?</code> A string, of course. But we need <em>a compile-time string</em>. One way to represent strings at compile-time is using C++11 variadic templates:</p><pre class="crayon-plain-tag">template&lt;char... Cs&gt;
+struct string
+{
+	static constexpr std::array&lt;char,sizeof...(Cs)+1&gt; value = {Cs...,'\0'};
+	constexpr operator const char*()
+	{
+		return value.data();
+	}
+	operator std::string() const
+	{
+		return std::string{value.data()};
+	}
+};</pre><p>The <code>string</code> template is only a variadic pack of chars, but also has a <code>value</code> member array. That&#8217;s allows us to get the characters at runtime. Note how the array is initialized at compile-time from the char pack.<br
+/> Given the <code>string</code> template, we can build up a string recursively:</p><pre class="crayon-plain-tag">template&lt;char c , std::size_t n&gt;
+struct build_string
+{
+    template&lt;std::size_t count , typename STRING&gt;
+    struct build_string_impl;
+    template&lt;std::size_t count , char... Cs&gt;
+    struct build_string_impl&lt;count,string&lt;Cs...&gt;&gt;
+    {
+    	using result = typename build_string_impl&lt;count-1,string&lt;c+count,Cs...&gt;&gt;::result;
+    };
+    template&lt;char... Cs&gt;
+    struct build_string_impl&lt;0,string&lt;Cs...&gt;&gt;
+    {
+    	using result = string&lt;c,Cs...&gt;;
+    };
+    using result = typename build_string_impl&lt;n,string&lt;&gt;&gt;::result;
+};</pre><p>Using C++14 variable templates one can improve the syntax to get the char array a bit:</p><pre class="crayon-plain-tag">template&lt;char c , std::size_t n&gt;
+constexpr std::array&lt;char,n+1&gt; build_string_array = build_string&lt;c,n&gt;::result::value;</pre><p>How beautiful is to see a hardcoded <code>"abc"</code> string injected in your assembly, isn&#8217;t?<br
+/> <a
+href="http://goo.gl/dHA10n">See for yourself.</a></p><p>Value parameters, variadic templates, constexpr variadic-pack based initialization, C++14 variable templates&#8230; So far so good. Enter type parameters.</p><h3><a
+class="anchor" href="#type-parameters" name="user-content-type-parameters"></a>Type parameters</h3><p>As the name says, are parameters that represent types. The canonical example is a container template:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+class vector
+{
+    ...
+};</pre><p>One useful template is the <strong><em>typelist</em></strong>: A typelist represents a set (list) of types. This simple template is very powerfull since it allows us to hold and manipulate a set of types.<br
+/> Imagine you want to know if a type <code>T</code> is an integer type. What would you do? A simple approach is to store the set of known integral types on a list, and later<br
+/> search if the type we are asking is on that list:</p><pre class="crayon-plain-tag">//The typelist template
+template&lt;typename... Ts&gt;
+struct list{};
+//A metafunction returning the index of a type T in a list of types L. If T doesn't belong to L, it returns -1
+template&lt;typename T , typename L&gt;
+struct index_of;
+//Again that recursive head:tail traversal of functional languages
+template&lt;typename T , typename HEAD , typename... TAIL&gt;
+struct index_of&lt;T,list&lt;HEAD,TAIL...&gt;&gt;
+{
+	static constexpr int next_value = index_of&lt;T,TAIL...&gt;;::value;
+	static constexpr int value = next_value &gt;= 0 ? next_value + 1 : -1; //Propagate the -1 or the index
+};
+//First base case: The type is found (T matches HEAD)
+template&lt;tyename T , typename... TAIL&gt;
+struct index_of&lt;T,list&lt;T,TAIL...&gt;&gt;
+{
+	static constexpr int vaue = 0;
+};
+//Second base case: The type is not found (There are no more types on the list to match with)
+template&lt;typename T&gt;
+struct index_of&lt;T,list&lt;&gt;&gt;
+{
+	static constexpr int value = -1;
+};
+//A type T is integral if its found on a list containing all the integral types
+template&lt;typename T&gt;
+struct is_integral : public std::integral_constant&lt;bool, index_of&lt;T,list&lt;short,int,long,etc...&gt;&gt;::value &gt;= 0&gt;;;
+{};</pre><p>This thing (Storing a typelist of integral types and searching on it) is exactly what the libc++ Standard Library implementation does to implement the <code>std::is_integral</code> type trait. GCC&#8217;s stdlibc++ on the other hand uses explicit template specializations, one for each integral type.</p><p>Also, always be careful when writing and using that recursive metafunctions. The compiler has some limits, and breaking them could lead to some horrible errors like this:</p><p><img
+class="aligncenter wp-image-1688 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/biierror.png" alt="Template metaprogramming: not safe from errors, not even with biicode" width="811" height="375" />And thats only the header of the error, it was really two hundreds of lines long. Remember that &#8220;<em>Template instantiation depth reached max of X</em>&#8221; error. Will be one of your best friends when doing template metaprogramming.</p><h3><a
+class="anchor" href="#template-template-parameters" name="user-content-template-template-parameters"></a>Template-template parameters</h3><p>The last category is also the poor known category of template parameters, possibly because its ugly syntax.</p><p>A template-template parameter its a C++ template parameter which <strong>represents not a type nor a value, but a template itself</strong>:</p><pre class="crayon-plain-tag">template&lt;template&lt;typename&gt; class T&gt;
+struct foo{};</pre><p><code>foo</code> is a template expecting a template with one type parameter only. So <code>foo</code> can take something like this <code>bar</code> as template parameter:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct bar{};
+using foo_instance = foo&lt;bar&gt;;</pre><p>Its possible to write a template that can take any kind of template? No. Thats the reason why we encouraged the use of type parameters only for template metaprogramming during the first post. If we only use type parameters, doing that its easy thanks to variadic templates:</p><pre class="crayon-plain-tag">template&lt;typename...&gt; class T&gt;
+struct universal_template{};</pre><p>If you follow our coding convention, that <code>universal_template</code> could take any kind of template, metafunction, etc we have. During <a
+href="https://www.biicode.com/manu343726/manu343726/turbo_core/master">Turbo</a> development I followed that convention, and used box types for values (With types like <code>std::integral_constant</code>) and templates (With a template similar to that <code>universal_template</code>). The equivalent template was called <code>tml::lazy</code> from the fact that its primarily used for delayed and lazy template instantation:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct unary{};
+template&lt;typename LHS , typename RHS&gt;
+struct binary{};
+using unary_t = tml::lazy&lt;unary&gt;; //Its no more a template but a type
+using binary_t = tml::lazy&lt;binary&gt;;
+using unary_instance = tml::eval&lt;unary_t,int&gt; //Instaintiates the "template" unary_t with int as parameter,
+                                              //so unary_instance is unary</pre><p>As you can see, template-template parameters are very powerful ones, since they can convert templates into types, leading to many use cases. The best of all I think, they are the template metaprogramming equivalent of functors:</p><pre class="crayon-plain-tag">//A simple comparison metafunction
+template&lt;typename LHS , typename RHS&gt;
+struct less
+{
+    using result = std::integral_constant&lt;bool, (sizeof(LHS) &lt; sizeof(RHS))&gt;;
+};
+//Returns the minimal type given a comparison criteria (less by default)
+template&lt;typename LHS , typename RHS&gt;
+struct min
+{
+	using result = typename std::conditional&lt;tml::eval&lt;COMPARER,LHS,RHS&gt;::value,
+	                                         LHS,
+	                                         RHS
+	                                        &gt;::type;
+};</pre><p></p><h2><a
+class="anchor" href="#summary" name="user-content-summary"></a>Summary of template metaprogramming in depth</h2><ul
+class="task-list"><li><strong>Modern C++ compilers are smart enough to optimize the output of the template system and the execution of the template system itself</strong>. Beware of modern compiler capabilites, don&#8217;t tie yourself to old speaks. There are template-related problems, of course, but these are usually not. By default, there is no exponential and mind blowing executable size increase.</li><li><strong>There are three categories of template arguments</strong>, each with their own use cases and properties. Combine them to have a powerful template metaprogramming toolbox.</li></ul><p>Don&#8217;t be afraid if you haven&#8217;t understood some of the examples provided here. They are not intended to be simple, but to show use cases of template metaprogramming. Do you want to understand them completely? <a
+href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/">Come to the workshops</a> next week!</p><style type="text/css">#meetup_oembed .mu_clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }* html #meetup_oembed .mu_clearfix, *:first-child+html #meetup_oembed .mu_clearfix { zoom: 1; }#meetup_oembed { background:#eee;border:1px solid #ccc;padding:10px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;margin:0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12px; }#meetup_oembed h3 { font-weight:normal; margin:0 0 10px; padding:0; line-height:26px; font-family:Georgia,Palatino,serif; font-size:24px }#meetup_oembed p { margin: 0 0 10px; padding:0; line-height:16px; }#meetup_oembed img { border:none; margin:0; padding:0; }#meetup_oembed a, #meetup_oembed a:visited, #meetup_oembed a:link { color: #1B76B3; text-decoration: none; cursor: hand; cursor: pointer; }#meetup_oembed a:hover { color: #1B76B3; text-decoration: underline; }#meetup_oembed a.mu_button { font-size:14px; -moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;border:2px solid #A7241D;color:white!important;text-decoration:none;background-color: #CA3E47; background-image: -moz-linear-gradient(top, #ca3e47, #a8252e); background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #a8252e), color-stop(1, #ca3e47));disvplay:inline-block;padding:5px 10px; }#meetup_oembed a.mu_button:hover { color: #fff!important; text-decoration: none; }#meetup_oembed .photo { width:50px; height:50px; overflow:hidden;background:#ccc;float:left;margin:0 5px 0 0;text-align:center;padding:1px; }#meetup_oembed .photo img { height:50px }#meetup_oembed .number { font-size:18px; }#meetup_oembed .thing { text-transform: uppercase; color: #555; }</style><div
+id="meetup_oembed" style="height:309px"><div
+style="overflow:hidden;max-height:269px"><h3>Madrid C/C++</h3><p
+style="margin:0 0 10px;font-size:12px;line-height:16px;">Madrid, ES <br
+/> <span
+style="font-size:14px;font-weight:bold;">180</span> <em>programadores</em></p><p> <a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank"><img
+src="http://photos4.meetupstatic.com/photos/event/8/c/c/a/600_368916042.jpeg" style="float:right;max-width:150px;margin-right:0;" /></a><div
+style="margin-right:170px;line-height:16px;">Conoce otros programadores C/C++ de Madrid. Haz Networking, aprende, o simplemente disfruta de unas cervezas. Todos los niveles de conocimiento son bienvenidos, incluso princi&#8230;</div></p></div><p
+style="margin:10px 0 5px;"><a
+href="http://www.meetup.com/Madrid-C-Cpp/" target="_blank" class="mu_button">Check out this Meetup Group &rarr;</a></p></div><p
+class="widgettitleFeatures" align="center"><strong>Stay tuned by signing up below</strong></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p> </article><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-cpp-ii/">Template Metaprogramming with Modern C++: templates in depth</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/template-metaprogramming-cpp-ii/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> </channel> </rss>

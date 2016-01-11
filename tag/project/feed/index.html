@@ -1,0 +1,1171 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; project</title> <atom:link href="http://blog.biicode.com/tag/project/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Arduino File Manager and Editor project</title><link>http://blog.biicode.com/arduino-file-manager-editor-project/</link> <comments>http://blog.biicode.com/arduino-file-manager-editor-project/#comments</comments> <pubDate>Tue, 02 Sep 2014 10:00:22 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[editor]]></category> <category><![CDATA[file manager]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source]]></category> <category><![CDATA[project]]></category> <category><![CDATA[reuse]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1053</guid> <description><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard. Thanks to Juan who developed this project called blocporc! List of Arduino file manager and editor parts: Arduino Mega 2560 GLCD display: preferably a KS0108 based. Depending on the type [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard.</p><p>Thanks to <a
+title="Mrquesito twitter" href="https://twitter.com/mrquesito" target="_blank">Juan</a> who developed this project called blocporc!</p><p><img
+class="aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/arduino-file-manager.png" alt="arduino file manager" width="630" height="352" /></p><p><span
+id="more-1053"></span></p><h2>List of Arduino file manager and editor parts:</h2><ul><li><strong>Arduino Mega 2560</strong></li><li><strong>GLCD display</strong>: preferably a KS0108 based. Depending on the type of panel (A, B or C) the connections will vary, but it&#8217;s really well explained at the docs of the glcd library (<a
+style="color: #f48123;" href="https://www.biicode.com/mrquesito/blocks/mrquesito/glcd_v3rc3/branches/master#.U0rkJPl_vCc">https://www.biicode.com/mrquesito/glcd_v3rc3</a>).</li><li><strong>SD card reader</strong> (remember that SD cards are 3.3v-powered devices! You can accomplish by using a voltage divider implemented with two resistors):<br
+/><table><tbody><tr><td><b>SD Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>DO</td><td>50</td></tr><tr><td>CLK</td><td>52</td></tr><tr><td>DI</td><td>51</td></tr><tr><td>CS</td><td>53</td></tr></tbody></table></li><li><strong>PCF8583</strong>: it uses the I2C bus. Since this IC can be powered from 3 to 5 volts, you can use two diodes for adding the 3v cell battery. <strong>Note</strong>: due to the high speed of this bus and to the proximity of a lot of signals (SD, Keyboard&#8230;) it&#8217;s highly likely that you will need to twist and shield the wires. I&#8217;ve shielded them with a lot of aluminium foil; it works great!</li><li><strong>Keyboard</strong>:<br
+/><table><tbody><tr><td><b>Keyboard Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>Data</td><td>4</td></tr><tr><td>IRQ</td><td>3</td></tr></tbody></table></li><li><strong>Enclosure</strong>: a wooden or plastic box.</li></ul><h2>The coding.</h2><p>Open the terminal and execute these commands to see everything on your computer and then compile it and upload to your Arduino.</p><pre class="crayon-plain-tag">~/$ bii init blocporc</pre><p></p><pre class="crayon-plain-tag">~/$ cd blocporc
+~/blocporc$ bii open mrquesito/blocporc
+~/blocporc$ bii find
+~/blocporc$ bii arduino:build
+~/blocporc$ bii arduino:upload</pre><p>Broadly speaking, with blocporc you can create and edit .txt files that are stored in a SD card.</p><p>To read a step by step guide and the code used to build this project, take a look into its biicode repository online: <a
+title="arduino file manager code" href="//www.biicode.com/mrquesito/blocporc" target="_blank"> https://www.biicode.com/mrquesito/blocporc</a></p><p>Happy hacking!</p><p><object
+width="729" height="410"><param
+name="movie" value="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0"></param><param
+name="allowFullScreen" value="true"></param><param
+name="allowscriptaccess" value="always"></param><embed
+src="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0" type="application/x-shockwave-flash" width="729" height="410" allowscriptaccess="always" allowfullscreen="true"></embed></object><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-file-manager-editor-project/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Drinkuino &#8211; An Arduino Cocktail Maker with Android remote control</title><link>http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/</link> <comments>http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/#comments</comments> <pubDate>Fri, 08 Aug 2014 10:58:00 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[android]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[cocktail maker]]></category> <category><![CDATA[DIY]]></category> <category><![CDATA[drink]]></category> <category><![CDATA[project]]></category> <category><![CDATA[remote control]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1032</guid> <description><![CDATA[<p>Make an Arduino Cocktail Maker. With Drinkuino project, you can order your drinks through your Android mobile phone and via bluetooth your Arduino will receive the order and serve them to you. Are you ready to make your own Arduino cocktail maker? Thanks to Drinkuino team for this great project! Drinkuino has 4 containers, and each [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/">Drinkuino &#8211; An Arduino Cocktail Maker with Android remote control</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Make an Arduino Cocktail Maker.</h2><p>With Drinkuino project, you can order your drinks through your Android mobile phone and via bluetooth your Arduino will receive the order and serve them to you. Are you ready to make your own Arduino cocktail maker?</p><p>Thanks to <a
+title="Drinkuino races at biicontest2014" href="http://blog.biicode.com/drinkuino-races-at-biicontest2014/">Drinkuino</a> team for this great project!</p><p><img
+class="aligncenter wp-image-1034 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/descarga.jpg" alt="Arduino Cocktail Maker" width="178" height="178" /></p><p><span
+id="more-1032"></span></p><p><del></del>Drinkuino has 4 containers, and each container has an 220V electrovalve. The Arduino is programmed to sequentially open a certain time each electrovalve.  The cocktail maker uses the Arduino to check if there&#8217;s a glass placed at the correct distance, and turns on the blue leds. Send with your phone the percentages of each liquid you want to serve. Once done, the Arduino plays an initial sound, serves the drink by opening each valve the calculated time.</p><p>Once poured the drink, the Arduino sends a singnal to the Android app , plays a &#8220;end&#8221; sound and the leds start blinking!</p><p>&nbsp;</p><p>If there&#8217;s no glass the leds will turn on red as an indicator.</p><h2>Hardware connections:</h2><p>Grab your Arduino ,potentiometers, wires, resistors, microcontrollers, and start hacking!</p><p><img
+class="aligncenter wp-image-1033" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/drinkuino-schema.png" alt="drinkuino schema" width="630" height="511" /></p><p>Dare to try? The hardest part will be building the container&#8217;s structure.  If you want to make one,  you can find all the information about <a
+title="Drinkuino Arduino Project " href="https://www.biicode.com/pablotoledo/drinkuino_arduino" target="_blank">Drinkuino and the Android App to control the cocktail machine is available here.</a></p><p>Just execute:</p><pre class="crayon-plain-tag">~/$ bii init drinkuino</pre><p></p><pre class="crayon-plain-tag">~/$ bii open pablotoledo/drinkuino:arduino</pre><p>to see everything on your computer and then compile it and upload to your Arduino.</p><p>It uses its own library called drinkuino, Meet Android library for Amarin to connect the Cocktail maker with its app, and the Ultrasonic Library for HR-SC04 Ultrasonic Ranging Module to detect if there&#8217;s a glass placed into the machine.</p><p>Enjoy!</p><p>&nbsp;</p><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/kvzwjHyT5mw?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/">Drinkuino &#8211; An Arduino Cocktail Maker with Android remote control</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Build a smiley mechatronic face today with biicode and arduino!</title><link>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/</link> <comments>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/#comments</comments> <pubDate>Thu, 17 Jul 2014 14:36:34 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=863</guid> <description><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control. This biiday project comes in by Julio Caso, one of our users! Follow this step by step recipe to successfully build this project. If any doubts come, just post [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control.</p><p>This biiday project comes in by Julio Caso, one of our users!</p><p><img
+class="alignnone wp-image-864" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/mechatronic-face-biicode.png" alt="mechatronic face biicode" width="600" height="398" /></p><p>Follow this step by step recipe to successfully build this project. If any doubts come, just post a comment!</p><h3><span
+id="more-863"></span>Mechatronic Face Main Ingredients:</h3><ul><li><a
+title="Arduino uno" href="http://arduino.cc/en/Main/arduinoBoardUno" target="_blank">Arduino Uno</a></li><li><a
+title="Makey Makey Board" href="http://www.thinkgeek.com/product/f082/" target="_blank">Makey Makey board</a></li><li><a
+href="http://www.dx.com/p/ir-receiver-module-wireless-remote-control-kit-for-arduino-1-x-cr2025-135520">IR Receiver Module, Wireless Remote Control Kit for Arduino</a></li><li><a
+title="wii nunchuck" href="http://www.dx.com/es/p/wired-nunchuk-controller-for-wii-u-white-80cm-cable-191948#.U8etXvl_ttZ" target="_blank">Wii Nunchuck</a></li><li>Servo Control</li><li>Arduino Sensor Shield 5</li><li>The usual electronic stuff: wires, leds, protoboard&#8230;</li><li>screws and a screwdriver</li></ul><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li> Led 1</li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+width="315"><ul><li> Led 2</li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+colspan="2" width="581"> The nunchuck:</td></tr><tr><td
+width="315"><ul><li> Power Pin</li></ul></td><td
+width="315">  Pin A3</td></tr><tr><td
+width="315"><ul><li>Trigger Pin</li></ul></td><td
+width="315">  Pin 5</td></tr><tr><td
+width="315"><ul><li>Servo Pin</li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li> GND Pin</li></ul></td><td
+width="315">  Pin A2</td></tr><tr><td
+colspan="2" width="581">And finally, build the face and screw the different parts.</td></tr></tbody></table><p>&nbsp;</p><p>All the coding, connections and 3-D plans are located in <a
+title="readme mechatronic face biicode" href="https://www.biicode.com/blown/blown/cabeza/master/1/readme.md" target="_blank">here</a>.</p><p>Want to try it?  Execute this commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open blown/cabeza
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Watch Julio&#8217;s demo:</p><p><iframe
+width="854" height="510" src="//www.youtube.com/embed/pUikbi9BqMk" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p><p>&nbsp;</p><p>Summer is a great time to be a maker, what are you making?</p><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Make your own simon says game with Arduino and biicode!</title><link>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/</link> <comments>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/#comments</comments> <pubDate>Wed, 09 Jul 2014 08:33:38 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[game]]></category> <category><![CDATA[project]]></category> <category><![CDATA[says]]></category> <category><![CDATA[simon]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=831</guid> <description><![CDATA[<p>We&#8217;re glad to introduce this biiday project, take everyone in the family into building it and then have fun playing! Even the little ones enjoy this! Main Ingredients: Arduino Uno 1 Speaker (8 Ohm) 8 HID leds 5 buttons 1 potentiometer (10kOhm) Resistors to leds Buttons The potentiometer is used to control the volume, every [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/">Make your own simon says game with Arduino and biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We&#8217;re glad to introduce this biiday project, take everyone in the family into building it and then have fun playing! Even the little ones enjoy this! <img
+class="alignnone wp-image-833" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/biicontest-winner.jpg" alt="simon says game arduino" width="630" height="632" /> <span
+id="more-831"></span></p><h3><strong>Main Ingredients:</strong></h3><ul><li>Arduino Uno</li><li>1 Speaker (8 Ohm)</li><li>8 HID leds</li><li>5 buttons</li><li>1 potentiometer (10kOhm)</li><li>Resistors to leds</li><li>Buttons</li></ul><p><span
+style="color: #000000;">The potentiometer is used to control the volume, every button is associated to two leds connected to one pin except the button that starts / selects the game.</span></p><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 1</span></li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> </span><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;">Led 2</span></li></ul></td><td
+width="315">  Pin 11</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 3</span></li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 4</span></li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+colspan="2" width="581"> Now, connect the buttons:</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 1</span></li></ul></td><td
+width="315">  Pin 19</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button</span><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> 2</span></li></ul></td><td
+width="315">  Pin 18</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 3</span></li></ul></td><td
+width="315">  Pin 17</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 4</span></li></ul></td><td
+width="315">  Pin 16</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 5</span></li></ul></td><td
+width="315">  Pin 14</td></tr><tr><td
+colspan="2" width="581">And finally, the speaker</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Speaker</span></li></ul></td><td
+width="315">  Pin 6</td></tr></tbody></table><p>Connect the buttons to the anti-debounce system following this Arduino tutorial <span
+style="color: #444444;">→ <a
+title="Debounce Tutorial Arduino" href="http://arduino.cc/en/Tutorial/Debounce" target="_blank">How to debounce an input</a>, debounce basically means that it checks twice to make sure the button is pressed.</span> <img
+class="alignnone wp-image-836" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/anti-bounce-arduino.png" alt="anti bounce arduino" width="630" height="245" /></p><h3>The coding:</h3><p></p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open alopez/simon
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><h3>Just a few tips left</h3><p><span
+style="color: #444444;"> If you want to use debounce in a project, just write this line on the top of your main file, to reuse from the <a
+title="Alopez Debounce Lib Arduino" href="https://www.biicode.com/alopez/blocks/alopez/debounce/branches/master" target="_blank">alopez&#8217;s user debounce block </a></span></p><pre class="crayon-plain-tag">#include alopez/debounce/debounce.h</pre><p>To play music, reuse from the <a
+title="arduino tone library in biicode" href="https://www.biicode.com/alopez/blocks/alopez/tone/branches/master" target="_blank">Arduino tone Library in biicode</a> by writing into your code this:</p><pre class="crayon-plain-tag">#include alopez/tone/tone.h</pre><p>It also reuses from this <a
+title="random sequence library arduino" href="https://www.biicode.com/csanchezb/blocks/csanchezb/random_sequence/branches/master" target="_blank">library in biicode that creates a random secuence</a> by including:</p><pre class="crayon-plain-tag">#include csanchezb/random_sequence/random_sequence.h</pre><p><a
+title="Downloads biicode" href="http://www.biicode.com/downloads" target="_blank"> Download biicode</a> to start your own Simon Says game!</p><div
+style="width: 630px; " class="wp-video"><video
+class="wp-video-shortcode" id="video-831-2" width="630" height="354" preload="metadata" controls="controls"><source
+type="video/mp4" src="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4?_=2" /><a
+href="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4">https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4</a></video></div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/">Make your own simon says game with Arduino and biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> <enclosure
+url="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4" length="31328315" type="video/mp4" /> </item> <item><title>Do you recognize the early signs of storm? Get help with an Arduino weather station!</title><link>http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/</link> <comments>http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/#comments</comments> <pubDate>Wed, 02 Jul 2014 08:00:07 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[project]]></category> <category><![CDATA[station]]></category> <category><![CDATA[weather]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=747</guid> <description><![CDATA[<p>You probably don&#8217;t. That&#8217;s when this summer project comes in handy, make your own Arduino Weather Station! This project was one of the winners at #biicontest2014, made by @SpainLabs team. You met them in our blog, didn&#8217;t you? Is it useful? For sure! Take a look at its features: Date (With Day of week) Diary Alarm [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/">Do you recognize the early signs of storm? Get help with an Arduino weather station!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>You probably don&#8217;t. That&#8217;s when this summer project comes in handy, make your own Arduino Weather Station!</p><p>This project was one of the winners at #biicontest2014, made by <a
+title="twitter spainlabs" href="https://twitter.com/SpainLabs" target="_blank">@SpainLabs</a> team.</p><p><a
+title="spainlabs project" href="http://blog.biicode.com/spainlabs-project-online/" target="_blank">You met them in our blog, didn&#8217;t you?</a></p><p><img
+class="aligncenter wp-image-749" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/weather-station.jpg" alt="weather station" width="630" height="472" /></p><p><span
+id="more-747"></span></p><p>Is it useful? For sure! Take a look at its features:</p><blockquote><p>Date (With Day of week)</p><p>Diary Alarm</p><p>Automatic turn off alarm after two minutes</p><p>Alarm ON and Alarm Sound icons</p><p>Temperature And Humidity</p><p>Outside Pressure (mBar)</p><p>Outside Luminosity (Lux)</p><p>Data record of Maximum and minimum values</p><p>Possibility to reset the values</p><p>Weather prediction</p><p>Automatic detection of sensors error</p><p>Programmable off backlight time (Min 1 minute, Max Always ON)</p><p>Turn Off the backlight when press encoder switch</p><p>Automatic exit for menus if not change in 5 seconds</p><p>Hour/Date easy adjust</p><p>Wireless communication</p><p>Only one interface with rotary encoder, simplify to use it</p></blockquote><p>Do you want to replicate it fully? No worries, it includes 3D plans!</p><p><img
+class="aligncenter wp-image-751" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/3d-plan.png" alt="3d plan" width="630" height="415" /></p><p><a
+title="info code weather station" href="https://www.biicode.com/triggerr/blocks/triggerr/weather_station_receiver" target="_blank">All information and code can be found in biicode.</a></p><p>To use the exact same code they used, just execute these commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open triggerr/weather_station_receiver
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Let&#8217;s take a look at its guts:</p><p><img
+class="alignleft wp-image-750" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/weather-station-inside-wiring.jpg" alt="weather station inside wiring!" width="400" height="300" /></p><p>&nbsp;</p><p>And that&#8217;s it!</p><p>You won&#8217;t pack wrong stuff ever again!</p><p>Enjoy summer and happy hacking!</p><p><iframe
+width="630" height="473" src="https://www.youtube.com/embed/pb4S7I9CzAY?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/">Do you recognize the early signs of storm? Get help with an Arduino weather station!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>How to make a Raspberry Pi surveillance and alarm</title><link>http://blog.biicode.com/how-to-make-a-raspberry-pi-surveillance-and-alarm/</link> <comments>http://blog.biicode.com/how-to-make-a-raspberry-pi-surveillance-and-alarm/#comments</comments> <pubDate>Tue, 01 Jul 2014 08:29:05 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[alarm]]></category> <category><![CDATA[DIY]]></category> <category><![CDATA[example]]></category> <category><![CDATA[project]]></category> <category><![CDATA[RaspberryPi]]></category> <category><![CDATA[surveillance]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=740</guid> <description><![CDATA[<p>It&#8217;s the 1st of July,  and hopefully you are lucky enough to go on holiday soon, this is a great way to make a useful project right before leaving home alone! This is a cheap but powerful system of surveillance and alarm,  we know it&#8217;s always hard to leave home  for a long trip, but [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/how-to-make-a-raspberry-pi-surveillance-and-alarm/">How to make a Raspberry Pi surveillance and alarm</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>It&#8217;s the 1st of July,  and hopefully you are lucky enough to go on holiday soon, this is a great way to make a useful project right before leaving home alone!</p><p>This is a cheap but powerful system of surveillance and alarm,  we know it&#8217;s always hard to leave home  for a long trip, but now you can be confident!</p><p>We&#8217;d love to thank first <span
+class="screen-name"><a
+class="pretty-link js-nav" title="Oscar Rodriguez" href="https://twitter.com/sistemasorp" target="_blank">@sistemasorp</a> , the #biicontest finalist that hacked this project!</span></p><p><img
+class="alignnone wp-image-742" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/rpi-alarm.jpg" alt="rasberry pi alarm" width="630" height="473" /></p><h4><span
+id="more-740"></span>Pre- Requisites:</h4><ul
+style="color: #000000;"><li><a
+style="font-weight: bold; color: #4183c4;" href="http://www.raspberrypi.org/buy/">Raspberry Pi model A</a></li><li><a
+style="font-weight: bold; color: #4183c4;" href="http://www.bricogeek.com/shop/raspberry-pi/569-camara-de-5mp-para-raspberry-pi.html">PiCamera</a></li><li><a
+style="font-weight: bold; color: #4183c4;" href="http://www.bricogeek.com/shop/573-kit-lcd-rgb-16x2-para-raspberry-pi.html">Adafruit RGB LCD Plate</a></li><li><a
+style="font-weight: bold; color: #4183c4;" href="http://www.bricogeek.com/shop/sensores/42-sensor-de-movimiento-pir.html">PIR sensor</a></li><li><a
+style="font-weight: bold; color: #4183c4;" href="http://www.bricogeek.com/shop/wifi/583-adaptador-wifi-usb.html">USB WIFI dongle</a></li><li><a
+style="font-weight: bold; color: #4183c4;" href="http://www.dx.com/es/p/8s-5a-switch-mode-ultimate-bec-ubec-45214">UBEC regulator</a></li></ul><h4>The Diagram:</h4><p><img
+class="alignnone wp-image-741" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/wiring-circuit.jpg" alt="wiring circuit" width="630" height="451" /></p><blockquote><p
+style="color: #000000;">The UBEC and PIR module can be powered from 7 to 12 volts. The out VCC wire of UBEC goes to GPIO pin 2 (5V), the GND one goes to GPIO pin 6 (GND).</p><p
+style="color: #000000;">The PIR module signal is open drain, so it needs a pullup resistor. A wire from GPIO 1 (3V3) to a 10K resistor lead, from the other resitor lead there are two wires: the first to GPIO pin 12 (GPIO1) and the second to PIR alarm.</p></blockquote><p>Click here to check <a
+title="raspberry pi surveillance alarm" href="https://www.biicode.com/osropa/blocks/osropa/pi_surveillance_alarm/branches/master" target="_blank">all the steps and code to replicate the alarm</a>.</p><p>To use the exact same code they used, just execute these commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open osropa/pi_surveillance_alarm
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Well, thanks again, <a
+class="pretty-link js-nav" title="Oscar Rodriguez" href="https://twitter.com/sistemasorp" target="_blank">@sistemasorp</a>, we&#8217;re pretty sure that our users will enjoy your project!</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/IeQZeSa2zDg?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p>Enjoy hacking!</p><p>We&#8217;d love to hear about your holiday&#8217;s projects too!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/how-to-make-a-raspberry-pi-surveillance-and-alarm/">How to make a Raspberry Pi surveillance and alarm</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/how-to-make-a-raspberry-pi-surveillance-and-alarm/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</title><link>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/</link> <comments>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/#comments</comments> <pubDate>Wed, 11 Jun 2014 08:30:38 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[nexmo]]></category> <category><![CDATA[project]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=659</guid> <description><![CDATA[<p>What&#8217;s this biiday project about? Get your Arduino to call you whenever the temperature rises! In this case, we&#8217;re going to make our Arduino board call a phone based on the temperature value obtained from the 10-DOF IMU Breakout module, and then remotely control it with the keypad. To connect to temboo, we&#8217;re using the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>What&#8217;s this biiday project about? Get your Arduino to call you whenever the temperature rises!</p><p>In this case, we&#8217;re going to make our Arduino board call a phone based on the temperature value obtained from the <a
+title="10-DOF IMU Breakout module" href="http://www.adafruit.com/products/1604" target="_blank">10-DOF IMU Breakout module</a>, and then remotely control it with the keypad.</p><p>To connect to <a
+title="temboo" href="https://temboo.com/" target="_blank">temboo</a>, we&#8217;re using the <a
+title="Adafruit CC300 WiFi Module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC300 WiFi Module</a> and reusing code from <a
+title="Diego Block for CC3000 Module Adafruit" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master" target="_blank">diego/ardunet.</a></p><p><img
+class="aligncenter wp-image-660" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/temboo_nexmo_bb.jpg" alt="temboo_nexmo_bb" width="630" height="544" /><span
+id="more-659"></span></p><p>The  layout above, was made with fritzing for an Arduino mega 2560.</p><p>If you want to make your Arduino make a phone call, we&#8217;ve made a new reusable block! . You just need to create a free Nexmo account and  reuse from davidvirseda/nexmo block.</p><p>Just make sure you have a temboo choreo configured in order to get data from your nexmo account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/nexmo --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include &lt;Arduino.h&gt;
+#include &lt;SPI.h&gt;
+#include &lt;diego/temboo/temboo.h&gt;
+#include "tembooaccount.h" // Contains Temboo account information
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "davidvirseda/nexmo/nexmochoreo.h"
+#include &lt;adafruit/ada_10dof/adafruit_10dof.h&gt;
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+/* Assign a unique ID to the sensors */
+Adafruit_BMP085_Unified  bmp   = Adafruit_BMP085_Unified(18001);
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+				 ADAFRUIT_CC3000_IRQ,
+				 ADAFRUIT_CC3000_VBAT,
+				 SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+String makeNexmoCall();
+// The number of times to trigger the action if the condition is met.
+// We limit this so you won't use all of your Temboo calls while testing.
+int maxCalls = 1;
+// The number of times this Choreo has been run so far in this sketch.
+int calls = 0;
+float temperature;
+void setup() {
+  Serial.begin(9600);
+  // For debugging, wait until the serial console is connected.
+  delay(4000);
+  while(!Serial);
+  startConnection(cc3000,
+        	        WLAN_SSID,
+                  WLAN_PASS,
+                  WLAN_SEC_WPA2);
+  Serial.println("OK");
+  if(!bmp.begin()){
+        /* There was a problem detecting the BMP085 ... check your connections */
+        Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+  }
+  delay(5000);
+  Serial.println("Setup complete.\n");
+}
+void loop() {
+  bmp.getTemperature(&amp;temperature);
+  Serial.println("Temperature: ");
+  Serial.println(temperature);
+  if (temperature &gt; 30) {
+    if (calls &lt; maxCalls) {
+      Serial.println("\nTriggered! Calling /Library/Nexmo/Voice/CaptureTextToSpeechPrompt...");
+      TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+      String choice = makeNexmoCall(choreo, "It's getting hot in here!, Press 1 to turn on A/C",
+                                    NEXMO_API_KEY, NEXMO_API_SECRET, NUMBER_TO, "1", "Ok, your wish is my command. Goodbye!");
+      if (choice == "1") {
+	digitalWrite(12, HIGH);
+        	Serial.println("A/C is on");
+      }
+      calls++;
+    } else {
+      Serial.println("\n Triggered! Skipping the action to save Temboo calls during testing.");
+      Serial.println("You can adjust or remove the calls/maxCalls if() statement to change this behavior.\n");
+    }
+  }
+  delay(10000);
+  digitalWrite(12, LOW);
+}</pre><p>As you can see in this example, the Arduino board will make a phone call whenever the temperature obtained from the 10- DOF IMU Breakout module is higher than 30 degrees.</p><p>Customize the temperature that pulls the trigger and adapt the text you want to listen by the phone.</p><p>The Temboo, Nexmo and WiFi credentials are stored in “tembooaccount.h”, this file is not publicly visible to keep sensitive data in private, but it&#8217;s the header file temboo gives you when you configure your settings, and it should look like this one:</p><pre class="crayon-plain-tag">/*
+IMPORTANT NOTE about TembooAccount.h
+TembooAccount.h contains your Temboo account information and must be included
+alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,
+and copy this content into it.
+*/
+#define TEMBOO_ACCOUNT "account_name"  // Your Temboo account name
+#define TEMBOO_APP_KEY_NAME "myFirstApp"  // Your Temboo app key name
+#define TEMBOO_APP_KEY "app_key"  // Your Temboo app key
+#define NEXMO_API_KEY "app_key" //Nexmo API Key
+#define NEXMO_API_SECRET "api_secret"
+#define NUMBER_TO "number_to_call"
+#define WLAN_SSID "wifi_ide"
+#define WLAN_PASS "your_pass_here"
+#define WLAN_SECURITY WLAN_SEC_WPA2
+/*
+The same TembooAccount.h file settings can be used for all Temboo SDK sketches.
+Keeping your account information in a separate file means you can share the
+main .ino file without worrying that you forgot to delete your credentials.
+*/</pre><p>Well, you&#8217;re ready to go:</p><p>Just push or execute<img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><pre class="crayon-plain-tag">bii arduino:upload</pre><p>&nbsp;</p><p>Let&#8217;s see the results with our Arduino Serial Monitor!<img
+class="aligncenter wp-image-663" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura_monitor.jpg" alt="Bii IDE" width="630" height="709" /></p><p>It is not necessary to download on install anything manually! Biicode manages to get everything, the temboo library, the 10-DOF IMU adafruit library and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically.</p><p>Temboo has hundreds of services, and using the great <a
+title="adafruit" href="https://www.adafruit.com/" target="_blank">adafruit</a> HW components is simple with biicode, so let your imagination fly and build your Internet of Things application!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>#biicontest 2014 submit deadline is here!</title><link>http://blog.biicode.com/biicontest2014-submit-deadline/</link> <comments>http://blog.biicode.com/biicontest2014-submit-deadline/#comments</comments> <pubDate>Mon, 14 Apr 2014 12:47:44 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[#biicontest2014]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <category><![CDATA[raspberry pi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=58</guid> <description><![CDATA[<p>You can relax now, we’ve got all your awesome projects. Now it’s time for our great jurors to discuss which project is better. We’re pretty certain that their experienced hands, will choose accurately! We’ll announce the winners April 30th 2014. Wanna know more about our contestants? Meet PROHUS Telecoum Team: 1. By whom is composed PROHUS Teloucom? [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicontest2014-submit-deadline/">#biicontest 2014 submit deadline is here!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>You can relax now, we’ve got all your awesome projects.</h3><p>Now it’s time for our great jurors to discuss which project is better. We’re pretty certain that their experienced hands, will choose accurately!</p><p>We’ll announce the winners April 30th 2014.</p><p>Wanna know more about our contestants? Meet PROHUS Telecoum Team:</p><p><span
+id="more-58"></span></p><h4><strong>1. By whom is composed PROHUS Teloucom? What do you do in life?</strong></h4><p>We are three old friends from school, Lops, Tronxo and Peri.</p><p>Lops is an Industrial Engineering student at UPM, Madrid, currently working on his final project in the Electronics department, also a member of RESET (an electronics student society in his university).</p><p>Tronxo is again a student at UPM, currently finishing his final project in Telecommunication Engineering in Sweden.</p><p>Peri is a Maths graduate from UCM, Madrid, currently working on his Master&#8217;s project in Complex Systems, in the UK.</p><h4><strong>2. How long have you been playing with RaspberryPi/Arduino?</strong></h4><p>Lops met Arduino about five years ago, in a musical electronics lecture. He has participated in several robotic contests from then on.</p><p>Tronxo has actually never used either of those before, but has experience with other microcontrollers and platforms.</p><p>Peri discovered the Raspberry Pi two years ago, and Arduino last Christmas. He has been trying to teach himself something useful since then.</p><h4><strong>3. What caught your attention from #biicontest2014? What made you sign up?</strong></h4><p>The opportunity to work in something we like and having the chance to win nice prizes is very tempting!</p><p>Also, as we all live in different countries at the moment, it is a good way to keep in touch.</p><h4><strong>4. Would you advise others to join?</strong></h4><p>Of course! Sharing is the main feature in Biicode, the more the merrier.</p><p>We would also like to thank Antonio Barrientos for letting us know through <a
+title="Reset ETSII" href="http://reset.etsii.upm.es/es/" target="_blank">RESET</a>&#8216;s newsletter!</p><p><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/prohus.png"><img
+class="alignnone size-full wp-image-59" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/prohus.png" alt="prohus" width="730" height="598" /></a><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicontest2014-submit-deadline/">#biicontest 2014 submit deadline is here!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicontest2014-submit-deadline/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>bicontest2014 registration is now closed</title><link>http://blog.biicode.com/bicontest2014-registration-closed/</link> <comments>http://blog.biicode.com/bicontest2014-registration-closed/#comments</comments> <pubDate>Wed, 09 Apr 2014 14:46:17 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[#biicontest2014]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <category><![CDATA[raspberry pi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=98</guid> <description><![CDATA[<p>We want to thank all the teams for joining #biicontest2014, we’re delighted that they had enough courage to participate. The moment of truth has arrived:  put the icing on your cakes and deliver them before the 13th April 2014. We’re waiting forward to see the results of your hard work! By now, you can get [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bicontest2014-registration-closed/">bicontest2014 registration is now closed</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We want to thank all the teams for joining <a
+title="biicontest2014 biicode" href="https://www.biicode.com/biicontest2014-en" target="_blank">#biicontest2014</a>, we’re delighted that they had enough courage to participate.</p><p>The moment of truth has arrived:  <strong>put the icing on your cakes and deliver them before the 13th April 2014.</strong></p><p>We’re waiting forward to see the results of your hard work!</p><p><span
+id="more-98"></span></p><p>By now, you can get to know better some of our newest teams:</p><p>Our contestant María, she’s <strong>Nunen</strong> team all by herself. She is technical computing engineer, she tinkers a little with Raspberry Pi and Arduino. Biicontest caught her eye in cause of the chance to develop a project and try a new tool.</p><p><strong>Pruli</strong> team is formed by Álvaro López, technical industrial engineer and current student of the master about automatic and robotics and Carlos Sánchez is studying engineering in telecomunications. They’re friends from school.</p><p>Each of them started playing with Raspberry PI and Arduino in different times, Álvaro began 4 o 5 years ago when in College, they bought a 3D printer and became interested in this world, making small projects with arduino and helping his partners with their hardware projects, even though I’ve never used Raspberry PI. Carlos started making small projects with Raspberry Pi 2 or 3 years ago. He usually made software projects: using a Raspbery to develop a database server, a web server … His first experience with Arduino was making a 3D printer at home and he has done different projects involving Arduino an 3D printing ever since.</p><p><strong>What caught their attention?</strong></p><p>In their own words: “the contest was launched by a Spanish company, in Madrid to be precise, it also caught our attention the amount of sponsors, companies where we usually buy. The prizes were relevant too. In addition to everything mentioned, Álvaro knows some of the people involved in Biicode.”</p><p><strong>Would they advise others to join?</strong></p><p><strong>Nunen</strong> doesn’t doubt it: for sure she will.</p><p>And <strong>Pruli</strong> clearly recommend to everyone who loves this world to join now, because first of all they’ll know a tool that can be very useful for their next projecs, and they can win fantastic prizes.</p><p>&nbsp;</p><p>Happy coding!</p><p><img
+class="alignleft wp-image-105 size-full" title="biicontest2014 logo" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/biicontest2014.png" alt="biicontest2014" width="332" height="75" /></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bicontest2014-registration-closed/">bicontest2014 registration is now closed</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bicontest2014-registration-closed/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Create a funny moving Doll with RaspberryPI</title><link>http://blog.biicode.com/funny-moving-doll-raspberrypi/</link> <comments>http://blog.biicode.com/funny-moving-doll-raspberrypi/#comments</comments> <pubDate>Fri, 20 Dec 2013 13:38:26 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[doll]]></category> <category><![CDATA[moving]]></category> <category><![CDATA[project]]></category> <category><![CDATA[RaspberryPi]]></category> <category><![CDATA[tutorial]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=345</guid> <description><![CDATA[<p>Would you like to surprise your friends by doing something really cool? You can now make a moving doll in just 20 minutes using RaspberryPI and biicode. It’s super easy, you only have to follow this 4 steps: You just need paper, scissors, a servo, a RaspberryPI and biicode! Read our short “How to make [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/funny-moving-doll-raspberrypi/">Create a funny moving Doll with RaspberryPI</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+dir="ltr">Would you like to surprise your friends by doing something really cool?</p><p
+dir="ltr">You can now make a moving doll in just 20 minutes using RaspberryPI and <a
+href="http://www.biicode.com">biicode</a>.</p><div
+id="attachment_1162" style="width: 361px" class="wp-caption aligncenter"><img
+class="wp-image-1162" src="http://blog.biicode.com/wp-content/uploads/sites/2/2013/12/pi1l.jpg" alt="RaspberryPi" width="351" height="281" /><p
+class="wp-caption-text">Credit: ScratchMyPi</p></div><p
+dir="ltr">It’s super easy, you only have to follow this 4 steps:</p><p
+dir="ltr"><span
+id="more-345"></span></p><ol><li>You just need paper, scissors, a servo, a RaspberryPI and biicode!</li><li>Read our short “<a
+title="Funny Moving doll rpi" href="http://docs.biicode.com/raspberrypi/examples/raspberry-pi-moving-doll.html" target="_blank">How to make a funny moving doll”</a> doc</li><li>Implement the code and build a project using biicode in 2 minutes</li><li>Make your own design (or just use a <a
+title="cubeecraft" href="http://www.cubeecraft.com/" target="_blank">cubeecraft</a>)</li></ol><p
+dir="ltr">We created a <a
+title="Funny moving doll biicode" href="https://www.youtube.com/watch?v=_X9g1PrzcXM&#038;feature=youtu.be" target="_blank">Heisenberg doll</a> in 20 minutes. Is cool, isn’t it?</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/_X9g1PrzcXM?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p
+dir="ltr">There are thousands of different funny moving dolls that can be built. And we know you can beat Heisenberg… it&#8217;s really easy to try.</p><p
+dir="ltr">Once you have your doll moving, share it with your friends and family and make them laugh.</p><p
+dir="ltr">We would love to see how creative you are. You can send us your creations to <a
+title="info biicode email" href="mailto:info@biicode.com" target="_blank">info@biicode.com</a> and we will upload them to our YouTube channel.</p><p
+dir="ltr">It’s a good opportunity to show your circles that your christmas cards are special and unique.</p><p
+dir="ltr">Can you surprise us?</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/funny-moving-doll-raspberrypi/">Create a funny moving Doll with RaspberryPI</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/funny-moving-doll-raspberrypi/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

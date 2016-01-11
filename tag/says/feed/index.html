@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; says</title> <atom:link href="http://blog.biicode.com/tag/says/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Make your own simon says game with Arduino and biicode!</title><link>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/</link> <comments>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/#comments</comments> <pubDate>Wed, 09 Jul 2014 08:33:38 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[game]]></category> <category><![CDATA[project]]></category> <category><![CDATA[says]]></category> <category><![CDATA[simon]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=831</guid> <description><![CDATA[<p>We&#8217;re glad to introduce this biiday project, take everyone in the family into building it and then have fun playing! Even the little ones enjoy this! Main Ingredients: Arduino Uno 1 Speaker (8 Ohm) 8 HID leds 5 buttons 1 potentiometer (10kOhm) Resistors to leds Buttons The potentiometer is used to control the volume, every [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/">Make your own simon says game with Arduino and biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We&#8217;re glad to introduce this biiday project, take everyone in the family into building it and then have fun playing! Even the little ones enjoy this! <img
+class="alignnone wp-image-833" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/biicontest-winner.jpg" alt="simon says game arduino" width="630" height="632" /> <span
+id="more-831"></span></p><h3><strong>Main Ingredients:</strong></h3><ul><li>Arduino Uno</li><li>1 Speaker (8 Ohm)</li><li>8 HID leds</li><li>5 buttons</li><li>1 potentiometer (10kOhm)</li><li>Resistors to leds</li><li>Buttons</li></ul><p><span
+style="color: #000000;">The potentiometer is used to control the volume, every button is associated to two leds connected to one pin except the button that starts / selects the game.</span></p><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 1</span></li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> </span><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;">Led 2</span></li></ul></td><td
+width="315">  Pin 11</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 3</span></li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 4</span></li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+colspan="2" width="581"> Now, connect the buttons:</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 1</span></li></ul></td><td
+width="315">  Pin 19</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button</span><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> 2</span></li></ul></td><td
+width="315">  Pin 18</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 3</span></li></ul></td><td
+width="315">  Pin 17</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 4</span></li></ul></td><td
+width="315">  Pin 16</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 5</span></li></ul></td><td
+width="315">  Pin 14</td></tr><tr><td
+colspan="2" width="581">And finally, the speaker</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Speaker</span></li></ul></td><td
+width="315">  Pin 6</td></tr></tbody></table><p>Connect the buttons to the anti-debounce system following this Arduino tutorial <span
+style="color: #444444;">→ <a
+title="Debounce Tutorial Arduino" href="http://arduino.cc/en/Tutorial/Debounce" target="_blank">How to debounce an input</a>, debounce basically means that it checks twice to make sure the button is pressed.</span> <img
+class="alignnone wp-image-836" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/anti-bounce-arduino.png" alt="anti bounce arduino" width="630" height="245" /></p><h3>The coding:</h3><p></p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open alopez/simon
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><h3>Just a few tips left</h3><p><span
+style="color: #444444;"> If you want to use debounce in a project, just write this line on the top of your main file, to reuse from the <a
+title="Alopez Debounce Lib Arduino" href="https://www.biicode.com/alopez/blocks/alopez/debounce/branches/master" target="_blank">alopez&#8217;s user debounce block </a></span></p><pre class="crayon-plain-tag">#include alopez/debounce/debounce.h</pre><p>To play music, reuse from the <a
+title="arduino tone library in biicode" href="https://www.biicode.com/alopez/blocks/alopez/tone/branches/master" target="_blank">Arduino tone Library in biicode</a> by writing into your code this:</p><pre class="crayon-plain-tag">#include alopez/tone/tone.h</pre><p>It also reuses from this <a
+title="random sequence library arduino" href="https://www.biicode.com/csanchezb/blocks/csanchezb/random_sequence/branches/master" target="_blank">library in biicode that creates a random secuence</a> by including:</p><pre class="crayon-plain-tag">#include csanchezb/random_sequence/random_sequence.h</pre><p><a
+title="Downloads biicode" href="http://www.biicode.com/downloads" target="_blank"> Download biicode</a> to start your own Simon Says game!</p><div
+style="width: 630px; " class="wp-video"><video
+class="wp-video-shortcode" id="video-831-2" width="630" height="354" preload="metadata" controls="controls"><source
+type="video/mp4" src="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4?_=2" /><a
+href="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4">https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4</a></video></div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/">Make your own simon says game with Arduino and biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> <enclosure
+url="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4" length="31328315" type="video/mp4" /> </item> </channel> </rss>

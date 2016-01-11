@@ -1,0 +1,768 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/openssl-available-biicode/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:49:56 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>OpenSSL is now available in biicode! - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="Depend on OpenSSL with biicode, use it in Windows, Linux and OSx (macOS). Quickly update your dependency to the latest OpenSSL version."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="OpenSSL is now available in biicode! - biicode Blog" /><meta
+property="og:description" content="Depend on OpenSSL with biicode, use it in Windows, Linux and OSx (macOS). Quickly update your dependency to the latest OpenSSL version." /><meta
+property="og:url" content="http://blog.biicode.com/openssl-available-biicode/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="Heartbleed" /><meta
+property="article:tag" content="Secure Connections" /><meta
+property="article:tag" content="SSL" /><meta
+property="article:tag" content="TLS" /><meta
+property="article:section" content="try this out" /><meta
+property="article:published_time" content="2015-01-28T12:52:00+00:00" /><meta
+property="article:modified_time" content="2015-05-08T11:12:32+00:00" /><meta
+property="og:updated_time" content="2015-05-08T11:12:32+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/openSSL.jpeg" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@lasote"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="OpenSSL is now available in biicode!"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/openSSL.jpeg"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; OpenSSL is now available in biicode! Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index3ea6.html?p=2028' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-2028 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/try-this-out/index.html" rel="v:url" property="v:title">try this out</a> » <strong
+class="breadcrumb_last">OpenSSL is now available in biicode!</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-2028" class="post-2028 post type-post status-publish format-standard has-post-thumbnail hentry category-try-this-out tag-heartbleed tag-secure-connections tag-ssl tag-tls"> <header
+class="entry-header"><h1 class="entry-title">OpenSSL is now available in biicode!</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="12:52" rel="bookmark"><time
+class="entry-date" datetime="2015-01-28T12:52:00+00:00">January 28, 2015</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/lasote/index.html" title="View all posts by lasote" rel="author">lasote</a></span></span></div> </header><div
+class="entry-content"><p>The <a
+title="OpenSSL website" href="https://www.openssl.org/"><strong>OpenSSL</strong></a> Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support.<br
+/> It was born in 1998 and today about 66% of internet servers are using OpenSSL.</p><p><img
+class="aligncenter wp-image-2038 size-full" title="OpenSSL is now supported in biicode" src="../wp-content/uploads/sites/2/2015/01/openSSL.jpg" alt="Secure connections can now be used from C/C++ source code with biicode and OpenSSL" width="431" height="117" /></p><p>&nbsp;</p><p><strong>UPDATE!</strong> [10-Feb-2015] OpenSSL <a
+title="OpenSSL 1.0.2 " href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">last version 1.0.2 is ready on biicode! </a> We created a <a
+title="block tracks help" href="http://docs.biicode.com/c++/dependencies.html?highlight=track#depending-on-a-block-track" target="_blank">block track</a> lasote/openssl(v1.0.2).<br
+/> Remeber, you can switch between v1.0.1 and v1.0.2 just changing the requirements line in biicode.conf file.</p><p><span
+id="more-2028"></span></p><h2>Benefits</h2><p>→ Keeping your dependencies updated is really important, specially with this kind of projects. <a
+title="Heart bleed bug" href="http://heartbleed.com/">Heartbleed</a> bug affected half a million widely trusted websites. It&#8217;s proven, it is essential to keep OpenSSL updated. With <strong>biicode</strong> updating versions is easy. Just change the requirements version in <strong>biicode.conf</strong> file.</p><p>→ Code in <a
+title="lasote/openssl github" href="https://github.com/lasote/openssl/tree/OpenSSL_1_0_1l_biicode" target="_blank">github</a>: You can check <a
+title="diff code" href="https://github.com/lasote/openssl/compare/openssl:OpenSSL_1_0_1l...OpenSSL_1_0_1l_biicode" target="_blank">the diff</a> between original source code and source code used in biicode. There are only few changes to be build the library with CMake and biicode.</p><p>→ Tested on <strong>Windows</strong> with <strong>MinGW</strong> and <strong>Visual Studio</strong>, <strong>Linux</strong> with <strong>gcc</strong> and <strong>OSx</strong> with <strong>Clang</strong>.</p><h2>You can use OpenSSL in your C/C++ projects following these steps:</h2><h3>1. Create a new biicode project and a new block</h3><p></p><div
+id="crayon-56886d1f9f694176371323" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+ bii init myproject
+ cd myproject
+ bii new myuser/myblock</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d1f9f694176371323-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f694176371323-2">2</div><div
+class="crayon-num" data-line="crayon-56886d1f9f694176371323-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d1f9f694176371323-1"><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">init </span><span
+class="crayon-e">myproject </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f694176371323-2"><span
+class="crayon-e"> </span><span
+class="crayon-r">cd</span><span
+class="crayon-h"> </span><span
+class="crayon-e">myproject</span></div><div
+class="crayon-line" id="crayon-56886d1f9f694176371323-3"><span
+class="crayon-e"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">myuser</span><span
+class="crayon-o">/</span><span
+class="crayon-v">myblock</span></div></div></td></tr></table></div></div><p></p><h3>2. Create a main.cpp and paste this example code in it</h3><p><b> myproject/blocks/myuser/myblock/main.cpp </b></p><div
+id="crayon-56886d1f9f6a6591706477" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title">OpenSSL example</span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include "lasote/openssl/include/openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-2">2</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-4">4</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-6">6</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-8">8</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-10">10</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-12">12</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-14">14</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-16">16</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-18">18</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-20">20</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6a6591706477-22">22</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6a6591706477-23">23</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-1"><span
+class="crayon-p">#include "lasote/openssl/include/openssl/sha.h"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-2"><span
+class="crayon-p">#include &lt;string.h&gt;</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-3"><span
+class="crayon-p">#include &lt;stdio.h&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-4">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-5"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-6"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// The data to be hashed</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-7"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-t">unsigned</span><span
+class="crayon-h"> </span><span
+class="crayon-t">char</span><span
+class="crayon-h"> </span><span
+class="crayon-v">data</span><span
+class="crayon-sy">[</span><span
+class="crayon-sy">]</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Hello, world!"</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">size_t </span><span
+class="crayon-v">length</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sizeof</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">data</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-9">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">unsigned</span><span
+class="crayon-h"> </span><span
+class="crayon-t">char</span><span
+class="crayon-h"> </span><span
+class="crayon-v">hash</span><span
+class="crayon-sy">[</span><span
+class="crayon-v">SHA_DIGEST_LENGTH</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-11"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">SHA1</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">data</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">length</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">hash</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-12">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-13">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-14"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">char</span><span
+class="crayon-h"> </span><span
+class="crayon-v">mdString</span><span
+class="crayon-sy">[</span><span
+class="crayon-v">SHA_DIGEST_LENGTH</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-15"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">for</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">SHA_DIGEST_LENGTH</span><span
+class="crayon-o">/</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-17"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-e">sprintf</span><span
+class="crayon-sy">(</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">mdString</span><span
+class="crayon-sy">[</span><span
+class="crayon-e ">i*</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"%02x"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-t">unsigned</span><span
+class="crayon-h"> </span><span
+class="crayon-t">int</span><span
+class="crayon-sy">)</span><span
+class="crayon-v">hash</span><span
+class="crayon-sy">[</span><span
+class="crayon-v">i</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-18"><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-19"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">printf</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"sha1 digest: %s\n"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">mdString</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-20">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-21">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6a6591706477-22"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6a6591706477-23"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p></p><h3>3. Download your dependencies and build your project</h3><p></p><div
+id="crayon-56886d1f9f6b0192148250" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+ bii find # This will find 1.0.1 track, if you want 1.0.2 edit biicode.conf file.
+ bii build</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d1f9f6b0192148250-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6b0192148250-2">2</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d1f9f6b0192148250-1"><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">find</span><span
+class="crayon-h"> </span><span
+class="crayon-c"># This will find 1.0.1 track, if you want 1.0.2 edit biicode.conf file.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6b0192148250-2"><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">build</span></div></div></td></tr></table></div></div><p>If you want to keep your #includes the traditional way &#8220;openssl/sha.h&#8221; you can do it editing <b>biicode.conf</b> file and using <a
+title="Include paths" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html#includes" target="_blank">&#8220;include paths&#8221;</a> feature. If you want OpenSSL v1.0.2 version there is a v1.0.2 track available in biicode, just specify (v1.0.2):</p><div
+id="crayon-56886d1f9f6ba798955737" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+ # Biicode configuration file
+[requirements]
+     lasote/openssl(v1.0.2): 0 # Version of lasote/openssl to require
+[paths]
+[dependencies]
+[mains]
+[hooks]
+[includes]
+    # This will append **lasote/openssl/include** when find a openssl/*.h include
+    openssl/*.h: lasote/openssl/include
+[data]</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d1f9f6ba798955737-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6ba798955737-2">2</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6ba798955737-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6ba798955737-4">4</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6ba798955737-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6ba798955737-6">6</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6ba798955737-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6ba798955737-8">8</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6ba798955737-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6ba798955737-10">10</div><div
+class="crayon-num" data-line="crayon-56886d1f9f6ba798955737-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886d1f9f6ba798955737-12">12</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d1f9f6ba798955737-1"><span
+class="crayon-h"> </span><span
+class="crayon-c"># Biicode configuration file</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6ba798955737-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886d1f9f6ba798955737-3"><span
+class="crayon-sy">[</span><span
+class="crayon-v">requirements</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6ba798955737-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">lasote</span><span
+class="crayon-o">/</span><span
+class="crayon-e">openssl</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">v1</span><span
+class="crayon-sy">.</span><span
+class="crayon-cn">0.2</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-h"> </span><span
+class="crayon-c"># Version of lasote/openssl to require</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6ba798955737-5"><span
+class="crayon-sy">[</span><span
+class="crayon-v">paths</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6ba798955737-6"><span
+class="crayon-sy">[</span><span
+class="crayon-v">dependencies</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6ba798955737-7"><span
+class="crayon-sy">[</span><span
+class="crayon-v">mains</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6ba798955737-8"><span
+class="crayon-sy">[</span><span
+class="crayon-v">hooks</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6ba798955737-9"><span
+class="crayon-sy">[</span><span
+class="crayon-v">includes</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6ba798955737-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c"># This will append **lasote/openssl/include** when find a openssl/*.h include</span></div><div
+class="crayon-line" id="crayon-56886d1f9f6ba798955737-11"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">openssl</span><span
+class="crayon-o">/</span><span
+class="crayon-o">*</span><span
+class="crayon-e">.h</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-v">lasote</span><span
+class="crayon-o">/</span><span
+class="crayon-v">openssl</span><span
+class="crayon-o">/</span><span
+class="crayon-i">include</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886d1f9f6ba798955737-12"><span
+class="crayon-sy">[</span><span
+class="crayon-v">data</span><span
+class="crayon-sy">]</span></div></div></td></tr></table></div></div><p>Build again:</p><div
+id="crayon-56886d1f9f6c4576010864" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+  bii build</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886d1f9f6c4576010864-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886d1f9f6c4576010864-1"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">bii </span><span
+class="crayon-v">build</span></div></div></td></tr></table></div></div><p>As you can see, the number of libraries uploaded to biicode is growing fast. Building professional software with a dependency manager involves lots of benefits, and it is now possible with C and C++ with biicode.</p><p>OpenSSL has a <a
+href="https://www.openssl.org/support/" target="_blank">support section</a> in their site to join, donate to, fund and/or hire members of this fantastic project. We encourage you to collaborate with them.</p><p>Hope you enjoy OpenSSL and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../getting-started-with-openssl-git-and-github/index.html" title="biicode’s getting started with OpenSSL, Git and GitHub">biicode’s getting started with OpenSSL, Git and GitHub</a></li><li><a
+href="../raspberry-pi-cross-building-opengl-glfw-windows/index.html" title="Raspberry PI cross building native (C/C++) graphical applications from Windows">Raspberry PI cross building native (C/C++) graphical applications from Windows</a></li><li><a
+href="../appveyor-ci-windows-biicode/index.html" title="Using AppVeyor CI and Deploy for Windows">Using AppVeyor CI and Deploy for Windows</a></li><li><a
+href="../arduino-yun/index.html" title="Arduino Yun now supported">Arduino Yun now supported</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/openssl-available-biicode/' addthis:title='OpenSSL is now available in biicode!' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/try-this-out/index.html" rel="category tag">try this out</a> and tagged <a
+href="../tag/heartbleed/index.html" rel="tag">Heartbleed</a>, <a
+href="../tag/secure-connections/index.html" rel="tag">Secure Connections</a>, <a
+href="../tag/ssl/index.html" rel="tag">SSL</a>, <a
+href="../tag/tls/index.html" rel="tag">TLS</a>. Bookmark the <a
+href="index.html" title="Permalink to OpenSSL is now available in biicode!" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../tiny-metaprogramming-library-boxing-1/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> A Tiny Metaprogramming Library: Boxing &#8211; Part 1</a></div><div
+class="next"><a
+href="../maximum-clique-problem-bitscan-biicode/index.html" rel="next">Solving the maximum clique problem with BITSCAN <span
+class="meta-nav">&rarr;</span></a></div> </nav></div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/openssl-available-biicode/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:49:56 GMT -->
+</html>

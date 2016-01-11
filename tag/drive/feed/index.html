@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; drive</title> <atom:link href="http://blog.biicode.com/tag/drive/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</title><link>http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/</link> <comments>http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/#comments</comments> <pubDate>Wed, 04 Jun 2014 11:02:10 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[drive]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[spreadsheet]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=583</guid> <description><![CDATA[<p>What is this biiday project about? Take your Arduino to filling real data from you home to any SpreadSheet in your Google Drive account, in this case with some values obtained from the 10-DOF IMU Breakout module : pitch, roll, altitude, pressure and temperature. Our code, reuses from the diego/ardunet block in order to connect us with the CC3000 WiFi [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/">IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>What is this biiday project about?</p><p>Take your Arduino to filling real data from you home to any SpreadSheet in your Google Drive account, in this case with some values obtained from the <a
+href="http://www.adafruit.com/products/1604">10-DOF IMU Breakout module</a> : pitch, roll, altitude, pressure and temperature.</p><p>Our code, reuses from the <a
+title="diego/ardunet" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master#.U4h-MvnV-X8">diego/ardunet block</a> in order to connect us with the <a
+href="http://www.adafruit.com/products/1469">CC3000 WiFi module.</a></p><p>And the new <a
+title="fenix/ardunet" href="https://www.biicode.com/fenix/blocks/fenix/ardunet/branches/master#.U4hUNfnV-X8">Ardunet block with SpreadSheet service for Arduino</a> has the functions to achieve the data filling. The following layout was made for an Arduino Mega 2560:</p><p><img
+class="alignnone wp-image-584" title="IoT: Temboo and Adafruit CC3000 WiFi 10Dof Breakout Arduino" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/10Dof_CC3000_Adafruit_Mega2560.png" alt="10Dof_CC3000_Adafruit_Mega2560" width="630" height="501" /><span
+id="more-583"></span></p><p>Just make sure you have a temboo choreo configured in order to get data from your google account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/google --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;SPI.h&gt;
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "fenix/ardunet/adafruit_10dof_utils.h"
+#include "fenix/ardunet/spreadsheet_choreo.h"
+#include "../../../../credentials.h"
+//Define the EXISTING SpreadSheet name which you have in your Google Drive
+#define SPREAD_SHEET_TITLE "My_SpreadSheet_Proof"
+/*
+This file (credentials.h), located in your hive root folder define your wifi settings. Do not publish it!
+	#define TEMBOO_ACCOUNT "user_account_name"  // Your Temboo account name
+	#define TEMBOO_APP_KEY_NAME "app_key_name"  // Your Temboo app key name
+	#define TEMBOO_APP_KEY "app_hey"  // Your Temboo app key
+	#define TEMBOO_CREDENTIAL "ProfileCredential"
+	#define WLAN_SSID "my_wifi" // cannot be longer than 32 characters!
+	#define WLAN_PASS "password"
+	#define WLAN_SECURITY YOUR_WIFI_SECURITY //WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
+*/
+// The number of times to trigger the action if the condition is met.
+// We limit this so you won't use all of your Temboo calls while testing.
+int maxCalls = 3;
+// The number of times this Choreo has been run so far in this sketch.
+int calls = 0;
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+//IMU initializations
+Adafruit_10DOF                dof   = Adafruit_10DOF();
+Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
+Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+										 ADAFRUIT_CC3000_IRQ,
+										 ADAFRUIT_CC3000_VBAT,
+										 SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(115200);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+    initSensors(accel, bmp); //check all the components are OK
+    displaySensorDetails(accel, bmp); //display their characteristics
+}
+void loop() {
+	if (calls &lt; maxCalls) {
+		Serial.println("\nTriggered! Calling /Library/Google/Spreadsheets/AppendRow...");
+		TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+		String all_values_imu = getValuesIMU(dof, accel, bmp); //get values we want to know
+		fillSpreadsheet(choreo, TEMBOO_CREDENTIAL, SPREAD_SHEET_TITLE, all_values_imu);	//fill our spreadsheet
+		digitalWrite(6, HIGH);
+		calls++;
+	} else {
+		Serial.println("\nTriggered! Skipping the action to save Temboo calls during testing.");
+		Serial.println("You can adjust or remove the calls/maxCalls if() statement to change this behavior.\n");
+	}
+	delay(250);
+}</pre><p>&nbsp;</p><p>First, you have to create a SpreadSheet in your Google Drive site. <strong>Don&#8217;t forget to fill the first row and as many columns as different information you wish to save</strong>, or you&#8217;ll have problems sending the data.</p><p><img
+class="alignleft wp-image-604" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/SpreadSheet_10DOF_empty.png" alt="SpreadSheet_10DOF_empty" width="400" height="208" /></p><p>&nbsp;</p><p
+style="color: #574d4d;">It is not necessary to download or install anything manually! Biicode manages to get everything, the temboo library, the 10-DOF IMU adafruit library and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically.</p><p
+style="color: #574d4d;"><strong>Just customise your email address in the code, and</strong></p><p
+style="color: #574d4d;">press <img
+class="alignnone size-full wp-image-587" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /> or execute:</p><p></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /> or:</p><pre class="crayon-plain-tag">bii arduino:upload</pre><p></p><p
+style="color: #574d4d;">You might notice that<strong
+style="font-style: inherit;"> you don’t need to provide your email password</strong>; Temboo is the one that knows and uses your credentials (in the example TEMBOO_CREDENTIAL), which is the name of your settings stored in Temboo, over there you configure your email provider (e.g. gmail), user and password. The connection to temboo is done via your TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME and TEMBOO_APP_KEY, provided in their web page.</p><p
+style="color: #574d4d;">Note that there is a file missing in the <a
+title="fenix/ardunet" href="https://www.biicode.com/fenix/blocks/fenix/ardunet/branches/master#.U4hUNfnV-X8">A<img
+class="alignleft wp-image-603" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/SpreadSheet_10DOF1.png" alt="SpreadSheet_example_temboo" width="400" height="225" />rdunet block with SpreadSheet service for Arduino</a>, it contains sensitive data: the “credentials.h” with details about your WiFi and Temboo credentials.</p><p
+style="color: #574d4d;">Check in this screenshot  how data was filled!</p><p
+style="color: #574d4d;"><a
+title="temboo" href="https://temboo.com/" target="_blank">Temboo</a> has hundreds of services, and using the great adafruit HW components is simple with biicode, so let your imagination fly and <strong
+style="font-style: inherit;">build your Internet of Things</strong> application!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/">IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

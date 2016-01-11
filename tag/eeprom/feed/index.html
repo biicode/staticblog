@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; eeprom</title> <atom:link href="http://blog.biicode.com/tag/eeprom/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</title><link>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/</link> <comments>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/#comments</comments> <pubDate>Tue, 27 May 2014 10:32:40 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[eeprom]]></category> <category><![CDATA[example]]></category> <category><![CDATA[tft]]></category> <category><![CDATA[touchscreen]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=430</guid> <description><![CDATA[<p>Today, you can learn how to save the calibration matrix in your EEPROM and load it any time you use your  TFT Display. Everytime you use the TFT Display you have to calibrate it for drawing anything properly. We can use the Arduino EEPROM to save the  TFT Display calibration matrix and then use it [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/">5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+style="text-align: left;">Today, you can learn how to save the calibration matrix in your EEPROM and load it any time you use your  TFT Display.</p><p><img
+class="size-full wp-image-450 alignleft" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/IMG_20140513_165231281.jpg" alt="TFT display calibration" width="522" height="340" /></p><p>Everytime you use the TFT Display you have to calibrate it for drawing anything properly. We can use the Arduino EEPROM to save the  TFT Display calibration matrix and then use it anytime you want easier than ever before.</p><p><span
+id="more-430"></span></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>We’re re-using from the following Adafruit modules:</p><table
+border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td><img
+class="alignleft wp-image-533" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/tft_adafruit.jpg" alt="TFT Touchscreen adafruit" width="215" height="161" /> <a
+title="ra8875 driver" href="http://www.adafruit.com/products/1590">RA8875 Driver Board for 40-pin TFT Touch Displays</a></td></tr><tr><td><img
+class="alignleft wp-image-532" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/ra8875_adafruit.jpg" alt="Adafruit RA8875 driver" width="215" height="161" /><br
+/> <a
+title="5'' TFT with touchscreen" href="http://www.adafruit.com/products/1596">5.0&#8243; 40-pin TFT Display &#8211; 800&#215;480 with Touchscreen</a></td></tr></tbody></table><p>This is the main code to calibrate your TFT Display and save/load the calibration matrix. We made it by re-using from the <a
+title="adafruit_ra8875 library" href="https://www.biicode.com/adafruit/blocks/adafruit/ra8875/branches/master#.U00SgPl_u3I">adafruit_ra8875 library</a>, and the <a
+title="ra8875_calibrate library" href="https://www.biicode.com/fenix/blocks/fenix/ra8875_calibrate/branches/master#.U00aRfl_u3I">ra8875_calibrate library</a> , both allocated in biicode. Our code is just like this, to use it,  start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/tft --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "SPI.h"
+#include "fenix/ra8875_calibrate/ra8875_calibration.h"
+#include "fenix/ra8875_calibrate/test/aux_funcs.h"
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+tsPoint_t       _tsLCDPoints[3];
+tsPoint_t       _tsTSPoints[3];
+tsMatrix_t      _tsMatrix;
+tsMatrix_t      _tsCalibratedMatrix;
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println("Hello, RA8875!");
+  /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
+    if (!tft.begin(RA8875_800x480))
+  {
+    Serial.println("RA8875 not found ... check your wires!");
+    while (1);
+  }
+  /* Enables the display and sets up the backlight */
+  Serial.println("Found RA8875");
+  tft.displayOn(true);
+  tft.GPIOX(true); // Enable TFT - display enable tied to GPIOX
+  tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+  tft.PWM1out(255);
+  /* Enable the touch screen */
+  Serial.println("Enabled the touch screen");
+  pinMode(RA8875_INT, INPUT);
+  digitalWrite(RA8875_INT, HIGH);
+  tft.touchEnable(true);
+  tft.fillScreen(RA8875_WHITE);
+  delay(100);
+  /* Start the calibration process */
+  tsCalibrate(tft, _tsLCDPoints, _tsTSPoints, &amp;_tsMatrix);
+  if (readCalibrationMatrix (&amp;_tsCalibratedMatrix))
+	  Serial.println("Calibration is OK! :)");
+  else
+	  Serial.println("Calibration is wrong! Repeat the process!");
+  /* _tsMatrix should now be populated with the correct coefficients! */
+  Serial.println("Waiting for touch events ...");
+}
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void loop()
+{
+  tsPoint_t raw;
+  tsPoint_t calibrated;
+  /* Wait around for a touch event */
+  waitForTouchEvent(tft, &amp;raw);
+  /* Calcuate the real X/Y position based on the calibration matrix */
+  calibrateTSPoint(&amp;calibrated, &amp;raw, &amp;_tsCalibratedMatrix);
+  /* Draw a single pixel at the calibrated point */
+  tft.fillCircle(calibrated.x, calibrated.y, 3, RA8875_BLACK);
+}</pre><p><strong> </strong><strong>Do you want to code it?</strong></p><p>It is not necessary to download or install anything manually! Biicode manages to get everything, the Adafruit library, the calibration library, the helper functions, etc. and everything is configured automatically.</p><p>Just copy this main file and then:</p><pre class="crayon-plain-tag">$ bii find</pre><p>and</p><pre class="crayon-plain-tag">$ bii arduino:upload</pre><p><strong> Enjoy drawing!</strong><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/">5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

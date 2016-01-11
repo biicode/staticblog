@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; miguel</title> <atom:link href="http://blog.biicode.com/author/miguel/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Multiplatform Arcade Game in 6 steps with SDL and OpenGL</title><link>http://blog.biicode.com/multiplatform-arcade-sdl/</link> <comments>http://blog.biicode.com/multiplatform-arcade-sdl/#comments</comments> <pubDate>Thu, 23 Oct 2014 13:28:28 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[2D]]></category> <category><![CDATA[arcade game]]></category> <category><![CDATA[freeglut]]></category> <category><![CDATA[GLUI]]></category> <category><![CDATA[OpenGL]]></category> <category><![CDATA[SDL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1850</guid> <description><![CDATA[<p>Biicode already has the first adaptations of libraries like SDL, glui or freeglut, which standardize the access to the windows system. With a little bit of design, and aiming to simplify the life of the programmer, I designed some classes that can be very useful for simple 2D games. The following images are screenshots of two [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/multiplatform-arcade-sdl/">Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode already has the first adaptations of libraries like SDL, glui or freeglut, which standardize the access to the windows system. With a little bit of design, and aiming to simplify the life of the programmer, I designed some classes that can be very useful for simple 2D games. The following images are screenshots of two examples included in examples/game_utils. The second one corresponds to the <a
+title="shooting game c++" href="http://www.biicode.com/examples/post_game" target="_blank">shooting game application</a> we&#8217;ll develop in this mini-tutorial:</p><p><img
+class="aligncenter wp-image-1854" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/game_test.png" alt="game_test_SDL" width="630" height="498" /></p><p><span
+id="more-1850"></span></p><h2>sdl and opengl with biicode</h2><p>Most of the &#8220;Arcade&#8221; games contain the same types of elements: scroll-able backgrounds, sprites (static or animated), text info  and sound. With those elements, each game determines the specific logic, with its stages, levels, and interactions. It is also necessary to interact with the game via the keyboard, mouse, joystick etc.</p><p>In <a
+title="Arcade Game classes " href="http://www.biicode.com/miguel/game_utils" target="_blank">miguel/game_utils</a> the class <b>OpenglGame </b>is provided to easily design a 2D game simplifying the basic use of SDL and OpenGL libs.</p><p>Check the <a
+href="http://www.biicode.com/examples/post_game" target="_blank">post&#8217;s example game </a>immediately by executing:</p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii open examples/post_game
+~$ bii cpp:build
+~$ cd bin
+~$ #execute the game!</pre><p>Let&#8217;s take a step by step look into our game:</p><h3>1. <strong>Create a project and a block to hold your code.</strong></h3><p></p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii new username/simple</pre><p>Create the file game.cpp into blocks/examples/simple directory and put into it the code below to create a simple window:</p><pre class="crayon-plain-tag">#include "miguel/game_utils/OpenglGame.h"
+class MiGame : public OpenglGame
+{
+; //nothing to do
+} mainGame;
+int main(int argc, char** argv) //SDL requires this kind of main
+{
+mainGame.execute();
+return 0;
+}</pre><p>Let’s retrieve the dependencies to the OpenglGame:</p><pre class="crayon-plain-tag">bii find</pre><p>Biicode uses by default with MinGW, so if you want to build with Visual Studio execute:</p><pre class="crayon-plain-tag">bii cpp:configure -G “Visual Studio 10”</pre><p>Build the example:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>If everything worked out properly, a binary file was created into your bin folder: “examples_simple_game” .</p><p>Execute and check what happens: a simple window should appear.</p><p>If you compiled using Visual Studio, in addition to it, the system console also popups. To remove this unwanted additional window, we have to set the &#8220;SUBSYSTEM&#8221;  property in Visual Studio for the exe target. We do this by adding the following lines to CMakeLists.txt after the ADD_BIICODE_TARGETS() line:</p><pre class="crayon-plain-tag">if(MSVC)
+    set_target_properties(${BII_game_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h3>2. <b>Using the keyboard</b></h3><p>Re-act according to keystrokes is quite simple, you only have to overwrite the onKeyboardDown virtual method. The following lines allow to end the application when the ESC key is pressed.</p><pre class="crayon-plain-tag">void onKeyboardDown(SDL_KeyboardEvent k){
+        if(k.keysym.sym==SDLK_ESCAPE)this-&gt;exit();
+}</pre><p></p><h3>3. <b>Drawing a background  </b></h3><p>Managing images and textures has always been a relatively tedious and repetitive  task in OpenGL.</p><p><b>OpenglGame </b>includes a png file reader and the Slide class to create backgrounds easily. The loading of textures, thus the creation of backgrounds and Sprites, must take place within a drawing context. In <b>OpenglGame </b>we do this redefining the setup() method.</p><p>Although it is possible to create sophisticated backgrounds, we will make use of the simplicity provided by the OpenglGame class for a basic background:</p><pre class="crayon-plain-tag">bool setup(){
+setBackground(new Slide(getTexture("data/background.png")));
+return true;
+}</pre><p>Download our <a
+title="data folder.zip" href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/data_folder.zip" target="_blank">data folder utils .zip</a> here and place the folder into <em>blocks/username/simple</em>, we&#8217;re using three different images and a font in this tutorial. For example this is our background:</p><p><img
+class="aligncenter wp-image-1852 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/background-1024x524.png" alt="Game background using SDL and OpenGL" width="630" height="322" /></p><p>Although everything compiles correctly, to run the program, it is necessary to maintain the relative path between the executable and the data. Add the following lines to your CMakeLists.txt right after INIT_BIICODE_BLOCK(). With this lines, the files in the data directory will be copied to the binary dir and to the IDE runtime directory:</p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})</pre><p>Also update your dependencies.bii file, located into game/blocks/username/post_game, this tells biicode to also retrieve the local .png and .ttf files on our data folder:</p><pre class="crayon-plain-tag">game.cpp + data/*.png data/*.ttf</pre><p>If you compile again, you&#8217;d see a window that has our image as background. In this case it has not established any special behavior on the background dimensions, so a default scale of 1:1 in pixels is applied, and the image will stick to the bottom left edges of the window.  OpenglGame class defines its own coordinate system, placing the origin  0,0 at the lower left corner of the window. You have to be careful because events like mouse clicks and images are normalized to this unique coordinate system.</p><h3>4. <b>Loading, drawing and moving our first sprite:</b></h3><p>Let´s include a simple sprite loading a png image.  We add the crosshair variable to MiGame class to allows us to access the sprite attributes later:</p><pre class="crayon-plain-tag">Sprite *crosshair;</pre><p>In the setup we include the creation of the Sprite, and we add it to the list of Sprites managed by MiGame.</p><pre class="crayon-plain-tag">crosshair=new Sprite(getTexture("data/crossair.png"));
+addSprite(crosshair);</pre><p>Once created the crosshair, we&#8217;ve got to follow the mouse movement over the window. Just define the method onMouseMotion()  and make the position of the sprite to match the mouse position:</p><pre class="crayon-plain-tag">void onMouseMotion(SDL_MouseMotionEvent mmevent){
+    crosshair-&gt;pos=Vector2D(mmevent.x,mmevent.y);
+}</pre><p>If we compile and run the example, we’ll  see that it works, but is little aesthetic that we continue seeing the mouse cursor when moving the crosshair. Therefore, in the setup, we will tell SDL to hide the mouse cursor:</p><pre class="crayon-plain-tag">SDL_ShowCursor(SDL_DISABLE);</pre><p></p><h4>4.1. <strong>Adding an animated sprite:</strong></h4><p>Although there are many ways to define a sequence of images that give the impression of movement in a sprite, one of the most common is to have a matrix of drawings with the consecutive frames of the animation.</p><p>To work comfortably with it, we&#8217;ve developed the SpriteSequence class as an specialization of the class Sprite. To use it you have to include the header file:<strong><strong><br
+/> </strong></strong></p><pre class="crayon-plain-tag">#include "miguel/game_utils/SpriteSequence.h"</pre><p>In this case we will add a butterfly, which I have obtained from google searching “butterfly sprite sequence” :</p><p><img
+class="aligncenter wp-image-1851 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/butterfly.png" alt="butterfly sprite" width="700" height="94" /></p><p>The animation is defined by a 1&#215;7 matrix, something that we have to specify when creating the SpriteSequence:</p><pre class="crayon-plain-tag">butterfly= new SpriteSequence(getTexture("data/butterfly.png"),7,1,100,true,200,200);
+addSprite(butterfly);</pre><p></p><h3>5. <strong>Moving the sprite:</strong></h3><p>As in most games, there is a cyclic method responsible of the game logic that we usually redefine: <strong>gameLoop ()</strong>. Since this method is implented in the base class to manage the sprite animations, when redefined, we&#8217;ll include a call to the base class function. We add a very primitive intelligence to the butterfly based on Dice, a game_utils class which allows us to obtain random numbers in a simple way.</p><h3>6. <strong>Printing Scores:</strong></h3><p>Finally, we will set a score, based on the number of shots and the number of hits. So we declare two integer variables that record these values​​, write the logic of shooting and we printing the result as overlay info of the game. Making use of the supplied font loading class on the method <strong>drawGame()</strong>.</p><h3><strong>Results:</strong></h3><p>So your game.cpp file should look like this one:</p><pre class="crayon-plain-tag">#include "miguel/game_utils/OpenglGame.h"
+#include "miguel/game_utils/SpriteSequence.h"
+#include "miguel/game_utils/Dice.h"
+#include "stdio.h"
+class MiGame : public OpenglGame
+{
+	Sprite *crosshair;
+	Sprite *butterfly;
+	Sprite *squirrel;
+	int hits, shots;
+    void onKeyboardDown(SDL_KeyboardEvent k){
+        if(k.keysym.sym==SDLK_ESCAPE)this-&gt;exit();
+	}
+     bool setup(){
+		 SDL_ShowCursor(SDL_DISABLE);
+		 setBackground(new Slide(getTexture("data/background.png")));
+		 crosshair=new Sprite(getTexture("data/crossair.png"), 100,100);
+		 butterfly= new SpriteSequence(getTexture("data/butterfly.png"),7,1,100,true,200,400);
+		 addSprite(butterfly);
+		 addSprite(crosshair);
+		 hits=0;shots=0;
+		return true;
+	 }
+   void onMouseMotion(SDL_MouseMotionEvent mmevent){
+	   crosshair-&gt;pos=Vector2D(mmevent.x,mmevent.y);
+   }
+   void gameLoop()
+   {
+	   OpenglGame::gameLoop();
+	   if(Dice::Int(100)==1)
+		   butterfly-&gt;vel=Vector2D(Dice::Double(250,-250),Dice::Double(30,-30));
+	   if((butterfly-&gt;pos.x&lt;100)&amp;&amp;(butterfly-&gt;vel.x&lt;0))butterfly-&gt;vel.x=-butterfly-&gt;vel.x;
+	   if((butterfly-&gt;pos.x&gt;getWidth())&amp;&amp;(butterfly-&gt;vel.x&gt;0))butterfly-&gt;vel.x=-butterfly-&gt;vel.x;
+	   if((butterfly-&gt;pos.y&lt;100)&amp;&amp;(butterfly-&gt;vel.y&lt;0))butterfly-&gt;vel.y=-butterfly-&gt;vel.y;
+	   if((butterfly-&gt;pos.y&gt;getHeight())&amp;&amp;(butterfly-&gt;vel.y&gt;0))butterfly-&gt;vel.y=-butterfly-&gt;vel.y;
+	   butterfly-&gt;horizontal_flip=butterfly-&gt;vel.x&gt;0;
+   }
+   void onMouseButtonDown(SDL_MouseButtonEvent mb){
+	   if(mb.button==SDL_BUTTON_LEFT){
+		   shots++;
+		   if((butterfly-&gt;pos-Vector2D(mb.x,mb.y)).module()&lt;20){
+			   hits++;
+			   butterfly-&gt;pos=Vector2D(Dice::Double(getWidth(),100),Dice::Double(getHeight(),100));
+		   }
+	   }
+   }
+	void drawGame(){
+		char text[100];
+		OpenglGame::drawGame();
+		sprintf(text,"Hits/Shots %d/%d",hits,shots);
+		drawText("data/Bitwise.ttf",20,text,50,getHeight()-50,255,255,150,true);
+	}
+} mainGame;
+int main(int argc, char** argv)
+{
+mainGame.execute();
+return 0;
+}</pre><p>And this is the CMakeLists.txt:</p><pre class="crayon-plain-tag"># This CMakeLists.txt file helps defining your block building and compiling
+# Include the main biicode macros and functions
+# To learn more about the CMake use with biicode, visit http://docs.biicode.com/c++/building.html
+# Or check the examples below
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+ADD_BIICODE_TARGETS()
+if(MSVC)
+    set_target_properties(${BII_game_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p>You&#8217;re ready to go,  wanna try other examples available?</p><p><img
+class="aligncenter wp-image-1855 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/space_game.png" alt="Space game developed with SDL and OpenGL" width="652" height="515" /></p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii open examples/game_utils
+~$ bii cpp:build
+~$ cd bin
+~$ #execute the games!</pre><p></p><h3>Enjoy SDL and Open GL in biicode!</h3><p><a
+href="http://www.opengl.org/"><img
+class=" wp-image-2046 size-medium aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/OpenGL_in_biicode-300x125.png" alt="Open GL working fine in biicode" width="300" height="125" /></a></p><p>&nbsp;</p><p><a
+href="https://www.libsdl.org"><img
+class=" wp-image-1856 size-medium aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/preview-300x174.png" alt="SDL lib" width="300" height="174" /></a></p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/multiplatform-arcade-sdl/">Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/multiplatform-arcade-sdl/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship</title><link>http://blog.biicode.com/our-story-ii/</link> <comments>http://blog.biicode.com/our-story-ii/#comments</comments> <pubDate>Thu, 18 Sep 2014 10:56:17 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[Our Story]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[entrepeneurship]]></category> <category><![CDATA[start-up]]></category> <category><![CDATA[where we come from]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1626</guid> <description><![CDATA[<p>How did biicode begin? &#8230;certainly not in a parking lot, but Pablo San Segundo and I were pretty close to the one at the University the very first time Diego explained biicode to us. I consider myself lucky for being part of biicode’s birth. The day we decided its name, or those endless meetings with [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/our-story-ii/">Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>How did biicode begin?</h2><p>&#8230;certainly not in a parking lot, but <a
+href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo">Pablo San Segundo</a> and I were pretty close to the one at the University the very first time Diego explained biicode to us.</p><p>I consider myself lucky for being part of biicode’s birth. The day we decided its name, or those endless meetings with a chalkboard full of diagrams, the first &#8220;battle logo&#8221; as we named our first &#8220;company mascot&#8221;.<br
+/> In addition, I really enjoy my work as a university professor and engineer. Thanks to the university I have had the opportunity to devote myself to something that fascinated me since I was a child: robotics. But you cannot master robotics without solid programming skills, so I&#8217;ve been programming since I started hacking the fascinating Commodore 64, with its &#8220;peek&#8221; and &#8220;poke&#8221;, and his incredible voice synthesizer accessible through a simple command: &#8220;say&#8221;.</p><div
+id="attachment_1632" style="width: 818px" class="wp-caption alignleft"><img
+class="wp-image-1632" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/Commodore-64.jpg" alt="Hacking Commodore 64 is the beginning of our story" width="808" height="560" /><p
+class="wp-caption-text">Hacking the Commodore 64 was classy.</p></div><p><span
+id="more-1626"></span></p><h2>Our story II</h2><p>I was barely 12 years old when my first computer game was published. By then, to share code with other rookie programmers you had to literally publish it in journals as pages and pages of text. So using other’s code implied a tedious and patient task of copying.<br
+/> Not much has changed since then (except for the blessed CTRL-C and CTRL-V).</p><p>Two years later, I connected my old computer to an Scalextric so I was able to measure and display on the TV lap times, car speeds and lap counters, in addition to a sprite representation of the vehicles when crossing the finish line.</p><p>Then I made new friends who shared my hobby, and so, without giving up football, skates and bicycles, we reserved a place to pound the keys of a very first IBM PC, without a hard drive and with a neon yellow display that delights collectors right now.</p><p>After reading manuals and through hard trial and error, our programming skills evolved into learning new languages to achieve more complex functionalities to satisfy our requirements. BASIC, compiled QBASIC, PASCAL and Modula-2, were on our roadmap before discovering C and its amazing memory control.</p><p>So after making multiplayer games on CGA graphics cards (it’s amazing what you can achieve with only four basic colours!), EGA, VGA and XGA &#8230; constructing a pair of robotic arms and designing a series of more or less useful gadgets came &#8230; college.</p><h2>Instant byte crush</h2><p>I met Diego while I was doing my <a
+href="http://www.elai.upm.es/joomla/index.php/webmaster/17-personal/personal-docente/57-webmaster">doctoral thesis</a> on supervisory control systems applied to the control of teleoperated robots over long distances. From the beginning I was surprised by Diego’s intellectual capacity and commitment to excellence. I remember when I asked him as part of his learning to develop a two-dimensional simulation of a solar system, and he delivered only a couple of days later, with a full configurable 3D simulator of a complex celestial system.<br
+/> Increasingly, we were collaborating on more projects together of both: research and teaching, supporting each other with our particular vision of things. We both enjoy trying to introduce common sense reasoning in machines and software, and many of our discussions were about simplifying the robots processing into the same categories of our way of thinking. So while Diego was working on the interpretation of environment data for robot localization and mapping, I was trying to include spatial reasoning skills on the control of robot manipulators.<br
+/> <img
+class="alignleft wp-image-1629" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/MVC-476X.jpg" alt="Some of the founders of biicode at the beginning of our story" width="400" height="300" /></p><p>So, in 2011 we came up with an ambitious project: we started to develop lightweight C++ library (MRCore) that was meant to support our respective investigations.<br
+/> The code we generated was based on many pieces of old code, or third parties that we integrated into our scheme, so Diego began mulling over the idea of ​​permanently interconnect these functions in the cloud.<br
+/> Consequently, one day at the University lounge, he exposed to Pablo and me the main ideas of something he called &#8220;Hypercode&#8221; in its most original form. He said then that we had to extend the concept of internet hyperlink to the software, so that a piece of code could use another piece of code without having to copy and manage the duplicate.</p><blockquote><p>Just like Wikipedia</p></blockquote><p>he said</p><blockquote><p>if you need to use any piece of code just link it</p></blockquote><p>Diego&#8217;s proposal fascinated me. His idea was a breath of fresh air, it had a clear goal and was accompanied by ambition and high potential.<br
+/> After a dozen national and international research projects, I was still copying and adapting the same code to perform the same mathematical operations, the same simulations, the same port handlers, etc.<br
+/> In many cases, I grouped functionalities into libraries and I tried to maintain and update them, but for other functionalities I still had a lot pieces of code repeated again and again with small and no relevant changes among them.</p><h2>A C and C++ dependencies manager, <strong>finally</strong>!</h2><p>How many times have I written the code to manage correctly the TCP/UDP client/server? Or to establish message protocols for communication between components? Or the robust, secure and non-blocking way of handling of a serial port?<br
+/> The idea of ​​developing a dependency manager for C / C ++ was evolving gradually and improving towards a much more complete vision about what the software programming should be with a pragmatist view.<br
+/> We started to enrich the basic idea with Internet’s magic and the Open Source movement and enthused with it.<br
+/> And bit by bit all the pieces start fitting together into an ambitious and beautiful picture. Diego’s thrust, courage and ability were the main ingredients that propelled us and our story into building a new programming paradigm: biicode.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/our-story-ii/">Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/our-story-ii/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>bii internals: How to do your own Windows Installer</title><link>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/</link> <comments>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/#comments</comments> <pubDate>Fri, 13 Jun 2014 08:00:04 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[Innosetup]]></category> <category><![CDATA[python]]></category> <category><![CDATA[register]]></category> <category><![CDATA[windows installer]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=632</guid> <description><![CDATA[<p>As a continuation of the previous post, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows. The main tool used for packaging and installing the client binaries for Windows is the popular Inno Setup program. This tool is completely free of charge and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/">bii internals: How to do your own Windows Installer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a continuation of the <a
+href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">previous post</a>, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows.<br
+/> The main tool used for packaging and installing the client binaries for Windows is the popular <a
+title="Inno Setup Home Page" href="http://www.jrsoftware.org/isinfo.php" target="_blank">Inno Setup </a>program. This tool is completely free of charge and supports almost every windows release since 2000.</p><p><span
+id="more-632"></span></p><p>Installators are created by means of scripts, which are ASCII text files with an &#8220;.iss&#8221; extension. The concept is quite similar to the distribution definition file described for MacOS.<br
+/> The <em>script file</em> controls every aspect of the installation.  It specifies which files have to be installed and where, what short-cuts have to be created and what are they in order to be named, and so on. It &#8216;s arranged into sections and each section controls a different part of the installation.<br
+/> A quite simple and small script could be the next one:</p><pre class="crayon-plain-tag">&lt;
+; -- Example1.iss --
+; Demonstrates copying 3 files and creating an icon.
+; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
+[Setup]
+AppName=My Program
+AppVersion=1.5
+DefaultDirName={pf}\My Program
+DefaultGroupName=My Program
+UninstallDisplayIcon={app}\MyProg.exe
+Compression=lzma2
+SolidCompression=yes
+OutputDir=userdocs:Inno Setup Examples Output
+[Files]
+Source: "MyProg.exe"; DestDir: "{app}"
+Source: "MyProg.chm"; DestDir: "{app}"
+Source: "Readme.txt"; DestDir: "{app}"; Flags: isreadme
+[Icons]
+Name: "{group}\My Program"; Filename: "{app}\MyProg.exe"
+;</pre><p>The <em>script</em> could have a lot of different sections that allow almost all the operations required for a correct installation and uninstallation in windows systems. It includes a integrated <a
+title="JRSowtware Scripting" href="http://www.jrsoftware.org/ishelp/topic_scriptintro.htm" target="_blank">Pascal scripting</a> engine for advanced run-time customization. For example, we use that section to make a nice uninstalling and to modify the register in an intelligent way, avoiding unnecessary register operations.</p><p>As it&#8217;s done in MacOS installers, in our automation repo we have prepared  a resource file that contains all the files used by the script (images, icons, text files, and the script itself) :</p><pre class="crayon-plain-tag">resources
+├── windows
+   ├── Docs
+   │   └── readme.txt
+   ├── Images
+   │   ├── biiconsole.ico
+   │   ├── installlerimage.bmp
+   │   └── logobii.bmp
+   ├── license.txt
+   └── biicodeinstaller.iss</pre><p>Before calling the external tool (InnoSetup) all the required files (installer resources and biicode binaries) are copied into a temporal folder. The main python script that automates the process is executed in a windows virtual machine in which InnoSetup is installed. In order to avoid the hard-coding of the external command  we are retreiving that info through a registry request for both, win32 and win64:</p><p>&nbsp;</p><pre class="crayon-plain-tag">if platform.system() == 'Windows':
+    import _winreg
+def innoexepath():
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion'
+            '\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows'
+            '\\CurrentVersion\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        return 'ISCC.exe'</pre><p>Finally, an important but simple pre-build step: we update the version info through a simple but effective search and replace text operation, looking for a key string included into the script and the text documents.</p><pre class="crayon-plain-tag">from biicode.utils.pack import create_client_binary
+from biicode.client.command.process_executor import execute
+from biicode.common.utils.file_utils import search_and_replace
+from biicode.common import __version__ as version
+    search_and_replace(iss_path, '%VERSION%', version)
+    command = []
+    command.append(innoexepath())
+    command.append(os.path.join(folder_tmp, 'installdata', 'biicodeinstaller.iss'))
+    execute(command)
+    shutil.copy(os.path.join(folder_tmp, 'setup.exe'), 'C:/bii-setup.exe')</pre><p>As you can see, a product executable has been created and renamed as &#8220;bii-setup&#8221; and placed in a convenient directory for publishing.<br
+/> The InnoSetup tool creates a wonderful installer with a brief and simple script file:</p><p><img
+class="alignnone wp-image-640" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura.gif" alt="Biicode Wizard Windows" width="630" height="486" /></p><p>Hope you enjoy installing!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/">bii internals: How to do your own Windows Installer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

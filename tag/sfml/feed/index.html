@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; SFML</title> <atom:link href="http://blog.biicode.com/tag/sfml/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Precompiled binaries in biicode: a proof of concept with SFML</title><link>http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/</link> <comments>http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/#comments</comments> <pubDate>Wed, 15 Oct 2014 15:16:46 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[blocks]]></category> <category><![CDATA[file-based deps manager]]></category> <category><![CDATA[how biicode works]]></category> <category><![CDATA[SFML]]></category> <category><![CDATA[upload to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1834</guid> <description><![CDATA[<p>The problem: C and C++ compilation times Biicode is a file-based dependencies manager for C and C++, focused on sharing and reusing source code, specifically, source (and header) files. Biicode uses the CMake building system to configure and build blocks, its unit of source code sharing. The default way to develop blocks is to include [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/">Precompiled binaries in biicode: a proof of concept with SFML</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h1 id="developing-and-submitting-precompiled-blocks">The problem: C and C++ compilation times</h1><p>Biicode is a file-based dependencies manager for C and C++, focused on sharing and reusing source code, specifically, source (and header) files.</p><p>Biicode uses the CMake building system to configure and build blocks, its unit of source code sharing. The default way to develop blocks is to include the required sources and any required extra configuration for building such files on a <code>CMakeLists.txt</code> file at the root of the block. Also biicode provides other files for specific config such as <code>dependencies.bii</code> or <code>paths.bii</code>.</p><p>So writting our own biicode block is a process with three simple steps:</p><ol><li>Get the sources and copy them on the block directory.</li><li>Configure the <code>CMakeLists.txt</code> file of the block for the specific build instructions for that sources.</li><li>Upload the block to the biicode cloud via <code>bii publish</code> command.</li></ol><p>So far so good. This approach works pretty well and the biicode community is growing everyday thanks to it. Whats exactly the problem with this approach? Its simple: <strong>Some C and C++ sources are hard to compile and it takes time. A lot of time.</strong></p><p><img
+class="aligncenter wp-image-1836 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/sfml-logo-big-300x91.png" alt="SFML works fine as biicode example" width="300" height="91" /></p><p><span
+id="more-1834"></span></p><h2 id="precompiled-binaries">Precompiled binaries</h2><p>Since the early days of C the answer to this problem was to deploy the library sharing the output binaries instead of the source code itself. This has the advantage that the user doesn’t have to compile the library himself, but only to link it with the program which actually using the library.</p><p>But precompiled binaries have their own problems:</p><ul><li>Binaries are OS/architecture specific, that means the output code of a C++ program is different on 32 bit linux than in 64 Windows for example. That makes sense, since the architecture is different. Never forget the final result of C and C++ compilation is binary code, not some kind of high-level assembly interpreted/compiled by a program to the final architecture at runtime, as many modern languages do. This means that if someone wants to develop a portable library (That is, capable of running in different architectures and operative systems), should compile and provide the binaries for each supported platform.</li><li>Binaries can have a huge size. That depends on the source code, the amount of variables with static storage duration, etc; but the fact is that a C/C++ binary can reach sizes measurable on megabytes, even hundreds of megabytes.</li></ul><p>In this post we will learn how to develop a biicode block which contains precompiled binaries instead of the sources, and how to configure the block to be correctly compiled on different platforms.</p><h2 id="the-block">The block</h2><p>This tutorial will use the awesome <a
+href="http://sfml-dev.org/index.php">SFML</a> library as an example of a C++ library that can be deployed as a precompiled block with biicode.</p><p>For this example, we will make our precompiled block ready for 64bit Linux and Windows. That means we should compile and deploy two binaries, one for windows and other for linux. Both will target GCC on release mode, using MinGW in the case of Windows.</p><p>The block has the following structure:</p><pre class="crayon-plain-tag">|-- manu343726/sfml
+|   |
+|   +-- bii
+|   |   |-- paths.bii
+|   |   |-- dependencies.bii
+|   |
+|   |-- CMakeLists.txt
+|   |...sfml sources...
+|   |
+|   +--lib/
+|   |   |
+|   |   +-- win64/MinGW/
+|   |   |   |
+|   |   |   |-- sfml-system.a
+|   |   |   ... more binaries ...
+|   |   |
+|   |   +-- unix64/
+|   |   |   |
+|   |   |   |-- sfml-system.so
+|   |   |   ... more binaries ...</pre><p><em>Note the block is <code>manu343627/sfml</code>, since my biicode nick is “Manu343726” and I called the block “SFML”. You can choose the block name you want and use your own account.</em></p><p>As you can see, the sfml sources are located at the block root directory, and the precompiled binaries are located on a <code>lib</code> folder, with subfolders for each supported platform. That directory also contains the <code>CMakeLists.txt</code> file of the block and a <code>bii</code> subfolder with block configuration files.</p><h2 id="getting-the-binaries">Getting the binaries</h2><p>Since this block contains the precompiled libraries of SFML, the first thing we should do is to get that binaries. SFML provides several binaries for each supported platform and toolchain, but the linkage of such binaries depends heavily on your setup (Something compiled with GCC 4.8.1 could not link with a library compiled with GCC 4.9.1 for example), I recommend you to download the sources and compile them yourself using the toolchain you will use with the biicode block. In my case, GCC 4.9.1 both on Linux and Windows, using <a
+href="http://nuwen.net/mingw.html">the STL’s fork of MinGW</a> in the latter.</p><p>The easiest way to achieve this is to fork the <a
+href="https://github.com/LaurentGomila/SFML">SFML libraries on GitHub</a>, clone your fork, and then build the library;</p><pre class="crayon-plain-tag">$ git clone https://github.com/Manu343726/sfml.git
+  Downloading, processing deltas, blah blah...
+$ cd sfml
+$ cmake -G "Unix Makefiles" -DBUILD_SHARED_LIBS=FALSE
+$ make all</pre><p><em>Note we will be using static linking instead of dynamic, that’s why the <code>BUILD_SHARED_LIBS</code> variable is set to false.</em></p><p>These instructions are valid for our two supported platforms, both use the “Unix Makefiles” generator.  When you finish compiling SFML, copy the contents of the <code>lib/</code> directory into its corresponding <code>manu343726/sfml/lib/</code> directory. Also copy the extra libraries SFML depends on, located under the <code>extlibs/</code> folder of the SFML repo. These are the OpenAL library and the libsndfile library.</p><h2 id="tuning-sfml-to-be-ready-for-biicode">Tuning SFML to be ready for biicode</h2><p>Our SFML block is named <code>manu343726/sfml</code>, so a SFML hello world program using biicode could be:</p><pre class="crayon-plain-tag">#include &lt;manu343726/sfml/Graphics.hpp&gt;
+int main()
+{
+    // Create the main window
+    sf::RenderWindow App(sf::VideoMode(800, 600, 32), "Hello World - SFML");
+    // Start the main loop
+    while (App.isOpen())
+    {
+        // Process events
+        sf::Event Event;
+        while (App.pollEvent(Event))
+        {
+            // Close window : exit
+            if (Event.type == sf::Event::Closed)
+                App.close();
+        }
+        // Clear screen, and fill it with blue
+        App.clear(sf::Color::Blue);
+        // Display the content of the window on screen
+        App.display();
+    }
+    return 0;
+}</pre><p>Have you noticed any problem? Biicode uses lowercasing for block names, so the original <code>SFML</code> root becomes <code>manu343726/sfml</code>. The first thing we should do is to modify the SFML headers to take care of that change, that is, replace every <code>#include &lt;SFML/&gt;</code> with <code>#include &lt;sfml/&gt;</code> using your preferred text replacing tool.</p><p>Now our SFML headers are <em>“biicodeized”</em>, and biicode would find our block when an user refers to any of its headers via an <code>#include "manu343726/sfml/whatever.hpp"</code>.</p><h2 id="tuning-biicode-to-work-with-sfml">Tuning biicode to work with SFML</h2><p>Sorry, that’s not all. There are some little things we should configure in our block. Be patient!</p><p>Biicode provides several <code>.bii</code> config files to specify explicit configurations that biicode could not infer properly trough its dependencies engine only.</p><h3 id="block-include-paths">Block include paths</h3><p>Take a look at the <code>#include</code>s we have changed above: <code>#include &lt;SFML/&gt;</code> is <code>#include &lt;sfml/&gt;</code> on our biicode SFML block. If those includes begin with <code>sfml/</code>, our build should have <code>manu343726/</code> as an include directory, isn’t? Then our compiler can find these files when preprocessing the code.</p><p>Biicode needs a similar setup too, since biicode analyzes dependencies via <code>#include</code> directives. For that purpose, biicode provides the <code>paths.bii</code> file, located under the <code>bii/</code>directory of a block:</p><pre class="crayon-plain-tag"># manu343726/sfml/bii/paths.bii
+/..</pre><p>The paths of <code>paths.bii</code> use the block root directory as root path, so in the example above we added <code>manu343726/</code> as an include path (Its the parent of our SFML block directory). Exactly what we want.</p><h3 id="explicit-block-dependencies">Explicit block dependencies</h3><p>Biicode is a smart file-based dependencies manager, that means biicode manages each file as a potential dependency, and each file dependency is managed separately.</p><p>Suppose we create a biicode project with a simple block just to try our awesome SFML block:</p><pre class="crayon-plain-tag">$ mkdir testsfml
+$ cd testsfml
+$ bii init
+$ bii new manu343726/testsfml</pre><p>The <code>manu343726/testsfml</code> has a simple <code>main.cpp</code> file with the following code:</p><pre class="crayon-plain-tag">#include "manu343726/sfml/Graphics.hpp"
+int main()
+{
+    sf::Window window;
+}</pre><p>To build and run that program correctly, biicode should retrieve the required dependencies from the biicode cloud, <code>manu343726/sfml/Graphics.hpp</code> in this case. Remember what we said above: Biicode is a file-based dependencies manager. So <strong>the default behavior of biicode is to get the required dependencies only, the <code>Graphics.hpp</code> header in this example, instead of the whole content of the block where the dependency is located.</strong></p><p>That means biicode will retrieve and store the <code>manu343726/sfml/Graphics.hpp</code> file only at the <code>deps/manu343726/sfml</code> folder instead of the all the block files, so <strong>our precompiled binaries are not downloaded!</strong></p><p><em>This behavior is not the same if you open the dependency block with the <code>bii open</code> command. In that case, you open the dependency block to edit it, so biicode downloads the entire block and our binaries are available.</em></p><p>Of course the guys at biicode were aware of this, and gave us a way to solve our problem: The <code>dependencies.bii</code> file.</p><pre class="crayon-plain-tag"># manu343726/sfml/bii/dependencies.bii
+System.hpp + *system*
+Window.hpp + *window*
+Graphics.hpp + *graphics*
+Audio.hpp +  *audio*
+Audio.hpp + *openal*
+Audio.hpp + *libsnd*
+Network.hpp + *network*</pre><p>Each line specifies a dependency rule, with the following syntax:</p><pre class="crayon-plain-tag">&lt;File name&gt; [+-=] &lt;File pattern&gt;</pre><p>meaning that the file at the left side depends on a file or set of files that match the pattern specified on the right. Biicode uses <a
+href="http://man7.org/linux/man-pages/man3/fnmatch.3.html">fnmatch</a> for that patterns, refer to <a
+href="http://docs.biicode.com/biicode/configuration_files/dependencies.html">the biicode docs</a> for more info.</p><p>So what rules we specified? For each SFML library, we said the header depends on a file matching the library name, also the two extra libraries the audio library needs. Our binaries match those names, so <strong>now biicode retrieves the binaries for each SFML header we are using.</strong></p><p>Always remember that these are file-dependencies. One of the advantages of this approach is that <strong>our block will download and link the used SFML libraries only</strong>, instead of all the five libraries by default. In our hello world example at the begin of the post, the only header we used is <code>Graphics.hpp</code>, so biicode will download and link the graphics library binaries only.</p><p>Continue to the building configurations bellow to see how this exactly works.</p><h2 id="configure-building">Configure building</h2><p>We have binaries, we have headers, now we have to specify how all those files should be used by the compiler to link the SFML block within the user block. Create a <code>CMakeLists.txt</code> file at the block root directory:</p><pre class="crayon-plain-tag"># Include biicode macros:
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initialize biicode block configuration:
+INIT_BIICODE_BLOCK()
+# Add biicode block targets:
+ADD_BIICODE_TARGETS()</pre><p>This is the default content of the <code>CMakeLists.txt</code> file of a biicode block. The first command includes all the biicode machinery (Macros, variables, etc), the second initializes the block variables, and then the last command adds the cmake targets corresponding to this block.</p><p>What we should do? Given an user program being builded using biicode, where our block is a dependency of it, we should specify cmake where our headers are and how our binaries should be linked within the user program. Here we go.</p><h3 id="include-directories">Include directories:</h3><p>As we said before, the SFML headers are located at the root directory of the block, so when cmake reaches our block that directory becomes the cmake’s current source directory, which can be accessed via the <code>CMAKE_CURRENT_SOURCE_DIR</code> cmake variable. Also, SFML sources used the <code>SFML</code> (<code>sfml</code> in biicode version) folder as root in their includes.</p><p>That means the path to that include root, and the path that should be added to the set of include directories, is <code>manu34326/</code>. In other words, <code>${CMAKE_CURRENT_SOURCE_DIR}/..</code>. Its exactly the same process we have done for the <code>paths.bii</code> above:</p><pre class="crayon-plain-tag"># Include biicode macros:
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initialize biicode block configuration:
+INIT_BIICODE_BLOCK()
+# Add biicode block targets:
+ADD_BIICODE_TARGETS()
+# SFML block variables:
+set(SFML_INCLUDE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/..)
+# SFML block includes:
+target_include_directories(${BII_BLOCK_TARGETS} PUBLIC ${SFML_INCLUDE_PATH})</pre><p></p><h3 id="finding-out-the-precompiled-libraries">Finding out the precompiled libraries:</h3><p>Now we should configure cmake to be able to find the correct precompiled libraries within this block and then link them correctly. Lets take an overview of our block structure again:</p><pre class="crayon-plain-tag">|-- manu343726/sfml
+|   |
+|   +--lib/
+|   |   |
+|   |   +-- win64/MinGW/
+|   |   |   |
+|   |   |   |-- sfml-system.dll
+|   |   |   ... more binaries ...
+|   |   |
+|   |   +-- unix64/
+|   |   |   |
+|   |   |   |-- sfml-system.so
+|   |   |   ... more binaries ...</pre><p>Ok, so we have one folder for the Linux 64 binaries, and other for the Windows 64 binaries. Then our current task is to get that path correctly given the OS and architecture we are. Don’t worry, its a simple <code>if</code>:</p><pre class="crayon-plain-tag"># SFML block includes:
+target_include_directories(${BII_BLOCK_TARGETS} PUBLIC ${SFML_INCLUDE_PATH})
+if(UNIX)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         # Linux 32 bits
+    else()
+         # Linux 64 bits
+    endif()
+elseif(WIN32)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         # Windows 32 bits
+    else()
+         # Windows 64 bits
+    endif()
+endif()</pre><p>The OS flags are self explanatory, but what about the <code>void*</code> trick? Its simple: If the size of a pointer in our architecture is 4 bytes, then the architecture has 32 bit word size, else suppose its 64 bit.</p><p>Now we know in what specific architecture/OS we are compiling to, so lets fill a <code>SFML_LIBS_PATH</code> variable containing the correct libraries location:</p><pre class="crayon-plain-tag"># SFML block includes:
+target_include_directories(${BII_BLOCK_TARGETS} PUBLIC ${SFML_INCLUDE_PATH})
+#Libraries root path:
+set(SFML_LIBS_PATH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/lib/ CACHE PATH "SFML binaries path root")
+if(UNIX)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         message( ERROR "Unsupported platform")
+    else()
+         set(SFML_LIBS_PATH
+             ${SFML_LIBS_PATH_ROOT}/unix64
+             CACHE PATH "SFML LINUX64 binaries path")
+    endif()
+elseif(WIN32)
+    if(CMAKE_SIZEOF_VOID_P MATCHES 4)
+         message( ERROR "Unsupported platform")
+    else()
+         set(SFML_LIBS_PATH
+             ${SFML_LIBS_PATH_ROOT}/win64/MinGW
+             CACHE PATH
+             "SFML WIN64 MinGW (GCC) binaries path")
+    endif()
+endif()</pre><p>After the architecture/OS switching, we are able to find the libraries with cmake. SFML has five libraries (system,window,graphics,audio,network), and we will find all those libraries and store them in a <code>SFML_LIBS</code> variable:</p><pre class="crayon-plain-tag"># Find the five sfml libraries and list these targets as a unique SFML_LIBS target:
+find_library(sfml-system-lib
+             NAMES sfml-system system
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-window-lib
+             NAMES sfml-window window
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-graphics-lib
+             NAMES sfml-graphics graphics
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-audio-lib
+             NAMES sfml-audio audio
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)
+find_library(sfml-network-lib
+             NAMES sfml-network network
+             PATHS ${SFML_LIBS_PATH} NO_DEFAULT_PATH)</pre><p>The <code>find_library()</code> cmake command finds a library given a set of possible NAMES and possible PATHS. Stores it in a new cache entry with a given name (The first argumment).</p><p>Note we used the <code>NO_DEFAULT_PATH</code> flag. <code>FIND_LIBRARY()</code> first searches on the system libraries path by default, but thats not neccessary in our case since we know the libraries are on our block. So we pass our binaries path instead and specify no system searching with <code>NO_DEFAULT_PATH</code>.</p><h3 id="linking">Linking</h3><p>We have searched the binaries with the <code>find_library()</code> cmake command, and the results were stored on several cmake variables, one for each SFML library.</p><p>Did you remember the <code>dependencies.bii</code> setup above? We have seen that biicode will download the binaries only for the headers we included. If you use <code>Graphics.hpp</code>, biicode will download <code>libsfml-graphics.so</code>, <code>libsfml-graphics.dll</code>, etc. Nothing more, nothing less.</p><p>So we should take care of binaries that were not downloaded, just checking the result of the <code>find_library()</code> calls:</p><pre class="crayon-plain-tag">if(sfml-system-lib)
+   target_link_libraries( ${BII_LIB_TARGET} PUBLIC
+                          ${sfml-system-lib} )
+endif()</pre><p>We link the block output library within the SFML system binary only if it was used, downloaded, and found. Simple. Now do that for the five SFML libraries.</p><h3 id="windows-dlls">Windows <code>.dll</code>s</h3><p>Even if we are using static linking, SFML depends on some <code>.dll</code>s on Windows, so these files should be placed besides the final user executable (Located at <code>manu343726/bin/</code> after building). So we should copy those <code>.dll</code>s from our block to that location:</p><pre class="crayon-plain-tag"># On Windows copy the precompiled .dlls to the bin directory to make the final executable work properly:
+if(WIN32)
+    message(STATUS "Copying Windows .dlls to " ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    add_custom_command(TARGET ${BII_LIB_TARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${SFML_LIBS_PATH} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif()</pre><p>During build setup, biicode sets the cmake variable <code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code> to point to that <code>bin/</code> directory, so the easiest way to achieve this is to copy our libraries directory content to that directory, using the <code>copy_directory</code> cmake portable command.</p><p>And thats all! Our SFML block is ready to be used on 64 bit Windows and Linux.</p><h2 id="publishing-the-block">Publishing the block</h2><p>At this time biicode has a maximum size limit of 12MB per block, which can be perfectly reached if we fill the block with binaries. There is a workaround to this problem: That max size is stored in a environment variable <code>BII_MAX_BLOCK_SIZE</code>, which measures that size on bytes. Just tooggle the variable to fit your block, and you are ready to publish!</p><pre class="crayon-plain-tag">$ export BII_MAX_BLOCK_SIZE=the_size_of_my_block
+$ bii publsh manu343726/sfml --tag BETA</pre><p></p><h2 id="the-results">The results</h2><p>Here are some screenshots of the <a
+href="https://github.com/LaurentGomila/SFML/blob/master/examples/pong/Pong.cpp"><code>Pong</code> SFML example</a>. This is my Manjaro Linux x86_64:</p><p><img
+class="alignnone" src="https://lh3.googleusercontent.com/-ONNyD_z5oTo/VD4-SPkMgVI/AAAAAAAAAlY/bVz_Zm92uWA/w1140-h698-no/ponglin64.png" alt="SFML of precompiled binaries in biicode" width="1140" height="698" /></p><p>And this is my Windows 7 x86_64:</p><p><img
+class="alignnone" src="https://lh3.googleusercontent.com/-eM0teLuBa44/VD489sC-0oI/AAAAAAAAAk8/Pt6DhL2eef0/w1287-h836-no/pongwin64.PNG" alt="SFML of precompiled binaries in biicode" width="1287" height="836" /></p><p>This and more examples are available at the biicode cloud as a <a
+href="https://www.biicode.com/examples/examples/sfml/master"><code>examples/sfml</code></a> block.</p><h2 id="summary">Summary</h2><p>In this post we learnt how to deploy libraries in biicode using precompiled binaries instead of providing and compiling the sources.</p><p>The process is not simple, but works as a proof of concept. Now biicode is working in a way to deploy precompiled blocks in a simpler way, to make our lives easier when doing C and C++ development. Stay tuned!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/">Precompiled binaries in biicode: a proof of concept with SFML</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-precompiled-binaries-sfml/feed/</wfw:commentRss> <slash:comments>6</slash:comments> </item> </channel> </rss>

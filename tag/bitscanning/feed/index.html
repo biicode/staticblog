@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; bitscanning</title> <atom:link href="http://blog.biicode.com/tag/bitscanning/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>BITSCAN: a C++ library for bit strings</title><link>http://blog.biicode.com/bitscan-cpp-library-bit-strings/</link> <comments>http://blog.biicode.com/bitscan-cpp-library-bit-strings/#comments</comments> <pubDate>Fri, 17 Oct 2014 11:03:03 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[bitscanning]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1840</guid> <description><![CDATA[<p>A comprehensive view of BITSCAN BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>A comprehensive view of BITSCAN</h2><p>BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is identified by a bit in the chain. In previous posts I have repeatedly stated that BITSCAN “is a useful library to manage bit strings”, and that was that. Readers of our blog have questioned the usefulness of bit strings in practice so I will start this post explaining some common situations in which bit strings may be an alternative to more common data structures.</p><p><img
+class="aligncenter wp-image-1841 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bitstring_logo.png" alt="Bit strings can now be processed more powerfully with BITSCAN hosted in biicode" width="359" height="123" /></p><p><span
+id="more-1840"></span></p><h2>Bit strings in practice</h2><p>Say you need to store and compare subsets of <em>different</em> numbers from 1 to N; or possibly you need to encode that a collection of objects belong to a set, or perhaps reason with two such collections and find those common to both. These situations are quite frequent in practice and commonly solved by mapping objects to identifiers, storing them (typically in some predefined order) in containers and employ their built-in methods to make the required inferences.</p><p>Here is an example: a subset of students takes an exam; each student has a different ID and writes it on the exam. A possible (non-efficient) solution to the query as to which students did not assist using STL collections appears below:</p><pre class="crayon-plain-tag">//… appropiate headers
+template&lt;class Collection&gt;
+void printCol(Collection&amp; col){
+	copy(col.begin(), col.end(), ostream_iterator&lt;Collection::value_type&gt;(cout, " "));
+}
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	set&lt;int&gt; s_ids;		// student ids
+	set&lt;int&gt; e_ids;		// exam ids
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		s_ids.insert(i);
+		if((i%2)==0)
+			e_ids.insert(i);
+	}
+	//students which did not assist
+	set&lt;int&gt; s_not_assist;
+  	set_difference(s_ids.begin(), s_ids.end(), e_ids.begin(), e_ids.end(),
+                             insert_iterator&lt;set&lt;int&gt;&gt; (s_not_assist, s_not_assist.begin()) );
+	printCol(s_not_assist);
+}</pre><p>&nbsp;</p><p>In the PREVIOUS example  each call to <code>insert</code> is logarithmic and <code>set_difference</code> is linear in the number of total students. Now compare with a bit string encoding for exams and students (a 1-bit indicates membership):</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"		//BITSCAN header in biicode repository
+using namespace std;
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	bitarray s_ids(NUMBER_OF_STUDENTS);	// student ids
+	bitarray e_ids(NUMBER_OF_STUDENTS);	// exam ids
+	s_ids.set_bit(0,NUMBER_OF_STUDENTS-1);
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		if((i%2)==0)
+		e_ids.set_bit(i-1);		//id is 0 based
+	}
+	//students which passed the exam
+	bitarray s_not_assist(s_ids);
+	s_not_assist.erase_bit(e_ids);
+	//I/O
+	s_not_assist.print();
+}</pre><p>From the point of view of efficiency, students are inserted in the (bit) sets in constant time. The reasoning is computed in the <code>erase_bit</code> function in linear time, but there is a reduction by a constant factor related to register word size (typically 64 in today’s computers) because processing occurs in chunks of bit blocks. Moreover, the code is no less readable (possibly <em>more</em> readable) than its counterpart and slightly more compact.</p><p>Note that the example did not intend to suggest that bit strings are better than typical STL collections (exlcude std::bitset) or anything like that. It only shows that bit strings can be a useful alternative to consider in everyday programming.</p><h2>Data types available in BITSCAN</h2><p>Having made a case in favor of bit strings I will now comment briefly on the data types available in BITSCAN and the kind of problems they address. As stated in <a
+href="http://blog.biicode.com/category/bitscan-2/">previous posts</a>, I developed BITSCAN to deal with hard combinatorial optimization problems in the graph domain. Why did I not use other common solutions such as <code>std</code><code>∷</code><code>bitset</code> or boost<code>∷</code><code>dynamic_bitset</code> containers? Simply because the majority of functions I required back then (say almost a decade ago) were not built-in (they still aren&#8217;t, specifically those related to different types of efficient bit scanning) not to mention the fact that the size of <code>std</code><code>∷</code><code>bitset</code> has to be hard wired at compile time. Also some critical optimization issues appeared which required ad hoc solutions. I therefore decided to start from scratch at my own risk. The types in BITSCAN are a result of a decade of experience in algorithmic optimization. The current release is intended to share this knowledge in the hope that it is useful to others and that it may be improved. In this sense I find Biicode ideal for managing and sharing the code.</p><p>Back to business, and sorry for the digression. The main types in BITSCAN are <em>bitblock</em>, <em>bitarray</em> and <em>sparse_bitarray</em> and most of the time you will only be using these. Other types are meant for compilers which do not accept assembly or intrinsic instructions (i.e. <em>simple_bitarray</em>, <em>simple_sparse_array</em>) or some specific optimization (i.e. <em>watched_bitarray</em>). I will leave the latter types for a future post.</p><h3>TYPE bitblock</h3><p>The <em>bitblock</em> type is a wrapper for bit twiddling inside 64 bit numbers. It includes typical least- significant-bit (LSB) and most-significant-bit (MSB) functions as well as different implementations of population counts (i.e. number of 1-bits in the number).  Useful inline macros are MASK_1 and MASK_0 which change bits in a predefined range (see example below).</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+void main(){
+	BITBOARD bb=0xFFFF;
+	cout&lt;&lt;"number of 1-bits in bb:"&lt;&lt;bitblock::popc64(bb)&lt;&lt;endl;
+	//useful masks
+	bitblock::print(bb &amp; bitblock::MASK_0(4,8));    //removes bits 4-8 from bb
+	bitblock::print(bb | bitblock::MASK_1(4,8));    //sets bits 4-8 in bb
+}</pre><p></p><h3>TYPE bitarray</h3><p><em>bitarray</em> extends the <em>bitblock</em> type to arrays of bitblocks and it is BITSCAN&#8217;s basic type. Besides typical operations which may be found elsewhere (bit masks etc.), the wrapper contains a number of optimizations mainly concerned with extracting the information from bit strings (alias bitscanning) which I have found pretty useful when solving combinatorial problems. In particular:</p><ul><li>Caching bitblock index and position of the last bit scanned in a bit scanning loop.</li><li>Specific implementation for destructive (simultaneous scanning and deletion) scans.</li><li>Specific implementation for reverse scans (i.e. from last to least significant bit of the bitstring).</li></ul><p>Here is a simple example of how to implement normal and destructive scanning loops with BITSCAN:</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATON_SIZE-1);     //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::NON_DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+	cout&lt;&lt;endl;
+	//bit scanning loop (destructive)
+	nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit_del();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+}</pre><p><span
+style="font-size: 13px;">It is worth noting that bit scanning introduces critical overhead compared to standard data structures. I strongly recommend to avoid it as much as possible in critical problem solving routines  in favor of reasoning with bit masks (the good part). Still, at some point you will surely need to enumerate the elements (1-bits) in the bit sets and the above functions (and others available in BITSCAN) will come in handy.</span></p><h3>TYPE sparse_bitarray</h3><p>This type introduces specific functionality to deal with the sparse case. A sparse bit string typically holds many more 0-bits than 1-bits (usually the useful chunks of information) and using  the general purpose <em>bitarray</em> type will generally lead to dealing with a lot of useless chunks of 0-bits. I recommend to use the <em>sparse_bitarray</em> type in such cases. The interface for most operations is very much the same. BELOW is the code for the normal bit scanning loop in the previous examples but using the sparse type.</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	sparse_bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATION_SIZE-1);      //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+		while(true){
+			nBit=bba.next_bit();
+			if(nBit==EMPTY_ELEM) break;
+			cout&lt;&lt;nBit&lt;&lt;" ";
+		}
+	}
+	cout&lt;&lt;endl;
+}</pre><p>Notice that the code is exactly the same as for the <em>bitarray</em> type (now <em>sparse_bitarray</em>) with the exception of the empty checking condition at the beginning of the bit scanning loop:</p><pre class="crayon-plain-tag">if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM)(…}</pre><p>This is necessary because sparse bitarrays have empty semantics: an empty bitarray (i.e. with no allocated bitblocks) might just as well not be used as refer to a bitset exent of 1-bits. Either way entering the main scanning loop will result in an error during execution.</p><h2>Current status</h2><p>As indicated in other posts, BITSCAN is still very much in Alpha but it is being actively developed.  As such it suffers from lack of proper doc, non standardization of names and namespaces etc.  Still, it is very simple to use and including it in your projects requires no effort using Biicode (just include the header  #include &#8220;pablodev/bitscan/bitscan.h&#8221; and you are done). It has been tested both in Linux and Windows (64 bit).</p><p>If you are wondering about efficiency,  BITSCAN is in the core of BBMC <sup><a
+href="#fn1" id="ref1">[1]</a></sup><sup><a
+href="#fn2" id="ref2">[2]</a></sup><sup><a
+href="#fn3" id="ref3">[3]</a></sup> and PASS <sup><a
+href="#fn4" id="ref4">[4]</a></sup>, two state of the art algorithms for the NP-hard maximum clique and vertex coloring problems respectively. Also worth reading is a performance comparison with STL and BOOST in <sup><a
+href="#fn5" id="ref5">[5]</a></sup>. If you finally decide that it is worth a try please read the legal stuff. In case you use it for research purposes, please include the indicated citations. Finally, any feedback or improvement is most welcome.</p><p>&nbsp;</p><p><sup
+id="fn1"><a
+href="http://dl.acm.org/citation.cfm?id=1860369%20">[1] An exact bit-parallel algorithm for the maximum clique problem</a></sup></p><p><sup
+id="fn2"><a
+href="http://link.springer.com/article/10.1007%2Fs11590-011-0431-y">[2] An improved bit parallel exact maximum clique algorithm</a></sup></p><p><sup
+id="fn3"><a
+href="http://dl.acm.org/citation.cfm?id=2566230">[3] Relaxed approximate coloring in exact maximum clique search</a></sup></p><p><sup
+id="fn4"><a
+href="/oa.upm.es/11802/2/INVE_MEM_2011_107285.pdf">[4] A new DSATUR-based algorithm for exact vértex coloring</a></sup></p><p><sup
+id="fn5"><a
+href="http://blog.biicode.com/bitscan-efficiency-at-glance/">[5] BITSCAN efficiency at a glance</a></sup></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bitscan-cpp-library-bit-strings/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

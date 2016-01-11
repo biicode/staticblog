@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Integrations</title> <atom:link href="http://blog.biicode.com/category/integrations/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Libraries.io integrates with biicode</title><link>http://blog.biicode.com/libraries-io-integrates-with-biicode/</link> <comments>http://blog.biicode.com/libraries-io-integrates-with-biicode/#comments</comments> <pubDate>Tue, 26 May 2015 11:12:55 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[biicode environment]]></category> <category><![CDATA[Libraries.io]]></category> <category><![CDATA[Version management]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2273</guid> <description><![CDATA[<p>Start using libraries.io with biicode &#8211; login with GitHub to get notified by email of new releases of a specific library. You can also subscribe to the RSS feed of any of the 1.65K biicode Projects available! &#160; &#160; Subscribe to any library you use or just sniff around to see all dependant blocks or [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/libraries-io-integrates-with-biicode/">Libraries.io integrates with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Start using libraries.io with biicode &#8211; login with GitHub to get notified by email of new releases of a specific library. You can also subscribe to the RSS feed of any of the <a
+href="https://libraries.io/biicode" target="_blank">1.65K biicode Projects available</a>!</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-2274 size-large" title="Up to 1.65k biicode projects are now tracked by Libraries.io" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/bii-projects-libraries.io_-1024x570.png" alt="biicode's section in Libraries.io" width="630" height="351" /></p><p>&nbsp;</p><p><span
+id="more-2273"></span></p><p>Subscribe to any library you use or just sniff around to see all dependant blocks or libraries available &#8211; it&#8217;s up to you!</p><p><img
+class="aligncenter wp-image-2275 size-large" title="Quick example of Boost dependencies." src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/boost-dependents-libraries-io-1024x491.png" alt="Boost dependencies from biicode tracked in Libraries.io" width="630" height="302" /></p><h2>How does libraries.io work?</h2><p>Libraries pulls in data using their JSON apis, it uses two end points, one to get the names of all available packages, and one to get the meta data (things like description, homepage, keywords, dependencies, versions etc.). The initial import pulls data for everything, and then where available, an RSS feed is used to get the names of new or updated packages every 10 minutes, otherwise a reload of all the packages is undertaken every hour or day depending on the number of packages in each project.</p><p>Read more about libraries.io <a
+href="https://medium.com/@teabass/solving-open-source-discovery-db43a04cd9e7">HERE</a>.</p><h2>What information does libraries.io fetch from biicode?</h2><p>As you read above you can almost all the information from the code stored in biicode with libraries.io Just in case you are confused with naming structure we use in biicode, read this brief explanation of block naming. There are three kinds of block names at biicode:</p><p>&#8211; <strong>A simple block:</strong> <em>username/username/blockname/<wbr
+/>master</em></p><p><a
+href="https://www.biicode.com/dimitrikourk/small3d" target="_blank">dimitrikourk/small3d</a> → dimitrikourk/dimitrikourk/small3d/master</p><pre class="crayon-plain-tag">[requirements]
+     dimitrikourk/small3d : 1</pre><p></p><p
+dir="ltr">&#8211; <strong>A block track:</strong> <em>username/username/blockname/<wbr
+/>trackname</em></p><p
+dir="ltr"><a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">lasote/openssl (v1.0.2)</a> → lasote/lasote/openssl/v1.0.2</p><p></p><pre class="crayon-plain-tag">[requirements]
+      lasote/openssl(v1.0.2): 0</pre><p></p><p
+dir="ltr">&#8211; <strong>A block track from another user&#8217;s block</strong>, related to original owner’s block:</p><p
+dir="ltr"><em>publishers_username/original_<wbr
+/>owner_username/original_owner_<wbr
+/>blockname/trackname</em></p><p
+dir="ltr"><a
+href="https://www.biicode.com/dimitrikourk/miguel/vorbis/mingwfix" target="_blank"> miguel/vorbis (dimitrikourk/mingwfix)</a>→ dimitrikourk/miguel/vorbis/<wbr
+/>mingwfix</p><p></p><pre class="crayon-plain-tag">[requirements]
+      miguel/vorbis(dimitrikourk/mingwfix): 0</pre><p>You know we&#8217;re always available at <a
+href="mailto:support@biicode.com">support@biicode.com</a> and at <a
+href="http://forum.biicode.com" target="_blank">our forum </a> for any questions yoy may have.</p><p>Libraries.io is a project hosted in <a
+href="https://github.com/librariesio">GitHub</a>. Especial thanks to <a
+href="https://twitter.com/teabass">Andrew Nesbitt</a> for the hard work.</p><p><img
+class="aligncenter wp-image-2276 size-medium" title="Libraries.io version management tool" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/LibrariesioLogo-300x300.png" alt="Libraries.io integrates with biicode" width="300" height="300" /></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/libraries-io-integrates-with-biicode/">Libraries.io integrates with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/libraries-io-integrates-with-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>biicode works now with VersionEye</title><link>http://blog.biicode.com/versioneye-announcement/</link> <comments>http://blog.biicode.com/versioneye-announcement/#comments</comments> <pubDate>Wed, 22 Apr 2015 16:24:45 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Integrations]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2192</guid> <description><![CDATA[<p>At biicode we want to provide a new programming environment to C and C++ developers. Our tool already includes its core dependency management features alongside CMake build system. With biicode you can also publish your code to our cloud and keep it private. But a complete environment requires more tools like IDEs, compilers etc. Since [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/versioneye-announcement/">biicode works now with VersionEye</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>At biicode we want to provide a new programming environment to C and C++ developers. Our tool already includes its core dependency management features alongside CMake build system. With biicode you can also publish your code to our cloud and keep it private. But a complete environment requires more tools like IDEs, compilers etc. Since software is present everywhere and the state of technology requires it to be up-to-date constantly, developers work hard to push their code&#8217;s latest version as soon as they know it works better than the previous one.<br
+/> <img
+class="aligncenter wp-image-2212 size-thumbnail" title="A software version notification system" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/versioneyelogo-150x150.png" alt="VersionEye logo" width="150" height="150" /></p><p><span
+id="more-2192"></span></p><h2>What can biicoders expect from VersionEye?</h2><p>biicoders keep publishing more and more blocks to our cloud. But software evolves constantly and it does so in versions. When handling dependencies one of the aspects a developer has to take into account is the version of the software linked. VersionEye will monitor versions and licenses from any open source project for free. For example, you can now monitor biicode itself since we recently went <a
+href="http://biicode.github.io/biicode/">open source</a>. They offer other services for minimum prices too, go check them <a
+href="https://www.versioneye.com/pricing">here</a>.</p><h3>How does VersionEye work</h3><p>VersionEye is a unique channel to keep you posted on the versions of the open source software you use. And admit it, <strong>you use a heck of a lot of OSS</strong>. VersionEye is simple: just upload your biicode.conf file to let VersionEye know your project dependencies. Once parsed, it will list them and you&#8217;ll be able to follow them and update them at the spot! This process will be done automatically by VersionEye so you have to worry about nothing. If you require more detail about how VersionEye works, find an in-depth explanation in their <a
+href="http://blog.versioneye.com/2015/03/26/how-does-versioneye-work/">blog</a>.</p><h2>biicode in VersionEye</h2><p>VersionEye&#8217;s crawler has already been putting to work our API and the results are wonderful. We believe that partnering with VersionEye is good for our users so we encourage them to sign up. Don&#8217;t waste time and go check all of biicode&#8217;s public projects and never miss an update!! <strong>Click on the biicode logo</strong>.<br
+/> <a
+href="https://www.versioneye.com/Biicode" target="_blank"><img
+class="aligncenter wp-image-2211 size-full" title="Click and review biicode's blocks in VersionEye" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/versioneye.png" alt="Check biicode's blocks in VersionEye" width="667" height="275" /></a></p><p>&nbsp;</p><p>&nbsp;</p><h3>references and up-to-date dependencies</h3><p>From now on, besides from not missing any dependencies&#8217; update, biicoders can see in VersionEye how many biicode blocks reference theirs:</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-2213 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/version-eye-sdl.png" alt="version-eye-sdl" width="972" height="567" /></p><p>Just like miguel can see that 20 biicode blocks refer to his SDL2 biicode block.</p><p>As biicode badges let people know which libraries are available in biicode, VersionEye&#8217;s dependency and reference badges enable knowing dependencies&#8217; status and the number of packages referencing.</p><p>Stay tuned to our <a
+href="https://www.twitter.com/biicode">Twitter</a>, <a
+href="https://www.facebook.com/biicode">Facebook</a> and <a
+href="https://plus.google.com/+Biicode">Google +</a> accounts for more new features. Here to help C and C++ development achieve modern and agile environments.</p><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/versioneye-announcement/">biicode works now with VersionEye</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/versioneye-announcement/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Elecnor Deimos incorporates biicode as code discovery and prototyping tool</title><link>http://blog.biicode.com/elecnor-deimos-premium-accounts/</link> <comments>http://blog.biicode.com/elecnor-deimos-premium-accounts/#comments</comments> <pubDate>Mon, 20 Apr 2015 14:05:36 +0000</pubDate> <dc:creator><![CDATA[jordi]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[Elecnor Deimos]]></category> <category><![CDATA[Premium accounts]]></category> <category><![CDATA[Rapid prototyping]]></category> <category><![CDATA[Software discovery]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2205</guid> <description><![CDATA[<p>We recently inked Elecnor Deimos as our first corporate client (yay!). Elecnor Deimos is a top tech company with over 500 engineers in staff. They provide software solutions for different sectors ranging from aerospace and aeronautics and defense to transportation or telecommunications in a EU and worldwide levels. The relevance of their clients is descriptive [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/elecnor-deimos-premium-accounts/">Elecnor Deimos incorporates biicode as code discovery and prototyping tool</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We recently inked <b>Elecnor Deimos</b> as our <span
+style="text-decoration: underline;">first corporate client</span> (yay!). Elecnor Deimos is a top tech company with over 500 engineers in staff. They provide software solutions for different sectors ranging from aerospace and aeronautics and defense to transportation or telecommunications in a EU and worldwide levels. The relevance of their clients is descriptive of the quality of their products and services; a few of them are <b>ESA</b> (European Space Agency), <b>NASA</b>, <b>European Union</b>, <b>Telefónica</b>, <b>Siemens</b>, <b>Nokia</b>&#8230;<br
+/> For all these top-level companies they develop a huge variety of products like Satellite imagery, air navigation systems, environmental managing systems etc. All of which are top-knotch pieces of software. But what&#8217;s even better for their clients is that Elecnor Deimos is making a bold move to support and use modern technologies like <a
+href="https://www.biicode.com">biicode</a> or <a
+href="http://cartodb.com/">CartoDB</a> as we&#8217;ll explain later. This could only mean that a thriving software company is not only keeping its gained quality standards but also expanding their horizons into new sectors and technologies. Never stop moving!</p><p><img
+class=" size-large wp-image-2206 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/elecDeimosColor-1024x498.png" alt="Elecnor deimos" width="630" height="306" /></p><p><span
+id="more-2205"></span></p><h2>How can biicode help Elecnor Deimos in software development?</h2><p>Elecnor Deimos has a <span
+style="text-decoration: underline;">humongous amount of code developed in C and C++</span>. Anyone that has managed, coordinated or simply worked in such an environment knows perfectly how hard finding something can be. Especially when ongoing ideas or code samples are not packaged and thus not ready to be reused easily. If we add to this the fact that no external libs were being called and thus any required lib was <strong>hardcoded</strong> to any given project you&#8217;ll make an idea of how complicated finding <strong>specific code snippets</strong> is. It&#8217;s basically <span
+style="text-decoration: underline;">a pain in the neck for everyday coding</span>.<br
+/> This was at first, Elecnor Deimos&#8217; idea: to have a biicode <a
+href="http://web.biicode.com/pricing/">premium account</a> to which upload and support interesting C and C++ libs and frameworks &#8211; compatible with <strong>Subversion</strong> VCS. Eventually thay would become useful and would be searched and found in the brink of a <a
+href="https://www.biicode.com/explore">query</a>. In the long run, their private account will be so populated with code that basically anything required in <span
+style="text-decoration: underline;">any new project would be one #include away</span>.</p><h2><strong>Prototyping</strong>: the key start to successful software</h2><p>When a software company is successful it wins more and more clients which means eventually more and more projects. That&#8217;s precisely what has happened to Elecnor Deimos: founded barely 14 years ago by twenty intrepid engineers, it is now a multinational with presence in Spain, Portugal, UK and Romania and over 500 engineers in staff to deliver credited quality services.<br
+/> Scaling resources to address the challenges that such a growth represents is not easy at all. Programmers in particular need to be more efficient and learn quick from previous experience. One of the skills most senior devs tend to point out as the one that summarizes better all there experience in the job is prototyping. When project specifications are described a good programmer starts sketching it&#8217;s layout and challenges. Once this is properly done <span
+style="text-decoration: underline;">quick solutions can be essayed</span>; why not? At this precise moment of the project it is not only cheap but wise to fail. All sorts of hypothesis and procedures to solve the problem pop up and a quick prototype serves well to try a solution to them. biicode is the perfect match for this methodology. Read more about how to prototype with <a
+href="http://blog.biicode.com/zeromq-cpp-biicode/">biicode in our example using ZeroMQ</a>.<br
+/> Fostering <strong>code discovery</strong>, <strong>quick prototyping</strong> and <strong>easy integration</strong> are the basic goodies anyone can benefit from when using biicode. And that&#8217;s just the tip of the iceberg of the things a C and C++ developer can do with biicode. Read more about our features <a
+href="http://web.biicode.com/features/cpp/">here</a>.</p><h2>Proud to work with Elecnor Deimos</h2><p>As engineers we are not only proud to work with such talented teams in Elecnor Deimos but also, as a start-up we are extremely happy to see an experienced company like Elecnor Deimos put trust and start off new projects with young start-ups like us or our fellow comrades <b>CartoDB</b>. They, alongside Orange, have launched a thrilling project called <a
+href="http://cartodb.com/marketplace/apps/telemaps/">Telemaps</a>, check it out!</p><p>In conclusion, we are terribly satisfied with this agreement and eager to provide a good support and service. Like the recently released premium accounts, any upcoming feature can be found in our <a
+href="http://web.biicode.com/community/roadmap/">roadmap</a>. If you feel you share the same needs and suffer the same pains Elecnor Deimos does, do not hesitate and upgrade to a <a
+href="http://web.biicode.com/pricing/">premium account</a>! Keep you code safe and easy to find in our private accounts. Make your everyday C and C++ programming way more easy.</p><p><img
+class="aligncenter wp-image-1927 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low-300x107.png" alt="C/C++ dependency manager" width="300" height="107" /></p><p>Stay tuned to our <a
+href="https://www.twitter.com/biicode">Twitter</a>, <a
+href="https://www.facebook.com/biicode">Facebook</a> and <a
+href="https://plus.google.com/+Biicode">Google +</a> accounts for more new features and success stories like Elecnor Deimos&#8217;. Here to help C and C++ development achieve modern and agile environments.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/elecnor-deimos-premium-accounts/">Elecnor Deimos incorporates biicode as code discovery and prototyping tool</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/elecnor-deimos-premium-accounts/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>biicode’s getting started with OpenSSL, Git and GitHub</title><link>http://blog.biicode.com/getting-started-with-openssl-git-and-github/</link> <comments>http://blog.biicode.com/getting-started-with-openssl-git-and-github/#comments</comments> <pubDate>Mon, 13 Apr 2015 11:10:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[OpenSSL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2178</guid> <description><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on OpenSSL v1.0.2 biicode block to generate MD5 (Message-Digest Algorithm 5) and SHA-1 (Secure Hash Algorithm) hashes in your Terminal. Before anything else (of course), you’ll need Git, CMake &#62; 3.0, biicode &#62; 2.6 and both accounts: GitHub and biicode. Make sure you have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on <a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">OpenSSL v1.0.2 biicode block</a> to generate <a
+title="MD5 hash" href="http://es.wikipedia.org/wiki/MD5" target="_blank">MD5 (Message-Digest Algorithm 5)</a> and <a
+title="sha1 hash" href="http://es.wikipedia.org/wiki/Secure_Hash_Algorithm" target="_blank">SHA-1 (Secure Hash Algorithm)</a> hashes in your Terminal.</p><p><img
+class="aligncenter wp-image-2182 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/postgithub.png" alt="Getting started with Git and GitHub in biicode" width="640" height="300" /></p><p><span
+id="more-2178"></span></p><p>Before anything else (of course), you’ll need <a
+title="git" href="http://git-scm.com/downloads" target="_blank">Git</a>, CMake &gt; 3.0, <a
+title="download biicode" href="https://www.biicode.com/downloads" target="_blank">biicode &gt; 2.6</a> and both accounts: <a
+href="https://github.com/login/" target="_blank">GitHub</a> and <a
+title="biicode log in" href="https://www.biicode.com/accounts/login" target="_blank">biicode</a>.</p><p>Make sure you have all them, run <code>--version </code>in your terminal:</p><pre class="crayon-plain-tag">git --version
+cmake --version
+bii --version
+#install c++ tools for biicode (optional)
+bii setup:cpp</pre><p></p><h2>Now, let’s begin with Git and Github!</h2><p>Create a GitHub repo on the web page and copy the repo’s URL:</p><p><img
+class="aligncenter wp-image-2179 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/create_new_github_repo-1024x541.png" alt="Create a new GitHub repo" width="630" height="333" /></p><p><img
+class="aligncenter wp-image-2180 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/cloneit.png" alt="Copy the recently created GitHub repo's URL" width="1003" height="242" /></p><p>Now, go back to your terminal. Clone the repo (this clones an empty git folder for your project to live in), navigate to that folder and run <code>bii init -L </code>:</p><pre class="crayon-plain-tag"># clone the repo
+clone https://github.com/MariadeAnton/bii-init.git
+# get into its folder
+cd your_repo
+# initialize
+bii init -L</pre><p></p><h3>Write the code</h3><p>Create three files: a <em>sha1.</em>cpp a <em>md5.cpp</em> to generate both hashes, SHA1 and MD5, and also a biicode.conf file.</p><pre class="crayon-plain-tag">echo "//sha1 code goes here" &gt;&gt; sha1.cpp
+echo "//md5 code goes here" &gt;&gt; md5.cpp
+echo "# biicode.conf file" &gt;&gt; biicode.conf</pre><p><strong>sha1.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p><strong>md5.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/md5.h"
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main()
+{
+    unsigned char digest[MD5_DIGEST_LENGTH];
+    char string[] = "hello biicode!";
+    MD5((unsigned char*)&amp;string, strlen(string), (unsigned char*)&amp;digest);
+    char mdString[33];
+    for(int i = 0; i &lt; 16; i++)
+         sprintf(&amp;mdString[i*2], "%02x", (unsigned int)digest[i]);
+    printf("md5 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h4>biicode.conf</h4><p>&#8211; biicode&#8217;s configuration file</p><p>Fill the biicode.conf file so bii gets the OpenSSL v1.0.2. dependencies your project needs via [requirements] and [includes] sections:</p><p><strong>biicode.conf</strong></p><pre class="crayon-plain-tag">[requirements]
+       lasote/openssl(v1.0.2): 3
+   [includes]
+       openssl/*: lasote/openssl/include</pre><p></p><h3><img
+class=" size-large wp-image-2185 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/open_ssl_sha1_biicode-1024x500.png" alt="open_ssl_sha1_biicode" width="630" height="308" /></h3><h3></h3><h3>running your project</h3><p><code>bii build</code> and you’re ready to run your project and check the generated MD5 and SHA-1 hashes.</p><pre class="crayon-plain-tag">bii build
+cd bin
+./#run SHA1 or MD5
+#see the hashes, md5 digest and sha1 digest.</pre><p></p><h3>What bii files/folders does your repo need?</h3><p>Your GitHub repo only needs <em>biicode.conf</em> file, a <em>CMakeLists.txt</em> and your code. You can safely ignore bii/ and bin/ folders as they’re auxiliary. bii/ holds subfolders like cmake/, build/ or deps/, and bin/ contains the output binaries, frequently ignored too.</p><p>Create a .gitignore file and write bii and bin to ignore both folders:</p><pre class="crayon-plain-tag">echo "bii" &gt;&gt; .gitignore
+echo "bin" &gt;&gt; .gitignore</pre><p>Add and commit your changes:</p><pre class="crayon-plain-tag"># add all files but the ones ignored
+git add --all
+# commit message
+git commit -m "my OpenSSL example biicode block"</pre><p></p><h3>Share your code</h3><p>It&#8217;s finally time to share your code. Now all is setup to push your project to GitHub and publish a biicode block referring to your GitHub repo:</p><pre class="crayon-plain-tag"># push to GitHub
+git push origin master
+# publish to biicode
+bii publish -r</pre><p>Want a repo with the files needed? <a
+title="bii-init repo" href="https://github.com/MariadeAnton/bii-init" target="_blank">Just fork mine </a> and go!</p><pre class="crayon-plain-tag">clone https://github.com/your_github_username/bii-init.git
+cd bii-init
+bii init -L</pre><p>There are many options available to automatically publish (to biicode) from GitHub. We usually use Travis-ci and Appveyor to achieve so:</p><ul><li><a
+title="travis-ci and biicode" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Automaticall build and publish via Travis CI and GitHub</a></li><li><a
+title="biicode and appveyor" href="http://blog.biicode.com/appveyor-ci-windows-biicode/" target="_blank">Using Appveyor CI and Deploy for Windows</a></li></ul><p>For those who enjoy<a
+title="open multiple blocks biicode" href="http://docs.biicode.com/c++/advanced/open_blocks.html#working-with-any-published-block" target="_blank"> using multiple blocks at the same time</a>, we recommend using a git repo for each biicode block.</p><p>Don’t forget that all layouts are fully customizable via layout.bii file, check all the options available in the docs section: <a
+title="custom biicode layout" href="http://docs.biicode.com/c++/advanced/project.html" target="_blank">Customizing your layout</a>.</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/getting-started-with-openssl-git-and-github/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>When CLion met biicode</title><link>http://blog.biicode.com/clion-biicode-integration/</link> <comments>http://blog.biicode.com/clion-biicode-integration/#comments</comments> <pubDate>Mon, 16 Mar 2015 12:45:00 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[C/C++ environment]]></category> <category><![CDATA[C/C++ IDE]]></category> <category><![CDATA[CLion]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2144</guid> <description><![CDATA[<p>Cross post from the CLion team: biicode integration in CLion! C and C++ have a long history going back to the early days of programming. Over three decades, many interesting tools have appeared in the field: debuggers, compilers, memory analyzers and code analyzers for these languages are evolving swiftly. But how about a dependency manager? [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/clion-biicode-integration/">When CLion met biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Cross post from the CLion team: biicode integration in CLion!</h2><p>C and C++ have a long history going back to the early days of programming. Over three decades, many interesting tools have appeared in the field: debuggers, compilers, memory analyzers and code analyzers for these languages are evolving swiftly. But how about a dependency manager? Can C/C++ developers save their time by configuring and installing various libraries used in their projects?</p><p>Luckily there is a very interesting cross-platform tool called <a
+href="http://www.biicode.com">biicode</a>. With biicode, you can reuse any single source file from any given project in any other project you are developing. It tracks and manages versions of published code and retrieves the missing files from the repository (GitHub and Bitbucket are supported for now). In its latest versions, it supports boost libraries, Eigen and many others, and can even work with <a
+href="http://docs.biicode.com/arduino.html">Arduino boards</a>. The original content is <a
+href="http://blog.jetbrains.com/clion/2015/03/when-clion-met-biicode/">here</a>.</p><p><img
+class=" size-large wp-image-2146 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/Clion-biicode-logo-1024x218.png" alt="biicode plug-in for CLion is here!" width="630" height="134" /></p><p><span
+id="more-2144"></span></p><p>Interestingly, biicode uses <b>CMake</b> to configure and build projects. Having that in common, we knew CLion and biicode had to start a relationship.</p><p><a
+href="https://www.jetbrains.com/clion/">CLion</a> is a cross-platform C/C++ IDE, which uses CMake build system as the project model. Now, there’s one more benefit you can get from it: a very simple and straightforward way to use biicode features together with the IDE. (You’ll need biicode 2.4.1 or higher and the latest CLion EAP.)</p><p>CMake layout for the project is generated by biicode commands, after which you can open the project directly in CLion. You can resolve dependencies and install the missing libraries easily by using <i>bii</i> commands from the CLion built-in terminal (Alt+F12). Let’s take a short overview of the overall process and some available features.</p><p>Download the latest version of biicode from the <a
+href="http://www.biicode.com/downloads">biicode website</a>. To create a new project, run the command <i>bii init -l clion &lt;prj_name&gt;</i>, which will generate the proper layout to be used in CLion:</p><p><img
+class=" size-large wp-image-2147 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/bii_init-copy-1024x381.png" alt="Just bii init in CLion and move on" width="630" height="234" /></p><p>To configure your project, run <i>bii cpp:configure</i>:</p><p><img
+class=" size-large wp-image-2148 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/bii_configure-copy-1024x458.png" alt="Set-up the bii configure" width="630" height="282" /></p><p>As you can see, these commands produced CMake-based output which can be simply opened in CLion via File | Open… Now you can use CLion for working on your project.</p><p>One extra benefit is that <i>bii</i> commands can be called directly from the IDE’s terminal (open it with Alt+F12).</p><p>Let’s talk about resolving dependencies in your projects. Assume you are going to use boost libraries, for example, in very simple and demo-like code below:</p><p><img
+class=" size-full wp-image-2149 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/boost_red-copy.png" alt="Resolving Boost dependency with biicode and CLion" width="804" height="322" /></p><p>Because the project doesn’t have any boost dependency, CLion highlights boost-related code with red; no code completion or navigation features are available at this point. We’ll update the CMakeLists.txt file following instructions from the <a
+href="http://docs.biicode.com/c++/examples/boost.html">biicode website</a> as follows:</p><p><img
+class=" size-full wp-image-2150 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/bii_boost_cmake-copy.png" alt="Resolved deps update CMake in biicode and CLion" width="934" height="356" /></p><p>Then we run the commands <i>bii find</i> and <i>bii cpp:configure</i>. After biicode downloads and installs all the missing dependencies and the CMake project in CLion is reloaded, the code is highlighted with green. Smart actions now work fine, as does code completion:</p><p><img
+class=" size-full wp-image-2151 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/boost_completion-copy.png" alt="Boost depencendy resolved with biicode and CLion" width="806" height="464" /></p><p>That’s it! Get <a
+href="https://confluence.jetbrains.com/display/CLION/Early+Access+Program">CLion EAP build</a> and install <a
+href="http://www.biicode.com/downloads">biicode</a> to try them together now.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/clion-biicode-integration/">When CLion met biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/clion-biicode-integration/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Raspberry Pi 2 in depth with biicode</title><link>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/</link> <comments>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/#comments</comments> <pubDate>Wed, 04 Mar 2015 15:48:35 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[ARM GNU/Linux distributions]]></category> <category><![CDATA[Cross compilation]]></category> <category><![CDATA[Raspberry Pi 2]]></category> <category><![CDATA[Windows 10]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2075</guid> <description><![CDATA[<p>The new Raspberry Pi 2 900MHz quad-core ARM Cortex-A7 CPU (~6x performance) 1GB LPDDR2 SDRAM (2x memory) Complete compatibility with Raspberry Pi 1 Last Monday, the new Raspberry Pi 2 arrived. It can run the full range of ARM GNU/Linux distributions, including Snappy Ubuntu Core, as well as Microsoft Windows 10. In this case, we have installed [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/">Raspberry Pi 2 in depth with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>The new Raspberry Pi 2</h2><ul><li>900MHz quad-core ARM Cortex-A7 CPU (~6x performance)</li><li>1GB LPDDR2 SDRAM (2x memory)</li><li>Complete compatibility with Raspberry Pi 1</li></ul><p><img
+class="aligncenter wp-image-2076 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/jake.gif" alt="Jake from Adventure Time really like's biicode's analysis of the new Raspberry Pi 2" width="499" height="281" /></p><p><span
+id="more-2075"></span></p><p>Last Monday, the new Raspberry Pi 2 arrived. It can run the full range of ARM GNU/Linux distributions, including Snappy Ubuntu Core, as well as Microsoft Windows 10. In this case, we have installed Raspbian.</p><p>When you turn on the Raspberry Pi 2, one can see it works better than the Raspberry Pi 1, <strong>we never thought we could surf the web, talk through Hangouts and code at the same time without needing more power</strong>. The improvements in speed and fluency of the new Raspberry Pi are just amazing. Follow us in this mini-tutorial on how to configure the flashy new Raspberry Pi 2 with biicode.</p><h2>Step 1: Install native or cross compilation biicode.</h2><h3>Native biicode</h3><p>Of course, <strong>the latest version of biicode works perfectly with the Raspberry Pi 2</strong>. In fact we updated the <code>setup:cpp</code> in order to install properly all the tools and provide all the power of biicode to program it.</p><h4>Download the Raspbian version</h4><p>Just download biicode&#8217;s Raspbian versión <a
+href="https://www.biicode.com/downloads" target="_blank">from the downloads page</a>.</p><h4><img
+class="aligncenter wp-image-2101 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/downloads.png" alt="biicode's download's section where to download raspbian version of biicode" width="1100" height="304" /></h4><h4>Install biicode and the developer tools</h4><p></p><pre class="crayon-plain-tag">cd Downloads
+dpkg -i bii-debian-armv6&lt;version&gt;.deb
+bii setup:cpp</pre><p></p><h3>Cross compilation with biicode.</h3><h4>Download the Linux version</h4><p>If you want to use the <strong>default crossbuild tools, you need to use a Debian distribution</strong>. Download biicode&#8217;s Ubuntu versión <a
+href="https://www.biicode.com/downloads" target="_blank">from the downloads page</a>.</p><p><strong>If you want to use Windows</strong>,  you have an example about <a
+href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/" target="_blank">how to make a cross compilation with biicode from Windows</a> too.</p><p><img
+class="aligncenter wp-image-2102 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/downloads2.png" alt="Another section of biicode downloads featuring this time Ubuntu 32 and 64" width="1100" height="304" /></p><h4>Install biicode and the development tools.</h4><p></p><pre class="crayon-plain-tag">cd Downloads
+dpkg -i bii-debian-ubuntu&lt;version&gt;.deb
+bii setup:rpi</pre><p></p><p
+class="tw-data-text vk_txt tw-ta tw-text-medium ">If you have never used biicode to make a cross compilation or you don&#8217;t know what is it,  you can read the <a
+href="http://docs.biicode.com/raspberrypi.html" target="_blank">biicode support for Raspberry Pi cross compilation</a> section of our documentation.</p><h2 class="tw-data-text vk_txt tw-ta tw-text-medium " style="text-align: center">Raspberry Pi 2 vs Raspberry Pi 1<br
+/> (Native Compilation)</h2><h3 class="tw-data-text vk_txt tw-ta tw-text-medium "><img
+class="  aligncenter wp-image-2087" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/rpi_vs.png" alt="Both Raspberry Pi 1 and Raspberry Pi 2 are supported by biicode" width="663" height="266" /></h3><h3 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">First test: OpenCV</h3><p>The first test compared how much time was spent compiling a big library in a Raspberry Pi 1 and a Raspberry Pi 2. The Raspberry Pi 2 spent more than 30 minutes however, the Raspberry Pi 1 spent more than 1 hour and it had only compiled 39% of the library, so we decided to stop the process in order to continue with more productive things.</p><h4>Raspberry Pi 2</h4><p></p><pre class="crayon-plain-tag">bii open diego/opencv
+...
+time bii cpp:build
+...
+Building: cmake --build .
+real	33m36.365s
+user	92m1.850s
+sys	2m51.010s</pre><p></p><h4>Raspberry Pi 1</h4><p></p><pre class="crayon-plain-tag">bii open diego/opencv
+...
+time bii cpp:build
+...
+[ 39%] Built target IlmImf
+Scanning dependencies of target pch_Generate_opencv_ts
+[ 39%] Generating precomp.hpp
+[ 39%] Generating precomp.hpp.gch/opencv_ts_Release.gch
+real	85m7.442s
+user	42m1.970s
+sys	4m13.870s</pre><p></p><h2 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">Second test: libfreenect</h2><p>In this test, we compiled the library to use the kinect, libfreenect, and executed the example to see the difference between the two Raspberries Pi.</p><p>In the compilation test, the Raspberry Pi 2 spent 42 seconds and the Raspberry Pi 1 spent 2 min (120 seconds), so <strong>the  Raspberry Pi 2 was 2.85 times faster than the Raspberry Pi 1</strong>.</p><h4>Raspberry Pi 2</h4><p></p><pre class="crayon-plain-tag">$ bii open david/libfreenect
+$ bii cpp:configure
+$ time bii cpp:build
+...
+[100%] Built target david_libfreenect_wrappers_cpp_cppview
+real	0m42.068s
+user	0m29.940s
+sys	0m2.890s</pre><p></p><h4>Raspberry Pi 1</h4><p></p><pre class="crayon-plain-tag">$ bii open david/libfreenect
+$ bii cpp:configure
+$ time bii cpp:build
+...
+[100%] Built target david_libfreenect_wrappers_cpp_cppview
+real	2m0.091s
+user	1m28.790s
+sys	0m6.500s</pre><p></p><h2 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">Last test: WiringPi</h2><p>The last test <strong>tried to compile WiringPi in the Raspberry Pi 2</strong>. The previous version of the WiringPi was obsolete and <strong>we needed to update it with the last commits of the official Git repository, </strong><em><strong>git://git.drogon.net/wiringPi</strong>, </em>It was easy and painless.</p><p>If you want to use the last version, it&#8217;s under my namespace <a
+href="https://www.biicode.com/david/WiringPi" target="_blank">david/WiringPi</a> and <a
+href="https://github.com/davidsanfal/WiringPi" target="_blank">it&#8217;s in GitHub too</a>.</p><pre class="crayon-plain-tag">#include &lt;stdio.h&gt;
+#include &lt;david/WiringPi/wiringPi/wiringPi.h&gt;
+// LED Pin - wiringPi pin 0 is BCM_GPIO 17.
+#define LED 0
+int main (void)
+{
+  printf ("Raspberry Pi blink\n") ;
+  wiringPiSetup () ;
+  pinMode (LED, OUTPUT) ;
+  for (;;)
+  {
+    digitalWrite (LED, HIGH) ;    // On
+    delay (500) ;        // mS
+    digitalWrite (LED, LOW) ;    // Off
+    delay (500) ;
+  }
+  return 0 ;
+}</pre><p>&nbsp;</p><p><img
+class="aligncenter" src="http://wiki.scn.sap.com/wiki/download/attachments/394107021/rpi-blink_bb.png?version=1&amp;modificationDate=1414177337000&amp;api=v2" alt="Diagram of a raspberry pi 2" width="481" height="452" /></p><p>So the conclusion is that the new Raspberry Pi 2 is a brilliant piece of hardware that has considerably improved its main benchmarks. Now that we know what we have between our hands we will start thinking what use should we give it at biicode. If you want to propose any kind of project or experiment please drop the idea in the comments section.<br
+/> We hope you enjoy this post and don&#8217;t forget to check our <a
+title="C++ documentation" href="http://docs.biicode.com/c++.html">complete C++ documentation</a>! If you&#8217;ve any doubt, contact us through our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or ask directly in <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/">Raspberry Pi 2 in depth with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>POCO C++ Libraries are now available in biicode</title><link>http://blog.biicode.com/poco-cpp-libraries-available-biicode/</link> <comments>http://blog.biicode.com/poco-cpp-libraries-available-biicode/#comments</comments> <pubDate>Mon, 02 Mar 2015 14:15:08 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[Embedded programming]]></category> <category><![CDATA[Modules]]></category> <category><![CDATA[POCO C++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2091</guid> <description><![CDATA[<p>The POCO C++ Libraries are, like their own web recites, &#8220;Modern, powerful open source C++ class libraries and frameworks for building network- and internet-based applications that run on desktop, server, mobile and embedded systems&#8220;. They were created by Günter Obiltschnig in 2004 and have been extended by enthusiastic C++ developers from all over the world. Now, you have the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/poco-cpp-libraries-available-biicode/">POCO C++ Libraries are now available in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The <a
+title="POCO website" href="http://pocoproject.org/" target="_blank">POCO C++ Libraries</a> are, like their own web recites, &#8220;<em>Modern, powerful open source C++ class libraries and frameworks for building network- and internet-based applications that run on desktop, server, mobile and embedded systems</em>&#8220;. They were created by <a
+href="http://obiltschnig.com/" target="_blank">Günter Obiltschnig</a> in 2004 and have been extended by <a
+href="http://pocoproject.org/community/contributors.html">enthusiastic C++ developers</a> from all over the world.</p><p><a
+title="POCO home page" href="http://pocoproject.org/"><img
+class="aligncenter wp-image-2093 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/poco_libraries_in_biicode.png" alt="POCO C++ Libraries working fine in biicode" width="600" height="240" /></a></p><p>Now, you have the following versions available in biicode:</p><ul><li><a
+title="POCO C++ branch develop (GitHub)" href="https://www.biicode.com/fenix/fenix/poco/develop">fenix/poco (develop)</a> -&gt; changing continuously</li><li><a
+title="POCO C++ release 1.6.0" href="https://www.biicode.com/fenix/fenix/poco/v1.6.0">fenix/poco (v1.6.0)</a></li><li><a
+title="POCO C++ release 1.5.4" href="https://www.biicode.com/fenix/fenix/poco/v1.5.4">fenix/poco (v1.5.4)</a></li><li><a
+title="POCO C++ release 1.4.7p1" href="https://www.biicode.com/fenix/fenix/poco/v1.4.7p1">fenix/poco (v1.4.7p1)</a></li></ul><p><span
+id="more-2091"></span></p><h2><span
+style="color: #489cdf;"><strong>Benefits</strong></span></h2><p>biicode is a file based dependency manager, which has many advantages:</p><ul><li><strong>Save time</strong> reusing from any POCO C++ library (<em>Foundation, Net, NetSSL_OpenSSL, etc.</em>) such times as you need and avoid to configure and build out the libraries first. <strong>biicode&#8217;ll only retrieve the necessary files</strong> to build your project.</li><li>POCO C++ depends on <strong>external libraries</strong> like <a
+title="zlib home page" href="http://www.zlib.net/"><strong>zlib</strong></a>, <a
+title="PCRE home page" href="http://www.pcre.org/"><strong>PCRE</strong> </a>(Perl Compatible Regular Expressions), <a
+title="HPDF home page" href="https://hackage.haskell.org/package/HPDF"><strong>HPDF</strong></a>, <a
+title="7-Zip home page" href="http://www.7-zip.org/"><strong>7-Zip</strong></a>, <a
+title="OpenSSL home page" href="https://www.openssl.org/"><strong>OpenSSL</strong> </a>and <a
+title="SQLite home page" href="http://www.sqlite.org/"><strong>SQLite</strong> </a>that they&#8217;re <strong>uploaded on biicode</strong> and maintained by our users.</li><li>It&#8217;s been tested on biicode in <strong>Windows</strong> with <strong>Visual Studio 10</strong> and <strong>Visual Studio 12</strong>, <strong>Linux</strong> with <strong>GCC</strong> and <strong>Apple</strong> with <strong>CLang</strong></li></ul><p><strong>Note: </strong> if you&#8217;re using Windows OS, I recommend you to use Visual Studio to configure your project because with MinGW you could get some errors.</p><h2><span
+style="color: #489cdf;"><strong>POCO C++ external dependencies</strong></span></h2><p>These libraries have many external and third party dependencies to build some of them, e.g., Foundation depends on PCRE and ZLib. Without biicode PCRE and ZLib source files must be present in POCO C++ project, but with biicode it&#8217;s not needed. The following table shows all the dependencies for every version uploaded which biicode&#8217;ll find if you use all the modules in a project:</p><p><img
+class=" wp-image-2096  aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/poco_external_deps_in_biicode-1024x136.png" alt="POCO external deps found in biicode" width="1058" height="141" /></p><p>So, you&#8217;ll not have to worry about to install or build them, biicode does all the effort for you ;) These are the depending blocks in biicode:</p><ul><li><em><strong>PCRE(v8.36)</strong></em>: <a
+title="block fenix/pcre in biicode" href="https://www.biicode.com/fenix/pcre">fenix/pcre</a></li><li><em><strong>PCRE(v7.8)</strong></em>: <a
+title="block fenix/pcre(v7.8) in biicode" href="https://www.biicode.com/fenix/fenix/pcre/v7.8">fenix/pcre(v7.8)</a></li><li><em><strong>HPDF</strong></em>: <a
+title="block fenix/hpdf in biicode" href="https://www.biicode.com/fenix/hpdf">fenix/hpdf</a></li><li><em><strong>zlib</strong></em>: <a
+title="block zlib/zlib in biicode" href="http://www.biicode.com/zlib/zlib">zlib/zlib</a></li><li><em><strong>7-Zip</strong></em>:<a
+title="block fenix/7z in biicode" href="https://www.biicode.com/fenix/7z"> fenix/7z</a></li><li><em><strong>OpenSSL</strong></em>: <a
+title="block lasote/openssl(v1.0.2) in biicode" href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2">lasote/openSSL(v1.0.2)</a></li><li><em><strong>SQLite</strong></em>: <a
+title="block fenix/sqlite in biicode" href="https://www.biicode.com/fenix/sqlite">fenix/sqlite</a></li></ul><h2><span
+style="color: #489cdf;"><strong>Using POCO C++ Libraries in your project</strong></span></h2><p><strong>1.</strong> Create a new project and an empty block:</p><pre class="crayon-plain-tag">$ bii init poco_sample
+$ cd poco_sample
+$ bii new myuser/myblock</pre><p><strong>2.</strong> Add your sample code (orignal code from <em>Net/samples/dict.cpp</em>) into <em><strong>./blocks/</strong></em><em><strong>myuser/myblock/sample.cpp</strong></em></p><pre class="crayon-plain-tag">// dict.cpp
+//
+// $Id: //poco/1.4/Net/samples/dict/src/dict.cpp#1 $
+//
+// This sample demonstrates the StreamSocket and SocketStream classes.
+//
+// Copyright (c) 2005-2006, Applied Informatics Software Engineering GmbH.
+// and Contributors.
+//
+// SPDX-License-Identifier:	BSL-1.0
+#include "fenix/poco/Net/include/Poco/Net/StreamSocket.h"
+#include "fenix/poco/Net/include/Poco/Net/SocketStream.h"
+#include "fenix/poco/Net/include/Poco/Net/SocketAddress.h"
+#include "fenix/poco/Foundation/include/Poco/StreamCopier.h"
+#include "fenix/poco/Foundation/include/Poco/Path.h"
+#include "fenix/poco/Foundation/include/Poco/Exception.h"
+#include &lt;iostream&gt;
+using Poco::Net::StreamSocket;
+using Poco::Net::SocketStream;
+using Poco::Net::SocketAddress;
+using Poco::StreamCopier;
+using Poco::Path;
+using Poco::Exception;
+int main(int argc, char** argv){
+      const std::string HOST("dict.org");
+      const unsigned short PORT = 2628;
+      if (argc != 2){
+            Path p(argv[0]);
+            std::cout &lt;&lt; "usage: " &lt;&lt; p.getBaseName() &lt;&lt; " &lt;term&gt;" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "       looks up &lt;term&gt; in dict.org and prints the results" &lt;&lt; std::endl;
+            return 1;
+      }
+      std::string term(argv[1]);
+      try{
+            SocketAddress sa(HOST, PORT);
+            StreamSocket sock(sa);
+            SocketStream str(sock);
+            str &lt;&lt; "DEFINE ! " &lt;&lt; term &lt;&lt; "\r\n" &lt;&lt; std::flush;
+            str &lt;&lt; "QUIT\r\n" &lt;&lt; std::flush;
+            sock.shutdownSend();
+            StreamCopier::copyStream(str, std::cout);
+      }
+      catch (Exception&amp; exc){
+            std::cerr &lt;&lt; exc.displayText() &lt;&lt; std::endl;
+            return 1;
+      }
+      return 0;
+}</pre><p><b>3. </b>Choose which uploaded  POCO version you want to depend on, configure it through your <em><strong>./blocks/</strong></em><em><strong>myuser/myblock/</strong></em><em><strong>biicode.conf</strong></em>  file. Create it and copy the following:</p><pre class="crayon-plain-tag">[requirements]
+   fenix/poco(v1.6.0): 0</pre><p><strong>4.</strong> Finally, you&#8217;d only have to retrieve your POCO dependencies and build your sample.cpp. For it, use this command:</p><pre class="crayon-plain-tag">$ bii cpp:build</pre><p><strong>Note: </strong>for Windows users, to configure your project with Visual Studio, e.g., 10 version, execute:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 10"
+$ bii cpp:build</pre><p>So, biicode&#8217;ll download all the dependencies from <a
+title="fenix/poco(v1.6.0) block version" href="https://www.biicode.com/fenix/fenix/poco/v1.6.0">release version 1.6.0</a> and compile the project. Now, you can run the binary created in your <em><strong>./bin/ </strong></em>folder.</p><h2><span
+style="color: #489cdf;"><strong>Use the original #<em>include</em>&#8216;s</strong></span></h2><p>Change all the includes from the previous sample.cpp code to:</p><pre class="crayon-plain-tag">...
+#include "Poco/Net/StreamSocket.h"
+#include "Poco/Net/SocketStream.h"
+#include "Poco/Net/SocketAddress.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/Exception.h"
+...</pre><p>Now, tell biicode how to find this dependencies, so, modify again the <em><strong>biicode.conf</strong></em> and add the following:</p><pre class="crayon-plain-tag">[includes]
+    Poco/Net/*.h: fenix/poco/Net/include
+    Poco/*.h: fenix/poco/Foundation/include</pre><p><strong>Warning:</strong>  take care with <em><span
+style="background-color: #f2f2f2;">Poco/*.h: fenix/poco/Foundation/include</span></em> because it should always be at the end of <em><span
+style="background-color: #f2f2f2;">[includes]</span></em> section for being a really wide search pattern.</p><p>Finally, clean the metadata and build again the project:</p><pre class="crayon-plain-tag">$ bii clean
+$ bii cpp:build</pre><p></p><h4><span
+style="color: #489cdf;"><strong>Creating an example with <em>NetSSL_OpenSSL</em> or <em>NetSSL_Win </em>library</strong></span></h4><p>Making a project using these libraries is a special use case of original includes. Why? Take a look at the following example:</p><pre class="crayon-plain-tag">#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/URI.h"
+#include "Poco/SharedPtr.h"
+#include "Poco/Exception.h"
+/* headers in Net library */
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
+/* headers in NetSSL_OpenSSL and NetSSL_Win libraries */
+#include "Poco/Net/HTTPSStreamFactory.h"
+#include "Poco/Net/SSLManager.h"
+#include "Poco/Net/KeyConsoleHandler.h"
+#include "Poco/Net/ConsoleCertificateHandler.h"
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+/* Main code */</pre><p>Like you see, <em><strong>NetSSL_OpenSSL</strong> </em>and <em><strong>NetSSL_Win</strong> </em>have the same relative inlcude headers, so, the only way to resolve successfully your dependencies is writing the full path for them.</p><pre class="crayon-plain-tag">#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/URI.h"
+#include "Poco/SharedPtr.h"
+#include "Poco/Exception.h"
+/* headers in Net library */
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
+/* headers in NetSSL_OpenSSL library */
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/HTTPSStreamFactory.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/SSLManager.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/KeyConsoleHandler.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/ConsoleCertificateHandler.h"
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+/* Main code */</pre><p>The <em>biicode.conf </em>would be like the previous one.</p><h2><span
+style="color: #489cdf;"><strong>Build all the POCO C++ samples</strong></span></h2><p>Try to build all the available samples Poco brings us with each release. Create a project, open any <em><strong>examples/poco</strong></em> block and build it, e.g., examples from <a
+href="https://www.biicode.com/examples/examples/poco/v1.4.7p1"><em><strong>1.4.7p1 version</strong></em></a>:</p><pre class="crayon-plain-tag">$ bii init samples_1_4_7p1
+$ bii open "examples/poco(v1.4.7p1)"
+$ bii cpp:build</pre><p>&nbsp;</p><p>So, that&#8217;s all! POCO C++ Libraries are amazing and I strongly recommend you to start using them for your network projects.</p><p>I hope you enjoy with this post and don&#8217;t forget check our <a
+title="C++ documentation" href="http://docs.biicode.com/c++.html">complete C++ documentation</a>! If you&#8217;ve any doubt, contact us through our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or ask directly in <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow</a></p><p>&nbsp;</p><p>[<strong>UPDATE</strong>]</p><p>There is already one project reusing POCO C++ libs using biicode:</p><p><strong><br
+/> <a
+href="https://gist.github.com/carlosvin/ba77ab007fafacc32e7f">First Biicode project with Poco C++</a> </strong>by <a
+href="https://github.com/carlosvin">Carlos Martín</a>.</p><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/poco-cpp-libraries-available-biicode/">POCO C++ Libraries are now available in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/poco-cpp-libraries-available-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Boost libraries are now supported in biicode</title><link>http://blog.biicode.com/dependency-management-boost-libraries/</link> <comments>http://blog.biicode.com/dependency-management-boost-libraries/#comments</comments> <pubDate>Fri, 20 Feb 2015 08:29:13 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[boost]]></category> <category><![CDATA[boost c++ libraries]]></category> <category><![CDATA[c++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086</guid> <description><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices. However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices.</p><p>However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular dependencies, and that&#8217;s only for header-only libraries (thankfully 80% of Boost is header-only). For non header-only libs, it&#8217;s a true pain. You should compile those and then link against, being careful about what you are doing.<br
+/> Even if setting up Boost manually could be a bit hard, when it works it&#8217;s a pleasure to develop with it.</p><p>At biicode we have been working hard to simplify the process, to make Boost available for any C++ programmer with just an include. But this is only the start, the project has been <a
+href="https://github.com/Manu343726/boost-biicode">released as open source</a> to allow everyone contribute and help.</p><p>I hope you like it.<br
+/> <img
+class=" wp-image-2094 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/Boost.png" alt="Boost libraries are finally supported in biicode" width="277" height="86" /></p><h2></h2><p><span
+id="more-2086"></span></p><h2 id="working-with-boost">Working with Boost libraries</h2><p></p><pre class="crayon-plain-tag">$ sudo apt-get install boost</pre><p>That&#8217;s what most of us do to work with Boost. There&#8217;s no easy way to change the Boost version though, or even have multiple coexistent Boost versions. In addition to the fact that the package-manager way doesn&#8217;t work on Windows.</p><p>The main purpose of biicode is to handle dependencies and improve the development workflow. That means one should take into account:</p><ul><li>A user may want to work <strong>with different versions of Boost</strong>. It should be <strong>easy to switch between Boost versions during development</strong>.</li><li>When dealing with Standard C++, that is, with true portable C++, one should care about multiple compilers and test his/her code with all of them. <strong>It should be easy to switch Boost to work with different compilers</strong>. In our case, that means GCC, Clang, MSVC, MinGW GCC, and the different versions of each one.</li></ul><p>That were the two main objectives I had when I started to work in Boost support for biicode. To <strong>make Boost setup portable across versions, compilers, and platforms</strong>, and at the same time make the <strong>process fully transparent to the user</strong>.</p><h2 id="our-approach">Our approach</h2><p>The biicode Boost setup is very simple: Install each Boost version on a dedicated folder inside the biicode environment, and then rely on Boost&#8217;s bjam to handle the different compilers.</p><p>The setup should also handle all the installation process, which means:</p><ol><li>Download the requested Boost version if it&#8217;s not currently in the biicode environment.</li><li>Bootstrap it.</li><li>Build the libraries.</li><li>Configure <code>FindBoost.cmake</code> to track the installation.</li></ol><p>But how should that look like in user code? I was thinking about it for a long time. Actually, the current interface is just the last of a very long process of testing different approaches.<br
+/> I finally ended up trying not to force the user to learn new commands. Instead, try to mimic the current Boost setup with CMake: Instead of calling <code>find_package(Boost COMPONENTS...)</code>, call <code>bii_find_boost(COMPONENTS...)</code>. <strong>The rest of the <code>CMakeLists.txt</code> is almost the same.</strong></p><p><code>bii_find_boost()</code> wraps the <code>find_package(Boost)</code> call by first setting up the required boost version (Steps 1 and 2 above), building the requested <code>COMPONENTS</code> on demand, finally calling <code>find_package(Boost COMPONENTS ...)</code>.</p><h2 id="a-boost-example-with-biicode">A Boost example with biicode</h2><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p>That&#8217;s an example of the Boost.Coroutine library extracted from the Boost docs. It&#8217;s so simple, it just takes a coroutine to print the string &#8220;<em>Hello, world!&#8221;</em> in two steps to see how the coroutine <em>continues</em> its execution on consecutive calls.</p><p>This is the <code>CMakeLists.txt</code> file of the <a
+href="http://www.biicode.com/examples/boost-coroutine"><code>examples/boost-coroutine</code></a> block available in our cloud:</p><pre class="crayon-plain-tag">include(biicode/boost/setup)
+    INIT_BIICODE_BLOCK()
+    ADD_BIICODE_TARGETS()
+    set(Boost_USE_STATIC_LIBS ON)
+    bii_find_boost(COMPONENTS system coroutine context thread REQUIRED)
+    target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+    if(MSVC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    else()
+        target_compile_options(${BII_BLOCK_TARGET} INTERFACE -std=c++11)
+    endif()</pre><p>Let&#8217;s open and run the example:</p><pre class="crayon-plain-tag">$ bii init boost-examples
+$ bii open examples/boost-coroutine
+$ bii find
+$ bii cpp:configure
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 4.9.2
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+      examples/boost-corutine
+---------------------------------
+-- Setting up Biicode Boost...
+-- Downloading Boost 1.57.0...
+-- Bootstrapping Boost 1.57.0...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.2...
+-- Building system library...
+-- Building coroutine library...
+-- Building context library...
+-- Building thread library...
+-- Boost 1.57.0
+Found the following Boost libraries
+    system
+    coroutine
+    context
+    thread
+...
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p><strong>Issue with MinGW: </strong>To compile Boost.Context, MinGW depends on the Microsoft assembler. Be sure you have ml or ml64 (Depending on your platform) in your PATH. Those executables are usually shipped within Visual Studio, check the Visual Studio Directory/VC/bin/ folder.</p><p><strong>Issue with CMake configure: </strong>Seems that CMake has problems with long-running configures. In some cases, even if the libraries were built successfully, find_package() is not able to find the Boost components. Just rerun bii cpp:configure.</p><p><strong>Header only libraries: </strong>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost(). Try with a naked <code>bii_find_boost()</code> call.</p><p>We currently maintain a <code>biicode/boost</code> block with the scripts, which has four different tracks representing the four (three) different Boost versions we have tested: <code>master</code> (The latest version available, currently Boost 1.57.0), <code>1.57.0</code>, <code>1.56.0</code>, and <code>1.55.0</code>. Want to change the Boost version you want? Just go to the <code>biicode.conf</code> of your block and change the <code>biicode/boost</code> track in the <code>requirements</code> entry.</p><p>Refer to <a
+href="http://docs.biicode.com/c++/examples/boost.html">the docs</a> for more info.</p><h2 id="whats-next">What&#8217;s next?</h2><p>I want to see what people say about this. The main reason we released this as an open source project is to allow the community to improve it with us. This is a first working version, but I&#8217;m sure it could be improved a lot thanks to your feedback and thoughts. Check the <a
+href="https://github.com/Manu343726/boost-biicode#issues">README&#8217;s issues entry</a> and the project issues page.<br
+/> There are people who already were helping us. I specially thank <a
+href="http://thetoeb.de/">Tobias Becker</a> for his feedback on the last steps of the development. His <a
+href="http://www.biicode.com/toeb/cmakepp">cmakepp</a> library is a great tool and something I want to use in our Boost scripts in the near future. cmakepp is <em>batteries included</em> CMake!</p><p>I think dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward.<br
+/> Let&#8217;s continue working until a modern C++ development environment becomes reality.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/dependency-management-boost-libraries/feed/</wfw:commentRss> <slash:comments>7</slash:comments> </item> <item><title>Using AppVeyor CI and Deploy for Windows</title><link>http://blog.biicode.com/appveyor-ci-windows-biicode/</link> <comments>http://blog.biicode.com/appveyor-ci-windows-biicode/#comments</comments> <pubDate>Mon, 09 Feb 2015 16:35:08 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[continuous integration]]></category> <category><![CDATA[deploy]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2029</guid> <description><![CDATA[<p>Let&#8217;s use AppVeyor CI for Windows to automatically build and publish our new commits and releases to biicode. GitHub or Bitbucket enable creating remote repositories to develop them collaboratively. First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Let&#8217;s use <a
+href="https://ci.appveyor.com/">AppVeyor</a> CI for Windows to automatically build and publish our new commits and releases to biicode.</p><p><img
+class="aligncenter wp-image-2030 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_logo.png" alt="AppVeyor CI service now integrated with biicode to make it work in Windows." width="162" height="29" /></p><p>GitHub or Bitbucket enable creating remote repositories to develop them collaboratively.</p><p><span
+id="more-2029"></span></p><p>First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL here:</p><p><img
+class="aligncenter wp-image-2031 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/2_clone-1024x786.png" alt="Clone a Github repo as the first step in our AppVeyor CI tutorial" width="630" height="484" /></p><p>Create a new biicode project, and paste the URL to clone the repository into your block:</p><pre class="crayon-plain-tag">bii init myproject
+cd myproject
+bii new amalulla/cpp-expresion-parser
+cd blocks\amalulla\cpp-expresion-parser
+git clone https://github.com/MariadeAnton/cpp-expression-parser.git .</pre><p>Don’t miss the dot at the end, this copies your repo’s files and folders into your block’s main folder.</p><h2>Automatically build and publish via AppVeyor CI</h2><p>Login at <a
+href="https://ci.appveyor.com/" target="_blank">AppVeyor</a> with your favourite developer account and once logged-in clic on <em>“+ new project”</em></p><p><img
+class="aligncenter wp-image-2032 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/new_appveyor_project.png" alt="Open a new AppVeyor CI project" width="1006" height="214" /></p><p>Choose the repo you want to deploy with AppVeyor:</p><p><img
+class="aligncenter wp-image-2033 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/add_appveyor_project2-1024x466.png" alt="Choose and AppVeyor CI project" width="630" height="287" /></p><p>Once enabled, let&#8217;s get back to our local project and create an <code>appveyor.yml</code> file into your block&#8217;s folder. This file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, but you can configure it to fit your needs:</p><pre class="crayon-plain-tag">version: 1.0.{build}
+install:
+  - ps: wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-win32-x86.zip -OutFile cmake.zip
+  - cmd: echo "Unzipping cmake..."
+  - cmd: 7z x cmake.zip -o"C:\Program Files (x86)\" -y &gt; nul
+  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\Program Files (x86)\cmake-3.0.2-win32-x86\bin
+  - cmd: cmake --version
+  - cmd: echo "Downloading biicode..."
+  - ps: wget http://www.biicode.com/downloads/latest/win -OutFile bii-win.exe
+  - cmd: bii-win.exe /VERYSILENT
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii
+  - cmd: bii -v
+  - cmd: del bii-win.exe
+  - cmd: del cmake.zip
+before_build:
+  - cmd: bii init -L
+    # copy files and folders
+  - cmd: xcopy "%APPVEYOR_BUILD_FOLDER%" blocks\%block_user%\%block_name%\ /e
+  - cmd: bii configure -G "Visual Studio 12"
+build_script:
+  - cmd: bii build
+test_script:
+  - cmd: cd bin
+  - cmd: amalulla_cpp-expression-parser_test-shunting-yard.exe
+# to run your custom scripts instead of provider deployments
+deploy_script:
+  - cmd: bii user %block_user% -p %secured_passwd%
+  - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME%
+  - if defined APPVEYOR_REPO_TAG_NAME bii publish -r --tag=%tag% --versiontag=%VERSION%
+  - if not defined APPVEYOR_REPO_TAG_NAME bii publish -r
+on_success:
+  - ps: |
+        git checkout "$env:APPVEYOR_REPO_BRANCH"
+        git config --global core.autocrlf true
+        git config --global credential.helper store
+        Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+        git remote add neworigin "$env:github_repo"
+        git config --global user.email "$env:github_email"
+        git config --global user.name "$env:github_user"
+        git add .
+        git commit -m "Updated biicode parents [skip ci]"
+        git push neworigin "$env:APPVEYOR_REPO_BRANCH"
+environment:
+  block_user:
+    "amalulla"
+  block_name:
+    "cpp-expression-parser"
+  secured_passwd:
+    secure: ZMvgETfLAUo7kISnvrinBA==
+  access_token:
+    secure: GdIDIRkmsM9blqS143lQErkxguMYgJBs74GzWw+lgzjvl/NoLs4ErcOZ2JBAEmkr
+  tag:
+    "STABLE"
+  github_user:
+    "MariadeAnton"
+  github_email:
+    "maria.deanton@biicode.com"
+  github_repo:
+    "git@github.com:MariadeAnton/cpp-expression-parser.git"</pre><p>Let&#8217;s take a deeper look into this file to adapt it to your build config, changes are only needed in <strong>test_script</strong><em> and <strong>enviroment</strong></em> values, other changes may depend on what you will use Appveyor for:</p><ul><li>install: Just copy this part, it installs all tools required to deploy your biicode projects in AppVeyor.</li><li>before_build: Copy your project&#8217;s files into the biicode project and configure it to use Visual Studio 12 via <code> bii cpp:configure</code>.  Check <a
+href="http://docs.biicode.com/c++/ides.html" target="_blank">biicode docs</a> and  your project&#8217;s settings in <a
+title="appveyor" href="http://www.appveyor.com/" target="_blank">Appveyor </a> to use other build configurations. *Also note that there&#8217;s a commented line here you should also write if your project contains folders.</li><li>build_script: builds the project via <code> bii cpp:build. </code></li><li>test_script: cd bin and execute your project. Ensure about your project&#8217;s executable, build and execute it locally via  <code>bii cpp:build</code>.</li><li>deploy_script: This script publishes your block to biicode, as stable including your version tag only when it&#8217;s tagged, otherwise your block is published as dev.</li><li>on_success: If your biicode.conf file is updated commit its changes to github without launching a new build. Else do nothing.</li><li><em>environment:</em> Replace all  the environment variables with your own values: project_name, tag, default version tag value&#8230;</li></ul><h2 id="building-appveyor-specifics">Specifics:</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Here&#8217;s an <a
+title="git push from appveyor build" href="http://http://www.appveyor.com/docs/how-to/git-push" target="_blank">appveyor guide about how to git push from build</a>. Following this Appveyor Guide we&#8217;re using it as credentials with Git commands. Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="configuring-build-secure-variable-with-access-token">Configuring build secure variable</h3><p>Encrypt your biicode password and your access token using <a
+href="https://ci.appveyor.com/tools/encrypt" target="_blank">Encrypt Data tool</a> and then put it as secure variable into your <code>appveyor.yml</code>, for example, to generate an encrypted password with Appveyor go to your profile and choose <em>Encrypt data:</em></p><p><img
+class="aligncenter wp-image-2034 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypt_data-1024x563.png" alt="Encrypt the data of your AppVeyor CI project" width="630" height="346" />Once there, encrypt your password and copy the value generated to put it in your  environment &#8220;<em>secured_password: secure:&#8221;</em></p><p><img
+class="aligncenter wp-image-2035 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypted_appveyor_data-300x144.png" alt="AppVeyor CI encryption config" width="300" height="144" /></p><p>When it comes to specifying your project settings, it&#8217;s useful to check them online. For example, you can skip branches without an <code>appveyor.yml</code> file just saying it your <code>appveyor.yml</code> or into their web interface. Also, <a
+href="http://www.appveyor.com/docs/build-configuration">AppVeyor docs explain in detail build configuration.</a></p><h2>The icing</h2><p>Put a nice AppVeyor badge to show your project builds in Windows.</p><p>Go to your projects settings&gt;Badges, copy your repo&#8217;s badge and paste it in your README file:</p><p><img
+class="aligncenter wp-image-2036 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_project_settings-1024x809.png" alt="AppVeyor CI project settings" width="630" height="498" /></p><h2>Update and push to GitHub!</h2><p>Add, commit and push your changes to GitHub</p><pre class="crayon-plain-tag">$ git add --all
+$ git commit -m "commit message"
+$ git push origin master</pre><p></p><h3>Working with tags</h3><p>Using the <code>appveyor.yml</code> file described before, you can tag a version with git, push it to github and it will be automatically tagged in biicode too:</p><pre class="crayon-plain-tag">git tag -a v0.1 -m 'my version 0.1'
+ git push origin v0.1</pre><p>Here&#8217;s <a
+title="git taggin basics" href="http://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank">Git basics about Tagging</a>.</p><p>Unless you specify it otherwise, each time you push to AppVeyor CI System, a build launches to check everything is still working.</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Fork Cpp-expression-parser" href="https://github.com/MariadeAnton/cpp-expression-parser" target="_blank">Forked cpp-expresion-parser repo in GitHub</a>  from the <a
+href="https://github.com/bamos/cpp-expression-parser" target="_blank">Original repo by Brandon Amos</a></li><li><a
+title="appveyor build cpp-expression-parser" href="https://ci.appveyor.com/project/MariadeAnton/cpp-expression-parser" target="_blank">cpp-expression-parser builds in AppVeyor</a> CI and Deployment</li><li><a
+href="http://www.biicode.com/amalulla/cpp-expression-parser" target="_blank">cpp-expression parser biicode block</a> and with its automatically published releases</li></ul><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our<span
+class="Apple-converted-space"> </span><a
+href="http://docs.biicode.com/">docs</a>,<span
+class="Apple-converted-space"> </span><a
+href="http://forum.biicode.com/">forum</a><span
+class="Apple-converted-space"> </span>and/or<span
+class="Apple-converted-space"> </span><a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a><span
+class="Apple-converted-space"> </span>for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/appveyor-ci-windows-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>C++ Docker remote API client</title><link>http://blog.biicode.com/cpp-docker-remote-api-client/</link> <comments>http://blog.biicode.com/cpp-docker-remote-api-client/#comments</comments> <pubDate>Tue, 20 Jan 2015 17:15:32 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[c++ docker client]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[docker]]></category> <category><![CDATA[docker daemon]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2010</guid> <description><![CDATA[<p>I&#8217;ve built a block to control Docker daemon from C++ source code. It&#8217;s available here: lasote/docker_client What’s Docker Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-docker-remote-api-client/">C++ Docker remote API client</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>I&#8217;ve built a block to control Docker daemon from C++ source code. It&#8217;s available here: <a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank">lasote/docker_client</a></p><p><a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank"><img
+class=" size-full wp-image-2055 alignnone" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/biicode-cplus-docker.jpg" alt="biicode-cplus-docker" width="638" height="279" /></a></p><h2>What’s Docker</h2><p><strong><a
+title="What is Docker?" href="https://www.docker.com/whatisdocker/" target="_blank"><br
+/> Docker</a></strong> is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and automating workflows, Docker enables apps to be quickly assembled from components and eliminates the friction between development, QA, and production environments. As a result, IT can ship faster and run the same app, unchanged, on laptops, data center VMs, and any cloud.</p><h2>What&#8217;s Docker remote API?</h2><p>Docker also exposes a <a
+title="Docker REST API" href="http://https://docs.docker.com/reference/api/docker_remote_api/" target="_blank">REST API</a> to control your docker service. This API is at least as powerfull as the Docker client.</p><h2>Why would I need a C++ Docker client for Docker&#8217;s remote API?</h2><p>Because you can fully control Docker daemon from your C++ source code!<br
+/> For example, you may want to automate the creation of some images, or run some linux instances on demand to build your software, maybe build a CI platform&#8230;</p><p><span
+id="more-2010"></span></p><h3>Brief comments about <a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank">lasote/docker_client</a></h3><ul><li>It&#8217;s the very first docker client for C++ language.</li><li>Multiplatform, tested on Windows with Visual Studio and MinGW, Linux with GCC and MacOSx with Clang.</li><li>It&#8217;s based on <a
+title="Libuv repository" href="https://github.com/libuv/libuv" target="_blank">libuv</a> library for event driven networking.</li><li>Modern C++11 style.</li></ul><h2>Want to try it?</h2><p><a
+title="Getting started" href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank">Get started</a> with biicode.</p><h3>Create a new biicode project and a new block</h3><p></p><pre class="crayon-plain-tag">bii init myproject
+ cd myproject
+ bii new myuser/myblock</pre><p></p><h3>Enable TCP access for your docker instance</h3><p>You can follow <a
+title="Enable REST API docker" href="http://www.virtuallyghetto.com/2014/07/quick-tip-how-to-enable-docker-remote-api.html" target="_blank">this tutorial</a> to enable TCP access for your docker instance.</p><h3>Create a main.cpp and paste this example code</h3><p><strong>NOTE</strong>: In this example I used lambda functions, but if you prefer the &#8220;classic code&#8221; you can pass any &#8220;function&#8221; object to success callback and error callback.</p><p>Paste in <b>myproject/blocks/myuser/myblock/main.cpp</b>:</p><pre class="crayon-plain-tag">#include "lasote/docker_client/client.h"
+#include &lt;iostream&gt;
+using namespace lasote;
+int main() {
+  DockerClient client("http://localhost:4243");
+  //Callback function for error handle
+  ERR_F error_cb = [] (int status, string desc) {
+      cout &lt;&lt; "Error: " &lt;&lt; status &lt;&lt;  endl  &lt;&lt; desc;
+  };
+  // EXAMPLE 1: CREATE A CONTAINER, START IT AND ATTACH IT ALL IN ONE.
+  // REMEMBER, YOU CAN USE ANY "function" OBJECT, I LIKE TO NEST API CALLS
+  // IN SUCCESS CALLBACK... YES, I LOVE JAVASCRIPT
+  //Command parameters
+  jsonxx::Array commands;
+  commands &lt;&lt; "/bin/python";
+  jsonxx::Object create_params;
+  create_params &lt;&lt; "Cmd" &lt;&lt; commands;
+  create_params &lt;&lt; "Image" &lt;&lt; "fedora_lint";
+  // Create the container and in success callback start the container
+  auto c2 = client.create_container([&amp;client, error_cb] ( jsonxx::Object ret) {
+     cout &lt;&lt; "CREATE CONTAINER RETURN: " &lt;&lt; ret.json() &lt;&lt; endl;
+     auto container_id = ret.get&lt;jsonxx::String&gt;("Id");
+     cout &lt;&lt; "CONTAINER ID: " &lt;&lt; container_id &lt;&lt; endl;
+     auto c4 = client.start_container([container_id, &amp;client, error_cb] ( jsonxx::Object ret) {
+        cout &lt;&lt; "START CONTAINER RETURN: " &lt;&lt; ret.json() &lt;&lt; endl;
+        auto c2 = client.attach_to_container(
+            [] ( jsonxx::Object ret) {
+               cout &lt;&lt; "Response: " &lt;&lt; ret.json() &lt;&lt; endl;
+            },
+            error_cb,
+            [] (const char *p, size_t len) {
+                cout &lt;&lt; string(p, len) ;
+            },
+            container_id, true, true, true, true);
+     }, error_cb, container_id);
+  }, error_cb, create_params);
+  //EXAMPLE 2: SHOW THE CONTAINERS LOGS
+  auto c5 = client.logs_container([] (string out) {
+       cout &lt;&lt; "Response: " &lt;&lt; out &lt;&lt; endl;
+  }, error_cb, "c7ddced66641", true, true, true, true, "all");
+  //EXAMPLE 3: LIST ALL THE CONTAINERS
+  auto c6 = client.list_containers([] ( jsonxx::Object ret) {
+    cout &lt;&lt; "Containers: " &lt;&lt; ret.json() &lt;&lt; endl;
+  }, error_cb, false, 13);
+  //EXAMPLE 4: LIST ALL THE IMAGES
+  auto c7 = client.list_images([] ( jsonxx::Object ret) {
+      cout &lt;&lt; "Images: " &lt;&lt; ret.json() &lt;&lt; endl;
+  }, error_cb);
+  // RUN THE LOOP TO LAUNCH ALL THE REQUESTS ASYNC
+  run_loop();
+}</pre><p></p><h3>Just build it!</h3><p></p><pre class="crayon-plain-tag">bii find
+ bii cpp:build</pre><p></p><h2>TODO</h2><p>&#8211; This library implements about a 70% of docker v1.16 interface. Most important methods are already implemented.<br
+/> &#8211; Libuv doesn&#8217;t support SSL/TLS so, it does not support HTTPs yet. You can replace Libuv easily replaced and use any other network framework to support it. It does not support unix socket for the same reason.</p><p>All <a
+href="https://github.com/lasote/docker_client"> github pull request</a> are welcome, so please contribute! See the <a
+href="https://github.com/lasote/docker_client/issues" target="_blank">issues </a>on GitHub for work to be done.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-docker-remote-api-client/">C++ Docker remote API client</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-docker-remote-api-client/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

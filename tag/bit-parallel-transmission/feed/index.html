@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; bit-parallel transmission</title> <atom:link href="http://blog.biicode.com/tag/bit-parallel-transmission/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Bit-parallel approximate coloring</title><link>http://blog.biicode.com/bit-parallel-approximate-coloring/</link> <comments>http://blog.biicode.com/bit-parallel-approximate-coloring/#comments</comments> <pubDate>Wed, 26 Nov 2014 14:34:26 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit parallelism]]></category> <category><![CDATA[bit-parallel transmission]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[Maximum Cliqué Problem]]></category> <category><![CDATA[SEQ]]></category> <category><![CDATA[sequential greedy coloring]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1914</guid> <description><![CDATA[<p>The vertex coloring problem (VCP) is an NP-hard classical problem in graph theory which can be traced back to a letter written to W.R. Hamilton by A. de Morgan in 1852 in which the famous Four Color Theorem has its roots. Besides its obvious theoretical relevance, it has found practical applications connected to scheduling and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-parallel-approximate-coloring/">Bit-parallel approximate coloring</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The vertex coloring problem (VCP) is an NP-hard classical problem in graph theory which can be traced back to a letter written to W.R. Hamilton by A. de Morgan in 1852 in which the famous <em>Four Color Theorem</em> has its roots. Besides its obvious theoretical relevance, it has found practical applications connected to scheduling and allocation of resources (i.e. memory for different processes, frequencies for WLANs etc.).<br
+/> A (proper) vertex coloring of a simple undirected graph G=(V, E) is an assignment of color numbers to all vertices such that pairwise adjacent vertices have different colors. The size of the coloring is the number of different colors employed. The chromatic number of a graph χ(G) is the minimum number of colors required to color G, i.e. the size of its optimum coloring. The VCP can be formulated as finding a minimum coloring for a given graph.<br
+/> Compared with other related graph optimization problems such as the maximum clique problem (i.e. finding the largest possible subgraph in a given graph), VCP is considerably more challenging; for example it is possible to compute a maximum clique exactly in massive sparse graphs with millions of vertices, whereas fast exact coloring of a random graph with 80 vertices and 0.5 edge density already requires efficient algorithms and a powerful CPU.</p><p><span
+id="more-1914"></span></p><h2>Sequential greedy approximate coloring (SEQ)</h2><p>This post is concerned with a specific approximate coloring procedure called sequential greedy coloring (usually referred to as SEQ). It is a very useful and simple heuristic which produces reasonably tight colorings. A typical implementation runs in O(|V|* |V|) although procedures in O(|E|) are also known and employed in large sparse graphs.<br
+/> SEQ assigns the smallest possible color number to each vertex in order consistent with the current partial coloring. Pseudocode for SEQ appears in listing 1.</p><pre class="crayon-plain-tag">SEQ (G(V={v1, v2, …, vn} , E))
+1. for v≔v1 to vn
+2.   assign the smallest possible color to v
+3. endfor</pre><p><strong>Listing 1</strong>. Sequential greedy coloring.</p><p
+align="justify"><span
+lang="en-US"><b>Figure 1</b></span><span
+lang="en-US"> below shows an example of a coloring produced by SEQ. The numbers inside the vertices indicate the predefined ordering. In the example SEQ starts by labelling vertex 1 with color number 1 (green) and then proceeds to label vertex 2 with color number 2 (yellow) because it is adjacent to 1. Thereafter the smallest possible color for vertex 3 is green, vertex 4 is colored yellow and finally vertex 5 requires an additional color number (cyan) because it is adjacent to 1 and 4.</span></p><p>&nbsp;</p><table
+width="100%" cellspacing="0" cellpadding="7"><tbody><tr><td
+width="51%"><img
+class="aligncenter wp-image-1915 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/greedy-coloring1.png" alt="Examples of SEQ " width="341" height="299" /></td><td
+width="49%"><img
+class="aligncenter wp-image-1916 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/greedy-coloring2.png" alt="Example 2 of SEQ" width="342" height="300" /></td></tr><tr><td
+colspan="2" valign="top" width="100%"><b>Figure 1</b>. An example of sequential greedy coloring (in this case also a minimum coloring and solution to the VCP)</td></tr></tbody></table><p
+style="text-align: left;"> <span
+lang="en-US">The resulting coloring C(G)={C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US">, C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US">, C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">} has size three with color sets C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US">={1, 3}, C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US">={2, 4} and C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">={5}. Note that each color set is an </span><span
+lang="en-US"><i>independent set</i></span><span
+lang="en-US">, i.e. all its members are pairwise non-adjacent. This is a common property of all vertex colorings.</span></p><h2>An efficient bit-parallel implementation of SEQ</h2><p>We will now show a very efficient way of implementing SEQ in a bit-encoded graph to exploit bit-parallel transmission. We assume the reader has a minimum knowledge of both  <a
+title="GRAPH block in Biicode repository" href="https://www.biicode.com/pablodev/graph">GRAPH</a> and <a
+title="BITSCAN block in Biicode repository" href="https://www.biicode.com/pablodev/bitscan">BITSCAN</a> C++ libraries. If this is not the case we refer the reader to the documentation in the corresponding blocks in the Biicode repository.</p><p
+align="justify"><span
+lang="en-US">The bit-encoded graph encoded by GRAPH contains |V| bitarrays which map the neighbor sets of every vertex (i.e. each row of the adjacency matrix). In the example of </span><span
+lang="en-US"><b>figure 1</b></span><span
+lang="en-US"> the graph is encoded with the following 5 bitstrings: B{1} = 01011, B{2}=10101, B{3}=01011, B{4}=10101 and B{5}=11110. In a similar fashion, vertex sets and induced subgraphs are mapped to bitstrings when needed making use of BITSCAN.</span></p><p
+align="justify"><span
+lang="en-US">When exploiting bit-parallelism it is important that algorithms are carefully designed so that the critical operations are computed through bitmasks. Typical </span><span
+lang="en-US"><i>good</i></span><span
+lang="en-US"> operations when working with bit-encoded sets are </span><span
+lang="en-US"><i>set-intersection</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>set-difference</i></span><span
+lang="en-US">. A </span><span
+lang="en-US"><i>bad</i></span><span
+lang="en-US"> operation frequently needed is </span><span
+lang="en-US"><i>set element enumeration</i></span><span
+lang="en-US"> (i.e. determining the position of all 1-bits in the bitarray). </span></p><p
+align="justify"><span
+lang="en-US">In the case of SEQ a good compromise between </span><span
+lang="en-US"><i>good</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>bad</i></span><span
+lang="en-US"> operations is achieved by changing the control flow </span><span
+lang="en-US"><i>to produce color sets sequentially </i></span><span
+lang="en-US">(in the example first C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US"> then C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US"> and finally C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">). Note that now no vertex is assigned color number </span><span
+lang="en-US"><i>k</i></span><span
+lang="en-US"> until all color sets below </span><span
+lang="en-US"><i>k</i></span><span
+lang="en-US"> have been completed. </span><span
+lang="en-US"><b>Listing 2</b></span><span
+lang="en-US"> describes the proposed modification for the SEQ algorithm.</span></p><p></p><pre class="crayon-plain-tag">BIT_PARALLEL_SEQ (G)
+Initial step: U≔V, k:=1, C:= EMPTY
+Output: A greedy sequential class coloring C(G)
+1. while U is not empty
+2.    Ck≔U                                                              //candidate set to color
+3.    repeat until all vertices in Ck have been selected
+4.      choose the first vertex v from Ck not previously selected
+5.      remove from Ck vertices not adjacent to v                       //main coloring operation
+6.      remove v from U                                                 //mark v as colored
+7.    endrepeat                                                         //end of color Ck
+8. add Ck to the output coloring C
+9. k≔k+1                                                                //next color set
+10.endwhile</pre><p><strong>Listing 2.</strong> BIT_PARALLEL_SEQ. It computes color classes sequentially.</p><p
+align="justify"><span
+lang="en-US"><b>Listing 3</b></span><span
+lang="en-US"> describes an efficient implementation of BIT_PARALLEL_SEQ with GRAPH. The procedure receives as input the graph to be colored (encoded as the</span><span
+lang="en-US"><i> ugraph</i></span><span
+lang="en-US"> type from GRAPH) and returns the size of the coloring and the concrete color assignments (in vector </span><span
+lang="en-US"><i>color</i></span><span
+lang="en-US"> passed as parameter). The procedure uses two auxiliary vertex sets </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> bit-encoded with BITSCAN. </span><span
+lang="en-US"><i>m_unsel</i></span> <i> </i><span
+lang="en-US">refers to the</span><i> </i><span
+lang="en-US">remaining uncolored vertices; </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> contains the candidate vertices which can enlarge the current color class. Initially </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> is mapped to V (i.e. all bits are set to one).</span></p><p></p><pre class="crayon-plain-tag">#include "pablodev/graph/graph.h"		//header for GRAPH in Biicode repository
+int BIT_PARALLEL_SEQ (ugraph&amp; G, vector&lt;int&gt;&amp; color){
+  //initial values
+  int N=G.number_of_vertices(), k=0, v= EMPTY_ELEM, from=EMPTY_ELEM;
+  color.assign(N, EMPTY_ELEM);
+  m_unsel.set_bit(0, N-1);                       //initially maps to V: all bits to 1
+  //main loop
+  while(true){
+    m_sel=m_unsel;
+    m_sel.init_scan(bbo::DESTRUCTIVE);
+    while(true){
+       if((v=m_sel.next_bit_del(from, m_unsel))==EMPTY_ELEM) break;
+       color[v]=k;                                //stores the vertex color number
+       if((--N)==0)
+               return k;                          //exit point
+       //computes next vertex of the current color class
+       m_sel.erase_block(from, G.get_neighbors(v));
+    }
+    ++k;                                          //next color
+  }
+  return k;                                       //should not reach here
+}</pre><p><strong>Listing 3.</strong> The proposed BIT_PARALLEL_SEQ implementation.</p><p
+align="justify"><span
+lang="en-US">The procedure is made up of two nested loops. The outer loop sets the candidate vertices of a new color set C</span><sub><span
+lang="en-US">k</span></sub><span
+lang="en-US"> in</span><span
+lang="en-US"><i> m_sel</i></span><span
+lang="en-US">, while the inner loop computes C</span><sub><span
+lang="en-US">k</span></sub><span
+lang="en-US">. Critical operations that make use of bit-parallel transmission are:</span></p><ol><li><p
+align="justify"><span
+lang="en-US">Copy of uncolored vertices from </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> to </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> at the beginning of the outer loop.</span></p></li><li><p
+align="justify"><span
+lang="en-US">Filtering of candidate vertices for the current color set by the BITSCAN </span><span
+lang="en-US"><i>erase_block</i></span><span
+lang="en-US"> function (computed as a set_difference operation).</span></p></li></ol><p
+align="justify"><span
+lang="en-US">Enumeration of vertices in </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> is one of the </span><span
+lang="en-US"><i>bad </i></span><span
+lang="en-US">operations but is implemented as an efficient </span><span
+lang="en-US"><i>destructive BITSCAN loop</i></span><span
+lang="en-US"> (see BITSCAN reference) in the inner loop of BIT_PARALLEL_SEQ:</span></p><p></p><pre class="crayon-plain-tag">m_sel.init_scan(bbo::DESTRUCTIVE);
+while(true){
+  if((v=m_sel.next_bit_del(from, m_unsel))==EMPTY_ELEM) break;
+  //…
+}</pre><p></p><p
+align="justify"><span
+lang="en-US">Inside the inner loop, each time a vertex </span><span
+lang="en-US"><i>v </i></span><span
+lang="en-US">is selected it is deleted simultaneously from </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>m_unsel </i></span><span
+lang="en-US">in </span><span
+lang="en-US"><i>next_bit_del</i></span><span
+lang="en-US"> which is a useful optimization. Afterwards </span><span
+lang="en-US"><i>color </i></span><span
+lang="en-US">is updated with the new label for </span><span
+lang="en-US"><i>v </i></span><span
+lang="en-US">(color[v]=k) and the empty set condition is evaluated (&#8211;N==0) to check if all vertices are colored. If this is not the case the procedure enters into the </span><span
+lang="en-US"><i>erase_block</i></span><span
+lang="en-US"> coloring operation which removes those vertices which cannot now make part of the current color class and proceeds with the next iteration. Noteworthy is that </span><span
+lang="en-US"><i>erase_block </i></span><span
+lang="en-US">has been optimized in BITSCAN so that only blocks in </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> containing the current vertex </span><span
+lang="en-US"><i>v</i></span><span
+lang="en-US"> (index block </span><span
+lang="en-US"><i>from</i></span><span
+lang="en-US">) and higher are considered in the filter.</span></p><p
+align="justify"><span
+lang="en-US">We hope readers enjoy BIT_PARALLEL_SEQ. It is extremely fast and is currently being used as part of <em>state-of-the-art</em> maximum clique algorithm <a
+title="Reference to BBMC algorithm" href="http://dl.acm.org/citation.cfm?id=1860369">BBMC</a> in to compute clique upper bounds. The implementation described here is available in the combinatorial optimization block <a
+title="Combinatorial block in Biicode repository" href="https://www.biicode.com/pablodev/copt">pablodev/copt </a> in the Biicode repository.</span></p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p><p><a
+href="http://www.codeproject.com/script/Articles/BlogFeedList.aspx?amid=<11052799>&#8221; rel=&#8221;tag&#8221;>CodeProject style=&#8221;display:none&#8221;</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-parallel-approximate-coloring/">Bit-parallel approximate coloring</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bit-parallel-approximate-coloring/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

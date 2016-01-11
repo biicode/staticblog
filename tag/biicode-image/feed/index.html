@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; biicode image</title> <atom:link href="http://blog.biicode.com/tag/biicode-image/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Give wings to the whale: biicode with docker</title><link>http://blog.biicode.com/biicode-docker/</link> <comments>http://blog.biicode.com/biicode-docker/#comments</comments> <pubDate>Wed, 08 Oct 2014 10:27:16 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[biicode image]]></category> <category><![CDATA[docker]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1776</guid> <description><![CDATA[<p>We have uploaded a docker image with biicode pre-installed. So, you can quickly try biicode thanks to docker! Don&#8217;t you know what&#8217;s docker? Let&#8217;s start with a short explanation about it. What&#8217;s docker Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-docker/">Give wings to the whale: biicode with docker</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have uploaded a docker image with biicode pre-installed. So, you can quickly try biicode thanks to docker!</p><p>Don&#8217;t you know what&#8217;s docker? Let&#8217;s start with a short explanation about it.</p><h2>What&#8217;s docker</h2><p><img
+class="alignright" src="https://d3oypxn00j2a10.cloudfront.net/0.10.3/img/homepage/docker-whale-home-logo.png" alt="Now biicode works with docker. Yays!" width="346" height="197" /><strong><a
+title="What is Docker?" href="https://www.docker.com/whatisdocker/" target="_blank">Docker</a></strong> is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and automating workflows, Docker enables apps to be quickly assembled from components and eliminates the friction between development, QA, and production environments. As a result, IT can ship faster and run the same app, unchanged, on laptops, data center VMs, and any cloud.</p><h2></h2><p><span
+id="more-1776"></span></p><h2>How to run the biicode image</h2><p>First of all, you need to have <strong><a
+title="docker installation" href="https://docs.docker.com/installation/#installation" target="_blank">docker installed</a></strong> . Then, run the following command to download and run a docker container with the ubuntu 14.04 image with biicode pre-installed.</p><pre class="crayon-plain-tag">sudo docker run -t -i davidsanfal/ubuntu14_biicode:latest /bin/bash
+Unable to find image 'davidsanfal/ubuntu14_biicode:latest' locally
+Pulling repository davidsanfal/ubuntu14_biicode
+eb94c93951d5: Download complete
+511136ea3c5a: Download complete
+b18d0a2076a1: Download complete
+67b66f26d423: Download complete
+...
+root@dc7e87dcfc2b:~#</pre><p>Now, try the biicode installation.</p><pre class="crayon-plain-tag">root@dc7e87dcfc2b:~#  bii
+ERROR: None or bad command. Type "bii --help" for available commands</pre><p>And this is all you need to use <strong>biicode with docker!</strong></p><h2>How to use biicode inside the docker container</h2><p>Now, let&#8217;s make an <a
+title="sqlite example" href="http://docs.biicode.com/c++/examples/sqlite.html" target="_blank"><strong>example with SQLite</strong></a>.</p><p>First, open and build the <a
+title="sqlite example" href="http://www.biicode.com/examples/sqlite_basic" target="_blank"><strong>examples/sqlite_basic</strong></a> block.</p><pre class="crayon-plain-tag">root@dc7e87dcfc2b:~# bii init sql
+Successfully initialized biicode project sql
+root@dc7e87dcfc2b:~# cd sql
+root@dc7e87dcfc2b:~/sql# bii open examples/sqlite_basic
+INFO: Processing changes...
+Opened examples/sqlite_basic
+root@dc7e87dcfc2b:~/sql# bii cpp:build
+INFO: Processing changes...
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+(...)
+[100%] Built target examples_sqlite_basic_main</pre><p>Now, <strong>run the example</strong>.</p><pre class="crayon-plain-tag">root@dc7e87dcfc2b:~/sql# ./bin/examples_sqlite_basic_main
+Opened database successfully
+SELECT, List Veggies
+STORE = Veggies
+NAME = Spinach
+NUMBER = 3
+STORE = Veggies
+NAME = Onion
+NUMBER = 1
+SELECT, List Drinks
+STORE = Drinks
+NAME = Coffee
+NUMBER = 7
+SELECT, Updated Lists:
+STORE = Drinks
+NAME = Coffee
+NUMBER = 2
+STORE = Veggies
+NAME = Onion
+NUMBER = 1
+Closed database successfully</pre><p>If you want to know how to upload an image to docker-hub or anything, you can see the <a
+title="docker-hub docs" href="https://docs.docker.com/introduction/#docker-hub" target="_blank">docker-hub docs</a> or visit our <a
+class="reference external" title="biicode forum" href="http://forum.biicode.com/">forum</a> and ask any questions. feel free to upload your own images!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-docker/">Give wings to the whale: biicode with docker</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicode-docker/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

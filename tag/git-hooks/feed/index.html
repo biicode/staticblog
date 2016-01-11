@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; git hooks</title> <atom:link href="http://blog.biicode.com/tag/git-hooks/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to integrate biicode with git using git hooks</title><link>http://blog.biicode.com/git-hooks/</link> <comments>http://blog.biicode.com/git-hooks/#comments</comments> <pubDate>Wed, 20 Aug 2014 08:59:00 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[git hooks]]></category> <category><![CDATA[github integration]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1130</guid> <description><![CDATA[<p>Our users have asked a lot for github integration. This can be easily achieved with git hooks. Git hooks are scripts which are executed when certain actions happen and they can run in the client or the server. Using git hooks For example I want to put my state machine library on github, and I [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-hooks/">How to integrate biicode with git using git hooks</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Our users have asked a lot for github integration. This can be easily achieved with git hooks. Git hooks are scripts which are executed when certain actions happen and they can run in the client or the server.</p><div
+id="attachment_1148" style="width: 610px" class="wp-caption aligncenter"><img
+class="wp-image-1148" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/git-hooks.jpg" alt="Integrate biicode using git hooks" width="600" height="128" /><p
+class="wp-caption-text">Credit: http://www.gianlucaguarini.com/</p></div><p><span
+id="more-1130"></span></p><h2>Using git hooks</h2><p>For example I want to put my state machine library on github, and I want to publish a new DEV version in biicode each time a push to master. My <a
+title="State machine block" href="http://www.biicode.com/hithwen/statemachine">state machine library is already on biicode</a>, but not in github, so first I create a <a
+href="https://github.com/hithwen/statemachine">new github repository</a> and then I go to my block folder and initialize a git repo inside:</p><pre class="crayon-plain-tag">$ cd /Users/hithwen/Desktop/state_machine/blocks/hithwen/statemachine
+$ git init
+$ git remote add origin https://github.com/hithwen/statemachine.git</pre><p>Now I can create the hook. In this case we will use the pre-push hook. Pre-action hooks run before the action actually happens. If the hook fails then the action is not performed. Ideally we would prefer to use a post-push hook but git does not support them.</p><pre class="crayon-plain-tag">$ vim .git/hooks/pre-push  # You need git &gt; 1.8.2</pre><p></p><pre class="crayon-plain-tag">#!/bin/sh
+remote="$1"
+url="$2"
+while read local_ref local_sha remote_ref remote_sha
+do
+	if [[ $remote_ref == "refs/heads/master" ]]; then
+		bii publish --tag DEV --msg "Git autopublish ${local_sha}"
+	fi
+done
+exit 0</pre><p>From now on each time time you push to your master branch in github your biicode DEV version will be updated. If you want to freeze a stable version you need to do:</p><pre class="crayon-plain-tag">$ bii publish --tag STABLE</pre><p></p><pre class="crayon-plain-tag">$ chmod a+x .git/hooks/pre-push
+$ git push --set-upstream origin master
+$ git push origin master
+INFO: Processing changes...
+*****************************
+***** Publishing public ****
+*****************************
+INFO: Please log in to perform this action. If you don't have an account sign up here: http://www.biicode.com
+Please enter a password for "hithwen" account:
+INFO: Publishing block: hithwen/statemachine
+INFO: Successfully published hithwen/statemachine: 12
+Counting objects: 5, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 288 bytes | 0 bytes/s, done.
+Total 3 (delta 2), reused 0 (delta 0)
+To https://github.com/hithwen/statemachine.git
+   f001366..2160752  master -&gt; master</pre><p>et voila!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-hooks/">How to integrate biicode with git using git hooks</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/git-hooks/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

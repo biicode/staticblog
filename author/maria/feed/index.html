@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; maria</title> <atom:link href="http://blog.biicode.com/author/maria/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Compiling with biicode: CMake, build process, IDEs and more</title><link>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/</link> <comments>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/#comments</comments> <pubDate>Thu, 30 Apr 2015 13:44:43 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[Build system]]></category> <category><![CDATA[CLion]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[compile]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[Visual Studio]]></category> <category><![CDATA[VS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2234</guid> <description><![CDATA[<p>biicode knows how source code files connect to each other. With this information, it creates a boilerplate CMake layout to build your project automatically. biicode then detects how sources connect and builds a dependency graph following #includes and implementations generating, for each block, a CMakeLists.txt defining variables to the dependency graph detected. This translates into a CMakeLists.txt [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/">Compiling with biicode: CMake, build process, IDEs and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>biicode knows how source code files connect to each other. With this information, it creates a boilerplate <b>CMake</b> layout to build your project automatically. biicode then detects how sources connect and builds a dependency graph following #includes and implementations generating, for each block, a <em>CMakeLists.txt</em> defining variables to the dependency graph detected.</p><p>This translates into a <em>CMakeLists.txt</em> file with just one line by default:</p><pre class="crayon-plain-tag">ADD_BII_TARGETS()</pre><p>Even though the boilerplate might be enough for some projects, <a
+href="http://docs.biicode.com/c++/building.html" target="_blank">here’s a guide to fully control the building process</a>.</p><p>Today, we explain the different options available in biicode once you’ve got your <em>CMakeLists.txt</em> ready.</p><p><img
+class="aligncenter wp-image-2235 size-full" title="biicode works just fine with these popular IDEs" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/compiling-ide-biicode.jpg" alt="Compiling with biicode" width="640" height="350" /></p><p><span
+id="more-2234"></span></p><h2>Compiling with biicode</h2><p><b>bii configure</b> or <b>bii build</b> commands generate a <i>CMakeLists.txt</i> file in each block. Both commands accept CMake directives. For example, you can switch between building with gcc or clang just by running:</p><pre class="crayon-plain-tag">bii configure -DCMAKE_CXX_COMPILER=g++</pre><p>or</p><pre class="crayon-plain-tag">bii configure -DCMAKE_CXX_COMPILER=$(which clang++)</pre><p>You can also choose the build type:</p><pre class="crayon-plain-tag">bii configure -DCMAKE_BUILD_TYPE=DEBUG</pre><p>Possible values are: <b>DEBUG</b>, <b>RELEASE</b>, <b>RELWITHDEBINFO </b>and <b>MINSIZEREL.</b></p><p>You can build your projects with the parameters CMake offers depending on your OS.</p><h2>IDEs</h2><p>By default, biicode configures projects with no IDE. Using MinGW in Windows UNIX Makefiles in MacOS and Linux. But you can use CMake generators to <b>create biicode projects for different IDEs and platforms.</b></p><blockquote><p>A <i>CMake Generator</i> is responsible for writing the input files for a native build system. Exactly one of the <a
+href="http://www.cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html#cmake-generators">CMake Generators</a> must be selected for a build tree to determine what native build system is to be used. CMake Generators are platform-specific so each may be available only on certain platforms.</p></blockquote><p>Execute <code>cmake --help</code> to see the full list of CMake generators available in your system:</p><pre class="crayon-plain-tag">cmake --help</pre><p>Let&#8217;s get into specifics using generators available for common IDEs:</p><h3>Eclipse CDT</h3><p>Linux/Mac OSX users:</p><pre class="crayon-plain-tag">bii configure -G "Eclipse CDT4 - Unix Makefiles"</pre><p>If you are using Eclipse with <b>Mac OS X</b>, you may need some additional setup to execute your binaries within this IDE. <a
+href="http://docs.biicode.com/c++/troubleshooting.html#eclipse-osx-binaries"><i>Read this troubleshooting section for more information</i></a>.</p><p>Windows users:</p><pre class="crayon-plain-tag">bii configure -G "Eclipse CDT4 - MinGW Makefiles"</pre><p>And once done, you can  import your project into Eclipse:</p><ol><li>Choose: <i>File &gt; import&#8230;</i></li><li>Now, <i>general &gt; Existing Projects into Workspace &gt; n</i>ext.</li><li>Select the root directory as the <b>root folder of your project</b>.</li><li>You should see a project already selected in the <i>projects</i> box. Click <i>finish</i>.</li></ol><h3>Visual Studio</h3><p>Generate a Microsoft Visual Studio 12 (2013) project:</p><pre class="crayon-plain-tag">bii configure -G "Visual Studio 12"</pre><p>Open your project with Visual Studio. Just double-click on the .sln file inside the build folder of your project and a VS project opens.</p><h3>CLion</h3><p>CLion&#8217;s compatibility is way easier, just get into your project’s folder and execute:</p><pre class="crayon-plain-tag">bii init  -L=clion</pre><p>Configure your project to set the changes:</p><pre class="crayon-plain-tag">bii configure</pre><p>Open the biicode project with CLion <i>(File -&gt; Open)</i>.</p><p>And use biicode’s commands from the embedded Terminal in CLion, open it with: <b>Alt+F12</b> or <i>View -&gt; Tool Windows -&gt; Terminal</i>.</p><h2>Your turn</h2><p>There are many options available, even some we haven&#8217;t tried yet, give it a try and tell us how you use biicode, we&#8217;re waiting forward to hear from you!</p><p>Some biicoders are hacking around already:</p><blockquote
+class="twitter-tweet" lang="en"><p
+dir="ltr" lang="en">Pumped that <a
+href="https://twitter.com/biicode">@biicode</a> now works with KDevelop using the clion layout.</p><p>— Zachary Grafton (@zackgrafton) <a
+href="https://twitter.com/zackgrafton/status/576761064131559424">March 14, 2015</a></p></blockquote><p><script src="//platform.twitter.com/widgets.js" async="" charset="utf-8"></script></p><p>&nbsp;</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/">Compiling with biicode: CMake, build process, IDEs and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>biicode’s getting started with OpenSSL, Git and GitHub</title><link>http://blog.biicode.com/getting-started-with-openssl-git-and-github/</link> <comments>http://blog.biicode.com/getting-started-with-openssl-git-and-github/#comments</comments> <pubDate>Mon, 13 Apr 2015 11:10:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[OpenSSL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2178</guid> <description><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on OpenSSL v1.0.2 biicode block to generate MD5 (Message-Digest Algorithm 5) and SHA-1 (Secure Hash Algorithm) hashes in your Terminal. Before anything else (of course), you’ll need Git, CMake &#62; 3.0, biicode &#62; 2.6 and both accounts: GitHub and biicode. Make sure you have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on <a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">OpenSSL v1.0.2 biicode block</a> to generate <a
+title="MD5 hash" href="http://es.wikipedia.org/wiki/MD5" target="_blank">MD5 (Message-Digest Algorithm 5)</a> and <a
+title="sha1 hash" href="http://es.wikipedia.org/wiki/Secure_Hash_Algorithm" target="_blank">SHA-1 (Secure Hash Algorithm)</a> hashes in your Terminal.</p><p><img
+class="aligncenter wp-image-2182 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/postgithub.png" alt="Getting started with Git and GitHub in biicode" width="640" height="300" /></p><p><span
+id="more-2178"></span></p><p>Before anything else (of course), you’ll need <a
+title="git" href="http://git-scm.com/downloads" target="_blank">Git</a>, CMake &gt; 3.0, <a
+title="download biicode" href="https://www.biicode.com/downloads" target="_blank">biicode &gt; 2.6</a> and both accounts: <a
+href="https://github.com/login/" target="_blank">GitHub</a> and <a
+title="biicode log in" href="https://www.biicode.com/accounts/login" target="_blank">biicode</a>.</p><p>Make sure you have all them, run <code>--version </code>in your terminal:</p><pre class="crayon-plain-tag">git --version
+cmake --version
+bii --version
+#install c++ tools for biicode (optional)
+bii setup:cpp</pre><p></p><h2>Now, let’s begin with Git and Github!</h2><p>Create a GitHub repo on the web page and copy the repo’s URL:</p><p><img
+class="aligncenter wp-image-2179 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/create_new_github_repo-1024x541.png" alt="Create a new GitHub repo" width="630" height="333" /></p><p><img
+class="aligncenter wp-image-2180 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/cloneit.png" alt="Copy the recently created GitHub repo's URL" width="1003" height="242" /></p><p>Now, go back to your terminal. Clone the repo (this clones an empty git folder for your project to live in), navigate to that folder and run <code>bii init -L </code>:</p><pre class="crayon-plain-tag"># clone the repo
+clone https://github.com/MariadeAnton/bii-init.git
+# get into its folder
+cd your_repo
+# initialize
+bii init -L</pre><p></p><h3>Write the code</h3><p>Create three files: a <em>sha1.</em>cpp a <em>md5.cpp</em> to generate both hashes, SHA1 and MD5, and also a biicode.conf file.</p><pre class="crayon-plain-tag">echo "//sha1 code goes here" &gt;&gt; sha1.cpp
+echo "//md5 code goes here" &gt;&gt; md5.cpp
+echo "# biicode.conf file" &gt;&gt; biicode.conf</pre><p><strong>sha1.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p><strong>md5.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/md5.h"
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main()
+{
+    unsigned char digest[MD5_DIGEST_LENGTH];
+    char string[] = "hello biicode!";
+    MD5((unsigned char*)&amp;string, strlen(string), (unsigned char*)&amp;digest);
+    char mdString[33];
+    for(int i = 0; i &lt; 16; i++)
+         sprintf(&amp;mdString[i*2], "%02x", (unsigned int)digest[i]);
+    printf("md5 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h4>biicode.conf</h4><p>&#8211; biicode&#8217;s configuration file</p><p>Fill the biicode.conf file so bii gets the OpenSSL v1.0.2. dependencies your project needs via [requirements] and [includes] sections:</p><p><strong>biicode.conf</strong></p><pre class="crayon-plain-tag">[requirements]
+       lasote/openssl(v1.0.2): 3
+   [includes]
+       openssl/*: lasote/openssl/include</pre><p></p><h3><img
+class=" size-large wp-image-2185 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/open_ssl_sha1_biicode-1024x500.png" alt="open_ssl_sha1_biicode" width="630" height="308" /></h3><h3></h3><h3>running your project</h3><p><code>bii build</code> and you’re ready to run your project and check the generated MD5 and SHA-1 hashes.</p><pre class="crayon-plain-tag">bii build
+cd bin
+./#run SHA1 or MD5
+#see the hashes, md5 digest and sha1 digest.</pre><p></p><h3>What bii files/folders does your repo need?</h3><p>Your GitHub repo only needs <em>biicode.conf</em> file, a <em>CMakeLists.txt</em> and your code. You can safely ignore bii/ and bin/ folders as they’re auxiliary. bii/ holds subfolders like cmake/, build/ or deps/, and bin/ contains the output binaries, frequently ignored too.</p><p>Create a .gitignore file and write bii and bin to ignore both folders:</p><pre class="crayon-plain-tag">echo "bii" &gt;&gt; .gitignore
+echo "bin" &gt;&gt; .gitignore</pre><p>Add and commit your changes:</p><pre class="crayon-plain-tag"># add all files but the ones ignored
+git add --all
+# commit message
+git commit -m "my OpenSSL example biicode block"</pre><p></p><h3>Share your code</h3><p>It&#8217;s finally time to share your code. Now all is setup to push your project to GitHub and publish a biicode block referring to your GitHub repo:</p><pre class="crayon-plain-tag"># push to GitHub
+git push origin master
+# publish to biicode
+bii publish -r</pre><p>Want a repo with the files needed? <a
+title="bii-init repo" href="https://github.com/MariadeAnton/bii-init" target="_blank">Just fork mine </a> and go!</p><pre class="crayon-plain-tag">clone https://github.com/your_github_username/bii-init.git
+cd bii-init
+bii init -L</pre><p>There are many options available to automatically publish (to biicode) from GitHub. We usually use Travis-ci and Appveyor to achieve so:</p><ul><li><a
+title="travis-ci and biicode" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Automaticall build and publish via Travis CI and GitHub</a></li><li><a
+title="biicode and appveyor" href="http://blog.biicode.com/appveyor-ci-windows-biicode/" target="_blank">Using Appveyor CI and Deploy for Windows</a></li></ul><p>For those who enjoy<a
+title="open multiple blocks biicode" href="http://docs.biicode.com/c++/advanced/open_blocks.html#working-with-any-published-block" target="_blank"> using multiple blocks at the same time</a>, we recommend using a git repo for each biicode block.</p><p>Don’t forget that all layouts are fully customizable via layout.bii file, check all the options available in the docs section: <a
+title="custom biicode layout" href="http://docs.biicode.com/c++/advanced/project.html" target="_blank">Customizing your layout</a>.</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/getting-started-with-openssl-git-and-github/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>biicode’s new basics &#8211; git remote linking, collaborators and more</title><link>http://blog.biicode.com/git-remote-collaborators/</link> <comments>http://blog.biicode.com/git-remote-collaborators/#comments</comments> <pubDate>Tue, 10 Mar 2015 15:02:26 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[collaborator]]></category> <category><![CDATA[feature]]></category> <category><![CDATA[git]]></category> <category><![CDATA[git remote]]></category> <category><![CDATA[Github]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2134</guid> <description><![CDATA[<p>We have decided to move out of beta some of our coolest features and allow any user enjoy them. Today we are featuring git remote linking and block collaborators management but we release every two to three weeks so expect new features like these coming every fortnight or so. These functionalities are now available to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-remote-collaborators/">biicode’s new basics &#8211; git remote linking, collaborators and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have decided to move out of beta some of our coolest features and allow any user enjoy them. Today we are featuring git remote linking and block collaborators management but we release every two to three weeks so expect new features like these coming every fortnight or so. These functionalities are now available to all biicode users. Enjoy! you can always suggest or upvote the existing features that are ahead in our roadmap <a
+href="http://web.biicode.com/community/roadmap/">here</a>.</p><p><span
+id="more-2134"></span></p><h2><b>Block collaborators management</b></h2><p>When we released collaborative blocks about half a year ago, we enabled this feature only for beta-premium accounts.<br
+/> There was &#8212; and there is &#8212; a lot to improve, but it makes sense you also get unlimited collaborators or admin for your unlimited free blocks.<br
+/> You can assign permissions to other users: assign them permissions over some of your blocks or give them full access to all your blocks. It’s up to you and the workflow you decide to set up.</p><p>To enable this just for one block, get into your block’s settings and assign permissions:</p><p><img
+class="aligncenter wp-image-2136 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/block-settings-1024x639.png" alt="Block settings include now collaborators" width="630" height="393" /></p><p>Want to enable full control of your account? Add administrators from your biicode web profile in the “Access management” section:</p><p><img
+class="aligncenter wp-image-2138 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/access-management-1024x503.png" alt="Access management section where you can tweak the collaborators permissions" width="630" height="309" /></p><p>That’s it &#8211; notifications and many other improvements are yet to come.</p><h2><b>Publishing git remote info<br
+/> </b></h2><p><img
+class="aligncenter wp-image-1148 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/git-hooks.jpg" alt="Integrate biicode using git hooks. Use git remote too." width="940" height="200" /></p><p>As you may recall, <a
+href="http://docs.biicode.com/c++/reference/commands/publish.html#bii-publish-command"><i>bii publish</i></a> command publishes your code to biicode.</p><p><code>bii publish -r </code> or <code>bii publish --remote</code> uses the git info within your block to publish it along with your block. This way everyone knows “who is” the git repo maintaining the biicode block and the specific commit creating each block version.</p><p>Just cd into your block and:</p><pre class="crayon-plain-tag">$ bii publish  -r</pre><p>This is how publishing with <code>bii publish --remote</code> looks like:</p><p><img
+class="aligncenter wp-image-2137 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/bii_publish_remote-1024x497.png" alt="Git remote publish is now available in biicode" width="630" height="306" /></p><p>You can mix bii publish parameters, for example:</p><pre class="crayon-plain-tag">bii publish -r --tag STABLE --versiontag v1.0.2</pre><p><a
+title="publishing biicode" href="http://docs.biicode.com/c++/publishing.html" target="_blank">Here&#8217;s more on publishing to biicode.</a></p><h2>The Future</h2><p>Biicode’s basic features<a
+href="http://docs.biicode.com/c++/release_notes.html"> keep getting better</a>, so there’s still more to come. Some things will work and others might need improvements, but it’s always fun to perfect our recipes with your feature requests and bug reports.</p><p>As you know, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-remote-collaborators/">biicode’s new basics &#8211; git remote linking, collaborators and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/git-remote-collaborators/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Using AppVeyor CI and Deploy for Windows</title><link>http://blog.biicode.com/appveyor-ci-windows-biicode/</link> <comments>http://blog.biicode.com/appveyor-ci-windows-biicode/#comments</comments> <pubDate>Mon, 09 Feb 2015 16:35:08 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[continuous integration]]></category> <category><![CDATA[deploy]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2029</guid> <description><![CDATA[<p>Let&#8217;s use AppVeyor CI for Windows to automatically build and publish our new commits and releases to biicode. GitHub or Bitbucket enable creating remote repositories to develop them collaboratively. First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Let&#8217;s use <a
+href="https://ci.appveyor.com/">AppVeyor</a> CI for Windows to automatically build and publish our new commits and releases to biicode.</p><p><img
+class="aligncenter wp-image-2030 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_logo.png" alt="AppVeyor CI service now integrated with biicode to make it work in Windows." width="162" height="29" /></p><p>GitHub or Bitbucket enable creating remote repositories to develop them collaboratively.</p><p><span
+id="more-2029"></span></p><p>First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL here:</p><p><img
+class="aligncenter wp-image-2031 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/2_clone-1024x786.png" alt="Clone a Github repo as the first step in our AppVeyor CI tutorial" width="630" height="484" /></p><p>Create a new biicode project, and paste the URL to clone the repository into your block:</p><pre class="crayon-plain-tag">bii init myproject
+cd myproject
+bii new amalulla/cpp-expresion-parser
+cd blocks\amalulla\cpp-expresion-parser
+git clone https://github.com/MariadeAnton/cpp-expression-parser.git .</pre><p>Don’t miss the dot at the end, this copies your repo’s files and folders into your block’s main folder.</p><h2>Automatically build and publish via AppVeyor CI</h2><p>Login at <a
+href="https://ci.appveyor.com/" target="_blank">AppVeyor</a> with your favourite developer account and once logged-in clic on <em>“+ new project”</em></p><p><img
+class="aligncenter wp-image-2032 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/new_appveyor_project.png" alt="Open a new AppVeyor CI project" width="1006" height="214" /></p><p>Choose the repo you want to deploy with AppVeyor:</p><p><img
+class="aligncenter wp-image-2033 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/add_appveyor_project2-1024x466.png" alt="Choose and AppVeyor CI project" width="630" height="287" /></p><p>Once enabled, let&#8217;s get back to our local project and create an <code>appveyor.yml</code> file into your block&#8217;s folder. This file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, but you can configure it to fit your needs:</p><pre class="crayon-plain-tag">version: 1.0.{build}
+install:
+  - ps: wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-win32-x86.zip -OutFile cmake.zip
+  - cmd: echo "Unzipping cmake..."
+  - cmd: 7z x cmake.zip -o"C:\Program Files (x86)\" -y &gt; nul
+  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\Program Files (x86)\cmake-3.0.2-win32-x86\bin
+  - cmd: cmake --version
+  - cmd: echo "Downloading biicode..."
+  - ps: wget http://www.biicode.com/downloads/latest/win -OutFile bii-win.exe
+  - cmd: bii-win.exe /VERYSILENT
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii
+  - cmd: bii -v
+  - cmd: del bii-win.exe
+  - cmd: del cmake.zip
+before_build:
+  - cmd: bii init -L
+    # copy files and folders
+  - cmd: xcopy "%APPVEYOR_BUILD_FOLDER%" blocks\%block_user%\%block_name%\ /e
+  - cmd: bii configure -G "Visual Studio 12"
+build_script:
+  - cmd: bii build
+test_script:
+  - cmd: cd bin
+  - cmd: amalulla_cpp-expression-parser_test-shunting-yard.exe
+# to run your custom scripts instead of provider deployments
+deploy_script:
+  - cmd: bii user %block_user% -p %secured_passwd%
+  - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME%
+  - if defined APPVEYOR_REPO_TAG_NAME bii publish -r --tag=%tag% --versiontag=%VERSION%
+  - if not defined APPVEYOR_REPO_TAG_NAME bii publish -r
+on_success:
+  - ps: |
+        git checkout "$env:APPVEYOR_REPO_BRANCH"
+        git config --global core.autocrlf true
+        git config --global credential.helper store
+        Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+        git remote add neworigin "$env:github_repo"
+        git config --global user.email "$env:github_email"
+        git config --global user.name "$env:github_user"
+        git add .
+        git commit -m "Updated biicode parents [skip ci]"
+        git push neworigin "$env:APPVEYOR_REPO_BRANCH"
+environment:
+  block_user:
+    "amalulla"
+  block_name:
+    "cpp-expression-parser"
+  secured_passwd:
+    secure: ZMvgETfLAUo7kISnvrinBA==
+  access_token:
+    secure: GdIDIRkmsM9blqS143lQErkxguMYgJBs74GzWw+lgzjvl/NoLs4ErcOZ2JBAEmkr
+  tag:
+    "STABLE"
+  github_user:
+    "MariadeAnton"
+  github_email:
+    "maria.deanton@biicode.com"
+  github_repo:
+    "git@github.com:MariadeAnton/cpp-expression-parser.git"</pre><p>Let&#8217;s take a deeper look into this file to adapt it to your build config, changes are only needed in <strong>test_script</strong><em> and <strong>enviroment</strong></em> values, other changes may depend on what you will use Appveyor for:</p><ul><li>install: Just copy this part, it installs all tools required to deploy your biicode projects in AppVeyor.</li><li>before_build: Copy your project&#8217;s files into the biicode project and configure it to use Visual Studio 12 via <code> bii cpp:configure</code>.  Check <a
+href="http://docs.biicode.com/c++/ides.html" target="_blank">biicode docs</a> and  your project&#8217;s settings in <a
+title="appveyor" href="http://www.appveyor.com/" target="_blank">Appveyor </a> to use other build configurations. *Also note that there&#8217;s a commented line here you should also write if your project contains folders.</li><li>build_script: builds the project via <code> bii cpp:build. </code></li><li>test_script: cd bin and execute your project. Ensure about your project&#8217;s executable, build and execute it locally via  <code>bii cpp:build</code>.</li><li>deploy_script: This script publishes your block to biicode, as stable including your version tag only when it&#8217;s tagged, otherwise your block is published as dev.</li><li>on_success: If your biicode.conf file is updated commit its changes to github without launching a new build. Else do nothing.</li><li><em>environment:</em> Replace all  the environment variables with your own values: project_name, tag, default version tag value&#8230;</li></ul><h2 id="building-appveyor-specifics">Specifics:</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Here&#8217;s an <a
+title="git push from appveyor build" href="http://http://www.appveyor.com/docs/how-to/git-push" target="_blank">appveyor guide about how to git push from build</a>. Following this Appveyor Guide we&#8217;re using it as credentials with Git commands. Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="configuring-build-secure-variable-with-access-token">Configuring build secure variable</h3><p>Encrypt your biicode password and your access token using <a
+href="https://ci.appveyor.com/tools/encrypt" target="_blank">Encrypt Data tool</a> and then put it as secure variable into your <code>appveyor.yml</code>, for example, to generate an encrypted password with Appveyor go to your profile and choose <em>Encrypt data:</em></p><p><img
+class="aligncenter wp-image-2034 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypt_data-1024x563.png" alt="Encrypt the data of your AppVeyor CI project" width="630" height="346" />Once there, encrypt your password and copy the value generated to put it in your  environment &#8220;<em>secured_password: secure:&#8221;</em></p><p><img
+class="aligncenter wp-image-2035 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypted_appveyor_data-300x144.png" alt="AppVeyor CI encryption config" width="300" height="144" /></p><p>When it comes to specifying your project settings, it&#8217;s useful to check them online. For example, you can skip branches without an <code>appveyor.yml</code> file just saying it your <code>appveyor.yml</code> or into their web interface. Also, <a
+href="http://www.appveyor.com/docs/build-configuration">AppVeyor docs explain in detail build configuration.</a></p><h2>The icing</h2><p>Put a nice AppVeyor badge to show your project builds in Windows.</p><p>Go to your projects settings&gt;Badges, copy your repo&#8217;s badge and paste it in your README file:</p><p><img
+class="aligncenter wp-image-2036 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_project_settings-1024x809.png" alt="AppVeyor CI project settings" width="630" height="498" /></p><h2>Update and push to GitHub!</h2><p>Add, commit and push your changes to GitHub</p><pre class="crayon-plain-tag">$ git add --all
+$ git commit -m "commit message"
+$ git push origin master</pre><p></p><h3>Working with tags</h3><p>Using the <code>appveyor.yml</code> file described before, you can tag a version with git, push it to github and it will be automatically tagged in biicode too:</p><pre class="crayon-plain-tag">git tag -a v0.1 -m 'my version 0.1'
+ git push origin v0.1</pre><p>Here&#8217;s <a
+title="git taggin basics" href="http://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank">Git basics about Tagging</a>.</p><p>Unless you specify it otherwise, each time you push to AppVeyor CI System, a build launches to check everything is still working.</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Fork Cpp-expression-parser" href="https://github.com/MariadeAnton/cpp-expression-parser" target="_blank">Forked cpp-expresion-parser repo in GitHub</a>  from the <a
+href="https://github.com/bamos/cpp-expression-parser" target="_blank">Original repo by Brandon Amos</a></li><li><a
+title="appveyor build cpp-expression-parser" href="https://ci.appveyor.com/project/MariadeAnton/cpp-expression-parser" target="_blank">cpp-expression-parser builds in AppVeyor</a> CI and Deployment</li><li><a
+href="http://www.biicode.com/amalulla/cpp-expression-parser" target="_blank">cpp-expression parser biicode block</a> and with its automatically published releases</li></ul><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our<span
+class="Apple-converted-space"> </span><a
+href="http://docs.biicode.com/">docs</a>,<span
+class="Apple-converted-space"> </span><a
+href="http://forum.biicode.com/">forum</a><span
+class="Apple-converted-space"> </span>and/or<span
+class="Apple-converted-space"> </span><a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a><span
+class="Apple-converted-space"> </span>for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/appveyor-ci-windows-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>New feature: Version Tags</title><link>http://blog.biicode.com/new-feature-version-tags/</link> <comments>http://blog.biicode.com/new-feature-version-tags/#comments</comments> <pubDate>Fri, 26 Dec 2014 10:20:03 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[features]]></category> <category><![CDATA[semantic versioning]]></category> <category><![CDATA[tags]]></category> <category><![CDATA[VCS]]></category> <category><![CDATA[version control]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1948</guid> <description><![CDATA[<p>Biicode is not a Version Control System, neither a Source Code Management System. As a dependency manager, biicode makes &#8220;some kind&#8221; of internal version control to establish dependencies against a specific version of the block. Our versions are incremental integers starting on 0. Until now,  to know that biicode&#8217;s version corresponds to any official version you [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-version-tags/">New feature: Version Tags</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is not a Version Control System, neither a Source Code Management System. As a dependency manager, biicode makes &#8220;some kind&#8221; of internal version control to establish dependencies against a specific version of the block.</p><p>Our versions are incremental integers starting on 0. Until now,  to know that biicode&#8217;s version corresponds to any official version you had to look for it on the block&#8217;s description or readme.</p><p>Now you can <a
+title="publishing" href="http://docs.biicode.com/c++/publishing.html" target="_blank">tag a version while publishing</a>. For example, <a
+title="qiangwu/atlsl" href="http://www.biicode.com/qiangwu/atlstl" target="_blank">qiangwu/atlstl </a>corresponds to the official &#8220;1.9.98&#8221; version:</p><p><img
+class="aligncenter wp-image-1959 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/versiontags.png" alt="Version tags now available in biicode 2.0" width="986" height="107" /></p><p><span
+id="more-1948"></span></p><h2>Using Version Tags</h2><p>Let&#8217;s say you&#8217;re publishing a new version into biicode and you&#8217;re looking for a way to relate this version number to your SCM versions or your library&#8217;s official version release. Today, I&#8217;m tagging OSCPack library version 3 to the official release version 1.1.0:</p><pre class="crayon-plain-tag">~/myproject$ bii publish  --tag STABLE --versiontag=v1.1.0
+INFO: Publishing block: Maria/oscpack
+INFO: *****************************
+INFO: ***** Publishing public ****
+INFO: *****************************
+INFO: Successfully published Maria/oscpack: 3 @v1.1.0</pre><p><img
+class="aligncenter wp-image-1958 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/oscpack-versiontags-1024x190.png" alt="OSCPack example of a version tag" width="630" height="116" /></p><p>That&#8217;s the basics.</p><h2>Version Tags Utilities</h2><h3>Publish a new version with its tag:</h3><p></p><pre class="crayon-plain-tag">~/myproject$ bii publish --tag STABLE --versiontag 1.2.0
+INFO: *****************************
+INFO: ***** Publishing public ****
+INFO: *****************************
+INFO: Downloading files from: amalulla/hi
+INFO: Successfully published amalulla/hi: 2 @1.2.0</pre><p><img
+class="aligncenter wp-image-1961 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/version-tag2.png" alt="Version tags, as seen in this other example, can now be implemented in biicode" width="768" height="132" /></p><h3>Semantic Versioning</h3><p>A versioning policy is just some simple rules specifying how to use version numbers. It can be very simple like the one biicode makes by default or more complex.</p><p>We encourage you developers to follow the <a
+href="http://semver.org/">Semantic Versioning</a> standard for your block&#8217;s versions. Be mindful that  using a &#8220;non-rational&#8221; policy will be a disservice for those using your blocks.</p><h3>Depending with Version Tags</h3><p>To use a version based on a tag instead of biicode internal version number, write in <strong>[requirements]</strong> section in your <strong>biicode.conf</strong>:</p><pre class="crayon-plain-tag">amalulla/hi @1.2.0</pre><p>And whenever you build your project, biicode will discover biicode version and update your<strong> [requirements]</strong> section in your <strong>biicode.conf</strong>:</p><pre class="crayon-plain-tag">amalulla/hi: 2 @1.2.0</pre><p></p><h2>Not to confuse them with Tags</h2><p>Add tags and a description to your block, this is useful for other users and will be indexed better for our <a
+title="Search Engine" href="http://blog.biicode.com/improved-search-engine-elastic-search/" target="_blank">Search Engine</a>.</p><p><img
+class="aligncenter wp-image-1952 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/tags-las-normales-1024x518.png" alt="Do not confuse version tags with tags" width="630" height="318" /></p><p>Just select settings and start writing and adding tags!</p><p>Hope you enjoy this post, and as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-version-tags/">New feature: Version Tags</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/new-feature-version-tags/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 4: Oscpack by Ross Bencina</title><link>http://blog.biicode.com/upload-to-biicode-oscpack/</link> <comments>http://blog.biicode.com/upload-to-biicode-oscpack/#comments</comments> <pubDate>Mon, 17 Nov 2014 16:08:32 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[OScpack]]></category> <category><![CDATA[Ross Bencina]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1886</guid> <description><![CDATA[<p>Updated for biicode 2.0! As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series: Example 1: Json11 by Dropbox Example [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li></ul><h2></h2><p><span
+id="more-1886"></span></p><h2>Upload to biicode Oscpack</h2><p>Oscpack is a set of C++ classes for packing and unpacking Open Sound Control (OSC) packets. Developed by Ross Bencina, Oscpack proved to be an essential library requested in our forum. As Ross Bencina explains, <a
+title="Oscpack library" href="http://www.rossbencina.com/code/oscpack" target="_blank">Oscpack</a> includes a minimal set of UDP networking classes for Windows and POSIX. It enables an easy way to construct, send, receive and parse OSC packets.</p><h3>Basics</h3><p><a
+title="download biicode" href="http://www.biicode.com/downloads" target="_blank">Install biicode </a>and make sure you&#8217;ve got the latest version of the library you want to use. To keep the biicode version updated, fork or clone the library on a public git repository (as Bitbucket or Github). <a
+href="https://code.google.com/p/oscpack/" target="_blank">Oscpack 1.1.0 is available on google code hosting</a>. This guide uses Bitbucket, but the same steps apply to <a
+title="Github Travis Continous Integration" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Github and Travis CI fans</a>.</p><p>Create a new BIICODE project:</p><pre class="crayon-plain-tag">~$ bii init osc
+~$ cd osc
+~$ bii new mariadeanton/oscpack
+~$ cd blocks/mariadeanton/oscpack</pre><p>Put the content of the latest version of Oscpack into <code>blocks/mariadeanton/oscpack </code> folder. Adapt the readme file to notify users the specifics of the lib and its biicode adaptation.</p><p>Create a new Bitbucket repository:</p><p><img
+class="size-large wp-image-1887 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/bitbucket1-1024x174.png" alt="bitbucket repository" width="630" height="107" /></p><p>Copy the HTTPS or SSH address as marked in red on the image. You will need this on the steps below to establish a &#8220;remote origin&#8221;:</p><pre class="crayon-plain-tag">git init
+git add .
+git commit -m "first commit"
+git remote add origin git@bitbucket.org:mariadeanton/oscpack-biicode.git
+git push -u origin master</pre><p>Once first commit is pushed the original library is ready to be adapted.</p><h3>Specifics</h3><h4>A. Check if biicode finds the links between sources</h4><p>Execute <code>bii deps </code> to get all information related to biicode&#8217;s dependency scanning:</p><pre class="crayon-plain-tag">bii deps</pre><p><img
+class="size-full wp-image-1890 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/biideps1.png" alt="biideps1" width="348" height="537" /></p><p>Seems we&#8217;ve got to include the current working directory into dependency search and build.</p><p>If you execute:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>It won&#8217;t compile.</p><h5>A.1. Create a <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a>  file into blocks/username/blockname/ folder</h5><p>and write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/</pre><p>&nbsp;</p><h4></h4><p><img
+class="aligncenter size-large wp-image-1991" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-paths-1024x328.png" alt="osc-paths" width="630" height="201" /></p><h4>B. Build and compile</h4><h5>B.1. Ensure original code logic remains</h5><p>Just with these updates, both biicode and compiler know they should include current source directory, but <code>bii cpp:build</code> can&#8217;t compile properly, why is this happening?</p><p>Check out the previous <code>CMakeLists.txt</code>, it separates the versions of <code>NetworkingUtils.cpp</code> depending on whether the OS is Win32 or POSIX based. It also includes <code>winmm</code> library when using Win32 . As Ross Bencina himself explains &#8220;the IpSystemTypePath selects the correct ones based on the current platform&#8221;.</p><p>Update your <code>CMakeLists.txt</code> to ignore posix folder content while on Win32 and vice versa. It also adds a line after <code>ADD_BIICODE_TARGETS </code>to link <code>winmm</code> lib on Win32:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Discard Posix Folder while on Win32 and vice versa
+  IF(WIN32)
+  list(REMOVE_ITEM  BII_LIB_SRC ip/posix/NetworkingUtils.cpp ip/posix/UdpSocket.cpp)
+  ELSE()
+  list(REMOVE_ITEM  BII_LIB_SRC ip/win32/NetworkingUtils.cpp ip/win32/UdpSocket.cpp)
+  ENDIF()
+  ADD_BIICODE_TARGETS()
+  # Link winmm lib while on Win32
+  IF(WIN32)
+  TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC winmm)
+  ENDIF()
+  # Include base block directory
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+ELSE()
+  # Previous CMakeLists.txt goes here</pre><p></p><h5>B.2. See for yourself what&#8217;s going on</h5><p>Execute:</p><pre class="crayon-plain-tag">~$ bii cpp:build</pre><p><em>(A successful build happens on POSIX OS but not on Win32)</em><br
+/> Let&#8217;s check the <code>bii_username_blockname_vars.cmake</code> file located into the <code>cmake</code> folder on your project. You can see all source code files linked here.<br
+/> <img
+class="aligncenter size-full wp-image-1892" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/cmake.png" alt="cmake" width="953" height="606" /></p><p>There it is! <code>ip/win32/UdpSocket.cpp</code> is missing.</p><h5>B.3. Manually specify dependencies</h5><p>Establish a dependency between <code>ip/UdpSocket.h</code> and <code>ip/win32/UdpSocket.cpp</code> just writing in the <em>[dependencies]</em> section of your <a
+title="biicode conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> file:</p><pre class="crayon-plain-tag">ip/UdpSocket.h + ip/win32/UdpSocket.cpp</pre><p>&nbsp;</p><p><img
+class="aligncenter size-large wp-image-1990" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-dependencies-1024x227.png" alt="osc-dependencies" width="630" height="139" /></p><p>Save all changes and you&#8217;re ready to go!</p><h4>C. Publish</h4><p>Push your changes to Bitbucket and publish to biicode, Oscpack library is ready to be reused!</p><pre class="crayon-plain-tag">bii publish</pre><p>Once you&#8217;ve tested Oscpack library on the different OS you can publish it as stable:</p><pre class="crayon-plain-tag">bii publish --tag=STABLE</pre><p></p><h4>D. Enjoy!</h4><p>Use <a
+href="http://www.biicode.com/Maria/oscpack" target="_blank">Oscpack library on biicode.</a> For example, you can include:</p><pre class="crayon-plain-tag">#include "Maria/oscpack/osc/OscPrintReceivedElements.h"
+//or
+#include "Maria/oscpack/ip/UdpSocket.h"</pre><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-oscpack/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Automatically build and publish via Travis CI and Github</title><link>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/</link> <comments>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/#comments</comments> <pubDate>Thu, 06 Nov 2014 10:22:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[Integration]]></category> <category><![CDATA[Testing]]></category> <category><![CDATA[Travis.CI]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1877</guid> <description><![CDATA[<p>This is a simple guide about how to automatically build and publish via Travis CI and Github. biicode, Travis CI and Github: a C/C++ dev environment GitHub allows us to create a remote repository to develop collaboratively. Travis CI provides continuous integration inside our projects. Import from GitHub! First of all make sure you&#8217;ve installed [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/">Automatically build and publish via Travis CI and Github</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<div
+class="article-wrap"><p>This is a simple guide about how to automatically build and publish via Travis CI and Github.</p><h2><strong>biicode, Travis CI and Github: a C/C++ dev environment</strong></h2><p>GitHub allows us to create a remote repository to develop collaboratively.<br
+/> Travis CI provides continuous integration inside our projects.</p><p><img
+class="aligncenter wp-image-1884 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/logotravis.png" alt="logotravis" width="300" height="295" /></p><p><span
+id="more-1877"></span></p><h3><strong>Import from GitHub!</strong></h3><p>First of all make sure you&#8217;ve installed <strong>biicod</strong>e and <strong>Git</strong>.<br
+/> Once both you got both of them, you can clone the <a
+title="github" href="https://github.com/" target="_blank">github</a> repository you want to make a new biicode block.</p><p><img
+class="aligncenter wp-image-2104 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/clone-1024x683.png" alt="clone" width="630" height="420" /></p><p>Create the new BIICODE project (as usual) and create q working local copy in your biicode block:</p><pre class="crayon-plain-tag">$ bii init myproject
+$ cd myproject/blocks
+$ git clone https://github.com/lasote/docker_client.git
+$ cd docker_client</pre><p>Now we&#8217;ve got everything we need to start working locally.</p><h3><strong>Automatically build your projects via Travis CI</strong></h3><p>Travis CI provides continuous integration inside your project, to use it, just create a file named &#8220;.travis.yml&#8221; inside your project folder.</p><p>Write on your &#8220;.travis.yml&#8221; file, the commands to build your project, and if it successes publish it automatically to BIICODE.</p><p>First of all sign up in <a
+title="travis" href="https://travis-ci.org/" target="_blank">Travis CI</a> with your <a
+title="Github" href="https://github.com/" target="_blank">GitHub </a>account and once there, go to your profile, sync your repos and enable Travis CI building:<img
+class="aligncenter size-large wp-image-2027" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/travis-ci-1024x461.png" alt="travis-ci" width="630" height="284" /></p><p>To use Travis CI in your project you&#8217;ve got to be using a Linux machine (you can use: Koding, Cloud9IDE or just a virtual machine on your computer). Once in your linux machine check if ruby is installed:</p><pre class="crayon-plain-tag">$ which ruby</pre><p>if you see a path such as <em>/usr/bin/ruby</em>, Ruby is installed.</p><p>If ruby is not installed:</p><pre class="crayon-plain-tag">$ sudo apt-get install ruby</pre><p>When ruby is installed:</p><pre class="crayon-plain-tag">$ sudo gem install travis</pre><p>Please check <a
+href="http://docs.travis-ci.com/user/languages/cpp/">Travis docs</a> or <a
+title="stackoverflow ruby-gems travis" href="http://stackoverflow.com/questions/18354959/building-native-extensions-error-in-installing-ruby-gems" target="_blank">stackoverflow related issues </a>if your having any troubles installing travis gem.</p><p>Now, create your &#8220;.travis.yml&#8221; file like the example below on your block folder, this file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, don&#8217;t forget to adjust the config and <em><strong>&#8220;the env&#8221;</strong></em> it to your needs:</p><p>&#8220;.travis.yml&#8221;</p><pre class="crayon-plain-tag">language: cpp
+compiler:
+- gcc
+before_install:
+- export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
+- if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
+- if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+  fi
+- sudo apt-get update -qq
+- git config --global user.email "$USER_EMAIL"
+- git config --global user.name "$USER_NAME"
+- git config --global push.default simple
+- git checkout $TRAVIS_BRANCH
+install:
+- if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++
+  /usr/bin/g++-4.8 50; fi
+- wget http://www.biicode.com/downloads/latest/ubuntu64
+- mv ubuntu64 bii-ubuntu64.deb
+- sudo dpkg -i bii-ubuntu64.deb &amp;&amp; sudo apt-get -f install
+- rm bii-ubuntu64.deb
+- wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+- tar -xzf cmake-3.0.2-Linux-64.tar.gz
+- sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+- rm -rf cmake-3.0.2-Linux-64
+- rm cmake-3.0.2-Linux-64.tar.gz
+- export TRAVIS_CXX=$CXX
+script:
+- cd /tmp
+- bii init -L
+- shopt -s dotglob &amp;&amp; mv $TRAVIS_BUILD_DIR/* ./
+- if [ "$CXX" == "clang++" ]; then export CXX="clang++" &amp;&amp; bii build; fi
+- if [ "$CXX" == "g++" ];     then export CXX="g++"     &amp;&amp; bii build; fi
+##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################
+- ls ./bin/lasote_docker_client_example_main
+#########################################################################################
+after_success:
+- bii user $USER -p $BII_PASSWORD
+- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
+  || echo "Ignored publish output..."; fi
+- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output...";
+  fi
+# If there are changes, commit them
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" &gt; .git/credentials
+- git add -A .
+- git commit -m "$COMMIT_IGNORE_BUILD"
+- git remote -v
+- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git
+- git push
+env:
+  global:
+  - USER_EMAIL=lasote@gmail.com
+  - USER_NAME="Luis Martinez de Bartolome"
+  - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
+  - BLOCK_NAME=docker_client
+  - USER=lasote
+  # BII_PASSWORD: Biicode USER's password. &gt; travis encrypt BII_PASSWORD=XXXXXX --add
+  - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
+  # GH_TOKEN: Github token &gt; travis encrypt GH_TOKEN=XXXXXX --add
+  - secure: gNKs9E4Fh2agwqaGFTl1uzLvT+PrhykIi57eo9IkAlBuae/jOjAqxGua7NM7Rg+FxjLYh+wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm+wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk=</pre><p>Let&#8217;s take a deeper look this file, as you can see there are 6 different parts in the <a
+title="build lifecycle travis ci" href="http://docs.travis-ci.com/user/build-configuration/#Build-Lifecycle" target="_blank">Build Lifecycle as explained in Travis CI docs</a> (language, compiler, before_install, install, script, after_success):</p><ul><li><em>Language</em> and <em>compiler</em> are totally clear (this is where you choose the language and compiler that Travis CI will use).</li><li><em>Before_installing</em>, stablishes our automatic commit must be ignored and configures git to push later, on the after_success part.</li><li><em>Install</em> provides the tools necessary to test our code with BIICODE.</li><li><em>Script</em> part creates, builds and runs the project and checks if the project successes.</li><li><em>After_success</em> part is to publish your project to biicode as STABLE with VERSION_TAG if tagged in github, otherwise it publishes as DEV. Also, if your biicode.conf file is updated, this commits its changes to github without launching a new build.</li><li><em>env: </em>replace all environment values with your own ones. Don&#8217;t delete the <em>***travis***</em>  text, as it is the one needed to specify that commit should skip build, avoiding entering an endless build loop.</li></ul><h2 id="building-appveyor-specifics">Encrypting</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="creating-github-personal-access-token">Encode your password</h3><p>And now, encode your github token and biicode password (to archive this you&#8217;ve got to <strong>locate in your block&#8217;s folder</strong>). This command automatically writes the value returned to your &#8220;.travis.yml&#8221; file:</p><pre class="crayon-plain-tag">$ travis encrypt GH_TOKEN=XXXXXXX --add</pre><p></p><pre class="crayon-plain-tag">$ travis encrypt BII_PASSWORD=XXXXXXXXXXX --add</pre><p>The lines added should look like this one:</p><pre class="crayon-plain-tag">env:
+   global:
+      secure:
+M+/Hjhv5M0+MyXhTCLYUWJje4r6I8rYohUhpgjH9nODJUuC10rAokWg6L8f3Z8haaNyfFoNVYLeA1kAKtemlBJK4Mqf7Z9W92URLfL/U8xwoWzwudH2EvjUQPX8Um7Xgu5e4arHjsuQ1mzL9ghg8O6SENS4YrGZX3QfKptVEAuw=</pre><p>To more information about this, you can take a look at <a
+title="Travis-ci docs" href="http://docs.travis-ci.com/user/encryption-keys/" target="_blank">Travis CI docs</a>.</p><p>It&#8217;s a good practice to add to your readme the build status image Travis CI gives you here:</p><p>&nbsp;</p><p><img
+class="alignright size-large wp-image-2106" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/badge_travis1-1024x365.png" alt="badge_travis" width="630" height="225" /></p><h3><strong>Update your GitHub!</strong></h3><p>Once you&#8217;ve updated your repo locally, add all files and updates via git:</p><pre class="crayon-plain-tag">$ git add .</pre><p>and commit your updates:</p><pre class="crayon-plain-tag">$ git commit -m "commit message"</pre><p>Now, send those updates to your remote repository:</p><pre class="crayon-plain-tag">$ git push origin master</pre><p></p><h3><strong>Build each commit</strong></h3><p>So whenever you want to check your build, just press the build status image and it will directly get into the Travis CI build.</p><p><img
+class="aligncenter wp-image-1881 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/travis2-1024x502.png" alt="travis2" width="630" height="308" /></p><p>So this is it, enjoy!</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Docker C++ Client" href="https://github.com/lasote/docker_client" target="_blank">GitHub Docker-Client Repo</a>.</li><li><a
+title="travis ci build docker c++ client" href="https://travis-ci.org/lasote/docker_client" target="_blank">Docker-Client builds in Travis</a> CI and Deployment</li><li><a
+title="Docker Client Block biicode" href="https://www.biicode.com/lasote/docker_client" target="_blank">Docker-client biicode block</a> and with its automatically published releases</li></ul><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/">Automatically build and publish via Travis CI and Github</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/feed/</wfw:commentRss> <slash:comments>12</slash:comments> </item> <item><title>How to upload to biicode. Example 3: Little CMS by Marti Maria</title><link>http://blog.biicode.com/upload-to-biicode-little-cms/</link> <comments>http://blog.biicode.com/upload-to-biicode-little-cms/#comments</comments> <pubDate>Mon, 13 Oct 2014 13:10:01 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[lcms]]></category> <category><![CDATA[LittleCMS]]></category> <category><![CDATA[Marti Maria]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1764</guid> <description><![CDATA[<p>Updated for biicode 2.0! Once a library is uploaded to biicode, everyone can reuse it easily!  Let&#8217;s see a new example about how to upload to biicode just following a few steps, again, this is another example about how to proceed when your library depends on others. For this matter we&#8217;re using the fantastic library Little [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-little-cms/">How to upload to biicode. Example 3: Little CMS by Marti Maria</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>Once a library is uploaded to biicode, everyone can reuse it easily!  Let&#8217;s see a new example about how to upload to biicode just following a few steps, again, this is another example about how to proceed when your library depends on others. For this matter we&#8217;re using the fantastic library <a
+title="Little CMS" href="http://www.littlecms.com" target="_blank">Little CMS</a>, a free, open source, CMM engine. It provides fast transforms between ICC profiles.</p><p>As you can guess, once we&#8217;re done everybody will be able to use this library just by typing <code>#include "martimaria/littlecms/include/lcms2.h"</code></p><p><span
+id="more-1764"></span></p><h3>The Initial Steps to upload to biicode: one, two, three, four!</h3><p>These don&#8217;t defer from the ones used on the previous examples last week: <a
+title="upload to biicode json11" href="http://blog.biicode.com/upload-to-biicode-i/">Json11</a> and <a
+title="upload to biicode box2d" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D</a>.</p><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so if the author  updates the library we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to the <a
+title="mm2/Little-CMS" href="https://github.com/mm2/Little-CMS" target="_blank">original repository</a> and click on fork:</p><p><img
+class="aligncenter wp-image-1769 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/FORK.png" alt="Fork the Little CMS source code to upload to biicode." width="895" height="90" /></p><p>&nbsp;</p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init lcms
+$ cd lcms
+$ bii new amalulla/little-cms</pre><p>If you already are a biicode user you can replace &#8220;amalulla&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/amalulla/little-cms</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\amalulla\little-cms
+$ git clone https://github.com/amalulla/Little-CMS.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command <code>bii deps</code> give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter wp-image-1770 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bii_deps_lcms.png" alt="bii_deps_lcms" width="262" height="375" /></p><p>What&#8217;s going on? Seems we have tons of unresolved files, How should we proceed with those in order to get the library working?</p><h4>4. Solve your Unresolved includes</h4><h4>4.1. #include External Libraries</h4><p>Let&#8217;s start with the ones we already new about: <em>jpeglib.h</em> and <em>tiffio.h,</em> they are the dependencies, as Marti Maria explains in the library Docs:</p><blockquote><p>If you plan to compile the tifficc and jpgicc utilities, you need to have following libraries installed. Please refer to documentation of each library for installation instructions.</p></blockquote><p>Well, that&#8217;s not our case, in biicode you don&#8217;t need to install nor download the libraries, so, we&#8217;re going to look for them in biicode:</p><p><img
+class="aligncenter wp-image-1771 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/search-in-biicode.png" alt="Search the explore section of biicode a C/C++ dependency manager" width="1049" height="102" /></p><p>Lets check, they&#8217;re already in biicode!</p><ul><li><strong>tiffio.h <span
+style="font-weight: 300;color: #292f33">→ </span><span
+style="font-weight: 300;color: #292f33"> </span></strong>Lib TIFF <a
+title="libtiff original library" href="http://www.remotesensing.org/libtiff/" target="_blank">http://www.remotesensing.org/libtiff/</a> <span
+style="font-weight: 300;color: #292f33">→ <a
+title="tiff library biicode" href="http://www.biicode.com/tiff/tiff" target="_blank">http://www.biicode.com/tiff/tiff</a> → <a
+title="tiffio.h" href="//www.biicode.com/tiff/tiff/tiff/master/0/libtiff/tiffio.h" target="_blank">tiffio.h </a></span></li><li><strong>jpeglib.h <span
+style="font-weight: 300;color: #292f33">→ </span></strong> Independent JPEG Group <a
+title="independent jpeg group library" href="http://www.ijg.org" target="_blank">http://www.ijg.org</a>/ <span
+style="font-weight: 300;color: #292f33">→ <a
+title="jpeg library biicode" href="http://www.biicode.com/jpeg/jpeg" target="_blank">http://www.biicode.com/jpeg/jpeg</a> → <a
+title="jpeglib.h " href="http://www.biicode.com/jpeg/jpeg/jpeg/master/0/jpeglib.h" target="_blank">jpeglib.h</a></span></li></ul><p><strong>UPDATE:</strong> They&#8217;ve been already uploaded to biicode so we&#8217;ll <del>change the includes in the library into the includes biicode needs to recognize them</del> map the right includes in our <em>biicode.conf</em> file, just like this:</p><ul><li>#<del>include &#8220;tiffio.h&#8221; <strong><span
+style="font-weight: 300;color: #292f33">→ </span></strong><em><span
+style="color: #292f33">r</span><span
+style="color: #292f33">eplace for</span></em><strong><span
+style="font-weight: 300;color: #292f33"> #include &#8220;tiff/tiff/libtiff/tiffio.h&#8221;</span></strong></del></li><li><del> #include &#8220;jpeglib.h&#8221; <strong><span
+style="font-weight: 300;color: #292f33">→ </span></strong><span
+style="font-weight: 300;color: #292f33"><em>replace for</em></span><strong><span
+style="font-weight: 300;color: #292f33"> #include &#8220;jpeg/jpeg/jpeglib.h&#8221;</span></strong></del></li></ul><p></p><pre class="crayon-plain-tag">[includes]
+    jpeglib.h: jpeg/jpeg
+    tiffio.h: tiff/tiff/libtiff</pre><p>Check our reference section in the docs to <a
+href="http://docs.biicode.com/c++/reference/biicode-conf.html#includes" target="_blank">read more aboout [includes]</a>.</p><h3>How do we know the required include?</h3><p>Just get into the URL of the required file, like this:</p><p><img
+class="aligncenter wp-image-1772 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/jpeg-dependencies.png" alt="Search the blocks the users upload to biicode." width="1030" height="501" /></p><p>&nbsp;</p><p>Once we&#8217;ve updated the #include routes, execute<em> bii find</em> command to retrieve the dependencies:</p><pre class="crayon-plain-tag">$ bii find //to retrieve the dependencies</pre><p><img
+class="aligncenter size-full wp-image-1773" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/find_libs.png" alt="find_libs" width="478" height="79" /></p><p>So if we execute <code>bii deps</code> again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1774" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bii_deps_lcms1.png" alt="bii_deps_lcms1" width="264" height="403" /></p><p>&nbsp;</p><p>Now that external libraries are included we&#8217;ve got to address what&#8217;s going on with the other &#8220;not found&#8221; includes, let&#8217;s build the project to see exactly what&#8217;s going on and which includes it cannot find.</p><pre class="crayon-plain-tag">$ bii build</pre><p>It doesn&#8217;t build, so it seems we still have a couple things to solve.</p><h4>4.2. #include internal folders</h4><p>In your <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> , placed into blocks/username/blockname/bii folder, write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/src
+/include
+/utils/common</pre><p>&nbsp;</p><p><img
+class="aligncenter wp-image-2196 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biicodeconf-littlecms.png" alt="" width="710" height="428" /></p><p>Execute <code>bii deps</code> command again to check how&#8217;s our adaptation going:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1829" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biifindmexlcms.png" alt="bii find" width="256" height="356" /></p><p>&nbsp;</p><h4>4.3. There&#8217;s still some #include (s) biicode can not resolve, what&#8217;s going on here?</h4><p>4.3.1 #include &#8220;mex.h&#8221;</p><p>First of all we&#8217;ve got to check which files use #include &#8220;mex.h&#8221;  , it&#8217;s icctrans.c located into: lcms\blocks\amalulla\littlecms\utils\matlab\icctrans.c</p><p>It seems it&#8217;s something related with matlab, but just in case we&#8217;re going to google <code>#include "mex.h",</code> and we ensure it, this is a feature related to Matlab functionality, and as we&#8217;re not using that functionality we&#8217;re going to ignore the whole matlab folder. Notice that if you want to use matlab locally you have to link it. But that&#8217;s another post&#8217;s issue.</p><p>4.3.2 #include &#8220;lcms.h&#8221;</p><p>Let&#8217;s check which files use #include &#8220;lcms.h&#8221;, that&#8217;s an include referred to a previous Little-CMS version. There are currently four files that use that include, they are located into utils/samples, we&#8217;re also going to ignore those, because they won&#8217;t work with the new version, the examples I&#8217;m referring to are:  mkgrayer.c, itufax.c, mkcmy.c and wtpt.c</p><p>43.3. testbed folder</p><p>Finally we&#8217;re also ignoring the whole testbed folder, as it usually contains experimental features, that&#8217;s the dev/development environment.</p><p>So let&#8217;s create a <em>ignore.bii</em> file and write this into it:</p><pre class="crayon-plain-tag">testbed/*
+utils/samples/mkgrayer.c
+utils/samples/itufax.c
+utils/samples/mkcmy.c
+utils/samples/wtpt.c
+utils/matlab/*</pre><p><img
+class="aligncenter size-large wp-image-1995" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/ignore2.png" alt="ignore" width="630" height="533" /></p><p>Execute <code>bii deps</code> command again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1831" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps-working.png" alt="biideps working" width="281" height="303" /></p><p>Now there are no unresolved #include(s) so let&#8217;s build to check if everything is working properly:</p><pre class="crayon-plain-tag">$ bii build</pre><p>And it properly builds the library, so get into your bin folder and execute any of the examples created to check it out, for example:</p><pre class="crayon-plain-tag">$ cd bin
+bin/~$ amalulla_littlecms_utils_samples_mktiff8.exe</pre><p>And you should see a new file called lcmstiff8.icm created and this output on your terminal:</p><pre class="crayon-plain-tag">$ Creating lcmstiff8.icm...Done.</pre><p>And we&#8217;re ready to go!</p><p>Don&#8217;t forget to publish your library once you&#8217;re done! That way everybody can reuse easily from your library!</p><pre class="crayon-plain-tag">$ bii publish</pre><p>Want to check if the library we&#8217;ve just uploaded is truly reusable? Try making your own example and reuse from it!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-little-cms/">How to upload to biicode. Example 3: Little CMS by Marti Maria</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-little-cms/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>How to upload to biicode. Example 2: Box2D by Erin Catto</title><link>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/</link> <comments>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/#comments</comments> <pubDate>Wed, 08 Oct 2014 08:25:42 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[Angry Birds]]></category> <category><![CDATA[Box2D]]></category> <category><![CDATA[Erin Catto]]></category> <category><![CDATA[Flappy Bii]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1779</guid> <description><![CDATA[<p>Once you upload to biicode a library, everyone can reuse it!  That&#8217;s why we explained how to upload to biicode any library just following a few steps, but that example didn&#8217;t cover the possibility of a library depending on other libraries, which is quite usual nowadays. So today, we&#8217;re going to see with an example how to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">How to upload to biicode. Example 2: Box2D by Erin Catto</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Once you upload to biicod<img
+class="alignleft wp-image-1789 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/tumbler_example-293x300.png" alt="This example about Box2D shows you how easy to upload to biicode is" width="293" height="300" />e a library, everyone can reuse it!  That&#8217;s why we explained <a
+title="Upload to biicode Json11" href="http://blog.biicode.com/upload-to-biicode-i/">how to upload to biicode</a> any library just following a few steps, but that example didn&#8217;t cover the possibility of a library depending on other libraries, which is quite usual nowadays. So today, we&#8217;re going to see with an example how to proceed when your library depends on others. For this matter, we&#8217;re using <a
+title="box2d" href="http://box2d.org/" target="_blank">BOX2D</a>, an open source C++ engine to simulate rigid bodies in 2D, it is also used in different video-games like AngryBirds motor engine.</p><p>&nbsp;</p><p><span
+id="more-1779"></span></p><h3>UPDATE: Box2D v 2.3.1 has been uploaded to biicode on <a
+title="Box2d biicode erincatto" href="http://www.biicode.com/erincatto/erincatto/box2d/master/10" target="_blank">erincatto/box2d: 10 </a>version.</h3><div><span
+style="color: #000000">It&#8217;s been generated from Box2D library (see Readme.txt, <a
+href="http://www.box2d.org/" target="_blank">http://www.box2d.org</a>), source code hosted in: <a
+href="https://github.com/drodri/box2d" target="_blank">https://github.com/drodri/box2d</a> and that, was used to create a biicode ready version in: <a
+href="http://www.biicode.com/erincatto/box2d" target="_blank">http://www.biicode.com/erincatto/box2d</a><br
+/> </span></div><div><p><span
+style="color: #000000">Instead of using the glfw library inside, it uses the <a
+title="glfw library" href="http://www.biicode.com/diego/glfw" target="_blank">glfw library available in biicode</a>.</span></p><p><span
+style="color: #000000">The adaptation required can be seen <a
+title="github diff box2d" href="https://github.com/drodri/box2d/commit/7e0259c5db2f01cd6e93a5c2e1969f702169aacb" target="_blank">here, in the diff on github</a>. </span></p><p><span
+style="color: #000000">It requires:</span></p><ul><li><span
+style="color: #000000">Simple modification of root CMakeLists.txt. Note that with this simplification no other CMakeLists.txt in the project is required, biicode does not use them.</span></li><li><span
+style="color: #000000">Changing a couple of #includes. This will also be protected with #ifdef(BIICODE) guards in order to guarantee proper compilation of the fork without biicode too.</span></li><li><span
+style="color: #000000">The DroidSans.ttf is handled as biicode dependency, so it is always retrieved and copied to &#8220;bin&#8221; folder to guarantee proper functioning. This will also be protected with #ifdef guards.</span></li><li><span
+style="color: #000000">Adding glfw dependency in requirements.bii, filtering out glfw in ignore.bii, filtering out stb_truetype.h as having a main in mains.bii, and adding the root folder in paths.bii (so biicode finds #includes starting with &#8220;Box2D&#8221;)</span></li></ul><p><span
+style="color: #000000">ENJOY!</span></p></div><p>&nbsp;</p><p>PREVIOUS VERSION:<br
+/> As you can guess, once we&#8217;re done everybody will be able to use this library just by typing:</p><pre class="crayon-plain-tag">#include "erincatto/box2d/Box2D/Box2D.h"</pre><p>&nbsp;</p><h2>The Initial Steps to upload to biicode: one, two, three, four!</h2><p>These don&#8217;t defer from the ones used on the previous example by Laso last week.</p><h3>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h3><h3>2. Fork original repository (OPTIONAL)</h3><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to the <a
+title="davidsiaw/box2d" href="https://github.com/davidsiaw/box2d" target="_blank">original repository</a> and click on fork:</p><p>&nbsp;</p><p><img
+class="aligncenter size-full wp-image-1780" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/Fork.png" alt="image showing where to fork a github repository" width="953" height="104" /></p><h3>3. Init a new biicode project and create a new block</h3><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init bx
+$ cd bx
+$ bii new amalulla/box2d</pre><p>If you already are a biicode user you can replace &#8220;amalulla&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/amalulla/box2d</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\amalulla\box2d
+$ git clone https://github.com/MariadeAnton/box2d.git .</pre><p></p><h3>4. Find your external dependencies</h3><p>Inside Box2D library it&#8217;s included a copy of freeglut and other of glui, but we don&#8217;t need them, because <a
+title="Freeglut Biicode" href="http://www.biicode.com/sbaker/freeglut" target="_blank">freeglut has been already uploaded to biicode</a>.</p><p>So we&#8217;re going to:</p><ol><li> ignore the freeglut and glui copies inside the original box2d library</li><li> reuse from the ones uploaded in biicode.</li></ol><p>4.1 Create a <em>ignore.bii</em> file into <em>blocks/username/box2d/ignore.bii </em>and write into it: freeglut/* and glui/* , so biicode ignores the whole of both folders.</p><p><img
+class="aligncenter wp-image-1804 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/ignore.png" alt="ignores freeglut and glui" width="577" height="451" /></p><p>&nbsp;</p><h4>4.1.1. Add the includes to your base directory</h4><p>First of all, check the ones needed by executing <code>bii deps</code>, you&#8217;ll see a long list about the system, resolved and unresolved libraries.</p><pre class="crayon-plain-tag">$ bii deps</pre><p><div
+id="attachment_1800" style="width: 260px" class="wp-caption aligncenter"><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps1.png"><img
+class="wp-image-1800" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps1.png" alt="biideps1 -unresolved" width="250" height="449" /></a><p
+class="wp-caption-text">Click to enlarge image!</p></div></p><p>It seems it cannot find, among others, Box2D internal includes, it has tons of files whose route looks like this: <em>Box2D/Collision/Shapes/b2Shape.h</em> or <em>Box2D/Dynamics/Joints/b2MouseJoint.h</em>,  so we have to specify  the project to include the library&#8217;s base directory.</p><p>Create a paths.bii file and just write &#8221; / &#8221; into it, this way biicode knows it has to include the library&#8217;s root directory to search the files needed into it:</p><p>&nbsp;</p><p><img
+class="aligncenter size-full wp-image-1787" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/pathsbii_update1.png" alt="pathsbii_update" width="562" height="528" /></p><p>&nbsp;</p><p>Save and check your dependencies again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-medium wp-image-1803" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps2-273x300.png" alt="biideps2" width="273" height="300" /></p><p>This looks way better now, let&#8217;s see what it isn&#8217;t finding two of them are included on the build folder for xcode iOS, we&#8217;re going to move towards the other dependencies, there&#8217;s one to Freeglut and Glut, so we&#8217;re going to check how to solve them.</p><h4>4.2. #include External Libraries</h4><p>Once you know the libraries needed, look for them in biicode:</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-1820 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/search_freeglut2-1024x222.png" alt="biicode is a free C/C++ dependency manager, explore and upload to biicode" width="630" height="136" /></p><ul><li> <strong>freeglut.h <span
+style="font-weight: 300;color: #292f33">→  freeglut</span></strong>  <span
+style="font-weight: 300;color: #292f33">→  http://www.biicode.com/glui/glutwrapper</span></li><li><strong>glui.h <span
+style="font-weight: 300;color: #292f33">→  glui</span></strong><span
+style="font-weight: 300;color: #292f33">→ http://www.biicode.com/glui/glui</span></li></ul><h4> How do we know the required include?</h4><p>Just get into the URL of the required file, like this:</p><h3> <img
+class="aligncenter wp-image-1821 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/freeglut_include_sbaker-1024x463.png" alt="Find freeglut library in the explore section of biicode" width="630" height="284" /></h3><p>&nbsp;</p><p>Search in the old #include routes and substitute them for the new ones (I use sublime text editor to achieve this), as you can see, the new includes match exactly the new route where I found them:</p><ul><li><b>freeglut.h </b><span
+style="font-weight: bold;color: #292f33"><span
+style="font-weight: bold;color: #292f33"><span
+style="font-weight: 300">→ </span></span></span><code>#include “freeglut/freeglut.h”</code>  →  <code>#include “sbaker/freeglut/freeglut/freeglut/include/GL/freeglut.h”</code></li></ul><ul><li><strong>glui.h </strong> → <code> #include “glui/glui.h”</code>  →  <code>#include “glui/glui/GL/glui.h”</code></li></ul><p>Ok, we&#8217;ve updated exactly four #include routes, so lets execute<code> bii find</code> command to retrieve the dependencies:#include &lt;glui/glutwrapper/glut.h&gt;</p><pre class="crayon-plain-tag">$ bii find # to retrieve the dependencies</pre><p>And you should see on the terminal a message like this:</p><p><img
+class="aligncenter wp-image-1823 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/find-dependencies-freeglut.png" alt="find dependencies-freeglut" width="456" height="69" /></p><p>&nbsp;</p><h3>5. Edit your CMakeLists.txt</h3><p>Now a small tip on how to have a CMakeLists.txt working as it used to and also with biicode. Just write IF (BIICODE) usual biicode instructions/ ELSE() the ones box2d had before: so update the CMakeLists.txt you had before with this:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Include base block dir
+  ADD_BIICODE_TARGETS()
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+  IF (UNIX)
+     IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Testbed")
+  add_definitions( -D__unix__ -DHAVE_FCNTL_H -DHAVE_GETTIMEOFDAY )
+        TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC pthread X11)
+        find_package(OpenGL REQUIRED)
+     ENDIF()
+  ENDIF()
+ELSE()
+  # Previous CMakeLists.txt goes here
+ENDIF()</pre><p>This CMake is the usual one with biicode and it includes this line <code>TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})</code> to take into account the root  directory, it&#8217;s exactly the same thing we specified on our <em>paths.bii</em> file, we add that current source directory so Cmake is able to compile the project. Usually, each time you add something to your paths.bii file, you should add it too to your CMakeLists.txt .</p><p>Also a few lines have been written to define how to compile OpenGL with Unix OS.</p><p>&nbsp;</p><h3>6. Now build:</h3><p></p><pre class="crayon-plain-tag">$ bii cpp:build</pre><p>It builds a couple examples: username_box2d_HelloWorld_HelloWorld and username/box2d_Testbed_Framework_Main</p><p>Execute the examples! You&#8217;re ready to go!</p><p>If you execute the Testbed_Framework_Main you&#8217;ll see an image like this one:</p><p><img
+class="aligncenter wp-image-1788 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/box2d_example.png" alt="An example of Box2D" width="657" height="517" /></p><p>Don&#8217;t forget to publish your library once you&#8217;re done! That way everybody can reuse easily from your library!</p><pre class="crayon-plain-tag">$ bii publish</pre><p>Want to check if the library we&#8217;ve just uploaded is truly reusable? Try making your own example just like the one our interns made: <a
+title="Flappy bii game biicode" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii</a></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">How to upload to biicode. Example 2: Box2D by Erin Catto</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Arduino File Manager and Editor project</title><link>http://blog.biicode.com/arduino-file-manager-editor-project/</link> <comments>http://blog.biicode.com/arduino-file-manager-editor-project/#comments</comments> <pubDate>Tue, 02 Sep 2014 10:00:22 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[editor]]></category> <category><![CDATA[file manager]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source]]></category> <category><![CDATA[project]]></category> <category><![CDATA[reuse]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1053</guid> <description><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard. Thanks to Juan who developed this project called blocporc! List of Arduino file manager and editor parts: Arduino Mega 2560 GLCD display: preferably a KS0108 based. Depending on the type [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard.</p><p>Thanks to <a
+title="Mrquesito twitter" href="https://twitter.com/mrquesito" target="_blank">Juan</a> who developed this project called blocporc!</p><p><img
+class="aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/arduino-file-manager.png" alt="arduino file manager" width="630" height="352" /></p><p><span
+id="more-1053"></span></p><h2>List of Arduino file manager and editor parts:</h2><ul><li><strong>Arduino Mega 2560</strong></li><li><strong>GLCD display</strong>: preferably a KS0108 based. Depending on the type of panel (A, B or C) the connections will vary, but it&#8217;s really well explained at the docs of the glcd library (<a
+style="color: #f48123;" href="https://www.biicode.com/mrquesito/blocks/mrquesito/glcd_v3rc3/branches/master#.U0rkJPl_vCc">https://www.biicode.com/mrquesito/glcd_v3rc3</a>).</li><li><strong>SD card reader</strong> (remember that SD cards are 3.3v-powered devices! You can accomplish by using a voltage divider implemented with two resistors):<br
+/><table><tbody><tr><td><b>SD Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>DO</td><td>50</td></tr><tr><td>CLK</td><td>52</td></tr><tr><td>DI</td><td>51</td></tr><tr><td>CS</td><td>53</td></tr></tbody></table></li><li><strong>PCF8583</strong>: it uses the I2C bus. Since this IC can be powered from 3 to 5 volts, you can use two diodes for adding the 3v cell battery. <strong>Note</strong>: due to the high speed of this bus and to the proximity of a lot of signals (SD, Keyboard&#8230;) it&#8217;s highly likely that you will need to twist and shield the wires. I&#8217;ve shielded them with a lot of aluminium foil; it works great!</li><li><strong>Keyboard</strong>:<br
+/><table><tbody><tr><td><b>Keyboard Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>Data</td><td>4</td></tr><tr><td>IRQ</td><td>3</td></tr></tbody></table></li><li><strong>Enclosure</strong>: a wooden or plastic box.</li></ul><h2>The coding.</h2><p>Open the terminal and execute these commands to see everything on your computer and then compile it and upload to your Arduino.</p><pre class="crayon-plain-tag">~/$ bii init blocporc</pre><p></p><pre class="crayon-plain-tag">~/$ cd blocporc
+~/blocporc$ bii open mrquesito/blocporc
+~/blocporc$ bii find
+~/blocporc$ bii arduino:build
+~/blocporc$ bii arduino:upload</pre><p>Broadly speaking, with blocporc you can create and edit .txt files that are stored in a SD card.</p><p>To read a step by step guide and the code used to build this project, take a look into its biicode repository online: <a
+title="arduino file manager code" href="//www.biicode.com/mrquesito/blocporc" target="_blank"> https://www.biicode.com/mrquesito/blocporc</a></p><p>Happy hacking!</p><p><object
+width="729" height="410"><param
+name="movie" value="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0"></param><param
+name="allowFullScreen" value="true"></param><param
+name="allowscriptaccess" value="always"></param><embed
+src="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0" type="application/x-shockwave-flash" width="729" height="410" allowscriptaccess="always" allowfullscreen="true"></embed></object><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-file-manager-editor-project/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,1460 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/bitscan-cpp-library-bit-strings/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:44:18 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>BITSCAN: C++ library for bit strings - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="A comprehensive view of how BITSCAN processes bit strings was needed. BITSCAN is a flagship library hosted in biicode, let&#039;s describe it."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="BITSCAN: C++ library for bit strings - biicode Blog" /><meta
+property="og:description" content="A comprehensive view of how BITSCAN processes bit strings was needed. BITSCAN is a flagship library hosted in biicode, let&#039;s describe it." /><meta
+property="og:url" content="http://blog.biicode.com/bitscan-cpp-library-bit-strings/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="bit string" /><meta
+property="article:tag" content="bitscan" /><meta
+property="article:tag" content="bitscanning" /><meta
+property="article:tag" content="c++" /><meta
+property="article:tag" content="cpp" /><meta
+property="article:section" content="BITSCAN" /><meta
+property="article:published_time" content="2014-10-17T13:03:03+00:00" /><meta
+property="article:modified_time" content="2014-10-20T09:43:11+00:00" /><meta
+property="og:updated_time" content="2014-10-20T09:43:11+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bitstring_logo.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="BITSCAN: C++ library for bit strings - biicode Blog"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bitstring_logoTW.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; BITSCAN: a C++ library for bit strings Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index1a1d.html?p=1840' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-1840 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/bitscan-2/index.html" rel="v:url" property="v:title">BITSCAN</a> » <strong
+class="breadcrumb_last">BITSCAN: a C++ library for bit strings</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-1840" class="post-1840 post type-post status-publish format-standard has-post-thumbnail hentry category-bitscan-2 tag-bit-string tag-bitscan tag-bitscanning tag-c tag-cpp"> <header
+class="entry-header"><h1 class="entry-title">BITSCAN: a C++ library for bit strings</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="13:03" rel="bookmark"><time
+class="entry-date" datetime="2014-10-17T13:03:03+00:00">October 17, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/pablo/index.html" title="View all posts by pablo" rel="author">pablo</a></span></span></div> </header><div
+class="entry-content"><h2>A comprehensive view of BITSCAN</h2><p>BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is identified by a bit in the chain. In previous posts I have repeatedly stated that BITSCAN “is a useful library to manage bit strings”, and that was that. Readers of our blog have questioned the usefulness of bit strings in practice so I will start this post explaining some common situations in which bit strings may be an alternative to more common data structures.</p><p><img
+class="aligncenter wp-image-1841 size-full" src="../wp-content/uploads/sites/2/2014/10/bitstring_logo.png" alt="Bit strings can now be processed more powerfully with BITSCAN hosted in biicode" width="359" height="123" /></p><p><span
+id="more-1840"></span></p><h2>Bit strings in practice</h2><p>Say you need to store and compare subsets of <em>different</em> numbers from 1 to N; or possibly you need to encode that a collection of objects belong to a set, or perhaps reason with two such collections and find those common to both. These situations are quite frequent in practice and commonly solved by mapping objects to identifiers, storing them (typically in some predefined order) in containers and employ their built-in methods to make the required inferences.</p><p>Here is an example: a subset of students takes an exam; each student has a different ID and writes it on the exam. A possible (non-efficient) solution to the query as to which students did not assist using STL collections appears below:</p><div
+id="crayon-56886c059cf93697733045" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+//… appropiate headers
+template&lt;class Collection&gt;
+void printCol(Collection&amp; col){
+	copy(col.begin(), col.end(), ostream_iterator&lt;Collection::value_type&gt;(cout, " "));
+}
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	set&lt;int&gt; s_ids;		// student ids
+	set&lt;int&gt; e_ids;		// exam ids
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		s_ids.insert(i);
+		if((i%2)==0)
+			e_ids.insert(i);
+	}
+	//students which did not assist
+	set&lt;int&gt; s_not_assist;
+  	set_difference(s_ids.begin(), s_ids.end(), e_ids.begin(), e_ids.end(),
+                             insert_iterator&lt;set&lt;int&gt;&gt; (s_not_assist, s_not_assist.begin()) );
+	printCol(s_not_assist);
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-2">2</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-4">4</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-6">6</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-8">8</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-10">10</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-12">12</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-14">14</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-16">16</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-18">18</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-20">20</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-22">22</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-24">24</div><div
+class="crayon-num" data-line="crayon-56886c059cf93697733045-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cf93697733045-26">26</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c059cf93697733045-1"><span
+class="crayon-c">//… appropiate headers</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-3"><span
+class="crayon-v">template</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Collection</span><span
+class="crayon-o">&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-4"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">printCol</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">Collection</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">col</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-5"><span
+class="crayon-h"> </span><span
+class="crayon-e">copy</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">col</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">col</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">end</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ostream_iterator</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-v">Collection</span><span
+class="crayon-o">::</span><span
+class="crayon-v">value_type</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">cout</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">" "</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-6"><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-7">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-8"><span
+class="crayon-p">#define NUMBER_OF_STUDENTS 5</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-9">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-10"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-11"><span
+class="crayon-h"> </span><span
+class="crayon-v">set</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s_ids</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">// student ids</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-12"><span
+class="crayon-h"> </span><span
+class="crayon-v">set</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">e_ids</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">// exam ids</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-13">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-14"><span
+class="crayon-h"> </span><span
+class="crayon-st">for</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">&lt;=</span><span
+class="crayon-v">NUMBER_OF_STUDENTS</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-15"><span
+class="crayon-h"> </span><span
+class="crayon-v">s_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">insert</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">i</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-16"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">i</span><span
+class="crayon-o">%</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">==</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-17"><span
+class="crayon-h"> </span><span
+class="crayon-v">e_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">insert</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">i</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-18"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-19"><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-20"><span
+class="crayon-h"> </span><span
+class="crayon-c">//students which did not assist</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-21"><span
+class="crayon-h"> </span><span
+class="crayon-v">set</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s_not_assist</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-22"><span
+class="crayon-h">&nbsp;&nbsp; </span><span
+class="crayon-e">set_difference</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">s_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">end</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">e_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">e_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">end</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span></div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-23"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-v">insert_iterator</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-v">set</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">s_not_assist</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s_not_assist</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-24">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cf93697733045-25"><span
+class="crayon-h"> </span><span
+class="crayon-e">printCol</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">s_not_assist</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cf93697733045-26"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>&nbsp;</p><p>In the PREVIOUS example  each call to <code>insert</code> is logarithmic and <code>set_difference</code> is linear in the number of total students. Now compare with a bit string encoding for exams and students (a 1-bit indicates membership):</p><div
+id="crayon-56886c059cfa5705872279" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" no-popup minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include "pablodev/bitscan/bitscan.h"		//BITSCAN header in biicode repository
+using namespace std;
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	bitarray s_ids(NUMBER_OF_STUDENTS);	// student ids
+	bitarray e_ids(NUMBER_OF_STUDENTS);	// exam ids
+	s_ids.set_bit(0,NUMBER_OF_STUDENTS-1);
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		if((i%2)==0)
+		e_ids.set_bit(i-1);		//id is 0 based
+	}
+	//students which passed the exam
+	bitarray s_not_assist(s_ids);
+	s_not_assist.erase_bit(e_ids);
+	//I/O
+	s_not_assist.print();
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-2">2</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-4">4</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-6">6</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-8">8</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-10">10</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-12">12</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-14">14</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-16">16</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-18">18</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-20">20</div><div
+class="crayon-num" data-line="crayon-56886c059cfa5705872279-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfa5705872279-22">22</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-1"><span
+class="crayon-p">#include "pablodev/bitscan/bitscan.h"		//BITSCAN header in biicode repository</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-3"><span
+class="crayon-e">using </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-4"><span
+class="crayon-p">#define NUMBER_OF_STUDENTS 5</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-6"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-7"><span
+class="crayon-h"> </span><span
+class="crayon-e">bitarray </span><span
+class="crayon-e">s_ids</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">NUMBER_OF_STUDENTS</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">// student ids</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-8"><span
+class="crayon-h"> </span><span
+class="crayon-e">bitarray </span><span
+class="crayon-e">e_ids</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">NUMBER_OF_STUDENTS</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">// exam ids</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-9"><span
+class="crayon-h"> </span><span
+class="crayon-v">s_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">set_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">NUMBER_OF_STUDENTS</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-10"><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-11"><span
+class="crayon-h"> </span><span
+class="crayon-st">for</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">&lt;=</span><span
+class="crayon-v">NUMBER_OF_STUDENTS</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-12"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">i</span><span
+class="crayon-o">%</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">==</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-13"><span
+class="crayon-h"> </span><span
+class="crayon-v">e_ids</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">set_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">i</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">//id is 0 based</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-14"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-15"><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-16"><span
+class="crayon-h"> </span><span
+class="crayon-c">//students which passed the exam</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-17"><span
+class="crayon-h"> </span><span
+class="crayon-e">bitarray </span><span
+class="crayon-e">s_not_assist</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">s_ids</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-18"><span
+class="crayon-h"> </span><span
+class="crayon-v">s_not_assist</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">erase_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">e_ids</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-19"><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-20"><span
+class="crayon-h"> </span><span
+class="crayon-c">//I/O</span></div><div
+class="crayon-line" id="crayon-56886c059cfa5705872279-21"><span
+class="crayon-h"> </span><span
+class="crayon-v">s_not_assist</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">print</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfa5705872279-22"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>From the point of view of efficiency, students are inserted in the (bit) sets in constant time. The reasoning is computed in the <code>erase_bit</code> function in linear time, but there is a reduction by a constant factor related to register word size (typically 64 in today’s computers) because processing occurs in chunks of bit blocks. Moreover, the code is no less readable (possibly <em>more</em> readable) than its counterpart and slightly more compact.</p><p>Note that the example did not intend to suggest that bit strings are better than typical STL collections (exlcude std::bitset) or anything like that. It only shows that bit strings can be a useful alternative to consider in everyday programming.</p><h2>Data types available in BITSCAN</h2><p>Having made a case in favor of bit strings I will now comment briefly on the data types available in BITSCAN and the kind of problems they address. As stated in <a
+href="../category/bitscan-2/index.html">previous posts</a>, I developed BITSCAN to deal with hard combinatorial optimization problems in the graph domain. Why did I not use other common solutions such as <code>std</code><code>∷</code><code>bitset</code> or boost<code>∷</code><code>dynamic_bitset</code> containers? Simply because the majority of functions I required back then (say almost a decade ago) were not built-in (they still aren&#8217;t, specifically those related to different types of efficient bit scanning) not to mention the fact that the size of <code>std</code><code>∷</code><code>bitset</code> has to be hard wired at compile time. Also some critical optimization issues appeared which required ad hoc solutions. I therefore decided to start from scratch at my own risk. The types in BITSCAN are a result of a decade of experience in algorithmic optimization. The current release is intended to share this knowledge in the hope that it is useful to others and that it may be improved. In this sense I find Biicode ideal for managing and sharing the code.</p><p>Back to business, and sorry for the digression. The main types in BITSCAN are <em>bitblock</em>, <em>bitarray</em> and <em>sparse_bitarray</em> and most of the time you will only be using these. Other types are meant for compilers which do not accept assembly or intrinsic instructions (i.e. <em>simple_bitarray</em>, <em>simple_sparse_array</em>) or some specific optimization (i.e. <em>watched_bitarray</em>). I will leave the latter types for a future post.</p><h3>TYPE bitblock</h3><p>The <em>bitblock</em> type is a wrapper for bit twiddling inside 64 bit numbers. It includes typical least- significant-bit (LSB) and most-significant-bit (MSB) functions as well as different implementations of population counts (i.e. number of 1-bits in the number).  Useful inline macros are MASK_1 and MASK_0 which change bits in a predefined range (see example below).</p><div
+id="crayon-56886c059cfb2208425521" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+void main(){
+	BITBOARD bb=0xFFFF;
+	cout&lt;&lt;"number of 1-bits in bb:"&lt;&lt;bitblock::popc64(bb)&lt;&lt;endl;
+	//useful masks
+	bitblock::print(bb &amp; bitblock::MASK_0(4,8));    //removes bits 4-8 from bb
+	bitblock::print(bb | bitblock::MASK_1(4,8));    //sets bits 4-8 in bb
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfb2208425521-2">2</div><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfb2208425521-4">4</div><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfb2208425521-6">6</div><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfb2208425521-8">8</div><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfb2208425521-10">10</div><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfb2208425521-12">12</div><div
+class="crayon-num" data-line="crayon-56886c059cfb2208425521-13">13</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-1"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfb2208425521-2"><span
+class="crayon-p">#include "pablodev/bitscan/bitscan.h"</span></div><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-3">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfb2208425521-4"><span
+class="crayon-e">using </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfb2208425521-6"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-7"><span
+class="crayon-h"> </span><span
+class="crayon-e">BITBOARD </span><span
+class="crayon-v">bb</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">0xFFFF</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfb2208425521-8"><span
+class="crayon-h"> </span><span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-s">"number of 1-bits in bb:"</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">bitblock</span><span
+class="crayon-o">::</span><span
+class="crayon-e">popc64</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bb</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-9">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfb2208425521-10"><span
+class="crayon-h"> </span><span
+class="crayon-c">//useful masks</span></div><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-11"><span
+class="crayon-h"> </span><span
+class="crayon-v">bitblock</span><span
+class="crayon-o">::</span><span
+class="crayon-e">print</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bb</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">bitblock</span><span
+class="crayon-o">::</span><span
+class="crayon-e">MASK_0</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">8</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//removes bits 4-8 from bb </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfb2208425521-12"><span
+class="crayon-h"> </span><span
+class="crayon-v">bitblock</span><span
+class="crayon-o">::</span><span
+class="crayon-e">print</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bb</span><span
+class="crayon-h"> </span><span
+class="crayon-o">|</span><span
+class="crayon-h"> </span><span
+class="crayon-v">bitblock</span><span
+class="crayon-o">::</span><span
+class="crayon-e">MASK_1</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">8</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//sets bits 4-8 in bb</span></div><div
+class="crayon-line" id="crayon-56886c059cfb2208425521-13"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p></p><h3>TYPE bitarray</h3><p><em>bitarray</em> extends the <em>bitblock</em> type to arrays of bitblocks and it is BITSCAN&#8217;s basic type. Besides typical operations which may be found elsewhere (bit masks etc.), the wrapper contains a number of optimizations mainly concerned with extracting the information from bit strings (alias bitscanning) which I have found pretty useful when solving combinatorial problems. In particular:</p><ul><li>Caching bitblock index and position of the last bit scanned in a bit scanning loop.</li><li>Specific implementation for destructive (simultaneous scanning and deletion) scans.</li><li>Specific implementation for reverse scans (i.e. from last to least significant bit of the bitstring).</li></ul><p>Here is a simple example of how to implement normal and destructive scanning loops with BITSCAN:</p><div
+id="crayon-56886c059cfbc676967468" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATON_SIZE-1);     //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::NON_DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+	cout&lt;&lt;endl;
+	//bit scanning loop (destructive)
+	nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit_del();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-2">2</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-4">4</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-6">6</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-8">8</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-10">10</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-12">12</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-14">14</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-16">16</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-18">18</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-20">20</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-22">22</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-24">24</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-26">26</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfbc676967468-28">28</div><div
+class="crayon-num" data-line="crayon-56886c059cfbc676967468-29">29</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-1"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-2"><span
+class="crayon-p">#include "pablodev/bitscan/bitscan.h"</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-3"><span
+class="crayon-e">using </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-4">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-5"><span
+class="crayon-p">#define POPULATION_SIZE 100 </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-6">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-7"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-8"><span
+class="crayon-h"> </span><span
+class="crayon-e">bitarray </span><span
+class="crayon-e">bba</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">POPULATION_SIZE</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-9"><span
+class="crayon-h"> </span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">set_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">POPULATON_SIZE</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-c">//sets all bits to 1</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-10">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-11"><span
+class="crayon-h"> </span><span
+class="crayon-c">//bit scanning loop</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-12"><span
+class="crayon-h"> </span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">=</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-13"><span
+class="crayon-h"> </span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">init_scan</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bbo</span><span
+class="crayon-o">::</span><span
+class="crayon-v">NON_DESTRUCTIVE</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-14"><span
+class="crayon-h"> </span><span
+class="crayon-st">while</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">true</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-15"><span
+class="crayon-h"> </span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">=</span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">next_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-16"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">==</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-st">break</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-17"><span
+class="crayon-h"> </span><span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-s">" "</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-18"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-19"><span
+class="crayon-h"> </span><span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-20">&nbsp;</div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-21"><span
+class="crayon-h"> </span><span
+class="crayon-c">//bit scanning loop (destructive)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-22"><span
+class="crayon-h"> </span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">=</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-23"><span
+class="crayon-h"> </span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">init_scan</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bbo</span><span
+class="crayon-o">::</span><span
+class="crayon-v">DESTRUCTIVE</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-24"><span
+class="crayon-h"> </span><span
+class="crayon-st">while</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">true</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-25"><span
+class="crayon-h"> </span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">=</span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">next_bit_del</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-26"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">==</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-st">break</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-27"><span
+class="crayon-h"> </span><span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-s">" "</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfbc676967468-28"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886c059cfbc676967468-29"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p><span
+style="font-size: 13px;">It is worth noting that bit scanning introduces critical overhead compared to standard data structures. I strongly recommend to avoid it as much as possible in critical problem solving routines  in favor of reasoning with bit masks (the good part). Still, at some point you will surely need to enumerate the elements (1-bits) in the bit sets and the above functions (and others available in BITSCAN) will come in handy.</span></p><h3>TYPE sparse_bitarray</h3><p>This type introduces specific functionality to deal with the sparse case. A sparse bit string typically holds many more 0-bits than 1-bits (usually the useful chunks of information) and using  the general purpose <em>bitarray</em> type will generally lead to dealing with a lot of useless chunks of 0-bits. I recommend to use the <em>sparse_bitarray</em> type in such cases. The interface for most operations is very much the same. BELOW is the code for the normal bit scanning loop in the previous examples but using the sparse type.</p><div
+id="crayon-56886c059cfc7532970730" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	sparse_bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATION_SIZE-1);      //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+		while(true){
+			nBit=bba.next_bit();
+			if(nBit==EMPTY_ELEM) break;
+			cout&lt;&lt;nBit&lt;&lt;" ";
+		}
+	}
+	cout&lt;&lt;endl;
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-2">2</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-4">4</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-6">6</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-8">8</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-10">10</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-12">12</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-14">14</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-16">16</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-18">18</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-20">20</div><div
+class="crayon-num" data-line="crayon-56886c059cfc7532970730-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c059cfc7532970730-22">22</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-1"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-2"><span
+class="crayon-p">#include "pablodev/bitscan/bitscan.h"</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-3">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-4"><span
+class="crayon-e">using </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-6"><span
+class="crayon-p">#define POPULATION_SIZE 100 </span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-7">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-8"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-9"><span
+class="crayon-h"> </span><span
+class="crayon-e">sparse_bitarray </span><span
+class="crayon-e">bba</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">POPULATION_SIZE</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-10"><span
+class="crayon-h"> </span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">set_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">POPULATION_SIZE</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//sets all bits to 1</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-11">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-12"><span
+class="crayon-h"> </span><span
+class="crayon-c">//bit scanning loop</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-13"><span
+class="crayon-h"> </span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">=</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-14"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">init_scan</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bbo</span><span
+class="crayon-o">::</span><span
+class="crayon-v">NON_DESTRUCTIVE</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">!=</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span><span
+class="crayon-h">&nbsp;&nbsp;</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-15"><span
+class="crayon-h"> </span><span
+class="crayon-st">while</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">true</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-16"><span
+class="crayon-h"> </span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">=</span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">next_bit</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-17"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">==</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-st">break</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-18"><span
+class="crayon-h"> </span><span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">nBit</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-s">" "</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-19"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-20"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886c059cfc7532970730-21"><span
+class="crayon-h"> </span><span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c059cfc7532970730-22"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>Notice that the code is exactly the same as for the <em>bitarray</em> type (now <em>sparse_bitarray</em>) with the exception of the empty checking condition at the beginning of the bit scanning loop:</p><div
+id="crayon-56886c059cfd1961077205" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM)(…}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c059cfd1961077205-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c059cfd1961077205-1"><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bba</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">init_scan</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">bbo</span><span
+class="crayon-o">::</span><span
+class="crayon-v">NON_DESTRUCTIVE</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">!=</span><span
+class="crayon-v">EMPTY_ELEM</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">(</span>…<span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>This is necessary because sparse bitarrays have empty semantics: an empty bitarray (i.e. with no allocated bitblocks) might just as well not be used as refer to a bitset exent of 1-bits. Either way entering the main scanning loop will result in an error during execution.</p><h2>Current status</h2><p>As indicated in other posts, BITSCAN is still very much in Alpha but it is being actively developed.  As such it suffers from lack of proper doc, non standardization of names and namespaces etc.  Still, it is very simple to use and including it in your projects requires no effort using Biicode (just include the header  #include &#8220;pablodev/bitscan/bitscan.h&#8221; and you are done). It has been tested both in Linux and Windows (64 bit).</p><p>If you are wondering about efficiency,  BITSCAN is in the core of BBMC <sup><a
+href="#fn1" id="ref1">[1]</a></sup><sup><a
+href="#fn2" id="ref2">[2]</a></sup><sup><a
+href="#fn3" id="ref3">[3]</a></sup> and PASS <sup><a
+href="#fn4" id="ref4">[4]</a></sup>, two state of the art algorithms for the NP-hard maximum clique and vertex coloring problems respectively. Also worth reading is a performance comparison with STL and BOOST in <sup><a
+href="#fn5" id="ref5">[5]</a></sup>. If you finally decide that it is worth a try please read the legal stuff. In case you use it for research purposes, please include the indicated citations. Finally, any feedback or improvement is most welcome.</p><p>&nbsp;</p><p><sup
+id="fn1"><a
+href="http://dl.acm.org/citation.cfm?id=1860369%20">[1] An exact bit-parallel algorithm for the maximum clique problem</a></sup></p><p><sup
+id="fn2"><a
+href="http://link.springer.com/article/10.1007%2Fs11590-011-0431-y">[2] An improved bit parallel exact maximum clique algorithm</a></sup></p><p><sup
+id="fn3"><a
+href="http://dl.acm.org/citation.cfm?id=2566230">[3] Relaxed approximate coloring in exact maximum clique search</a></sup></p><p><sup
+id="fn4"><a
+href="../oa.upm.es/11802/2/INVE_MEM_2011_107285.html">[4] A new DSATUR-based algorithm for exact vértex coloring</a></sup></p><p><sup
+id="fn5"><a
+href="../bitscan-efficiency-at-glance/index.html">[5] BITSCAN efficiency at a glance</a></sup></p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../sparse-bitsets-cpp/index.html" title="Sparse bitsets in C++ with BITSCAN">Sparse bitsets in C++ with BITSCAN</a></li><li><a
+href="../bit-parallel-approximate-coloring/index.html" title="Bit-parallel approximate coloring">Bit-parallel approximate coloring</a></li><li><a
+href="../bit-encoded-graph/index.html" title="Bit-encoded Graphs">Bit-encoded Graphs</a></li><li><a
+href="../quick-approach-bitscan/index.html" title="A quick approach to BITSCAN">A quick approach to BITSCAN</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/bitscan-cpp-library-bit-strings/' addthis:title='BITSCAN: a C++ library for bit strings' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/bitscan-2/index.html" rel="category tag">BITSCAN</a> and tagged <a
+href="../tag/bit-string/index.html" rel="tag">bit string</a>, <a
+href="../tag/bitscan/index.html" rel="tag">bitscan</a>, <a
+href="../tag/bitscanning/index.html" rel="tag">bitscanning</a>, <a
+href="../tag/c/index.html" rel="tag">c++</a>, <a
+href="../tag/cpp/index.html" rel="tag">cpp</a>. Bookmark the <a
+href="index.html" title="Permalink to BITSCAN: a C++ library for bit strings" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../upload-to-biicode-precompiled-binaries-sfml/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Precompiled binaries in biicode: a proof of concept with SFML</a></div><div
+class="next"><a
+href="../custom-cmake-toolchain/index.html" rel="next">Using your custom CMake toolchain <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '1840%20http_/blog.biicode.com/index1a1d.html?p=1840';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "BITSCAN: a C++ library for bit strings";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index41c2.html?cf_action=sync_comments&amp;post_id=1840';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/bitscan-cpp-library-bit-strings/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:44:19 GMT -->
+</html>

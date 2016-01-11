@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+> <channel><title>Comments on: About non-intrusive polymorphism</title> <atom:link href="http://blog.biicode.com/about-non-intrusive-polymorphism/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com/about-non-intrusive-polymorphism/</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Wed, 16 Sep 2015 03:33:00 +0000</lastBuildDate> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>By: Pablo Marcos</title><link>http://blog.biicode.com/about-non-intrusive-polymorphism/#comment-257</link> <dc:creator><![CDATA[Pablo Marcos]]></dc:creator> <pubDate>Sat, 23 May 2015 11:07:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2266#comment-257</guid> <description><![CDATA[Great idea Manu, but I would like to see a compiling example to be able to play with it. Therefore, instead of seeing &quot;...&quot; in each block, I would appreciate to see a at least at the very end of the article a minimal example fully working.
+Apart from the typos pointed out by Denis, I see the following:
+- ptr or _ptr?
+- derived should derive from base
+- Poly seems to need a &quot;void f()&quot; method that calls ptr-&gt;f()
+- vonst should be const
+-  &quot;hello world!&quot;s. What about the ending &quot;s&quot;?
+This is what I ended up with:
+http://goo.gl/ps7ky6 - to test in an online compiler
+http://pastebin.com/jDcgqCqi - to see it in pastebin
+Please don&#039;t take this as a negative comment but as a constructive one, which is what it intends to so that the following articles are even better. Keep up the good work!]]></description> <content:encoded><![CDATA[<p>Great idea Manu, but I would like to see a compiling example to be able to play with it. Therefore, instead of seeing &#8220;&#8230;&#8221; in each block, I would appreciate to see a at least at the very end of the article a minimal example fully working.</p><p>Apart from the typos pointed out by Denis, I see the following:</p><p>&#8211; ptr or _ptr?<br
+/> &#8211; derived should derive from base<br
+/> &#8211; Poly seems to need a &#8220;void f()&#8221; method that calls ptr-&gt;f()<br
+/> &#8211; vonst should be const<br
+/> &#8211;  &#8220;hello world!&#8221;s. What about the ending &#8220;s&#8221;?</p><p>This is what I ended up with:<br
+/> <a
+href="http://goo.gl/ps7ky6" rel="nofollow">http://goo.gl/ps7ky6</a> &#8211; to test in an online compiler<br
+/> <a
+href="http://pastebin.com/jDcgqCqi" rel="nofollow">http://pastebin.com/jDcgqCqi</a> &#8211; to see it in pastebin</p><p>Please don&#8217;t take this as a negative comment but as a constructive one, which is what it intends to so that the following articles are even better. Keep up the good work!</p> ]]></content:encoded> </item> <item><title>By: Denis Barakhtanov</title><link>http://blog.biicode.com/about-non-intrusive-polymorphism/#comment-256</link> <dc:creator><![CDATA[Denis Barakhtanov]]></dc:creator> <pubDate>Thu, 21 May 2015 16:26:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2266#comment-256</guid> <description><![CDATA[Nice Idea. But what if we have a large class hierarchy, for instance 15 classes and each has three polymorphic functions ? Seems then we should have 45 free functions and what if we need to use a class implementation details in these function ?
+What about code structure, will it spread over entire project ? I mean if I have a class A I know that it is in source file A.h / A.cpp, where then should I place implementation of polymorphic function, in place where it going to be used ?
+Are there any other advantages besides simplifying the control of object&#039;s life cycle ? Maybe much easier to keep in vector shard_ptr instead of raw pointer ?
+There are some typos in article, like using &quot;overrides&quot; instead of &quot;override&quot; keyword, &quot;std::vector objects;&quot; - won&#039;t compile because it&#039;s abstract class (should be std::vector) and in the penultimate code sample argument of function f should be &quot;const std::string &amp;str&quot;.]]></description> <content:encoded><![CDATA[<p>Nice Idea. But what if we have a large class hierarchy, for instance 15 classes and each has three polymorphic functions ? Seems then we should have 45 free functions and what if we need to use a class implementation details in these function ?</p><p>What about code structure, will it spread over entire project ? I mean if I have a class A I know that it is in source file A.h / A.cpp, where then should I place implementation of polymorphic function, in place where it going to be used ?</p><p>Are there any other advantages besides simplifying the control of object&#8217;s life cycle ? Maybe much easier to keep in vector shard_ptr instead of raw pointer ?</p><p>There are some typos in article, like using &#8220;overrides&#8221; instead of &#8220;override&#8221; keyword, &#8220;std::vector objects;&#8221; &#8211; won&#8217;t compile because it&#8217;s abstract class (should be std::vector) and in the penultimate code sample argument of function f should be &#8220;const std::string &amp;str&#8221;.</p> ]]></content:encoded> </item> </channel> </rss>

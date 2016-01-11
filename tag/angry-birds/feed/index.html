@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Angry Birds</title> <atom:link href="http://blog.biicode.com/tag/angry-birds/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to upload to biicode. Example 2: Box2D by Erin Catto</title><link>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/</link> <comments>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/#comments</comments> <pubDate>Wed, 08 Oct 2014 08:25:42 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[Angry Birds]]></category> <category><![CDATA[Box2D]]></category> <category><![CDATA[Erin Catto]]></category> <category><![CDATA[Flappy Bii]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1779</guid> <description><![CDATA[<p>Once you upload to biicode a library, everyone can reuse it!  That&#8217;s why we explained how to upload to biicode any library just following a few steps, but that example didn&#8217;t cover the possibility of a library depending on other libraries, which is quite usual nowadays. So today, we&#8217;re going to see with an example how to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">How to upload to biicode. Example 2: Box2D by Erin Catto</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Once you upload to biicod<img
+class="alignleft wp-image-1789 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/tumbler_example-293x300.png" alt="This example about Box2D shows you how easy to upload to biicode is" width="293" height="300" />e a library, everyone can reuse it!  That&#8217;s why we explained <a
+title="Upload to biicode Json11" href="http://blog.biicode.com/upload-to-biicode-i/">how to upload to biicode</a> any library just following a few steps, but that example didn&#8217;t cover the possibility of a library depending on other libraries, which is quite usual nowadays. So today, we&#8217;re going to see with an example how to proceed when your library depends on others. For this matter, we&#8217;re using <a
+title="box2d" href="http://box2d.org/" target="_blank">BOX2D</a>, an open source C++ engine to simulate rigid bodies in 2D, it is also used in different video-games like AngryBirds motor engine.</p><p>&nbsp;</p><p><span
+id="more-1779"></span></p><h3>UPDATE: Box2D v 2.3.1 has been uploaded to biicode on <a
+title="Box2d biicode erincatto" href="http://www.biicode.com/erincatto/erincatto/box2d/master/10" target="_blank">erincatto/box2d: 10 </a>version.</h3><div><span
+style="color: #000000">It&#8217;s been generated from Box2D library (see Readme.txt, <a
+href="http://www.box2d.org/" target="_blank">http://www.box2d.org</a>), source code hosted in: <a
+href="https://github.com/drodri/box2d" target="_blank">https://github.com/drodri/box2d</a> and that, was used to create a biicode ready version in: <a
+href="http://www.biicode.com/erincatto/box2d" target="_blank">http://www.biicode.com/erincatto/box2d</a><br
+/> </span></div><div><p><span
+style="color: #000000">Instead of using the glfw library inside, it uses the <a
+title="glfw library" href="http://www.biicode.com/diego/glfw" target="_blank">glfw library available in biicode</a>.</span></p><p><span
+style="color: #000000">The adaptation required can be seen <a
+title="github diff box2d" href="https://github.com/drodri/box2d/commit/7e0259c5db2f01cd6e93a5c2e1969f702169aacb" target="_blank">here, in the diff on github</a>. </span></p><p><span
+style="color: #000000">It requires:</span></p><ul><li><span
+style="color: #000000">Simple modification of root CMakeLists.txt. Note that with this simplification no other CMakeLists.txt in the project is required, biicode does not use them.</span></li><li><span
+style="color: #000000">Changing a couple of #includes. This will also be protected with #ifdef(BIICODE) guards in order to guarantee proper compilation of the fork without biicode too.</span></li><li><span
+style="color: #000000">The DroidSans.ttf is handled as biicode dependency, so it is always retrieved and copied to &#8220;bin&#8221; folder to guarantee proper functioning. This will also be protected with #ifdef guards.</span></li><li><span
+style="color: #000000">Adding glfw dependency in requirements.bii, filtering out glfw in ignore.bii, filtering out stb_truetype.h as having a main in mains.bii, and adding the root folder in paths.bii (so biicode finds #includes starting with &#8220;Box2D&#8221;)</span></li></ul><p><span
+style="color: #000000">ENJOY!</span></p></div><p>&nbsp;</p><p>PREVIOUS VERSION:<br
+/> As you can guess, once we&#8217;re done everybody will be able to use this library just by typing:</p><pre class="crayon-plain-tag">#include "erincatto/box2d/Box2D/Box2D.h"</pre><p>&nbsp;</p><h2>The Initial Steps to upload to biicode: one, two, three, four!</h2><p>These don&#8217;t defer from the ones used on the previous example by Laso last week.</p><h3>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h3><h3>2. Fork original repository (OPTIONAL)</h3><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to the <a
+title="davidsiaw/box2d" href="https://github.com/davidsiaw/box2d" target="_blank">original repository</a> and click on fork:</p><p>&nbsp;</p><p><img
+class="aligncenter size-full wp-image-1780" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/Fork.png" alt="image showing where to fork a github repository" width="953" height="104" /></p><h3>3. Init a new biicode project and create a new block</h3><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init bx
+$ cd bx
+$ bii new amalulla/box2d</pre><p>If you already are a biicode user you can replace &#8220;amalulla&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/amalulla/box2d</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\amalulla\box2d
+$ git clone https://github.com/MariadeAnton/box2d.git .</pre><p></p><h3>4. Find your external dependencies</h3><p>Inside Box2D library it&#8217;s included a copy of freeglut and other of glui, but we don&#8217;t need them, because <a
+title="Freeglut Biicode" href="http://www.biicode.com/sbaker/freeglut" target="_blank">freeglut has been already uploaded to biicode</a>.</p><p>So we&#8217;re going to:</p><ol><li> ignore the freeglut and glui copies inside the original box2d library</li><li> reuse from the ones uploaded in biicode.</li></ol><p>4.1 Create a <em>ignore.bii</em> file into <em>blocks/username/box2d/ignore.bii </em>and write into it: freeglut/* and glui/* , so biicode ignores the whole of both folders.</p><p><img
+class="aligncenter wp-image-1804 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/ignore.png" alt="ignores freeglut and glui" width="577" height="451" /></p><p>&nbsp;</p><h4>4.1.1. Add the includes to your base directory</h4><p>First of all, check the ones needed by executing <code>bii deps</code>, you&#8217;ll see a long list about the system, resolved and unresolved libraries.</p><pre class="crayon-plain-tag">$ bii deps</pre><p><div
+id="attachment_1800" style="width: 260px" class="wp-caption aligncenter"><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps1.png"><img
+class="wp-image-1800" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps1.png" alt="biideps1 -unresolved" width="250" height="449" /></a><p
+class="wp-caption-text">Click to enlarge image!</p></div></p><p>It seems it cannot find, among others, Box2D internal includes, it has tons of files whose route looks like this: <em>Box2D/Collision/Shapes/b2Shape.h</em> or <em>Box2D/Dynamics/Joints/b2MouseJoint.h</em>,  so we have to specify  the project to include the library&#8217;s base directory.</p><p>Create a paths.bii file and just write &#8221; / &#8221; into it, this way biicode knows it has to include the library&#8217;s root directory to search the files needed into it:</p><p>&nbsp;</p><p><img
+class="aligncenter size-full wp-image-1787" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/pathsbii_update1.png" alt="pathsbii_update" width="562" height="528" /></p><p>&nbsp;</p><p>Save and check your dependencies again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-medium wp-image-1803" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps2-273x300.png" alt="biideps2" width="273" height="300" /></p><p>This looks way better now, let&#8217;s see what it isn&#8217;t finding two of them are included on the build folder for xcode iOS, we&#8217;re going to move towards the other dependencies, there&#8217;s one to Freeglut and Glut, so we&#8217;re going to check how to solve them.</p><h4>4.2. #include External Libraries</h4><p>Once you know the libraries needed, look for them in biicode:</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-1820 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/search_freeglut2-1024x222.png" alt="biicode is a free C/C++ dependency manager, explore and upload to biicode" width="630" height="136" /></p><ul><li> <strong>freeglut.h <span
+style="font-weight: 300;color: #292f33">→  freeglut</span></strong>  <span
+style="font-weight: 300;color: #292f33">→  http://www.biicode.com/glui/glutwrapper</span></li><li><strong>glui.h <span
+style="font-weight: 300;color: #292f33">→  glui</span></strong><span
+style="font-weight: 300;color: #292f33">→ http://www.biicode.com/glui/glui</span></li></ul><h4> How do we know the required include?</h4><p>Just get into the URL of the required file, like this:</p><h3> <img
+class="aligncenter wp-image-1821 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/freeglut_include_sbaker-1024x463.png" alt="Find freeglut library in the explore section of biicode" width="630" height="284" /></h3><p>&nbsp;</p><p>Search in the old #include routes and substitute them for the new ones (I use sublime text editor to achieve this), as you can see, the new includes match exactly the new route where I found them:</p><ul><li><b>freeglut.h </b><span
+style="font-weight: bold;color: #292f33"><span
+style="font-weight: bold;color: #292f33"><span
+style="font-weight: 300">→ </span></span></span><code>#include “freeglut/freeglut.h”</code>  →  <code>#include “sbaker/freeglut/freeglut/freeglut/include/GL/freeglut.h”</code></li></ul><ul><li><strong>glui.h </strong> → <code> #include “glui/glui.h”</code>  →  <code>#include “glui/glui/GL/glui.h”</code></li></ul><p>Ok, we&#8217;ve updated exactly four #include routes, so lets execute<code> bii find</code> command to retrieve the dependencies:#include &lt;glui/glutwrapper/glut.h&gt;</p><pre class="crayon-plain-tag">$ bii find # to retrieve the dependencies</pre><p>And you should see on the terminal a message like this:</p><p><img
+class="aligncenter wp-image-1823 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/find-dependencies-freeglut.png" alt="find dependencies-freeglut" width="456" height="69" /></p><p>&nbsp;</p><h3>5. Edit your CMakeLists.txt</h3><p>Now a small tip on how to have a CMakeLists.txt working as it used to and also with biicode. Just write IF (BIICODE) usual biicode instructions/ ELSE() the ones box2d had before: so update the CMakeLists.txt you had before with this:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Include base block dir
+  ADD_BIICODE_TARGETS()
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+  IF (UNIX)
+     IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Testbed")
+  add_definitions( -D__unix__ -DHAVE_FCNTL_H -DHAVE_GETTIMEOFDAY )
+        TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC pthread X11)
+        find_package(OpenGL REQUIRED)
+     ENDIF()
+  ENDIF()
+ELSE()
+  # Previous CMakeLists.txt goes here
+ENDIF()</pre><p>This CMake is the usual one with biicode and it includes this line <code>TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})</code> to take into account the root  directory, it&#8217;s exactly the same thing we specified on our <em>paths.bii</em> file, we add that current source directory so Cmake is able to compile the project. Usually, each time you add something to your paths.bii file, you should add it too to your CMakeLists.txt .</p><p>Also a few lines have been written to define how to compile OpenGL with Unix OS.</p><p>&nbsp;</p><h3>6. Now build:</h3><p></p><pre class="crayon-plain-tag">$ bii cpp:build</pre><p>It builds a couple examples: username_box2d_HelloWorld_HelloWorld and username/box2d_Testbed_Framework_Main</p><p>Execute the examples! You&#8217;re ready to go!</p><p>If you execute the Testbed_Framework_Main you&#8217;ll see an image like this one:</p><p><img
+class="aligncenter wp-image-1788 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/box2d_example.png" alt="An example of Box2D" width="657" height="517" /></p><p>Don&#8217;t forget to publish your library once you&#8217;re done! That way everybody can reuse easily from your library!</p><pre class="crayon-plain-tag">$ bii publish</pre><p>Want to check if the library we&#8217;ve just uploaded is truly reusable? Try making your own example just like the one our interns made: <a
+title="Flappy bii game biicode" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii</a></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">How to upload to biicode. Example 2: Box2D by Erin Catto</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Flappy Bii game</title><link>http://blog.biicode.com/flappy-bii-game/</link> <comments>http://blog.biicode.com/flappy-bii-game/#comments</comments> <pubDate>Thu, 28 Aug 2014 08:51:43 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[Angry Birds]]></category> <category><![CDATA[Box2D]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Flappy Bii]]></category> <category><![CDATA[Flappy Bird]]></category> <category><![CDATA[GLUI]]></category> <category><![CDATA[GLUT]]></category> <category><![CDATA[Learn to code]]></category> <category><![CDATA[Learn to develop videogames]]></category> <category><![CDATA[Nacho Lasheras]]></category> <category><![CDATA[Orcs and Fireballs]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1321</guid> <description><![CDATA[<p>As Nacho Lasheras reminds us when he encourages anyone to start developing games, take your time! Go step by step. Biicode offers a clear example of how easily you can develop a simple indie game using Box2D and GLUT. Start playing with Flappy Bii!!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii game</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As <a
+href="https://twitter.com/fanatiko">Nacho Lasheras</a> points out in his blog <a
+href="http://orcsandfireballs.com/post/74979339105/empezar-a-programar-juegos">Orcs and Fireballs</a></p><blockquote><p>Once you’ve grasped the basics of coding (variables, execution flow, conditions, loops, functions, etc.) you can start learning how to develop “easy” games. It’s important to go step by step. Do not try to rush and start programming in C++, OpenGL and Android at the same time because it can be overwhelming.</p></blockquote><p><img
+class="alignright size-medium wp-image-1368" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/flappy_bii_biicode.png" alt="Falppy Bii game developed with Box2D and GLUT" width="1" height="1" /></p><p><img
+class="aligncenter wp-image-1373" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/flappy_bii_biicode_JPG.jpg" alt="Flappy Bii game developed using Box2D and GLUT." width="630" height="630" /></p><p><span
+id="more-1321"></span></p><p>Despite agreeing with the bottomline we do encourage gamers to leave their fears behind and fiddle with C++. Biicode makes things so much easier that developing the simplest games is at almost anyone’s reach. To become an excellent programer like Nacho though a lot of hard work and practice is required. And that’s precisely what our interns David Virseda and Santiago Hurtado did. Based on the Flappy Bird idea they developed using biicode the Flappy Bii game. Developing Flappy Bii is simple, you just have to follow these steps.</p><h2>Make your own Flappy Bii game using Box2D and GLUI libraries.</h2><p>Box2D is a library with biicode. Box2D is an open source C++ engine to simulate rigid bodies in 2D, it is also used in different video-games AngryBirds motor engine.</p><div
+id="attachment_1344" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1344" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/boxbirds-500x248.png" alt="Box2D was used to develop Flappy Bii game and you can find it in biicode" width="400" height="198" /><p
+class="wp-caption-text">Credit: http://blog.blprnt.com/</p></div><p>GLUT (OpenGL UtilityToolkit) is an open source library that we use in our game to develop graphics, windows management and mouse control, and to draw all the graphic elements of the game. To use BOX2D and GLUT, you only have to include these in your code:</p><pre class="crayon-plain-tag">#include "glui/glutwrapper/glut.h"
+#include "erincatto/box2d/box2d/box2d.h"</pre><p>Find your dependency to these libraries with ~$ bii find, and the files box2d.h and glui.h will be downloaded along with the dependencies needed into the deps folder at your project. Follow these steps to play Flappy Bii game: Create a new project:</p><pre class="crayon-plain-tag">~$ bii init flappy_bii</pre><p>Open the code block that contains the game functionality on Biicode:</p><pre class="crayon-plain-tag">~/$ cd flappy_bii
+~/flappy_bii$ bii open xunty/flappy_bii</pre><p>Finally, compile and execute your program and you’re ready to play! Compile:</p><pre class="crayon-plain-tag">~/flappy_bii$ bii cpp:build</pre><p>Execute: For Windows, double click on the .exe created.</p><p>For Linux and MacOS:</p><pre class="crayon-plain-tag">~/flappy_bii$ .bin/xunty_flappy_bii_main</pre><p>To play Flappy Bii game, all you have to do is clicking the right mouse button in the game’s window to make the bii fly and pass between the gaps of the columns.</p><div
+align="center"><iframe
+width="552" height="167" src="//itch.io/embed/10925?dark=true&amp;linkback=true" frameborder="0"></iframe></div><p>Enjoy!</p><p>P.S.:</p><p>→ If you find ANY kind of trouble please take a look at the <a
+href="http://docs.biicode.com/c++/gettingstarted.html#installing-biicode-and-c-c-tools">Docs</a> and/or the <a
+href="https://forum.biicode.com">Forum</a> to find help and assistance.</p><p>→ If you are looking for motivation and a formed opinion of the gamedev industry keep going back to <a
+href="http://orcsandfireballs.com/">Orcs and Fireballs</a>.</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii game</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/flappy-bii-game/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

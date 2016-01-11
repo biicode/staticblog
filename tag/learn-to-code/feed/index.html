@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Learn to code</title> <atom:link href="http://blog.biicode.com/tag/learn-to-code/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Template Metaprogramming with Modern C++: Introduction</title><link>http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/</link> <comments>http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/#comments</comments> <pubDate>Wed, 10 Sep 2014 10:00:27 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Learn to code]]></category> <category><![CDATA[meta-programming]]></category> <category><![CDATA[modern c++]]></category> <category><![CDATA[template]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1531</guid> <description><![CDATA[<p>Template Metaprogramming with Modern C++: Introduction Any sufficiently complex C++ code is indistinguishable from trolling Arthur C. Clarke Preface Template metaprogramming is one of the things that makes C++ that complex, poor known, and sometimes horrible language. However, its power and expressiveness are some of the best features of C++. Extensible and fully generic C++ libraries aren&#8217;t possible without [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/">Template Metaprogramming with Modern C++: Introduction</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<article
+class="markdown-body entry-content"><h1><a
+class="anchor" href="#template-metaprogramming-with-modern-c-introduction" name="user-content-template-metaprogramming-with-modern-c-introduction"></a>Template Metaprogramming with Modern C++: Introduction</h1><blockquote><p><em>Any sufficiently complex C++ code is indistinguishable from trolling</em></p><p>Arthur C. Clarke</p></blockquote><h2><a
+class="anchor" href="#preface" name="user-content-preface"></a>Preface</h2><p>Template metaprogramming is one of the things that makes C++ that complex, poor known, and sometimes horrible language. However, its power and expressiveness are some of the best features of C++.</p><p>Extensible and fully generic C++ libraries aren&#8217;t possible without template metapogramming. Even the Standard Library implementations hide many template metaprogramming tricks to make standard containers and algorithms that generic, high level, and efficient tools we use everyday.</p><p>The fact that tmp is a powerful tool can be seen in the evolution of the language, which now has features designed to improve metaprogramming, see C++11 <code>&lt;type_traits&gt;</code>, C++11 variadic templates, C++14 variable templates, C++14<code>std::integer_sequence</code>, etc.</p><div
+id="attachment_1648" style="width: 235px" class="wp-caption aligncenter"><img
+class="wp-image-1648 size-full" title="A rendering example of the metatrace compile-time raytracer" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/unnamed-1.jpg" alt="template metaprogramming" width="225" height="224" /><p
+class="wp-caption-text">Credit: https://gitorious.org/metatrace</p></div><p><span
+id="more-1531"></span></p><p>But C++ template metaprogramming power comes at a high cost: Its really hard to do and understand. The template system was not originally designed to do such things, and that&#8217;s reflected primarily in the cumbersome syntax involved and the cryptic error messages one get when something fails. Those are the reasons why people is usually scared by tmp, and most of us doesn&#8217;t even try to use it.</p><p>These posts try to introduce template metaprogramming to the average C++ programmer, showing how it works, what can do, and finally leading with its problems trying to make it easier than in the old days of C++98, thanks to C++11 and C++14 language improvements.</p><hr
+/><h2><a
+class="anchor" href="#but-what-ismetaprogramming" name="user-content-but-what-ismetaprogramming"></a><br
+/> But, what is <em>metaprogramming</em>?</h2><p>From Wikipedia:</p><blockquote><p>Metaprogramming is the writing of computer programs that write or manipulate other programs (or themselves) as their data, or that do part of the work at compile time that would otherwise be done at run-time.</p></blockquote><p>So instead of writing code that is compiled and does something at run-time (i.e. represents some actions to be done at run-time), we write code (<em>meta-code?</em>) that generates code. Let me show you a simple example:</p><pre class="crayon-plain-tag">#define MIN(x,y) (((x) &gt; (y)) ? (x) : (y))</pre><p>C parameterized macros could be viewed as metaprogramming functions, <em>metafunctions</em>. That is, a function that takes some parameters and generates C code. If you use that macro:</p><pre class="crayon-plain-tag">int main()
+{
+    int a , b , c = MIN(a,b);
+}</pre><p><em>Please ignore the UB, is just an example.</em></p><p>The C preprocessor parses that macro, interprets its arguments, and returns the code <code>(((a) &gt; (b)) ? (a) : (b))</code>, so the resulting code becomes:</p><pre class="crayon-plain-tag">int main()
+{
+    int a , b , c = (((a) &lt; (b)) ? (a) : (b));
+}</pre><p>Reflection, the ability of some programming languages to inspect type and code information at runtime and modify it, could be another type of metaprogramming.</p><hr
+/><h2><a
+class="anchor" href="#c-template-metaprogramming" name="user-content-c-template-metaprogramming"></a><br
+/> C++ Template Metaprogramming</h2><p>Template metaprogramming, sometimes shorted to <em>tmp</em>, consists in <strong>using the C++ template system to generate C++ types, and C++ code in the process</strong>.</p><p>Consider what a C++ template is: As the name says, <strong>it&#8217;s only a template</strong>. A template function is not a function at all, it is <strong>a template to generate functions</strong>, and the same for class templates.</p><p>That wonderful thing we all love, <code>std::vector</code>, is not a class. Is a template designed to generate a correct vector class for each type. When we <strong><em>instance</em></strong> a template, like <code>std::vector&lt;int&gt;</code>, then the compiler generates the code for a vector of ints, following the template the Standard Library developer provided.</p><p>So if we write a template <code>foo</code> parameterized with a type parameter:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct foo
+{
+    T elem;
+};</pre><p>and then that template is instanced:</p><pre class="crayon-plain-tag">typedef foo&lt;int&gt; fooint;
+typedef foo&lt;char&gt; foochar;</pre><p>and the compiler generates different versions of the <code>foo</code> struct, <strong>one for each different combinations of template parameters</strong>:</p><pre class="crayon-plain-tag">struct foo_int
+{
+    int elem;
+};
+struct foo_char
+{
+    char elem;
+};
+typedef foo_int fooint;
+typedef foo_char foochar;</pre><p><em>Note that the generated classes <code>foo_int</code> and <code>foo_char</code> are not written in your source file at all, like what the C preprocessor does. The template instantiation is managed internally by the compiler. I wrote them in that way to make a clear example.</em></p><div
+id="attachment_1647" style="width: 802px" class="wp-caption aligncenter"><img
+class="wp-image-1647" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/1.png" alt="template metaprogramming tree diagram" width="792" height="326" /><p
+class="wp-caption-text">Credit: http://plc.inf.elte.hu/templight/</p></div><p>As you can see, the C++ template system actually generates code. We, as C++ <em>metaprogrammers</em>, explode this to generate some code automatically.</p><hr
+/><h2><a
+class="anchor" href="#metafunctions" name="user-content-metafunctions"></a><br
+/> Metafunctions</h2><p>In the C preprocessor example, we introduced the concept of <em>metafunction</em>. In general a metafunction is a function working in the specific metaprogramming domain we are. In the case of C preprocessor, we manipulate C sourcecode explicitly, so its metafunctions (macros) take and manipulate C source.</p><p>In C++ template metaprogramming we work with types, so a metafunction is a function working with types. C++ templates could take non-type parameters too, but its hard to be generic using heterogeneous categories of template parameters. Instead, we will work with type parameters only whenever possible.</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+ struct identity
+ {
+     using type = T;
+ };</pre><p>The template <code>identity</code> is a metafunction representing the identity function: Takes a value (Actually a type, since we work with types) and returns itself untouched.</p><p>We can <em>&#8220;call&#8221;</em> that metafunction referencing its member type <code>type</code>:</p><pre class="crayon-plain-tag">using t = typename identity&lt;int&gt;::type; // t is int</pre><p>Of course nested metafunction <em>calls</em> are possible:</p><pre class="crayon-plain-tag">using t = typename identity&lt;typename identity&lt;int&gt;::type&gt;::type; //t is int</pre><p>But that <code>typename ::type</code> syntax doesn&#8217;t scale well. Consider a more complex example:</p><pre class="crayon-plain-tag">using t = typename add&lt;typename add&lt;std::integral_constant&lt;int,1&gt;,std::integral_constant&lt;int,2&gt;&gt;::type,
+                       std::integral_constant&lt;int,-2&gt;
+                      &gt;::type;</pre><p>There are a few possible solutions to this problem:</p><h3><a
+class="anchor" href="#use-aliases-to-the-result-instead-of-the-metafunction-itself" name="user-content-use-aliases-to-the-result-instead-of-the-metafunction-itself"></a>Use aliases to the result instead of the metafunction itself</h3><p>Since C++11 we have <em>template aliases</em>, a kind of parametrized typedef. We can use them to write <em>user-side metafunctions</em>:</p><pre class="crayon-plain-tag">template&lt;typename LHS , typename RHS&gt;
+ using add = typename impl::add&lt;LHS,RHS&gt;::type;</pre><p>Where <code>add</code> is the <em>metafunction</em> for the user, and <code>impl::add</code> is the class template that actually implements the metafunction. This allows us to write nested expressions in a clear way:</p><pre class="crayon-plain-tag">using t = add&lt;std::integral_constant&lt;int,1&gt;,add&lt;std::integral_constant&lt;int,-2&gt;,std::integral_constant&lt;int,-4&gt;&gt;;</pre><p></p><h3><a
+class="anchor" href="#build-an-expression-evaluation-system" name="user-content-build-an-expression-evaluation-system"></a>Build an expression evaluation system</h3><p>The above approach hides the machinery to the user. But hidding means that those user side metafunctions are not metafunctions but aliases to their result. That means we cannot use user-side aliases in contexts expecting metafunctions: <strong>User-side metafunctions are not first class functions</strong>.</p><p>Instead, we could build an expression evaluation system which takes an expresssion (A template with its parameters) and evaluate it saying <em>&#8220;Is this a metafunction? Ok, so I should get its result via <code>typename ::type</code>&#8220;</em>. This approach has the advantage that one could customize the evaluation and design it for many complex cases. The simplest one, before evaluating a metafunction evaluate its parameters.</p><p>This is what I did for <a
+href="https://github.com/Manu343726/Turbo">Turbo</a>, and Boost.MPL.Lambda takes a similar approach:</p><pre class="crayon-plain-tag">//https://www.biicode.com/manu343726/manu343726/turbo_core/master
+#include "manu343726/turbo_core/turbo_core.hpp"
+using tml::placeholders::_1;
+using tml::placeholders::_2;
+//t is tml::Int&lt;3&gt; (std::integral_constant&lt;int,3&gt;)
+using t = tml::eval&lt;tml::lambda&lt;_1,_2 , tml::add&lt;_1,_2&gt;&gt; , tml::Int&lt;1&gt;,tml::Int&lt;2&gt;&gt;;</pre><p></p><h3><a
+class="anchor" href="#c14-variable-templates-stop-doing-ugly-template-metaprogramming-and-use-a-natural-syntax" name="user-content-c14-variable-templates-stop-doing-ugly-template-metaprogramming-and-use-a-natural-syntax"></a>C++14 variable templates: Stop doing ugly template metaprogramming and use a natural syntax</h3><p>This last approach is available since C++14 thanks to <em>variable templates</em>. A variable template is a constant parametrized with a template. The canonical example is a <code>pi</code> constant aware of the precision of the type used:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+constexpr T pi = 3.141592654;
+float radious = 1.0f;
+float circle  = pi&lt;float&gt;*pi&lt;float&gt;*radious;</pre><p>Variable templates are <strong>values parametrized with templates</strong>, instead of types. So we can use <code>constexpr</code> functions instead of template metafunctions to operate even with types (Imagine a variable template acting as a box for a type).</p><p>See <a
+href="https://github.com/ldionne/hana">Boost.Hanna</a> for an example of this approach.</p><hr
+/><h2><a
+class="anchor" href="#a-haskell-like-language-inside-c" name="user-content-a-haskell-like-language-inside-c"></a><br
+/> A Haskell-like language inside C++</h2><p><img
+class="aligncenter wp-image-1649 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/unnamed.jpg" alt="template metaprogramming meme" width="568" height="335" /></p><p>Since we work with the C++ type system, using types as values for our computations, tmp works like a functional programming language; because metafunctions have no side effects: <strong>We can only create types, not to modify existing ones</strong>.<br
+/> And like in a functional language, one of the pillars of tmp is <strong>recursion</strong>. In this case <strong><em>recursive template instantiations </em></strong>(Remember that name).</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct throw_stars
+{
+    using type = T;
+};
+template&lt;typename T&gt;
+struct throw_stars&lt;T*&gt;
+{
+    using type = typename throw_stars&lt;T&gt;::type;
+};</pre><p>I think the classic factorial/Fibonacci metafunctions examples are so boring. Here is something more interesting: The template <code>throw_stars</code> is a metafunction that takes a type and throws away all the <em>&#8220;stars&#8221;</em>.</p><pre class="crayon-plain-tag">using t = typename throw_stars&lt;int********&gt;::type; //t is int</pre><p>The template specialization acts as the recursive case, and the main template as the base case. Note how C++ template specialization behaves like pattern matching.</p><p>Another example could be traversing of C++11 variadic packs:</p><pre class="crayon-plain-tag">template&lt;typename HEAD , typename... TAIL&gt;
+struct last
+{
+    using type = typename last&lt;TAIL...&gt;::type;
+};
+template&lt;typename T&gt;
+struct last&lt;T&gt;
+{
+    using type = T;
+};
+using t = typename last&lt;int,char,bool,double&gt;::type; //t is double</pre><p>which is a great example of a <code>head:tail</code> approach for list traversing common in functional languages.</p><hr
+/><h2><a
+class="anchor" href="#summary" name="user-content-summary"></a><br
+/> Summary</h2><p>In this first approach to C++ template metaprogramming we have seen that:</p><ul
+class="task-list"><li><strong><em>Metaprogramming</em></strong> is the process of writing code to generate code, that is, automatize code generation.</li><li><strong>C++ template metaprogramming uses the template system to generate types, and code in the process</strong>: We generate types using templates, and we actually use those types to do computations or to generate the desired code.</li><li><strong>The basic unit of metaprogramming is the</strong> <strong><em>metafunction</em></strong>, as in common programming the basic unit is the function. Metafunctions manipulate entities of their specific metaprogramming domain. In C++ template metaprogramming, those entities are types, and metafunctions are represented through templates.</li><li><strong>Template metaprogramming is like a functional language embedded into C++ itself</strong>. That &#8220;<em>language</em>&#8221; has no side effects (We cannot modify an existing type, only create new ones), so we use the same patterns as in a functional programming language such as Haskell or F#.</li></ul><p>Now we have a good overview of what C++ template metaprogramming is, but we need some C++ knowledge before getting into it.<br
+/> The next time we will learn C++ templates in depth: Template parameters, template specialization, SFINAE, etc; to make sure we all have and understand the necessary tools to do proper metaprogramming in Modern C++.</p><p><em>Written by <a
+href="https://twitter.com/Manu343726">Manu Sánchez</a>.</em></p> </article><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/">Template Metaprogramming with Modern C++: Introduction</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>Flappy Bii game</title><link>http://blog.biicode.com/flappy-bii-game/</link> <comments>http://blog.biicode.com/flappy-bii-game/#comments</comments> <pubDate>Thu, 28 Aug 2014 08:51:43 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[Angry Birds]]></category> <category><![CDATA[Box2D]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Flappy Bii]]></category> <category><![CDATA[Flappy Bird]]></category> <category><![CDATA[GLUI]]></category> <category><![CDATA[GLUT]]></category> <category><![CDATA[Learn to code]]></category> <category><![CDATA[Learn to develop videogames]]></category> <category><![CDATA[Nacho Lasheras]]></category> <category><![CDATA[Orcs and Fireballs]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1321</guid> <description><![CDATA[<p>As Nacho Lasheras reminds us when he encourages anyone to start developing games, take your time! Go step by step. Biicode offers a clear example of how easily you can develop a simple indie game using Box2D and GLUT. Start playing with Flappy Bii!!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii game</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As <a
+href="https://twitter.com/fanatiko">Nacho Lasheras</a> points out in his blog <a
+href="http://orcsandfireballs.com/post/74979339105/empezar-a-programar-juegos">Orcs and Fireballs</a></p><blockquote><p>Once you’ve grasped the basics of coding (variables, execution flow, conditions, loops, functions, etc.) you can start learning how to develop “easy” games. It’s important to go step by step. Do not try to rush and start programming in C++, OpenGL and Android at the same time because it can be overwhelming.</p></blockquote><p><img
+class="alignright size-medium wp-image-1368" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/flappy_bii_biicode.png" alt="Falppy Bii game developed with Box2D and GLUT" width="1" height="1" /></p><p><img
+class="aligncenter wp-image-1373" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/flappy_bii_biicode_JPG.jpg" alt="Flappy Bii game developed using Box2D and GLUT." width="630" height="630" /></p><p><span
+id="more-1321"></span></p><p>Despite agreeing with the bottomline we do encourage gamers to leave their fears behind and fiddle with C++. Biicode makes things so much easier that developing the simplest games is at almost anyone’s reach. To become an excellent programer like Nacho though a lot of hard work and practice is required. And that’s precisely what our interns David Virseda and Santiago Hurtado did. Based on the Flappy Bird idea they developed using biicode the Flappy Bii game. Developing Flappy Bii is simple, you just have to follow these steps.</p><h2>Make your own Flappy Bii game using Box2D and GLUI libraries.</h2><p>Box2D is a library with biicode. Box2D is an open source C++ engine to simulate rigid bodies in 2D, it is also used in different video-games AngryBirds motor engine.</p><div
+id="attachment_1344" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1344" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/boxbirds-500x248.png" alt="Box2D was used to develop Flappy Bii game and you can find it in biicode" width="400" height="198" /><p
+class="wp-caption-text">Credit: http://blog.blprnt.com/</p></div><p>GLUT (OpenGL UtilityToolkit) is an open source library that we use in our game to develop graphics, windows management and mouse control, and to draw all the graphic elements of the game. To use BOX2D and GLUT, you only have to include these in your code:</p><pre class="crayon-plain-tag">#include "glui/glutwrapper/glut.h"
+#include "erincatto/box2d/box2d/box2d.h"</pre><p>Find your dependency to these libraries with ~$ bii find, and the files box2d.h and glui.h will be downloaded along with the dependencies needed into the deps folder at your project. Follow these steps to play Flappy Bii game: Create a new project:</p><pre class="crayon-plain-tag">~$ bii init flappy_bii</pre><p>Open the code block that contains the game functionality on Biicode:</p><pre class="crayon-plain-tag">~/$ cd flappy_bii
+~/flappy_bii$ bii open xunty/flappy_bii</pre><p>Finally, compile and execute your program and you’re ready to play! Compile:</p><pre class="crayon-plain-tag">~/flappy_bii$ bii cpp:build</pre><p>Execute: For Windows, double click on the .exe created.</p><p>For Linux and MacOS:</p><pre class="crayon-plain-tag">~/flappy_bii$ .bin/xunty_flappy_bii_main</pre><p>To play Flappy Bii game, all you have to do is clicking the right mouse button in the game’s window to make the bii fly and pass between the gaps of the columns.</p><div
+align="center"><iframe
+width="552" height="167" src="//itch.io/embed/10925?dark=true&amp;linkback=true" frameborder="0"></iframe></div><p>Enjoy!</p><p>P.S.:</p><p>→ If you find ANY kind of trouble please take a look at the <a
+href="http://docs.biicode.com/c++/gettingstarted.html#installing-biicode-and-c-c-tools">Docs</a> and/or the <a
+href="https://forum.biicode.com">Forum</a> to find help and assistance.</p><p>→ If you are looking for motivation and a formed opinion of the gamedev industry keep going back to <a
+href="http://orcsandfireballs.com/">Orcs and Fireballs</a>.</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii game</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/flappy-bii-game/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

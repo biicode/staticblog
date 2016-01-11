@@ -1,0 +1,1695 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/automatically-build-publish-via-travis-ci-github/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:45:33 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>Automatically build and publish via Travis CI and Github</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="Travis CI and GitHub allow you to do continuous integration of any project and to create a remote repository to develop collaboratively."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="Automatically build and publish via Travis CI and Github" /><meta
+property="og:description" content="Travis CI and GitHub allow you to do continuous integration of any project and to create a remote repository to develop collaboratively." /><meta
+property="og:url" content="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="Github" /><meta
+property="article:tag" content="Integration" /><meta
+property="article:tag" content="Testing" /><meta
+property="article:tag" content="Travis.CI" /><meta
+property="article:section" content="Integrations" /><meta
+property="article:published_time" content="2014-11-06T11:22:33+00:00" /><meta
+property="article:modified_time" content="2015-04-23T12:18:06+00:00" /><meta
+property="og:updated_time" content="2015-04-23T12:18:06+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/logotravis.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="Automatically build and publish via Travis CI and Github"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/logotravis.jpg"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Automatically build and publish via Travis CI and Github Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index4439.html?p=1877' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-1877 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/integrations/index.html" rel="v:url" property="v:title">Integrations</a> » <strong
+class="breadcrumb_last">Automatically build and publish via Travis CI and Github</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-1877" class="post-1877 post type-post status-publish format-standard has-post-thumbnail hentry category-integrations category-try-this-out tag-github tag-integration tag-testing tag-travis-ci"> <header
+class="entry-header"><h1 class="entry-title">Automatically build and publish via Travis CI and Github</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="11:22" rel="bookmark"><time
+class="entry-date" datetime="2014-11-06T11:22:33+00:00">November 6, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/maria/index.html" title="View all posts by maria" rel="author">maria</a></span></span></div> </header><div
+class="entry-content"><div
+class="article-wrap"><p>This is a simple guide about how to automatically build and publish via Travis CI and Github.</p><h2><strong>biicode, Travis CI and Github: a C/C++ dev environment</strong></h2><p>GitHub allows us to create a remote repository to develop collaboratively.<br
+/> Travis CI provides continuous integration inside our projects.</p><p><img
+class="aligncenter wp-image-1884 size-full" src="../wp-content/uploads/sites/2/2014/11/logotravis.png" alt="logotravis" width="300" height="295" /></p><p><span
+id="more-1877"></span></p><h3><strong>Import from GitHub!</strong></h3><p>First of all make sure you&#8217;ve installed <strong>biicod</strong>e and <strong>Git</strong>.<br
+/> Once both you got both of them, you can clone the <a
+title="github" href="https://github.com/" target="_blank">github</a> repository you want to make a new biicode block.</p><p><img
+class="aligncenter wp-image-2104 size-large" src="../wp-content/uploads/sites/2/2014/11/clone-1024x683.png" alt="clone" width="630" height="420" /></p><p>Create the new BIICODE project (as usual) and create q working local copy in your biicode block:</p><div
+id="crayon-56886c7a478c8250317779" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii init myproject
+$ cd myproject/blocks
+$ git clone https://github.com/lasote/docker_client.git
+$ cd docker_client</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a478c8250317779-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478c8250317779-2">2</div><div
+class="crayon-num" data-line="crayon-56886c7a478c8250317779-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478c8250317779-4">4</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a478c8250317779-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">init </span><span
+class="crayon-i">myproject</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478c8250317779-2"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cd </span><span
+class="crayon-v">myproject</span><span
+class="crayon-o">/</span><span
+class="crayon-i">blocks</span></div><div
+class="crayon-line" id="crayon-56886c7a478c8250317779-3"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-r">clone</span><span
+class="crayon-h"> </span><span
+class="crayon-v">https</span><span
+class="crayon-o">:</span><span
+class="crayon-c">//github.com/lasote/docker_client.git</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478c8250317779-4"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cd </span><span
+class="crayon-v">docker_client</span></div></div></td></tr></table></div></div><p>Now we&#8217;ve got everything we need to start working locally.</p><h3><strong>Automatically build your projects via Travis CI</strong></h3><p>Travis CI provides continuous integration inside your project, to use it, just create a file named &#8220;.travis.yml&#8221; inside your project folder.</p><p>Write on your &#8220;.travis.yml&#8221; file, the commands to build your project, and if it successes publish it automatically to BIICODE.</p><p>First of all sign up in <a
+title="travis" href="https://travis-ci.org/" target="_blank">Travis CI</a> with your <a
+title="Github" href="https://github.com/" target="_blank">GitHub </a>account and once there, go to your profile, sync your repos and enable Travis CI building:<img
+class="aligncenter size-large wp-image-2027" src="../wp-content/uploads/sites/2/2014/11/travis-ci-1024x461.png" alt="travis-ci" width="630" height="284" /></p><p>To use Travis CI in your project you&#8217;ve got to be using a Linux machine (you can use: Koding, Cloud9IDE or just a virtual machine on your computer). Once in your linux machine check if ruby is installed:</p><div
+id="crayon-56886c7a478db838860317" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ which ruby</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a478db838860317-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a478db838860317-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">which </span><span
+class="crayon-v">ruby</span></div></div></td></tr></table></div></div><p>if you see a path such as <em>/usr/bin/ruby</em>, Ruby is installed.</p><p>If ruby is not installed:</p><div
+id="crayon-56886c7a478e5076619150" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ sudo apt-get install ruby</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a478e5076619150-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a478e5076619150-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">apt</span><span
+class="crayon-o">-</span><span
+class="crayon-e">get </span><span
+class="crayon-e">install </span><span
+class="crayon-v">ruby</span></div></div></td></tr></table></div></div><p>When ruby is installed:</p><div
+id="crayon-56886c7a478ee140533192" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ sudo gem install travis</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a478ee140533192-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a478ee140533192-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-e">gem </span><span
+class="crayon-e">install </span><span
+class="crayon-v">travis</span></div></div></td></tr></table></div></div><p>Please check <a
+href="http://docs.travis-ci.com/user/languages/cpp/">Travis docs</a> or <a
+title="stackoverflow ruby-gems travis" href="http://stackoverflow.com/questions/18354959/building-native-extensions-error-in-installing-ruby-gems" target="_blank">stackoverflow related issues </a>if your having any troubles installing travis gem.</p><p>Now, create your &#8220;.travis.yml&#8221; file like the example below on your block folder, this file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, don&#8217;t forget to adjust the config and <em><strong>&#8220;the env&#8221;</strong></em> it to your needs:</p><p>&#8220;.travis.yml&#8221;</p><div
+id="crayon-56886c7a478f8168891312" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+language: cpp
+compiler:
+- gcc
+before_install:
+- export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
+- if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
+- if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+  fi
+- sudo apt-get update -qq
+- git config --global user.email "$USER_EMAIL"
+- git config --global user.name "$USER_NAME"
+- git config --global push.default simple
+- git checkout $TRAVIS_BRANCH
+install:
+- if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++
+  /usr/bin/g++-4.8 50; fi
+- wget http://www.biicode.com/downloads/latest/ubuntu64
+- mv ubuntu64 bii-ubuntu64.deb
+- sudo dpkg -i bii-ubuntu64.deb &amp;&amp; sudo apt-get -f install
+- rm bii-ubuntu64.deb
+- wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+- tar -xzf cmake-3.0.2-Linux-64.tar.gz
+- sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+- rm -rf cmake-3.0.2-Linux-64
+- rm cmake-3.0.2-Linux-64.tar.gz
+- export TRAVIS_CXX=$CXX
+script:
+- cd /tmp
+- bii init -L
+- shopt -s dotglob &amp;&amp; mv $TRAVIS_BUILD_DIR/* ./
+- if [ "$CXX" == "clang++" ]; then export CXX="clang++" &amp;&amp; bii build; fi
+- if [ "$CXX" == "g++" ];     then export CXX="g++"     &amp;&amp; bii build; fi
+##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################
+- ls ./bin/lasote_docker_client_example_main
+#########################################################################################
+after_success:
+- bii user $USER -p $BII_PASSWORD
+- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
+  || echo "Ignored publish output..."; fi
+- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output...";
+  fi
+# If there are changes, commit them
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" &gt; .git/credentials
+- git add -A .
+- git commit -m "$COMMIT_IGNORE_BUILD"
+- git remote -v
+- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git
+- git push
+env:
+  global:
+  - USER_EMAIL=lasote@gmail.com
+  - USER_NAME="Luis Martinez de Bartolome"
+  - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
+  - BLOCK_NAME=docker_client
+  - USER=lasote
+  # BII_PASSWORD: Biicode USER's password. &gt; travis encrypt BII_PASSWORD=XXXXXX --add
+  - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
+  # GH_TOKEN: Github token &gt; travis encrypt GH_TOKEN=XXXXXX --add
+  - secure: gNKs9E4Fh2agwqaGFTl1uzLvT+PrhykIi57eo9IkAlBuae/jOjAqxGua7NM7Rg+FxjLYh+wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm+wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk=</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-2">2</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-4">4</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-6">6</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-8">8</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-10">10</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-12">12</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-14">14</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-16">16</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-18">18</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-20">20</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-22">22</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-24">24</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-26">26</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-28">28</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-30">30</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-32">32</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-33">33</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-34">34</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-35">35</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-36">36</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-37">37</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-38">38</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-39">39</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-40">40</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-41">41</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-42">42</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-43">43</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-44">44</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-45">45</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-46">46</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-47">47</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-48">48</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-49">49</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-50">50</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-51">51</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-52">52</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-53">53</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-54">54</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-55">55</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-56">56</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-57">57</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-58">58</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-59">59</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a478f8168891312-60">60</div><div
+class="crayon-num" data-line="crayon-56886c7a478f8168891312-61">61</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-1"><span
+class="crayon-v">language</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cpp</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-2"><span
+class="crayon-v">compiler</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-3"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">gcc</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-4"><span
+class="crayon-v">before_install</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-5"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">export </span><span
+class="crayon-v">TRAVIS_COMMIT_MSG</span><span
+class="crayon-o">=</span><span
+class="crayon-s">"$(git log --format=%B --no-merges -n 1)"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-6"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$TRAVIS_COMMIT_MSG"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$COMMIT_IGNORE_BUILD"</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-i">exit</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-7"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$CXX"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"g++"</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">add</span><span
+class="crayon-o">-</span><span
+class="crayon-v">apt</span><span
+class="crayon-o">-</span><span
+class="crayon-v">repository</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">y</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ppa</span><span
+class="crayon-o">:</span><span
+class="crayon-v">ubuntu</span><span
+class="crayon-o">-</span><span
+class="crayon-v">toolchain</span><span
+class="crayon-o">-</span><span
+class="crayon-v">r</span><span
+class="crayon-o">/</span><span
+class="crayon-v">test</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-8"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-9"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">apt</span><span
+class="crayon-o">-</span><span
+class="crayon-e">get </span><span
+class="crayon-v">update</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">qq</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-10"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">config</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-m">global</span><span
+class="crayon-h"> </span><span
+class="crayon-v">user</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">email</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$USER_EMAIL"</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-11"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">config</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-m">global</span><span
+class="crayon-h"> </span><span
+class="crayon-v">user</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">name</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$USER_NAME"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-12"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">config</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-m">global</span><span
+class="crayon-h"> </span><span
+class="crayon-v">push</span><span
+class="crayon-sy">.</span><span
+class="crayon-st">default</span><span
+class="crayon-h"> </span><span
+class="crayon-v">simple</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-13"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-i">checkout</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-e">TRAVIS_BRANCH</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-14"><span
+class="crayon-v">install</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-15"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$CXX"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"g++"</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">apt</span><span
+class="crayon-o">-</span><span
+class="crayon-e">get </span><span
+class="crayon-v">install</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">qq</span><span
+class="crayon-h"> </span><span
+class="crayon-v">g</span><span
+class="crayon-o">++</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.8</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-16"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$CXX"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"g++"</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">update</span><span
+class="crayon-o">-</span><span
+class="crayon-v">alternatives</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">install</span><span
+class="crayon-h"> </span><span
+class="crayon-o">/</span><span
+class="crayon-v">usr</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">g</span><span
+class="crayon-o">++</span><span
+class="crayon-h"> </span><span
+class="crayon-v">g</span><span
+class="crayon-o">++</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-17"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">/</span><span
+class="crayon-v">usr</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">g</span><span
+class="crayon-o">++</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.8</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">50</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-18"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">wget </span><span
+class="crayon-v">http</span><span
+class="crayon-o">:</span><span
+class="crayon-c">//www.biicode.com/downloads/latest/ubuntu64</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-19"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">mv </span><span
+class="crayon-e">ubuntu64 </span><span
+class="crayon-v">bii</span><span
+class="crayon-o">-</span><span
+class="crayon-v">ubuntu64</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">deb</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-20"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">dpkg</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">i</span><span
+class="crayon-h"> </span><span
+class="crayon-v">bii</span><span
+class="crayon-o">-</span><span
+class="crayon-v">ubuntu64</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">deb</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&amp;&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">apt</span><span
+class="crayon-o">-</span><span
+class="crayon-v">get</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">f</span><span
+class="crayon-h"> </span><span
+class="crayon-v">install</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-21"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">rm </span><span
+class="crayon-v">bii</span><span
+class="crayon-o">-</span><span
+class="crayon-v">ubuntu64</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">deb</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-22"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">wget </span><span
+class="crayon-v">https</span><span
+class="crayon-o">:</span><span
+class="crayon-c">//s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-23"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">tar</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-e">xzf </span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">3.0.2</span><span
+class="crayon-o">-</span><span
+class="crayon-v">Linux</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">64.tar.gz</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-24"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">cp</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-e">fR </span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">3.0.2</span><span
+class="crayon-o">-</span><span
+class="crayon-v">Linux</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">64</span><span
+class="crayon-o">/</span><span
+class="crayon-o">*</span><span
+class="crayon-h"> </span><span
+class="crayon-o">/</span><span
+class="crayon-v">usr</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-25"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">rm</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-e">rf </span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">3.0.2</span><span
+class="crayon-o">-</span><span
+class="crayon-v">Linux</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">64</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-26"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">rm </span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">3.0.2</span><span
+class="crayon-o">-</span><span
+class="crayon-v">Linux</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">64.tar.gz</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-27"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">export </span><span
+class="crayon-v">TRAVIS_CXX</span><span
+class="crayon-o">=</span><span
+class="crayon-sy">$</span><span
+class="crayon-e">CXX</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-28"><span
+class="crayon-v">script</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-29"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">cd</span><span
+class="crayon-h"> </span><span
+class="crayon-o">/</span><span
+class="crayon-v">tmp</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-30"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">init</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">L</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-31"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">shopt</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">s</span><span
+class="crayon-h"> </span><span
+class="crayon-v">dotglob</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&amp;&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-i">mv</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-v">TRAVIS_BUILD_DIR</span><span
+class="crayon-o">/</span><span
+class="crayon-o">*</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-o">/</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-32"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$CXX"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"clang++"</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">export </span><span
+class="crayon-v">CXX</span><span
+class="crayon-o">=</span><span
+class="crayon-s">"clang++"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&amp;&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">build</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-33"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$CXX"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"g++"</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">export </span><span
+class="crayon-v">CXX</span><span
+class="crayon-o">=</span><span
+class="crayon-s">"g++"</span><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp; </span><span
+class="crayon-o">&amp;&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">build</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-34"><span
+class="crayon-p">##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-35"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-i">ls</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">lasote_docker_client_example_main</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-36"><span
+class="crayon-p">#########################################################################################</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-37"><span
+class="crayon-v">after_success</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-38"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-i">user</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-v">USER</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">p</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-v">BII_PASSWORD</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-39"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">n</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-v">TRAVIS</span><span
+class="crayon-sy">_</span>TAG<span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">publish</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">r</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-e">tag </span><span
+class="crayon-v">STABLE</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-i">versiontag</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-v">TRAVIS_TAG</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-40"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">||</span><span
+class="crayon-h"> </span><span
+class="crayon-i">echo</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Ignored publish output..."</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-41"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-sy">[</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">z</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-v">TRAVIS</span><span
+class="crayon-sy">_</span>TAG<span
+class="crayon-h"> </span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">]</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-st">then</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">publish</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">r</span><span
+class="crayon-h"> </span><span
+class="crayon-o">||</span><span
+class="crayon-h"> </span><span
+class="crayon-i">echo</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Ignored publish output..."</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-42"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">fi</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-43"><span
+class="crayon-p"># If there are changes, commit them</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-44"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-e">config </span><span
+class="crayon-v">credential</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">helper</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"store --file=.git/credentials"</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-45"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-i">echo</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"https://${GH_TOKEN}:@github.com"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-v">git</span><span
+class="crayon-o">/</span><span
+class="crayon-v">credentials</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-46"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">add</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">A</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-47"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">commit</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">m</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"$COMMIT_IGNORE_BUILD"</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-48"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">remote</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">v</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-49"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-e">remote </span><span
+class="crayon-v">set</span><span
+class="crayon-o">-</span><span
+class="crayon-e">url </span><span
+class="crayon-e">origin </span><span
+class="crayon-v">https</span><span
+class="crayon-o">:</span><span
+class="crayon-c">//github.com/$TRAVIS_REPO_SLUG.git </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-50"><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-e">push</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-51"><span
+class="crayon-v">env</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-52"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-m">global</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-53"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">USER_EMAIL</span><span
+class="crayon-o">=</span><span
+class="crayon-v">lasote</span><span
+class="crayon-sy">@</span><span
+class="crayon-v">gmail</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">com</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-54"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">USER_NAME</span><span
+class="crayon-o">=</span><span
+class="crayon-s">"Luis Martinez de Bartolome"</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-55"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">COMMIT_IGNORE_BUILD</span><span
+class="crayon-o">=</span><span
+class="crayon-s">"Promoted version.***travis***"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-56"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">BLOCK_NAME</span><span
+class="crayon-o">=</span><span
+class="crayon-v">docker_client</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-57"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">USER</span><span
+class="crayon-o">=</span><span
+class="crayon-v">lasote</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-58"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-p"># BII_PASSWORD: Biicode USER's password. &gt; travis encrypt BII_PASSWORD=XXXXXX --add</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-59"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">secure</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-v">K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ</span><span
+class="crayon-o">/</span><span
+class="crayon-v">xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0</span><span
+class="crayon-o">/</span><span
+class="crayon-v">q80G2uwA</span><span
+class="crayon-o">/</span><span
+class="crayon-v">lcJIRJhJCH0m7QAsG8j054x06A</span><span
+class="crayon-o">+</span><span
+class="crayon-v">CJUHOsYCNKK3XUzE5ice</span><span
+class="crayon-o">+</span><span
+class="crayon-v">Dsc</span><span
+class="crayon-o">=</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a478f8168891312-60"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-p"># GH_TOKEN: Github token &gt; travis encrypt GH_TOKEN=XXXXXX --add</span></div><div
+class="crayon-line" id="crayon-56886c7a478f8168891312-61"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">secure</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-v">gNKs9E4Fh2agwqaGFTl1uzLvT</span><span
+class="crayon-o">+</span><span
+class="crayon-v">PrhykIi57eo9IkAlBuae</span><span
+class="crayon-o">/</span><span
+class="crayon-v">jOjAqxGua7NM7Rg</span><span
+class="crayon-o">+</span><span
+class="crayon-v">FxjLYh</span><span
+class="crayon-o">+</span><span
+class="crayon-v">wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm</span><span
+class="crayon-o">+</span><span
+class="crayon-v">wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk</span><span
+class="crayon-o">=</span></div></div></td></tr></table></div></div><p>Let&#8217;s take a deeper look this file, as you can see there are 6 different parts in the <a
+title="build lifecycle travis ci" href="http://docs.travis-ci.com/user/build-configuration/#Build-Lifecycle" target="_blank">Build Lifecycle as explained in Travis CI docs</a> (language, compiler, before_install, install, script, after_success):</p><ul><li><em>Language</em> and <em>compiler</em> are totally clear (this is where you choose the language and compiler that Travis CI will use).</li><li><em>Before_installing</em>, stablishes our automatic commit must be ignored and configures git to push later, on the after_success part.</li><li><em>Install</em> provides the tools necessary to test our code with BIICODE.</li><li><em>Script</em> part creates, builds and runs the project and checks if the project successes.</li><li><em>After_success</em> part is to publish your project to biicode as STABLE with VERSION_TAG if tagged in github, otherwise it publishes as DEV. Also, if your biicode.conf file is updated, this commits its changes to github without launching a new build.</li><li><em>env: </em>replace all environment values with your own ones. Don&#8217;t delete the <em>***travis***</em>  text, as it is the one needed to specify that commit should skip build, avoiding entering an endless build loop.</li></ul><h2 id="building-appveyor-specifics">Encrypting</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="creating-github-personal-access-token">Encode your password</h3><p>And now, encode your github token and biicode password (to archive this you&#8217;ve got to <strong>locate in your block&#8217;s folder</strong>). This command automatically writes the value returned to your &#8220;.travis.yml&#8221; file:</p><div
+id="crayon-56886c7a47906577289952" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ travis encrypt GH_TOKEN=XXXXXXX --add</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a47906577289952-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a47906577289952-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">travis </span><span
+class="crayon-e">encrypt </span><span
+class="crayon-v">GH_TOKEN</span><span
+class="crayon-o">=</span><span
+class="crayon-v">XXXXXXX</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">add</span></div></div></td></tr></table></div></div><p></p><div
+id="crayon-56886c7a47910285224178" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ travis encrypt BII_PASSWORD=XXXXXXXXXXX --add</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a47910285224178-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a47910285224178-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">travis </span><span
+class="crayon-e">encrypt </span><span
+class="crayon-v">BII_PASSWORD</span><span
+class="crayon-o">=</span><span
+class="crayon-v">XXXXXXXXXXX</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">add</span></div></div></td></tr></table></div></div><p>The lines added should look like this one:</p><div
+id="crayon-56886c7a47919487932825" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Ruby</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+env:
+   global:
+      secure:
+M+/Hjhv5M0+MyXhTCLYUWJje4r6I8rYohUhpgjH9nODJUuC10rAokWg6L8f3Z8haaNyfFoNVYLeA1kAKtemlBJK4Mqf7Z9W92URLfL/U8xwoWzwudH2EvjUQPX8Um7Xgu5e4arHjsuQ1mzL9ghg8O6SENS4YrGZX3QfKptVEAuw=</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a47919487932825-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a47919487932825-2">2</div><div
+class="crayon-num" data-line="crayon-56886c7a47919487932825-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886c7a47919487932825-4">4</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a47919487932825-1"><span
+class="crayon-v">env</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a47919487932825-2"><span
+class="crayon-h">&nbsp;&nbsp; </span><span
+class="crayon-v">global</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886c7a47919487932825-3"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">secure</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886c7a47919487932825-4"><span
+class="crayon-v">M</span><span
+class="crayon-o">+</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Hjhv5M0</span><span
+class="crayon-o">+</span><span
+class="crayon-v">MyXhTCLYUWJje4r6I8rYohUhpgjH9nODJUuC10rAokWg6L8f3Z8haaNyfFoNVYLeA1kAKtemlBJK4Mqf7Z9W92URLfL</span><span
+class="crayon-o">/</span><span
+class="crayon-v">U8xwoWzwudH2EvjUQPX8Um7Xgu5e4arHjsuQ1mzL9ghg8O6SENS4YrGZX3QfKptVEAuw</span><span
+class="crayon-o">=</span></div></div></td></tr></table></div></div><p>To more information about this, you can take a look at <a
+title="Travis-ci docs" href="http://docs.travis-ci.com/user/encryption-keys/" target="_blank">Travis CI docs</a>.</p><p>It&#8217;s a good practice to add to your readme the build status image Travis CI gives you here:</p><p>&nbsp;</p><p><img
+class="alignright size-large wp-image-2106" src="../wp-content/uploads/sites/2/2014/11/badge_travis1-1024x365.png" alt="badge_travis" width="630" height="225" /></p><h3><strong>Update your GitHub!</strong></h3><p>Once you&#8217;ve updated your repo locally, add all files and updates via git:</p><div
+id="crayon-56886c7a47922059811311" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ git add .</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a47922059811311-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a47922059811311-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-i">add</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span></div></div></td></tr></table></div></div><p>and commit your updates:</p><div
+id="crayon-56886c7a4792c277225714" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ git commit -m "commit message"</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a4792c277225714-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a4792c277225714-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-v">commit</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">m</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"commit message"</span></div></div></td></tr></table></div></div><p>Now, send those updates to your remote repository:</p><div
+id="crayon-56886c7a47935685538561" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ git push origin master</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886c7a47935685538561-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886c7a47935685538561-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">git </span><span
+class="crayon-e">push </span><span
+class="crayon-e">origin </span><span
+class="crayon-v">master</span></div></div></td></tr></table></div></div><p></p><h3><strong>Build each commit</strong></h3><p>So whenever you want to check your build, just press the build status image and it will directly get into the Travis CI build.</p><p><img
+class="aligncenter wp-image-1881 size-large" src="../wp-content/uploads/sites/2/2014/11/travis2-1024x502.png" alt="travis2" width="630" height="308" /></p><p>So this is it, enjoy!</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Docker C++ Client" href="https://github.com/lasote/docker_client" target="_blank">GitHub Docker-Client Repo</a>.</li><li><a
+title="travis ci build docker c++ client" href="https://travis-ci.org/lasote/docker_client" target="_blank">Docker-Client builds in Travis</a> CI and Deployment</li><li><a
+title="Docker Client Block biicode" href="https://www.biicode.com/lasote/docker_client" target="_blank">Docker-client biicode block</a> and with its automatically published releases</li></ul><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p></div><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../getting-started-with-openssl-git-and-github/index.html" title="biicode’s getting started with OpenSSL, Git and GitHub">biicode’s getting started with OpenSSL, Git and GitHub</a></li><li><a
+href="../appveyor-ci-windows-biicode/index.html" title="Using AppVeyor CI and Deploy for Windows">Using AppVeyor CI and Deploy for Windows</a></li><li><a
+href="../libraries-io-integrates-with-biicode/index.html" title="Libraries.io integrates with biicode">Libraries.io integrates with biicode</a></li><li><a
+href="../versioneye-announcement/index.html" title="biicode works now with VersionEye">biicode works now with VersionEye</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/' addthis:title='Automatically build and publish via Travis CI and Github' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/integrations/index.html" rel="category tag">Integrations</a>, <a
+href="../category/try-this-out/index.html" rel="category tag">try this out</a> and tagged <a
+href="../tag/github/index.html" rel="tag">Github</a>, <a
+href="../tag/integration/index.html" rel="tag">Integration</a>, <a
+href="../tag/testing/index.html" rel="tag">Testing</a>, <a
+href="../tag/travis-ci/index.html" rel="tag">Travis.CI</a>. Bookmark the <a
+href="index.html" title="Permalink to Automatically build and publish via Travis CI and Github" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../meeting-cpp-2014/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Meeting C++</a></div><div
+class="next"><a
+href="../upload-to-biicode-oscpack/index.html" rel="next">How to upload to biicode. Example 4: Oscpack by Ross Bencina <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="post pingback"><p>Pingback: <a
+href='../upload-biicode-example-4-oscpack-ross-bencina/index.html' rel='external nofollow' class='url'>How to upload to biicode. Example 4: Oscpack by Ross Bencina - biicode Blog</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='../biicode-20/index.html' rel='external nofollow' class='url'>biicode 2.0 is out! - biicode Blog</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='http://tecnicaquilmes.fullblog.com.ar/biicode-20-se-posiciona-aun-mas-fuerte-como-una-herramienta-impresci.html' rel='external nofollow' class='url'>Blog de la Escuela de Educación Secundaria Técnica N 8 de Quilmes</a>()</p></li></li><li
+class="comment even thread-even depth-1" id="dsq-comment-165"><div
+id="dsq-comment-header-165" class="dsq-comment-header"><cite
+id="dsq-cite-165"> http://blog.florianwolters.de <span
+id="dsq-author-user-165">Florian Wolters</span></cite></div><div
+id="dsq-comment-body-165" class="dsq-comment-body"><div
+id="dsq-comment-message-165" class="dsq-comment-message"><p>I am using a Microsoft Windows operating system with Ruby 2.0.0 and Travis 1.74. I followed the instructions in the article but I can not generate an encrypted value with the <code>travis</code> CLI tool: <code>not logged in, please run travis login --pro</code>. Is now a professional account required to encrypt data?! I&#8217;ve tried logging in via <code>travis login --pro --github-token </code>, but then I get the following error message: <code> has not granted Travis CI the required permissions, please log in via magnum.travis-ci.com</code>. I granted all permissions to the token. Do you have any hints for me? Maybe I try it again with a *-nix VM&#8230; Off-topic: CMake 3.1.0 is out, do you plan to host that version too?</p></div></div><ul
+class="children"><li
+class="comment odd alt depth-2" id="dsq-comment-166"><div
+id="dsq-comment-header-166" class="dsq-comment-header"><cite
+id="dsq-cite-166"> <span
+id="dsq-author-user-166">biicode</span></cite></div><div
+id="dsq-comment-body-166" class="dsq-comment-body"><div
+id="dsq-comment-message-166" class="dsq-comment-message"><p>Hi Florian,</p><p>thanks for the comment. Could you post it either in our forum or in Stackoverflow to be properly addressed by our team? You have the links to both the Forum and the Stackoverflow tag at the end of the article.</p><p>Thanks again and happy Xmas.</p></div></div><ul
+class="children"><li
+class="comment even depth-3" id="dsq-comment-167"><div
+id="dsq-comment-header-167" class="dsq-comment-header"><cite
+id="dsq-cite-167"> http://blog.florianwolters.de <span
+id="dsq-author-user-167">Florian Wolters</span></cite></div><div
+id="dsq-comment-body-167" class="dsq-comment-body"><div
+id="dsq-comment-message-167" class="dsq-comment-message"><p>Thanks four your reply. I&#8217;ve just tested it again with a openSuSE VM and it seems like a &#8220;Travis Pro&#8221; account is required. It would be nice to mention that in your blog post. With the current situation biicode/Travis CI integration does not make sense for private non-commercial users, since a Travis CI Pro membership costs 129 USD per year.</p><p>Hint: <a
+href="https://magnum.travis-ci.com/" rel="nofollow">https://magnum.travis-ci.com</a> represents &#8220;Travis CI Pro&#8221;, wheras <a
+href="https://travis-ci.com/" rel="nofollow">https://travis-ci.com</a> represents the normal &#8220;Travis CI&#8221;.</p><p>I will try a simple Git hook as described in your blog post <a
+href="../git-hooks/index.html" rel="nofollow">http://blog.biicode.com/git-hooks</a> next&#8230;</p><p>Happy New Year!</p></div></div><ul
+class="children"><li
+class="comment odd alt depth-4" id="dsq-comment-168"><div
+id="dsq-comment-header-168" class="dsq-comment-header"><cite
+id="dsq-cite-168"> <span
+id="dsq-author-user-168">biicode</span></cite></div><div
+id="dsq-comment-body-168" class="dsq-comment-body"><div
+id="dsq-comment-message-168" class="dsq-comment-message"><p>Hi Florian,</p><p>We do not have premium accounts in Travis CI. We wish!! This is the official example of how we deploy to Travis:</p><p><a
+href="https://github.com/Manu343726/CppMath" rel="nofollow">https://github.com/Manu343726/CppMath</a></p><p>If you follow strictly what we describe in the example a Travis CI premium account is not required at all.</p></div></div><ul
+class="children"><li
+class="comment even depth-5" id="dsq-comment-171"><div
+id="dsq-comment-header-171" class="dsq-comment-header"><cite
+id="dsq-cite-171"> http://blog.florianwolters.de <span
+id="dsq-author-user-171">Florian Wolters</span></cite></div><div
+id="dsq-comment-body-171" class="dsq-comment-body"><div
+id="dsq-comment-message-171" class="dsq-comment-message"><p>Hi again,</p><p>thanks. The encoding with <code>travis</code> is working for me now (both with Microsoft Windows and openSuSE 13.1). The problem has been on my side, something was messed up with the Travis CI integration because I renamed my GitHub repository.</p><p>I will keep using Git hooks anyway, since that way I don&#8217;t have code specific to Biicode in my Git repositories. I think that is much cleaner (example: <a
+href="https://github.com/FlorianWolters/cpp-component-util-singleton/blob/master/.travis.yml" rel="nofollow">https://github.com/FlorianWolters/cpp-component-util-singleton/blob/master/.travis.yml</a>).<br
+/> The only thing I have to figure out is how-to detect tags in a Git commit and forward them to Biicode. With such a workflow both Git and Biicode don&#8217;t rely on each other.</p><p>Glad, you could also fix some errors in your post.</p><p>Regards.</p></div></div></li><li
+class="comment odd alt depth-5" id="dsq-comment-175"><div
+id="dsq-comment-header-175" class="dsq-comment-header"><cite
+id="dsq-cite-175"> <span
+id="dsq-author-user-175">biicode</span></cite></div><div
+id="dsq-comment-body-175" class="dsq-comment-body"><div
+id="dsq-comment-message-175" class="dsq-comment-message"><p>Thank you Florian! Happy New Year.</p></div></div></li><li
+class="comment even depth-5" id="dsq-comment-176"><div
+id="dsq-comment-header-176" class="dsq-comment-header"><cite
+id="dsq-cite-176"> <span
+id="dsq-author-user-176">biicode</span></cite></div><div
+id="dsq-comment-body-176" class="dsq-comment-body"><div
+id="dsq-comment-message-176" class="dsq-comment-message"><p>Thank you Florian!</p></div></div></li><li
+class="comment odd alt depth-5" id="dsq-comment-192"><div
+id="dsq-comment-header-192" class="dsq-comment-header"><cite
+id="dsq-cite-192"> <span
+id="dsq-author-user-192">María</span></cite></div><div
+id="dsq-comment-body-192" class="dsq-comment-body"><div
+id="dsq-comment-message-192" class="dsq-comment-message"><p>Hi Florian,</p><p>You may be intrested in checking: <a
+href="../appveyor-ci-windows-biicode/index.html" rel="nofollow">http://blog.biicode.com/appveyor-ci-windows-biicode/</a>, this relys totally on github, it even updates your repo&#8217;s biicode.conf [parents] section after publishing to biicode.</p><p>Also you can add your tag to your travits build like this:</p><p>bii publish &#8211;tag STABLE &#8211;versiontag=$TRAVIS_TAG</p></div></div></li></ul></li></ul></li></ul></li></ul></li><li
+class="post pingback"><p>Pingback: <a
+href='../getting-started-with-openssl-git-and-github/index.html' rel='external nofollow' class='url'>Getting started with OpenSSL, Git and Github - biicode Blog</a>()</p></li></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '1877%20http_/blog.biicode.com/index4439.html?p=1877';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "Automatically build and publish via Travis CI and Github";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index2f7e.html?cf_action=sync_comments&amp;post_id=1877';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/automatically-build-publish-via-travis-ci-github/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:45:45 GMT -->
+</html>

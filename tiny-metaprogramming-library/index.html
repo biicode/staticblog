@@ -1,0 +1,1660 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/tiny-metaprogramming-library/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:42:48 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>A Tiny Metaprogramming Library | Part 1 - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="We will learn and implement a little but interesting high-level featureeach week and that feature will be added to Tiny Metaprogramming Lib"/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="A Tiny Metaprogramming Library | Part 1 - biicode Blog" /><meta
+property="og:description" content="We will learn and implement a little but interesting high-level featureeach week and that feature will be added to Tiny Metaprogramming Lib" /><meta
+property="og:url" content="http://blog.biicode.com/tiny-metaprogramming-library/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="c++" /><meta
+property="article:tag" content="code design" /><meta
+property="article:tag" content="functions" /><meta
+property="article:tag" content="template metaprogramming" /><meta
+property="article:tag" content="tmp" /><meta
+property="article:section" content="Meta-programming" /><meta
+property="article:published_time" content="2014-12-16T12:14:14+00:00" /><meta
+property="article:modified_time" content="2014-12-16T12:39:12+00:00" /><meta
+property="og:updated_time" content="2014-12-16T12:39:12+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/metaprogramming.jpg" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@Manu343726"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="A Tiny Metaprogramming Library | Part 1 - biicode Blog"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; A Tiny Metaprogramming Library Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index6d7f.html?p=1975' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-1975 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/meta-programming/index.html" rel="v:url" property="v:title">Meta-programming</a> » <strong
+class="breadcrumb_last">A Tiny Metaprogramming Library</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-1975" class="post-1975 post type-post status-publish format-standard hentry category-meta-programming tag-c tag-code-design tag-functions tag-template-metaprogramming tag-tmp"> <header
+class="entry-header"><h1 class="entry-title">A Tiny Metaprogramming Library</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="12:14" rel="bookmark"><time
+class="entry-date" datetime="2014-12-16T12:14:14+00:00">December 16, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/manu343726/index.html" title="View all posts by Manu Sánchez" rel="author">Manu Sánchez</a></span></span></div> </header><div
+class="entry-content"><p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++.</p><p>It&#8217;s not a funny way to play with the compiler only, <strong>template metaprogramming is a powerful tool for C++ developers and something that many of us must deal with everyday.</strong></p><div
+id="attachment_1977" style="width: 1034px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1977" src="../wp-content/uploads/sites/2/2014/12/metaprogramming.jpg" alt="Template metaprogramming in C++ with biicode" width="1024" height="768" /><p
+class="wp-caption-text">by <a
+href="http://photo.net/photodb/photo?photo_id=6522423&amp;size=lg">Shane Willis</a></p></div><p><span
+id="more-1975"></span></p><h2>Why is metaprogramming important?</h2><p>C++ is a great language to write applications in, but it&#8217;s even better to write libraries. You can write abstract, natural (readable) and performant generic APIs.<br
+/> To me the best example is the <code>vector</code> template (The algebraic vector, not the C++ <code>std::vector</code> one):</p><div
+id="crayon-56886b9493898614502999" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+template&lt;typename T&gt;
+struct vector3
+{
+    vector3() : vector3{0, 0, 0} {}
+    vector3(T xx, T yy, T zz) :
+        x{xx},
+        y{yy},
+        z{zz}
+    {}
+    vector3&amp; operator+=(const vector3&amp; v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
+    friend vector3 operator+(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        //Want speed, pass by value?
+        //I prefer to have a clear interface,
+        //but that's another topic...
+        vector3 cpy{lhs};
+        return cpy += rhs;
+    }
+    friend bool operator==(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        return std::tie(lhs.x,lhs.y,lhs.z) == std::tie(rhs.x,rhs.y,rhs.z);
+    }
+    T x, y, z;
+};</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-2">2</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-4">4</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-6">6</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-8">8</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-10">10</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-12">12</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-14">14</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-16">16</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-18">18</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-20">20</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-22">22</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-24">24</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-26">26</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-28">28</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-30">30</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-32">32</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-33">33</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-34">34</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-35">35</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493898614502999-36">36</div><div
+class="crayon-num" data-line="crayon-56886b9493898614502999-37">37</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b9493898614502999-1"><span
+class="crayon-t">template</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-r">typename</span><span
+class="crayon-h"> </span><span
+class="crayon-e">T</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-2"><span
+class="crayon-t">struct</span><span
+class="crayon-h"> </span><span
+class="crayon-e">vector3</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-3"><span
+class="crayon-sy">{</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">vector3</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">vector3</span><span
+class="crayon-sy">{</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-6"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">vector3</span><span
+class="crayon-sy">(</span><span
+class="crayon-i">T</span><span
+class="crayon-h"> </span><span
+class="crayon-v">xx</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-i">T</span><span
+class="crayon-h"> </span><span
+class="crayon-v">yy</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-i">T</span><span
+class="crayon-h"> </span><span
+class="crayon-v">zz</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-7"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">x</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">xx</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">,</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">y</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">yy</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">,</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-9"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">z</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">zz</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">{</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-11">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-12"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-t">operator</span><span
+class="crayon-o">+=</span><span
+class="crayon-sy">(</span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">v</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-13"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-14"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">x</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">v</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">x</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-15"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">y</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">v</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">y</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">z</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">v</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">z</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-17">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-18"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-o">*</span><span
+class="crayon-r">this</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-19"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-20">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b9493898614502999-21"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">friend</span><span
+class="crayon-h"> </span><span
+class="crayon-e">vector3 </span><span
+class="crayon-t">operator</span><span
+class="crayon-o">+</span><span
+class="crayon-sy">(</span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">lhs</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">rhs</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-22"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-23"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//Want speed, pass by value? </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-24"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//I prefer to have a clear interface, </span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-25"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">//but that's another topic...</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-26"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">vector3</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cpy</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">lhs</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-27">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-28"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-v">cpy</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">rhs</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-29"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-30">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b9493898614502999-31"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">friend</span><span
+class="crayon-h"> </span><span
+class="crayon-t">bool</span><span
+class="crayon-h"> </span><span
+class="crayon-t">operator</span><span
+class="crayon-o">==</span><span
+class="crayon-sy">(</span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">lhs</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">rhs</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-32"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-33"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-e">tie</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">lhs</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">x</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">lhs</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">y</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">lhs</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">z</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-e">tie</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">rhs</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">x</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">rhs</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">y</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">rhs</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">z</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-34"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-35">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493898614502999-36"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-i">T</span><span
+class="crayon-h"> </span><span
+class="crayon-v">x</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">y</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">z</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b9493898614502999-37"><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p>Using that <code>vector3</code> template is easy and it resembles algebraic notation:</p><div
+id="crayon-56886b94938ab368337896" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+vector3&lt;int&gt; a{1,2,3}, b{4,5,6};
+vector3&lt;int&gt; c = a + b;
+bool eq = c == vector3&lt;int&gt;{5,7,9};</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938ab368337896-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938ab368337896-2">2</div><div
+class="crayon-num" data-line="crayon-56886b94938ab368337896-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938ab368337896-1"><span
+class="crayon-e">vector3</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">a</span><span
+class="crayon-sy">{</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">3</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-e">b</span><span
+class="crayon-sy">{</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">6</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938ab368337896-2"><span
+class="crayon-v">vector3</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">c</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+</span><span
+class="crayon-h"> </span><span
+class="crayon-v">b</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b94938ab368337896-3"><span
+class="crayon-t">bool</span><span
+class="crayon-h"> </span><span
+class="crayon-v">eq</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">c</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-e">vector3</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">{</span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">7</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">9</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p>The same for a hypothetical <code>matrix</code> template:</p><div
+id="crayon-56886b94938b7680371826" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+matrix&lt;int,2,2&gt; m{ {1,2}, {3,4} };
+m.row(0) = m.row(0)*4 + m.row(1);</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938b7680371826-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938b7680371826-2">2</div><div
+class="crayon-num" data-line="crayon-56886b94938b7680371826-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938b7680371826-1"><span
+class="crayon-v">matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">m</span><span
+class="crayon-sy">{</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span><span
+class="crayon-cn">3</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938b7680371826-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b94938b7680371826-3"><span
+class="crayon-v">m</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">m</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">*</span><span
+class="crayon-cn">4</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+</span><span
+class="crayon-h"> </span><span
+class="crayon-v">m</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p><em>Bjarne Stroupstrup does a great in-depth description of the design of this kind of matrix template in his book &#8220;The C++ Programming Language, 4th Edition&#8221;</em></p><p>Compare that with the <em>pure OO</em> alternative of other languages:</p><div
+id="crayon-56886b94938c4689114724" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+Matrix&lt;int&gt; a = new Matrix&lt;int&gt;(2,2, 1,2,3,4);
+Matrix&lt;int&gt; b = new Matrix&lt;int&gt;(2,2, 5,6,7,8);
+Matrix&lt;int&gt; c = new Matrix&lt;int&gt;(2,2);
+c = a.add(b); a.row(0) = a.row(0).mul(4).add(a.row(0));</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938c4689114724-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938c4689114724-2">2</div><div
+class="crayon-num" data-line="crayon-56886b94938c4689114724-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938c4689114724-4">4</div><div
+class="crayon-num" data-line="crayon-56886b94938c4689114724-5">5</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938c4689114724-1"><span
+class="crayon-v">Matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">3</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938c4689114724-2"><span
+class="crayon-v">Matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">b</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">6</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">7</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">8</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938c4689114724-3"><span
+class="crayon-v">Matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">c</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Matrix</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">int</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">,</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938c4689114724-4">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b94938c4689114724-5"><span
+class="crayon-v">c</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">add</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">b</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">mul</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">add</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p>There are a few points that should be noted here:</p><h4>Don&#8217;t leave to runtime decisions based on properties you know at compile-time</h4><p>In general that only serves to increase runtime overhead.</p><p>In the matrix example, the matrix dimensions are known at compile time. Despite having some kind of <a
+href="http://en.wikipedia.org/wiki/Variable-length_array">VLA</a> allocated on the stack, it hasn&#8217;t got much sense to introduce dynamic memory allocation here, with all its cache misses, alloc/dealloc/memory-footprint overheads, etc.</p><p>Consider also the matrix&#8217;s design. How you would implement this?<br
+/> What comes to my mind is a <code>matrix_slice</code> class with all the algebraic operations between matrix slices, where a slice is only a portion of a matrix (Maybe <code>matrix_view</code> is a common name for this thing with non-owning semantics).<br
+/> The key point here is that a matrix row can bee seen as a slice, a submatrix can be seen as a slice, and even a matrix can be seen as a slice. Implement matrix ops only in one site (the <code>slice</code>) then propagate them along your implementation via composition, inheritance, type aliasing, whatever you like.</p><p>Even if we decide to use the inheritance approach (<code>matrix</code> inherits from <code>slice</code>, <code>row</code> inherits from <code>slice</code>, etc), C++ has great (crazy) things to achieve this in a performant way, like <a
+href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">CRTP</a>; or going further enough, using the classic dynamic dispatch <a
+href="http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html">the right way</a>.</p><p><strong>Performance matters. C++ is a language for performance.</strong> If that was not the case, I would be using python or even ruby. But we are here because we need to squeeze down each CPU cicle. Nowadays that performance is only provided when understanding how hardware works and giving enough information to your compiler. C++ does both thing pretty well, or at least it gives you the opportunity to do them properly.</p><p>Don&#8217;t throw away those opportunities writing oh-my-runtime designs. Use your type system (literally); understand your compiler capabilities.</p><h4>OO is not the 42 of programming</h4><p>&#8220;<em>Everything must be an object, there are only classes, classes with their methods. Model your system with objects talking each other&#8221;</em> That&#8217;s <strong>The Big Lie Of Object Oriented Programming</strong>.</p><p>You can&#8217;t model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an &#8220;<em>object</em>&#8220;. A function is a function, don&#8217;t force it to be something else. I want a set of functions, not a class full of static methods.It&#8217;s true. It all boils down to <code>std::cos()</code> vs. <code>Math.cos()</code> but what&#8217;s relevant to me is the design of the code.</p><p>Take a look at the above OO example again:</p><div
+id="crayon-56886b94938d2661176173" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+c = a.add(b);
+a.row(0) = a.row(0).mul(4).add(a.row(0));</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938d2661176173-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938d2661176173-2">2</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938d2661176173-1"><span
+class="crayon-v">c</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">add</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">b</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938d2661176173-2"><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">mul</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">add</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">a</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">row</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p><code>b</code> is added to <code>a</code>? Addition is a binary operation, that means that neither of their operands have more importance than the other, they just participate in the operation. <code>b</code> is not being added to <code>a</code>, it&#8217;s the addition of <code>a</code> and <code>b</code> what produces a result, <code>c</code>.</p><p>That&#8217;s a problem. Modeling a binary operation as an object method is a very big mistake. There are really three things playing here: the operator, the first operand, and the second operand. <strong>OO forgets about the first one, with one object playing two roles at the same time</strong>.</p><p>Am I being pedant? Consider this:</p><div
+id="crayon-56886b94938dc050547813" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+c = b.add(a);</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938dc050547813-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938dc050547813-1"><span
+class="crayon-v">c</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">b</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">add</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">a</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p>Is there any semantic difference with the previous example?</p><p>As I said, there aren&#8217;t objects only in a system. Thankfully, syntax apart, C++ takes this the right way, differentiating between functions and objects. In C++ addition there are three things: two object operands and the operator; where a C++ operator is just a fancy syntax for a non-member function.</p><p><strong>There are different categories in a system, everything cannot be modeled directly as an object</strong>. The power of C++ comes from its multiparadigm spirit, allowing us to decide what programming paradigm (OO, structured, functional, generic&#8230;) is better for each situation.</p><h3>Ok, a cool dissertation about C++ over Java, but why metaprogramming?</h3><p>Because implementing these clear, performant, and almost-static interfaces is not that easy.</p><p>You want to automate the implementation of those libraries, or at least describe the most common cases in a generic way, where being generic does not mean parametrizing the element type only&#8230; Generics are only a simple toy for kids, to make them think that their libraries are generic, but it&#8217;s really a casting party at Mr. Autoboxing house.<br
+/> Being generic means that if I manage a dynamic array, I don&#8217;t know the specific policy for dynamic memory the user wants. I just parametrize it:</p><div
+id="crayon-56886b94938e6958026281" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+template&lt; class T,
+          class Allocator = std::allocator&lt;T&gt;
+&gt; class vector;</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938e6958026281-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938e6958026281-2">2</div><div
+class="crayon-num" data-line="crayon-56886b94938e6958026281-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938e6958026281-1"><span
+class="crayon-t">template</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">T</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938e6958026281-2"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Allocator</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">allocator</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-v">T</span><span
+class="crayon-o">&gt;</span></div><div
+class="crayon-line" id="crayon-56886b94938e6958026281-3"><span
+class="crayon-o">&gt;</span><span
+class="crayon-h"> </span><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">vector</span><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p>The problem is that that&#8217;s only the cool interface. The implementation is full of template madness like policy classes, multiple inheritance, template specializations, etc.</p><p>Template meta-programming helps to describe and implement that kind of generic designs, but its syntax makes your maintainer commit suicide just after approaching the codebase.</p><h2>What can we do?</h2><p>TMP is an ugly metalanguage. But its usage can be improved a lot if you think of it as a bastard version of Haskell, what I coined as <a
+href="http://isocpp.org/blog/2014/11/metaprogramming-with-modern-c-the-haskell-metaphor">&#8220;<em>The Haskell Metaphor</em>&#8220;</a>.</p><p>Since a pure bottom-up approach <a
+href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/">didn&#8217;t work as expected</a>, let&#8217;s try another approach: <strong>Learn high-level template metaprogramming developing your own <code>Tiny Metaprogramming Library</code></strong>.</p><h3>The Tiny Metaprogramming Library</h3><p>I&#8217;m a big fan of GitHub, so my version of the Tiny Metaprogramming Library <a
+href="https://github.com/Manu343726/tiny-metaprogramming-library">will be hosted on my github account</a>.</p><p>Hosting the library is one thing, but using it is a completely different beast.<br
+/> Deployment of C and C++ libraries is a so complex process, since each platform needs its own binary that should be compiled and linked with specific settings. Having a truly portable C++ library is a mess. Meanwhile most modern languages are shipped with their own dependency management system, where setting up a library just becomes using it via an <code>import</code>-like sentence and a <code>install dependencies</code> command.</p><p><a
+href="https://www.biicode.com/">biicode</a> is a tool focused on giving the power of automatic dependency management to C and C++. It&#8217;s CMake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.<br
+/> The tool works like a charm, resolving all the dependencies and generating pretty projects via CMake generators just <code>#include</code>ing what you need:</p><div
+id="crayon-56886b94938f1550810187" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">ZSH</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+include(boost/install/install) #Magic happens here
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+# Actually create targets: EXEcutables and libraries.
+ADD_BIICODE_TARGETS()
+BII_BOOST(1.57.0)
+find_package(Boost COMPONENTS system coroutine REQUIRED)
+target_link_libraries(${BII_BLOCK_TARGETS} PUBLIC ${Boost_LIBRARIES})
+target_compile_options(${BII_BLOCK_TARGETS} PUBLIC -std=c++11)</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-2">2</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-4">4</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-6">6</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-8">8</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-10">10</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-12">12</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938f1550810187-14">14</div><div
+class="crayon-num" data-line="crayon-56886b94938f1550810187-15">15</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938f1550810187-1"><span
+class="crayon-e">include</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">CMAKE_HOME_DIRECTORY</span><span
+class="crayon-sy">}</span><span
+class="crayon-o">/</span><span
+class="crayon-v">biicode</span><span
+class="crayon-e">.cmake</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-2"><span
+class="crayon-e">include</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-v">install</span><span
+class="crayon-o">/</span><span
+class="crayon-v">install</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-p">#Magic happens here</span></div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-3">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-4"><span
+class="crayon-p"># Initializes block variables</span></div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-5"><span
+class="crayon-e">INIT_BIICODE_BLOCK</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-6">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-7"><span
+class="crayon-p"># Actually create targets: EXEcutables and libraries.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-8"><span
+class="crayon-e">ADD_BIICODE_TARGETS</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-9">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-10"><span
+class="crayon-e">BII_BOOST</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-11">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-12"><span
+class="crayon-e">find_package</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">Boost </span><span
+class="crayon-e">COMPONENTS </span><span
+class="crayon-e">system </span><span
+class="crayon-e">coroutine </span><span
+class="crayon-v">REQUIRED</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-13"><span
+class="crayon-e">target_link_libraries</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGETS</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-m">PUBLIC</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_LIBRARIES</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938f1550810187-14">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b94938f1550810187-15"><span
+class="crayon-e">target_compile_options</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGETS</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-m">PUBLIC</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">std</span><span
+class="crayon-o">=</span><span
+class="crayon-v">c</span><span
+class="crayon-o">++</span><span
+class="crayon-cn">11</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p></p><hr
+/><p></p><div
+id="crayon-56886b94938fd515783752" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-2">2</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-4">4</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-6">6</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-8">8</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-10">10</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-12">12</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-14">14</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-16">16</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b94938fd515783752-18">18</div><div
+class="crayon-num" data-line="crayon-56886b94938fd515783752-19">19</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b94938fd515783752-1"><span
+class="crayon-p">#include &lt;boost/coroutine/all.hpp&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-2"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-3">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-4"><span
+class="crayon-r">using</span><span
+class="crayon-h"> </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">boost</span><span
+class="crayon-o">::</span><span
+class="crayon-v">coroutines</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-6"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cooperative</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">coroutine</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">void</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-o">::</span><span
+class="crayon-v">push_type</span><span
+class="crayon-h"> </span><span
+class="crayon-v">&amp;sink</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-7"><span
+class="crayon-sy">{</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-r">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Hello"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-9"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">sink</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-r">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"world"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-11"><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-12">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-13"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-14"><span
+class="crayon-sy">{</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-15"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">coroutine</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">void</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-o">::</span><span
+class="crayon-e">pull_type</span><span
+class="crayon-h"> </span><span
+class="crayon-e">source</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">cooperative</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-r">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">", "</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-17"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">source</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b94938fd515783752-18"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-r">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"!\n"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886b94938fd515783752-19"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p></p><hr
+/><p></p><div
+id="crayon-56886b9493908966568656" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii find
+$ bii cpp:configure -G "Unix Makefiles"
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b9493908966568656-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493908966568656-2">2</div><div
+class="crayon-num" data-line="crayon-56886b9493908966568656-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b9493908966568656-4">4</div><div
+class="crayon-num" data-line="crayon-56886b9493908966568656-5">5</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b9493908966568656-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">find</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493908966568656-2"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">cpp</span><span
+class="crayon-o">:</span><span
+class="crayon-v">configure</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-i">G</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Unix Makefiles"</span></div><div
+class="crayon-line" id="crayon-56886b9493908966568656-3"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">cpp</span><span
+class="crayon-o">:</span><span
+class="crayon-i">build</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b9493908966568656-4"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">examples_boost</span><span
+class="crayon-o">-</span><span
+class="crayon-e">coroutine_main</span></div><div
+class="crayon-line" id="crayon-56886b9493908966568656-5"><span
+class="crayon-v">Hello</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">world</span><span
+class="crayon-o">!</span></div></div></td></tr></table></div></div><p>So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, <a
+href="https://www.biicode.com/manu343726/tiny"><code>manu343726/tiny</code></a>, and all the examples provided in the blogposts will be using biicode for setup and building.<br
+/> I have developed a metaprogramming library before, the <a
+href="https://github.com/Manu343726/Turbo">Turbo Metaprogramming Library</a>. Many of my examples and guidelines may resemble the design of Turbo. Others may not, being fixes to bad design decisions.</p><p>The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library, in a way that each one is implementing and trying the lessons learned.<br
+/> Of course you can ask me whatever questions you like, post comments in the blogposts about specific questions covered there, or questions about my reference implementation on github via the issues system.</p><h3>The blogposts</h3><p>Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library.<br
+/> Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learnt and implemented before.</p><p>As the series and the libraries evolve my criteria may change, depending on your feedback, but this is the main set of bullets I&#8217;m thinking for the posts:</p><ul><li>Templates, basic concepts (Just re-read <a
+href="http://www.codeproject.com/Articles/826229/Template-Metaprogramming-with-Modern-Cplusplus-tem">this</a>)</li><li>Type parameters vs non-type parameters. Value boxing and template boxing (i.e. <code>std::integral_constant</code> and <code>tml::lazy</code>).</li><li>Mastering the Haskell bastard: Values and expressions</li><li>Improving expression evaluation.</li><li>Lists</li><li>Algorithms</li><li>Iterators</li><li>Lambda expressions</li><li>Monads</li></ul><h2>Are you ready for some cool metaprogramming?</h2><p>I hope you like this idea. It&#8217;s not only me writing crazy meta-stuff, but everybody developing their own metaprogramming library, learning something new each week, and comparing the different approaches each one is taking. I&#8217;m the guy who writes this posts, but I can learn a lot with your Tiny Metaprogramming Libraries and your feedback.</p><p>Hope you enjoy this metaprogramming post and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../cpp-madrid-meetup-template-metaprogramming/index.html" title="C/C++ Madrid meetup @ biicode office">C/C++ Madrid meetup @ biicode office</a></li><li><a
+href="../template-metaprogramming-cpp-ii/index.html" title="Template Metaprogramming with Modern C++: templates in depth">Template Metaprogramming with Modern C++: templates in depth</a></li><li><a
+href="../a-tiny-metaprogramming-lib-metafunctions/index.html" title="A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions">A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</a></li><li><a
+href="../template-metaprogramming-modern-cpp-haskell-metaphor/index.html" title="Metaprogramming with Modern C++: The Haskell Metaphor">Metaprogramming with Modern C++: The Haskell Metaphor</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/tiny-metaprogramming-library/' addthis:title='A Tiny Metaprogramming Library' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/meta-programming/index.html" rel="category tag">Meta-programming</a> and tagged <a
+href="../tag/c/index.html" rel="tag">c++</a>, <a
+href="../tag/code-design/index.html" rel="tag">code design</a>, <a
+href="../tag/functions/index.html" rel="tag">functions</a>, <a
+href="../tag/template-metaprogramming/index.html" rel="tag">template metaprogramming</a>, <a
+href="../tag/tmp/index.html" rel="tag">tmp</a>. Bookmark the <a
+href="index.html" title="Permalink to A Tiny Metaprogramming Library" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../codemotion-madrid-2014/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Codemotion Madrid 2014</a></div><div
+class="next"><a
+href="../biicode-20/index.html" rel="next">biicode 2.0 is out <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="comment even thread-even depth-1" id="dsq-comment-157"><div
+id="dsq-comment-header-157" class="dsq-comment-header"><cite
+id="dsq-cite-157"> <span
+id="dsq-author-user-157">Andrey Bulezyuk</span></cite></div><div
+id="dsq-comment-body-157" class="dsq-comment-body"><div
+id="dsq-comment-message-157" class="dsq-comment-message"><p>Nice! :)<br
+/> Keep on creating good content!</p></div></div></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '1975%20http_/blog.biicode.com/index6d7f.html?p=1975';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "A Tiny Metaprogramming Library";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index4363.html?cf_action=sync_comments&amp;post_id=1975';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/tiny-metaprogramming-library/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:42:49 GMT -->
+</html>

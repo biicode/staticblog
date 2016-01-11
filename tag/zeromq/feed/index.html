@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; ZeroMQ</title> <atom:link href="http://blog.biicode.com/tag/zeromq/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Rapid prototyping and teaching ZeroMQ in C++ with biicode.</title><link>http://blog.biicode.com/zeromq-cpp-biicode/</link> <comments>http://blog.biicode.com/zeromq-cpp-biicode/#comments</comments> <pubDate>Tue, 16 Sep 2014 13:07:43 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[ZeroMQ]]></category> <category><![CDATA[0MQ]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Pieter Hintjens]]></category> <category><![CDATA[ZMQ]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1600</guid> <description><![CDATA[<p>ZMQ or ZeroMQ is one of the coolest open source libraries out there. It fills a real necessity in a new, brilliant way. It is very active, has bindings to many languages… that’s why it is so popular. I was a professor in university, teaching C/C++, software engineering, distributed systems (plain old sockets, SOAP, web…), [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/zeromq-cpp-biicode/">Rapid prototyping and teaching ZeroMQ in C++ with biicode.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>ZMQ or ZeroMQ is one of the coolest open source libraries out there. It fills a real necessity in a new, brilliant way. It is very active, has bindings to many languages… that’s why it is so popular.</p><p><img
+class="alignright size-full wp-image-1603" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/zeromq1-300x115.png" alt="ZeroMQ is already in biicode" width="300" height="115" /></p><p>I was a professor in university, teaching C/C++, software engineering, distributed systems (plain old sockets, SOAP, web…), and I really enjoyed keeping my classes up to date and teaching last trends and technologies. If I was still a teacher, I would definitely teach some sessions using ZeroMQ.</p><p><span
+id="more-1600"></span></p><p>But I suffered many problems when using third party source code in the classroom, and not only there, but also in my real projects. In the classroom, most of the time could be spent configuring and installing external dependencies, and the problem would became worse when students tried to repeat the process at home or in their laptops, maybe in another OS. This is one of the reasons we started the biicode project.</p><p>Today, if you try to build the basic C++ client-server example that ZeroMQ provides in their site, you might encounter some problems. You have to guess that the C++ binding is not in the library, instead, it’s inside another repo (zmqcpp). I had to google it myself to find it. You have to get, configure and build the library, then setup your own project to use it.</p><p>The question is: Given some example source code snippets that use zmq, can anyone, even unexperienced developers build them quickly and easily, even without writing a single line of configuration, in any of the major OS? We think that it can be done, in a few simple steps.</p><h2>A simple client-server example with ZeroMQ</h2><p>We have the source code we want to build:</p><p><strong>hwclient.cpp</strong></p><pre class="crayon-plain-tag">//
+//  Hello World client in C++
+//  Connects REQ socket to tcp://localhost:5555
+//  Sends "Hello" to server, expects "World" back
+//
+#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+int main ()
+{
+    //  Prepare our context and socket
+    zmq::context_t context (1);
+    zmq::socket_t socket (context, ZMQ_REQ);
+    std::cout &lt;&lt; "Connecting to hello world server…" &lt;&lt; std::endl;
+    socket.connect ("tcp://localhost:5555");
+    //  Do 10 requests, waiting each time for a response
+    for (int request_nbr = 0; request_nbr != 10; request_nbr++) {
+        zmq::message_t request (6);
+        memcpy ((void *) request.data (), "Hello", 5);
+        std::cout &lt;&lt; "Sending Hello " &lt;&lt; request_nbr &lt;&lt; "..." &lt;&lt; std::endl;
+        socket.send (request);
+        //  Get the reply.
+        zmq::message_t reply;
+        socket.recv (&amp;reply);
+        std::cout &lt;&lt; "Received World " &lt;&lt; request_nbr &lt;&lt; std::endl;
+    }
+    return 0;
+}</pre><p><strong>hwserver.cpp</strong></p><pre class="crayon-plain-tag">#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#ifndef _WIN32
+#include &lt;unistd.h&gt;
+#else
+#include &lt;windows.h&gt;
+#define sleep(n)    Sleep(n)
+#endif
+int main () {
+    //  Prepare our context and socket
+    zmq::context_t context (1);
+    zmq::socket_t socket (context, ZMQ_REP);
+    socket.bind ("tcp://*:5555");
+    while (true) {
+        zmq::message_t request;
+        //  Wait for next request from client
+        socket.recv (&amp;request);
+        std::cout &lt;&lt; "Received Hello" &lt;&lt; std::endl;
+        //  Do some 'work'
+        sleep(1);
+        //  Send reply back to client
+        zmq::message_t reply (5);
+        memcpy ((void *) reply.data (), "World", 5);
+        socket.send (reply);
+    }
+    return 0;
+}</pre><p>Note that these are exactly the examples hosted in <a
+title="ZeroMQ" href="http://zeromq.org/" target="_blank">http://zeromq.org/</a>, except for the #include directives.</p><h2>Let’s build the examples</h2><p>Building this example is straightforward with biicode. If you haven’t installed it yet, you might want to try <a
+href="http://docs.biicode.com/c++/gettingstarted.html">the C++ getting started</a> first.</p><p>The first step is to create a project (e.g. myzmqproject) and a block (a folder inside your project) named myuser/zmqexamples. You don’t need to be actually registered, you can type exactly “myuser”, or any other name.</p><pre class="crayon-plain-tag">$ bii init myzmqproject
+$ cd myzmqproject
+$ bii new myuser/zmqexamples</pre><p>Copy the files above, inside the folder <em>blocks/myuser/zmqexamples</em></p><pre class="crayon-plain-tag">$ bii find</pre><p>This command checks your <em>#includes</em> and tries to find a compatible zmq version in biicode, and then it will automatically generate a <strong>requirements.bii</strong> file, with the contents:</p><pre class="crayon-plain-tag">diego/zmqcpp: 0</pre><p>This file defines your block’s requirements, in this case, the block required is <a
+href="http://www.biicode.com/diego/zmqcpp">www.biicode.com/diego/zmqcpp</a>, version number 0, which holds the ZeroMQ C++ binding. Of course, you can also write this file manually instead of relying on the finder, and this file can also be used to resolve dependencies conflicts. In turn, this zmqcpp biicode block has a dependency to version 0 of libzmq in <a
+title="diego/libzmq" href="http://www.biicode.com/diego/libzmq">http://www.biicode.com/diego/libzmq</a></p><p>You might want to check what biicode has retrieved into your project “<em>deps</em>” folder. There you can find the zmqcpp binding, as well as the libzmq library. Interestingly for the library, it has only retrieved the necessary files but skipped, for example, unnecessary test code. This is an advantage of biicode, and I will show interesting use cases for this feature in forthcoming posts.</p><p>Building and running the project is also fairly simple:</p><pre class="crayon-plain-tag">$ bii configure //if in windows, add -G “Visual Studio 12”, to build with VS</pre><p>We use the de-facto standard CMake build system,  you can pass also other generators to the -G option. Building the project will create 2 executables inside the <em>“bin”</em> folder.</p><pre class="crayon-plain-tag">$ bii build</pre><p>Run first  your server, then your client, you can find both inside the <em>bin</em> folder</p><h2>How was libzmq uploaded?</h2><p>This functionality is great, but before taking advantage of it, it is necessary to upload the necessary code to biicode. The code that has been retrieved in this example can be found in :</p><ul><li><a
+href="http://www.biicode.com/diego/diego/libzmq/master">http://www.biicode.com/diego/diego/libzmq/master</a></li><li><a
+href="http://www.biicode.com/diego/diego/zmqcpp/master">http://www.biicode.com/diego/diego/zmqcpp/master</a></li></ul><p>Uploading code is absolutely trivial for simple code (e.g. the zmqcpp C++ binding), but can take some more time to do for configuration-intensive projects. I will summarize here the steps I did to upload libzmq.</p><p>The first step is usually to create a fork of the origin project, to manage changes and versions and keep synchronized with the original project.  You can check the fork of libzmq here: <a
+href="https://github.com/drodri/libzmq">https://github.com/drodri/libzmq</a>, and you can compare with the upstream repo to see the differences involved.</p><p>Usually the required changes are just limited to the <em>CMakeLists.tx</em>t file. Biicode provides a variable that can be used to leave the original <em>CMakeLists.txt</em> unaltered in functionality:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  INCLUDE(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  INIT_BIICODE_BLOCK()
+ENDIF()</pre><p>The unique major changes ZeroMQ required in the main <em>CMakeLists.txt</em> are:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  IF(BII_BLOCK_EXES)
+    list(REMOVE_ITEM BII_BLOCK_EXES builds_zos_test_fork) # Not supporting ZOS
+    IF(WIN32)
+      list(REMOVE_ITEM BII_BLOCK_EXES tests_test_fork</pre><p>This code removes (do not build), executables not intended to be build in that platform. Note the check for BII_BLOCK_EXES (this is a variable defined by biicode) to exist because when we depend on this code, executables might not exist, just the library.</p><p>Also the  build directory has to be included, as <em>config.h</em> is generated there, and some definitions have to be added in case of building with MSVC.</p><pre class="crayon-plain-tag">ADD_BIICODE_TARGETS()
+  target_include_directories(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+  if(MSVC)
+    target_compile_definitions(${BII_LIB_TARGET} PUBLIC -DWIN32
+                                                        -DDLL_EXPORT
+                                                        -DFD_SETSIZE=1024
+                                                        -D_CRT_SECURE_NO_WARNINGS)
+  endif()</pre><p>Finally, the <em>tests</em> subdirectory is added only if it exists (it might not when this block is being reused).</p><pre class="crayon-plain-tag">if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")
+    ADD_SUBDIRECTORY(tests)
+  endif()</pre><p>You can check the file <em>tests/CMakeLists.txt </em>to see required changes, that are very simple in this case.</p><p>This <em>CMakeLists.txt</em> changes are not only for managing ZeroMQ as a dependency, but also for full development. At any time you can “bii open” a block you depend on, and you will get that block inside your blocks folder, with full source code, and all executables including tests.</p><p>In this ocassion, I had to manually add some dependencies. This can be done in the file <em>“bii/dependencies.bii”</em>:</p><pre class="crayon-plain-tag">CMakeLists.txt + builds/cmake/Modules/TestZMQVersion.cmake
+     builds/cmake/Modules/ZMQSourceRunChecks.cmake
+     builds/cmake/platform.hpp.in
+     src/version.rc.in
+     src/libzmq.pc.cmake.in
+     copying
+     copying.lesser</pre><p>Biicode parses and detect dependencies via <em>#includes</em> and automatically detecting implementations (a header implemented in a source file), but <em>CMakeLists.txt</em> are not parsed yet. If we want auxiliary cmake and config files to be detected as a dependency of <em>CMakeLists.txt</em>, and always be retrieved when we depend on libzmq, we just add the file names in that file.</p><h2>Ongoing work</h2><p>This example has been tested in Mac, Win (with VS 2012) and Ubuntu 14, but further testing might be necessary, and also checking other compilers as MinGW. Included unit tests pass also except a single test in VS2012, which I am investigating.</p><p>Libsodium dependency is not handled now. I have disabled the default use of TweetNaCL, so it is not really required in Linux. I am working in uploading Libsodium to biicode, so it can also be managed easily. Also OpenPGM is not available yet.</p><p>It is easy to set-up a <a
+href="https://travis-ci.org/">travis-ci</a>  to automatically pull last github version, download biicode (and a more modern version of Cmake, as the one included is a little bit outdated), build the project, run tests, and finally publish to biicode, so everybody else can easily upgrade to the most recent version if they want to. I will post about all these things soon, stay tuned.</p><p><a
+href="http://hintjens.com/books"><img
+class="aligncenter wp-image-1609 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/libro-code-connected-volume-1-learning-zeromq-16651-MLM6571115728_072014-O.jpg" alt="ZeroMQ books by Pieter Hintjens" width="131" height="187" /></a></p><h2>Conclusion</h2><p>I have shown how easy is to build C++ ZeroMQ examples with the use of biicode, as it manages to retrieve and configure it in your project, and only requiring very few changes to the <em>CMakeLists.txt</em> while also avoiding any lock-in.</p><p>But biicode is a little bit more than a plain dependency manager. You can develop in one of your projects a server, a client and some serialization classes, and let&#8217;s say that your server has some functionality only available in Linux. You don&#8217;t have to worry about creating different projects/repositories/libraries for client, server and serialization. A windows application can just directly <em>#include</em> the client and it will be able to build correctly very easily.</p><p>&nbsp;</p><p>I will show it in next posts, meanwhile I would love to<strong> hear your feedback, please try this example and tell me!</strong></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/zeromq-cpp-biicode/">Rapid prototyping and teaching ZeroMQ in C++ with biicode.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/zeromq-cpp-biicode/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> </channel> </rss>

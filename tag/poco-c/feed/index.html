@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; POCO C++</title> <atom:link href="http://blog.biicode.com/tag/poco-c/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>POCO C++ Libraries are now available in biicode</title><link>http://blog.biicode.com/poco-cpp-libraries-available-biicode/</link> <comments>http://blog.biicode.com/poco-cpp-libraries-available-biicode/#comments</comments> <pubDate>Mon, 02 Mar 2015 14:15:08 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[Embedded programming]]></category> <category><![CDATA[Modules]]></category> <category><![CDATA[POCO C++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2091</guid> <description><![CDATA[<p>The POCO C++ Libraries are, like their own web recites, &#8220;Modern, powerful open source C++ class libraries and frameworks for building network- and internet-based applications that run on desktop, server, mobile and embedded systems&#8220;. They were created by Günter Obiltschnig in 2004 and have been extended by enthusiastic C++ developers from all over the world. Now, you have the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/poco-cpp-libraries-available-biicode/">POCO C++ Libraries are now available in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The <a
+title="POCO website" href="http://pocoproject.org/" target="_blank">POCO C++ Libraries</a> are, like their own web recites, &#8220;<em>Modern, powerful open source C++ class libraries and frameworks for building network- and internet-based applications that run on desktop, server, mobile and embedded systems</em>&#8220;. They were created by <a
+href="http://obiltschnig.com/" target="_blank">Günter Obiltschnig</a> in 2004 and have been extended by <a
+href="http://pocoproject.org/community/contributors.html">enthusiastic C++ developers</a> from all over the world.</p><p><a
+title="POCO home page" href="http://pocoproject.org/"><img
+class="aligncenter wp-image-2093 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/poco_libraries_in_biicode.png" alt="POCO C++ Libraries working fine in biicode" width="600" height="240" /></a></p><p>Now, you have the following versions available in biicode:</p><ul><li><a
+title="POCO C++ branch develop (GitHub)" href="https://www.biicode.com/fenix/fenix/poco/develop">fenix/poco (develop)</a> -&gt; changing continuously</li><li><a
+title="POCO C++ release 1.6.0" href="https://www.biicode.com/fenix/fenix/poco/v1.6.0">fenix/poco (v1.6.0)</a></li><li><a
+title="POCO C++ release 1.5.4" href="https://www.biicode.com/fenix/fenix/poco/v1.5.4">fenix/poco (v1.5.4)</a></li><li><a
+title="POCO C++ release 1.4.7p1" href="https://www.biicode.com/fenix/fenix/poco/v1.4.7p1">fenix/poco (v1.4.7p1)</a></li></ul><p><span
+id="more-2091"></span></p><h2><span
+style="color: #489cdf;"><strong>Benefits</strong></span></h2><p>biicode is a file based dependency manager, which has many advantages:</p><ul><li><strong>Save time</strong> reusing from any POCO C++ library (<em>Foundation, Net, NetSSL_OpenSSL, etc.</em>) such times as you need and avoid to configure and build out the libraries first. <strong>biicode&#8217;ll only retrieve the necessary files</strong> to build your project.</li><li>POCO C++ depends on <strong>external libraries</strong> like <a
+title="zlib home page" href="http://www.zlib.net/"><strong>zlib</strong></a>, <a
+title="PCRE home page" href="http://www.pcre.org/"><strong>PCRE</strong> </a>(Perl Compatible Regular Expressions), <a
+title="HPDF home page" href="https://hackage.haskell.org/package/HPDF"><strong>HPDF</strong></a>, <a
+title="7-Zip home page" href="http://www.7-zip.org/"><strong>7-Zip</strong></a>, <a
+title="OpenSSL home page" href="https://www.openssl.org/"><strong>OpenSSL</strong> </a>and <a
+title="SQLite home page" href="http://www.sqlite.org/"><strong>SQLite</strong> </a>that they&#8217;re <strong>uploaded on biicode</strong> and maintained by our users.</li><li>It&#8217;s been tested on biicode in <strong>Windows</strong> with <strong>Visual Studio 10</strong> and <strong>Visual Studio 12</strong>, <strong>Linux</strong> with <strong>GCC</strong> and <strong>Apple</strong> with <strong>CLang</strong></li></ul><p><strong>Note: </strong> if you&#8217;re using Windows OS, I recommend you to use Visual Studio to configure your project because with MinGW you could get some errors.</p><h2><span
+style="color: #489cdf;"><strong>POCO C++ external dependencies</strong></span></h2><p>These libraries have many external and third party dependencies to build some of them, e.g., Foundation depends on PCRE and ZLib. Without biicode PCRE and ZLib source files must be present in POCO C++ project, but with biicode it&#8217;s not needed. The following table shows all the dependencies for every version uploaded which biicode&#8217;ll find if you use all the modules in a project:</p><p><img
+class=" wp-image-2096  aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/poco_external_deps_in_biicode-1024x136.png" alt="POCO external deps found in biicode" width="1058" height="141" /></p><p>So, you&#8217;ll not have to worry about to install or build them, biicode does all the effort for you ;) These are the depending blocks in biicode:</p><ul><li><em><strong>PCRE(v8.36)</strong></em>: <a
+title="block fenix/pcre in biicode" href="https://www.biicode.com/fenix/pcre">fenix/pcre</a></li><li><em><strong>PCRE(v7.8)</strong></em>: <a
+title="block fenix/pcre(v7.8) in biicode" href="https://www.biicode.com/fenix/fenix/pcre/v7.8">fenix/pcre(v7.8)</a></li><li><em><strong>HPDF</strong></em>: <a
+title="block fenix/hpdf in biicode" href="https://www.biicode.com/fenix/hpdf">fenix/hpdf</a></li><li><em><strong>zlib</strong></em>: <a
+title="block zlib/zlib in biicode" href="http://www.biicode.com/zlib/zlib">zlib/zlib</a></li><li><em><strong>7-Zip</strong></em>:<a
+title="block fenix/7z in biicode" href="https://www.biicode.com/fenix/7z"> fenix/7z</a></li><li><em><strong>OpenSSL</strong></em>: <a
+title="block lasote/openssl(v1.0.2) in biicode" href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2">lasote/openSSL(v1.0.2)</a></li><li><em><strong>SQLite</strong></em>: <a
+title="block fenix/sqlite in biicode" href="https://www.biicode.com/fenix/sqlite">fenix/sqlite</a></li></ul><h2><span
+style="color: #489cdf;"><strong>Using POCO C++ Libraries in your project</strong></span></h2><p><strong>1.</strong> Create a new project and an empty block:</p><pre class="crayon-plain-tag">$ bii init poco_sample
+$ cd poco_sample
+$ bii new myuser/myblock</pre><p><strong>2.</strong> Add your sample code (orignal code from <em>Net/samples/dict.cpp</em>) into <em><strong>./blocks/</strong></em><em><strong>myuser/myblock/sample.cpp</strong></em></p><pre class="crayon-plain-tag">// dict.cpp
+//
+// $Id: //poco/1.4/Net/samples/dict/src/dict.cpp#1 $
+//
+// This sample demonstrates the StreamSocket and SocketStream classes.
+//
+// Copyright (c) 2005-2006, Applied Informatics Software Engineering GmbH.
+// and Contributors.
+//
+// SPDX-License-Identifier:	BSL-1.0
+#include "fenix/poco/Net/include/Poco/Net/StreamSocket.h"
+#include "fenix/poco/Net/include/Poco/Net/SocketStream.h"
+#include "fenix/poco/Net/include/Poco/Net/SocketAddress.h"
+#include "fenix/poco/Foundation/include/Poco/StreamCopier.h"
+#include "fenix/poco/Foundation/include/Poco/Path.h"
+#include "fenix/poco/Foundation/include/Poco/Exception.h"
+#include &lt;iostream&gt;
+using Poco::Net::StreamSocket;
+using Poco::Net::SocketStream;
+using Poco::Net::SocketAddress;
+using Poco::StreamCopier;
+using Poco::Path;
+using Poco::Exception;
+int main(int argc, char** argv){
+      const std::string HOST("dict.org");
+      const unsigned short PORT = 2628;
+      if (argc != 2){
+            Path p(argv[0]);
+            std::cout &lt;&lt; "usage: " &lt;&lt; p.getBaseName() &lt;&lt; " &lt;term&gt;" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "       looks up &lt;term&gt; in dict.org and prints the results" &lt;&lt; std::endl;
+            return 1;
+      }
+      std::string term(argv[1]);
+      try{
+            SocketAddress sa(HOST, PORT);
+            StreamSocket sock(sa);
+            SocketStream str(sock);
+            str &lt;&lt; "DEFINE ! " &lt;&lt; term &lt;&lt; "\r\n" &lt;&lt; std::flush;
+            str &lt;&lt; "QUIT\r\n" &lt;&lt; std::flush;
+            sock.shutdownSend();
+            StreamCopier::copyStream(str, std::cout);
+      }
+      catch (Exception&amp; exc){
+            std::cerr &lt;&lt; exc.displayText() &lt;&lt; std::endl;
+            return 1;
+      }
+      return 0;
+}</pre><p><b>3. </b>Choose which uploaded  POCO version you want to depend on, configure it through your <em><strong>./blocks/</strong></em><em><strong>myuser/myblock/</strong></em><em><strong>biicode.conf</strong></em>  file. Create it and copy the following:</p><pre class="crayon-plain-tag">[requirements]
+   fenix/poco(v1.6.0): 0</pre><p><strong>4.</strong> Finally, you&#8217;d only have to retrieve your POCO dependencies and build your sample.cpp. For it, use this command:</p><pre class="crayon-plain-tag">$ bii cpp:build</pre><p><strong>Note: </strong>for Windows users, to configure your project with Visual Studio, e.g., 10 version, execute:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 10"
+$ bii cpp:build</pre><p>So, biicode&#8217;ll download all the dependencies from <a
+title="fenix/poco(v1.6.0) block version" href="https://www.biicode.com/fenix/fenix/poco/v1.6.0">release version 1.6.0</a> and compile the project. Now, you can run the binary created in your <em><strong>./bin/ </strong></em>folder.</p><h2><span
+style="color: #489cdf;"><strong>Use the original #<em>include</em>&#8216;s</strong></span></h2><p>Change all the includes from the previous sample.cpp code to:</p><pre class="crayon-plain-tag">...
+#include "Poco/Net/StreamSocket.h"
+#include "Poco/Net/SocketStream.h"
+#include "Poco/Net/SocketAddress.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/Exception.h"
+...</pre><p>Now, tell biicode how to find this dependencies, so, modify again the <em><strong>biicode.conf</strong></em> and add the following:</p><pre class="crayon-plain-tag">[includes]
+    Poco/Net/*.h: fenix/poco/Net/include
+    Poco/*.h: fenix/poco/Foundation/include</pre><p><strong>Warning:</strong>  take care with <em><span
+style="background-color: #f2f2f2;">Poco/*.h: fenix/poco/Foundation/include</span></em> because it should always be at the end of <em><span
+style="background-color: #f2f2f2;">[includes]</span></em> section for being a really wide search pattern.</p><p>Finally, clean the metadata and build again the project:</p><pre class="crayon-plain-tag">$ bii clean
+$ bii cpp:build</pre><p></p><h4><span
+style="color: #489cdf;"><strong>Creating an example with <em>NetSSL_OpenSSL</em> or <em>NetSSL_Win </em>library</strong></span></h4><p>Making a project using these libraries is a special use case of original includes. Why? Take a look at the following example:</p><pre class="crayon-plain-tag">#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/URI.h"
+#include "Poco/SharedPtr.h"
+#include "Poco/Exception.h"
+/* headers in Net library */
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
+/* headers in NetSSL_OpenSSL and NetSSL_Win libraries */
+#include "Poco/Net/HTTPSStreamFactory.h"
+#include "Poco/Net/SSLManager.h"
+#include "Poco/Net/KeyConsoleHandler.h"
+#include "Poco/Net/ConsoleCertificateHandler.h"
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+/* Main code */</pre><p>Like you see, <em><strong>NetSSL_OpenSSL</strong> </em>and <em><strong>NetSSL_Win</strong> </em>have the same relative inlcude headers, so, the only way to resolve successfully your dependencies is writing the full path for them.</p><pre class="crayon-plain-tag">#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/URI.h"
+#include "Poco/SharedPtr.h"
+#include "Poco/Exception.h"
+/* headers in Net library */
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
+/* headers in NetSSL_OpenSSL library */
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/HTTPSStreamFactory.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/SSLManager.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/KeyConsoleHandler.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/ConsoleCertificateHandler.h"
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+/* Main code */</pre><p>The <em>biicode.conf </em>would be like the previous one.</p><h2><span
+style="color: #489cdf;"><strong>Build all the POCO C++ samples</strong></span></h2><p>Try to build all the available samples Poco brings us with each release. Create a project, open any <em><strong>examples/poco</strong></em> block and build it, e.g., examples from <a
+href="https://www.biicode.com/examples/examples/poco/v1.4.7p1"><em><strong>1.4.7p1 version</strong></em></a>:</p><pre class="crayon-plain-tag">$ bii init samples_1_4_7p1
+$ bii open "examples/poco(v1.4.7p1)"
+$ bii cpp:build</pre><p>&nbsp;</p><p>So, that&#8217;s all! POCO C++ Libraries are amazing and I strongly recommend you to start using them for your network projects.</p><p>I hope you enjoy with this post and don&#8217;t forget check our <a
+title="C++ documentation" href="http://docs.biicode.com/c++.html">complete C++ documentation</a>! If you&#8217;ve any doubt, contact us through our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or ask directly in <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow</a></p><p>&nbsp;</p><p>[<strong>UPDATE</strong>]</p><p>There is already one project reusing POCO C++ libs using biicode:</p><p><strong><br
+/> <a
+href="https://gist.github.com/carlosvin/ba77ab007fafacc32e7f">First Biicode project with Poco C++</a> </strong>by <a
+href="https://github.com/carlosvin">Carlos Martín</a>.</p><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/poco-cpp-libraries-available-biicode/">POCO C++ Libraries are now available in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/poco-cpp-libraries-available-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

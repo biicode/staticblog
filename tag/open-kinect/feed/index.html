@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Open Kinect</title> <atom:link href="http://blog.biicode.com/tag/open-kinect/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Kinect XBOX360 with biicode</title><link>http://blog.biicode.com/kinect-xbox360-biicode/</link> <comments>http://blog.biicode.com/kinect-xbox360-biicode/#comments</comments> <pubDate>Fri, 16 Jan 2015 15:01:27 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[Hacking kinect]]></category> <category><![CDATA[Kinect]]></category> <category><![CDATA[Open Kinect]]></category> <category><![CDATA[Xbox360]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2014</guid> <description><![CDATA[<p>&#160; Kinect is a line of motion sensing input devices by Microsoft for Xbox 360 and Xbox One video game consoles and Windows PCs. Based around a webcam-style add-on peripheral, it enables users to control and interact with their console/computer without the need for a game controller, through a natural user interface using gestures and spoken [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/kinect-xbox360-biicode/">Kinect XBOX360 with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><img
+class="aligncenter wp-image-2019" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/hack-your-kinect.png" alt="hack your kinect with biicode" width="416" height="488" /></p><p><span
+id="more-2014"></span></p><p>&nbsp;</p><p><strong>Kinect</strong> is a <strong>line of motion sensing input devices</strong> by Microsoft for Xbox 360 and Xbox One video game consoles and Windows PCs. Based around a webcam-style add-on peripheral, it <strong>enables users to control and interact with their console/computer without the need for a game controller</strong>, through a natural user interface using gestures and spoken commands.</p><p><img
+class="aligncenter" src="http://files.channel9.msdn.com/wlwimages/9c00b398b405423b99d19efa016fae96/image%5B7%5D-1.png" alt="A kinect camera's parts. Detection motion in any C/C++ project with biicode and this hack." width="418" height="273" /></p><p>Thanks to OpenKinect, you can use your Kinect with biicode.</p><p
+class="">OpenKinect is an open community of people interested in making use of the amazing Xbox Kinect hardware with our PCs and other devices. They are working on free, open source libraries that will enable the Kinect to be used with Windows, Linux, and Mac.</p><p
+class=""><a
+href="http://openkinect.org/wiki/Main_Page" target="_blank"><br
+/> </a><a
+href="http://openkinect.org/wiki/Main_Page" target="_blank"><img
+class="aligncenter" src="http://openkinect.org/w/images/d/da/Logo_openkinect_shaded.svg" alt="Open Kinect libs have come in really handy in this hack with biicode." width="404" height="65" /></a></p><p
+class="" style="text-align: center">You can read all the info about this community in <a
+href="http://openkinect.org/wiki/Main_Page" target="_blank">their wiki</a>.</p><p>Do you want to make your own Johnny-5? don&#8217;t know what sensor used to make the head? we have the solution, <strong>use a kinect!</strong></p><p><img
+class="aligncenter wp-image-2021" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/jhonny5.png" alt="Make your own Johnny 5 with this kinect hack" width="471" height="321" /></p><h2>How to use it with biicode?</h2><p>Just use the <a
+href="https://www.biicode.com/david/libfreenect">david/libfreenect</a> block like always, open the block and build it. If you don&#8217;t know what biicode is, please <a
+href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank">read first the getting started</a>.</p><p>First version is only available for Ubuntu.</p><pre class="crayon-plain-tag">bii init kinect
+cd kinect
+bii open david/libfreenect
+bii build</pre><p>When you use this block, it installs all libs and drivers you need to use your kinect. It creates a</p><p>Now, run the glview example an play!</p><pre class="crayon-plain-tag">cd bin
+./david_libfreenect_examples_glview</pre><p><em>To install kinect&#8217;s drivers, go ahead to the next item:<strong> </strong></em><strong><em>(Optional) How to install the Kinect Drivers on Linux</em></strong><em>.</em></p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/_tcrQZye8Xw?feature=oembed" frameborder="0" allowfullscreen></iframe></p><h2>(Optional) How to install the Kinect Drivers on Linux</h2><p>If you have any problem with the drivers of your kinect, you can install a new kernel driver. To install the kinect drivers we recommend to use the <a
+class="js-current-repository" href="https://github.com/xxorde/librekinect" target="_blank"><span
+class="author">xxorde</span><span
+class="path-divider">/l</span>ibrekinect</a> github repository, but you can use the one you want. here are two examples about how to di it.</p><h3>Example for Ubuntu 14.04</h3><p></p><pre class="crayon-plain-tag">sudo apt-get install git build-essential
+git clone https://github.com/xxorde/librekinect.git
+cd librekinect
+make
+make load</pre><p></p><h3>Example for Raspberry PI</h3><p></p><pre class="crayon-plain-tag">sudo -s
+apt-get install build-essential bc ncurses-dev tmux git
+tmux
+cd /usr/src/
+# find out which kernel you are using – in my case 3.12.20+
+uname -r
+# get the source – in my case 3.12.y (change if needed)
+wget https://github.com/raspberrypi/linux/archive/rpi-3.12.y.tar.gz
+tar xfvz rpi-3.12.y.tar.gz
+mv linux-rpi-3.12.y linux
+ln -s /usr/src/linux /lib/modules/$(uname -r)/build
+ln -s /usr/src/linux /lib/modules/$(uname -r)/source
+cd /usr/src/linux
+make mrproper
+# get your config
+gzip -dc /proc/config.gz &gt; .config
+# building, that is going to take a while! more than 12 hours.
+make
+make modules_prepare
+make modules_install
+# copy the new kernel image
+cp /usr/src/linux/arch/arm/boot/zImage /boot/linux-3.12.y
+# choose it
+echo "kernel=linux-3.12.y" &gt;&gt; /boot/config.txt
+reboot</pre><p>after reboot</p><pre class="crayon-plain-tag">git clone https://github.com/xxorde/librekinect.git
+cd librekinect
+make
+make load</pre><p>Hope you enjoy this great hack and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/kinect-xbox360-biicode/">Kinect XBOX360 with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/kinect-xbox360-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

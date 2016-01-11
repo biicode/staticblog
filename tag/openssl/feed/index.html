@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; OpenSSL</title> <atom:link href="http://blog.biicode.com/tag/openssl/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>biicode’s getting started with OpenSSL, Git and GitHub</title><link>http://blog.biicode.com/getting-started-with-openssl-git-and-github/</link> <comments>http://blog.biicode.com/getting-started-with-openssl-git-and-github/#comments</comments> <pubDate>Mon, 13 Apr 2015 11:10:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[OpenSSL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2178</guid> <description><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on OpenSSL v1.0.2 biicode block to generate MD5 (Message-Digest Algorithm 5) and SHA-1 (Secure Hash Algorithm) hashes in your Terminal. Before anything else (of course), you’ll need Git, CMake &#62; 3.0, biicode &#62; 2.6 and both accounts: GitHub and biicode. Make sure you have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on <a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">OpenSSL v1.0.2 biicode block</a> to generate <a
+title="MD5 hash" href="http://es.wikipedia.org/wiki/MD5" target="_blank">MD5 (Message-Digest Algorithm 5)</a> and <a
+title="sha1 hash" href="http://es.wikipedia.org/wiki/Secure_Hash_Algorithm" target="_blank">SHA-1 (Secure Hash Algorithm)</a> hashes in your Terminal.</p><p><img
+class="aligncenter wp-image-2182 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/postgithub.png" alt="Getting started with Git and GitHub in biicode" width="640" height="300" /></p><p><span
+id="more-2178"></span></p><p>Before anything else (of course), you’ll need <a
+title="git" href="http://git-scm.com/downloads" target="_blank">Git</a>, CMake &gt; 3.0, <a
+title="download biicode" href="https://www.biicode.com/downloads" target="_blank">biicode &gt; 2.6</a> and both accounts: <a
+href="https://github.com/login/" target="_blank">GitHub</a> and <a
+title="biicode log in" href="https://www.biicode.com/accounts/login" target="_blank">biicode</a>.</p><p>Make sure you have all them, run <code>--version </code>in your terminal:</p><pre class="crayon-plain-tag">git --version
+cmake --version
+bii --version
+#install c++ tools for biicode (optional)
+bii setup:cpp</pre><p></p><h2>Now, let’s begin with Git and Github!</h2><p>Create a GitHub repo on the web page and copy the repo’s URL:</p><p><img
+class="aligncenter wp-image-2179 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/create_new_github_repo-1024x541.png" alt="Create a new GitHub repo" width="630" height="333" /></p><p><img
+class="aligncenter wp-image-2180 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/cloneit.png" alt="Copy the recently created GitHub repo's URL" width="1003" height="242" /></p><p>Now, go back to your terminal. Clone the repo (this clones an empty git folder for your project to live in), navigate to that folder and run <code>bii init -L </code>:</p><pre class="crayon-plain-tag"># clone the repo
+clone https://github.com/MariadeAnton/bii-init.git
+# get into its folder
+cd your_repo
+# initialize
+bii init -L</pre><p></p><h3>Write the code</h3><p>Create three files: a <em>sha1.</em>cpp a <em>md5.cpp</em> to generate both hashes, SHA1 and MD5, and also a biicode.conf file.</p><pre class="crayon-plain-tag">echo "//sha1 code goes here" &gt;&gt; sha1.cpp
+echo "//md5 code goes here" &gt;&gt; md5.cpp
+echo "# biicode.conf file" &gt;&gt; biicode.conf</pre><p><strong>sha1.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p><strong>md5.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/md5.h"
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main()
+{
+    unsigned char digest[MD5_DIGEST_LENGTH];
+    char string[] = "hello biicode!";
+    MD5((unsigned char*)&amp;string, strlen(string), (unsigned char*)&amp;digest);
+    char mdString[33];
+    for(int i = 0; i &lt; 16; i++)
+         sprintf(&amp;mdString[i*2], "%02x", (unsigned int)digest[i]);
+    printf("md5 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h4>biicode.conf</h4><p>&#8211; biicode&#8217;s configuration file</p><p>Fill the biicode.conf file so bii gets the OpenSSL v1.0.2. dependencies your project needs via [requirements] and [includes] sections:</p><p><strong>biicode.conf</strong></p><pre class="crayon-plain-tag">[requirements]
+       lasote/openssl(v1.0.2): 3
+   [includes]
+       openssl/*: lasote/openssl/include</pre><p></p><h3><img
+class=" size-large wp-image-2185 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/open_ssl_sha1_biicode-1024x500.png" alt="open_ssl_sha1_biicode" width="630" height="308" /></h3><h3></h3><h3>running your project</h3><p><code>bii build</code> and you’re ready to run your project and check the generated MD5 and SHA-1 hashes.</p><pre class="crayon-plain-tag">bii build
+cd bin
+./#run SHA1 or MD5
+#see the hashes, md5 digest and sha1 digest.</pre><p></p><h3>What bii files/folders does your repo need?</h3><p>Your GitHub repo only needs <em>biicode.conf</em> file, a <em>CMakeLists.txt</em> and your code. You can safely ignore bii/ and bin/ folders as they’re auxiliary. bii/ holds subfolders like cmake/, build/ or deps/, and bin/ contains the output binaries, frequently ignored too.</p><p>Create a .gitignore file and write bii and bin to ignore both folders:</p><pre class="crayon-plain-tag">echo "bii" &gt;&gt; .gitignore
+echo "bin" &gt;&gt; .gitignore</pre><p>Add and commit your changes:</p><pre class="crayon-plain-tag"># add all files but the ones ignored
+git add --all
+# commit message
+git commit -m "my OpenSSL example biicode block"</pre><p></p><h3>Share your code</h3><p>It&#8217;s finally time to share your code. Now all is setup to push your project to GitHub and publish a biicode block referring to your GitHub repo:</p><pre class="crayon-plain-tag"># push to GitHub
+git push origin master
+# publish to biicode
+bii publish -r</pre><p>Want a repo with the files needed? <a
+title="bii-init repo" href="https://github.com/MariadeAnton/bii-init" target="_blank">Just fork mine </a> and go!</p><pre class="crayon-plain-tag">clone https://github.com/your_github_username/bii-init.git
+cd bii-init
+bii init -L</pre><p>There are many options available to automatically publish (to biicode) from GitHub. We usually use Travis-ci and Appveyor to achieve so:</p><ul><li><a
+title="travis-ci and biicode" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Automaticall build and publish via Travis CI and GitHub</a></li><li><a
+title="biicode and appveyor" href="http://blog.biicode.com/appveyor-ci-windows-biicode/" target="_blank">Using Appveyor CI and Deploy for Windows</a></li></ul><p>For those who enjoy<a
+title="open multiple blocks biicode" href="http://docs.biicode.com/c++/advanced/open_blocks.html#working-with-any-published-block" target="_blank"> using multiple blocks at the same time</a>, we recommend using a git repo for each biicode block.</p><p>Don’t forget that all layouts are fully customizable via layout.bii file, check all the options available in the docs section: <a
+title="custom biicode layout" href="http://docs.biicode.com/c++/advanced/project.html" target="_blank">Customizing your layout</a>.</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/getting-started-with-openssl-git-and-github/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

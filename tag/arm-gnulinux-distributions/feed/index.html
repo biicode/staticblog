@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; ARM GNU/Linux distributions</title> <atom:link href="http://blog.biicode.com/tag/arm-gnulinux-distributions/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Raspberry Pi 2 in depth with biicode</title><link>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/</link> <comments>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/#comments</comments> <pubDate>Wed, 04 Mar 2015 15:48:35 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[ARM GNU/Linux distributions]]></category> <category><![CDATA[Cross compilation]]></category> <category><![CDATA[Raspberry Pi 2]]></category> <category><![CDATA[Windows 10]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2075</guid> <description><![CDATA[<p>The new Raspberry Pi 2 900MHz quad-core ARM Cortex-A7 CPU (~6x performance) 1GB LPDDR2 SDRAM (2x memory) Complete compatibility with Raspberry Pi 1 Last Monday, the new Raspberry Pi 2 arrived. It can run the full range of ARM GNU/Linux distributions, including Snappy Ubuntu Core, as well as Microsoft Windows 10. In this case, we have installed [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/">Raspberry Pi 2 in depth with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>The new Raspberry Pi 2</h2><ul><li>900MHz quad-core ARM Cortex-A7 CPU (~6x performance)</li><li>1GB LPDDR2 SDRAM (2x memory)</li><li>Complete compatibility with Raspberry Pi 1</li></ul><p><img
+class="aligncenter wp-image-2076 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/jake.gif" alt="Jake from Adventure Time really like's biicode's analysis of the new Raspberry Pi 2" width="499" height="281" /></p><p><span
+id="more-2075"></span></p><p>Last Monday, the new Raspberry Pi 2 arrived. It can run the full range of ARM GNU/Linux distributions, including Snappy Ubuntu Core, as well as Microsoft Windows 10. In this case, we have installed Raspbian.</p><p>When you turn on the Raspberry Pi 2, one can see it works better than the Raspberry Pi 1, <strong>we never thought we could surf the web, talk through Hangouts and code at the same time without needing more power</strong>. The improvements in speed and fluency of the new Raspberry Pi are just amazing. Follow us in this mini-tutorial on how to configure the flashy new Raspberry Pi 2 with biicode.</p><h2>Step 1: Install native or cross compilation biicode.</h2><h3>Native biicode</h3><p>Of course, <strong>the latest version of biicode works perfectly with the Raspberry Pi 2</strong>. In fact we updated the <code>setup:cpp</code> in order to install properly all the tools and provide all the power of biicode to program it.</p><h4>Download the Raspbian version</h4><p>Just download biicode&#8217;s Raspbian versión <a
+href="https://www.biicode.com/downloads" target="_blank">from the downloads page</a>.</p><h4><img
+class="aligncenter wp-image-2101 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/downloads.png" alt="biicode's download's section where to download raspbian version of biicode" width="1100" height="304" /></h4><h4>Install biicode and the developer tools</h4><p></p><pre class="crayon-plain-tag">cd Downloads
+dpkg -i bii-debian-armv6&lt;version&gt;.deb
+bii setup:cpp</pre><p></p><h3>Cross compilation with biicode.</h3><h4>Download the Linux version</h4><p>If you want to use the <strong>default crossbuild tools, you need to use a Debian distribution</strong>. Download biicode&#8217;s Ubuntu versión <a
+href="https://www.biicode.com/downloads" target="_blank">from the downloads page</a>.</p><p><strong>If you want to use Windows</strong>,  you have an example about <a
+href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/" target="_blank">how to make a cross compilation with biicode from Windows</a> too.</p><p><img
+class="aligncenter wp-image-2102 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/downloads2.png" alt="Another section of biicode downloads featuring this time Ubuntu 32 and 64" width="1100" height="304" /></p><h4>Install biicode and the development tools.</h4><p></p><pre class="crayon-plain-tag">cd Downloads
+dpkg -i bii-debian-ubuntu&lt;version&gt;.deb
+bii setup:rpi</pre><p></p><p
+class="tw-data-text vk_txt tw-ta tw-text-medium ">If you have never used biicode to make a cross compilation or you don&#8217;t know what is it,  you can read the <a
+href="http://docs.biicode.com/raspberrypi.html" target="_blank">biicode support for Raspberry Pi cross compilation</a> section of our documentation.</p><h2 class="tw-data-text vk_txt tw-ta tw-text-medium " style="text-align: center">Raspberry Pi 2 vs Raspberry Pi 1<br
+/> (Native Compilation)</h2><h3 class="tw-data-text vk_txt tw-ta tw-text-medium "><img
+class="  aligncenter wp-image-2087" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/rpi_vs.png" alt="Both Raspberry Pi 1 and Raspberry Pi 2 are supported by biicode" width="663" height="266" /></h3><h3 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">First test: OpenCV</h3><p>The first test compared how much time was spent compiling a big library in a Raspberry Pi 1 and a Raspberry Pi 2. The Raspberry Pi 2 spent more than 30 minutes however, the Raspberry Pi 1 spent more than 1 hour and it had only compiled 39% of the library, so we decided to stop the process in order to continue with more productive things.</p><h4>Raspberry Pi 2</h4><p></p><pre class="crayon-plain-tag">bii open diego/opencv
+...
+time bii cpp:build
+...
+Building: cmake --build .
+real	33m36.365s
+user	92m1.850s
+sys	2m51.010s</pre><p></p><h4>Raspberry Pi 1</h4><p></p><pre class="crayon-plain-tag">bii open diego/opencv
+...
+time bii cpp:build
+...
+[ 39%] Built target IlmImf
+Scanning dependencies of target pch_Generate_opencv_ts
+[ 39%] Generating precomp.hpp
+[ 39%] Generating precomp.hpp.gch/opencv_ts_Release.gch
+real	85m7.442s
+user	42m1.970s
+sys	4m13.870s</pre><p></p><h2 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">Second test: libfreenect</h2><p>In this test, we compiled the library to use the kinect, libfreenect, and executed the example to see the difference between the two Raspberries Pi.</p><p>In the compilation test, the Raspberry Pi 2 spent 42 seconds and the Raspberry Pi 1 spent 2 min (120 seconds), so <strong>the  Raspberry Pi 2 was 2.85 times faster than the Raspberry Pi 1</strong>.</p><h4>Raspberry Pi 2</h4><p></p><pre class="crayon-plain-tag">$ bii open david/libfreenect
+$ bii cpp:configure
+$ time bii cpp:build
+...
+[100%] Built target david_libfreenect_wrappers_cpp_cppview
+real	0m42.068s
+user	0m29.940s
+sys	0m2.890s</pre><p></p><h4>Raspberry Pi 1</h4><p></p><pre class="crayon-plain-tag">$ bii open david/libfreenect
+$ bii cpp:configure
+$ time bii cpp:build
+...
+[100%] Built target david_libfreenect_wrappers_cpp_cppview
+real	2m0.091s
+user	1m28.790s
+sys	0m6.500s</pre><p></p><h2 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">Last test: WiringPi</h2><p>The last test <strong>tried to compile WiringPi in the Raspberry Pi 2</strong>. The previous version of the WiringPi was obsolete and <strong>we needed to update it with the last commits of the official Git repository, </strong><em><strong>git://git.drogon.net/wiringPi</strong>, </em>It was easy and painless.</p><p>If you want to use the last version, it&#8217;s under my namespace <a
+href="https://www.biicode.com/david/WiringPi" target="_blank">david/WiringPi</a> and <a
+href="https://github.com/davidsanfal/WiringPi" target="_blank">it&#8217;s in GitHub too</a>.</p><pre class="crayon-plain-tag">#include &lt;stdio.h&gt;
+#include &lt;david/WiringPi/wiringPi/wiringPi.h&gt;
+// LED Pin - wiringPi pin 0 is BCM_GPIO 17.
+#define LED 0
+int main (void)
+{
+  printf ("Raspberry Pi blink\n") ;
+  wiringPiSetup () ;
+  pinMode (LED, OUTPUT) ;
+  for (;;)
+  {
+    digitalWrite (LED, HIGH) ;    // On
+    delay (500) ;        // mS
+    digitalWrite (LED, LOW) ;    // Off
+    delay (500) ;
+  }
+  return 0 ;
+}</pre><p>&nbsp;</p><p><img
+class="aligncenter" src="http://wiki.scn.sap.com/wiki/download/attachments/394107021/rpi-blink_bb.png?version=1&amp;modificationDate=1414177337000&amp;api=v2" alt="Diagram of a raspberry pi 2" width="481" height="452" /></p><p>So the conclusion is that the new Raspberry Pi 2 is a brilliant piece of hardware that has considerably improved its main benchmarks. Now that we know what we have between our hands we will start thinking what use should we give it at biicode. If you want to propose any kind of project or experiment please drop the idea in the comments section.<br
+/> We hope you enjoy this post and don&#8217;t forget to check our <a
+title="C++ documentation" href="http://docs.biicode.com/c++.html">complete C++ documentation</a>! If you&#8217;ve any doubt, contact us through our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or ask directly in <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/">Raspberry Pi 2 in depth with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

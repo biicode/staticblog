@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; tracks</title> <atom:link href="http://blog.biicode.com/tag/tracks/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to upload to biicode. Example 5: Libuv</title><link>http://blog.biicode.com/upload-biicode-example-5-libuv/</link> <comments>http://blog.biicode.com/upload-biicode-example-5-libuv/#comments</comments> <pubDate>Mon, 22 Dec 2014 16:51:21 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[blocks]]></category> <category><![CDATA[libuv]]></category> <category><![CDATA[tracks]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1905</guid> <description><![CDATA[<p>Recently, I wrote a post about biicode&#8217;s tracks. &#8220;Biicode Tracks&#8221; mean just that: Actual working versions of the same lib uploaded into different tracks of the same block.  Biicode tracks enable quick using and switching of versions. Let&#8217;s see how I used block tracks to upload Libuv. This is a successful example of maintaining a library developed using [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-biicode-example-5-libuv/">How to upload to biicode. Example 5: Libuv</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Recently, I wrote a post about <strong><a
+title="block tracks post" href="http://blog.biicode.com/new-feature-block-tracks">biicode&#8217;s tracks.</a> &#8220;Biicode Tracks&#8221;</strong> mean just that: Actual working versions of the same lib uploaded into different tracks of the same block.<strong> </strong></p><p>Biicode tracks enable quick using and switching of versions.</p><p>Let&#8217;s see how I used block tracks to upload Libuv. This is a successful example of maintaining a library developed using github with several versions, being each one a different line of development.</p><p><img
+class="alignnone wp-image-1910 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/banner.png" alt="libuv's logo" width="1024" height="384" /></p><p><span
+id="more-1905"></span></p><p>I won&#8217;t get into details about how to adapt the libuv source code to upload it to biicode. If you want to learn how to adapt your source code to upload it to biicode, the previous posts address this topic widely:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li><li>Example 4: <a
+href="http://blog.biicode.com/upload-to-biicode-oscpack/">Oscpack by Ross Bencina</a></li></ul><h2>Libuv library</h2><p><a
+title="Github libuv" href="https://github.com/joyent/libuv" target="_blank">Libuv</a> is an awesome multi-platform library for asynchronous networking, file-system operations and many more uses. It was primarily developed to use with <a
+title="Node.js" href="http://nodejs.org/" target="_blank">Node.js</a> but it&#8217;s also used with <a
+title="luvit.io" href="http://luvit.io/" target="_blank">Luvit</a>, <a
+title="julia" href="http://julialang.org/" target="_blank">Julia</a>, <a
+title="Pyuv" href="https://github.com/saghul/pyuv" target="_blank">pyuv</a>, and <a
+title="others using libuv" href="https://github.com/joyent/libuv/wiki/Projects-that-use-libuv" target="_blank">others</a>.</p><p>You can find <a
+title="github libuv" href="https://github.com/libuv/libuv" target="_blank">libuv original source code on github</a>. It&#8217;s a well organized project development. It has branches and tags each version, stable or not:</p><p><img
+class="alignnone wp-image-1907 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/libuv_github.png" alt="libuv's github repo" width="1010" height="722" /></p><p>As you can see, there are three main versions:</p><ul><li><b>0.10</b> (Stable, used by Nodejs)</li><li><b>0.11</b> (Non stable, but commonly used)</li><li><b>1.0</b> (Made stable few days ago)</li></ul><p>The three versions are outstanding and I wanted to upload all of them to biicode.</p><h2>How to upload to biicode (workflow)</h2><p><b>1. Fork <a
+title="github libuv" href="https://github.com/joyent/libuv">libuv github</a> repository:</b></p><p><img
+class="alignnone wp-image-1909 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/forklibuv.png" alt="forking in github libuv" width="1004" height="60" /></p><p><b>2. Create a biicode project and a block named &#8220;libuv&#8221;:</b></p><pre class="crayon-plain-tag">&gt; bii init libuv_project
+&gt; cd libuv_project
+&gt; bii new lasote/libuv
+&gt; cd blocks/lasote/libuv</pre><p><b>3. Clone repo and checkout tag v0.10.29 (last 0.10 stable) and branch it. </b></p><p>I have created a branch <a
+title="Libuv branched 0.10.29" href="https://github.com/lasote/libuv/tree/v0.10.29_biicode" target="_blank">named</a> <b>v0.10.29_biicode</b>:</p><pre class="crayon-plain-tag">&gt; git clone https://github.com/lasote/libuv.git .
+&gt; git checkout v0.10.28
+&gt; git checkout -b v0.10.29_biicode</pre><p><b>4. Adapt the code to work well with biicode.</b></p><p>As I said, I won&#8217;t get into details because it&#8217;s not the purpose of this blog-post, but here&#8217;s a review of changes, <a
+title="Libuv branch biicode" href="https://github.com/lasote/libuv/tree/v0.10.29_biicode/bii" target="_blank">explore the code</a> to see the details:</p><ul><li>a) Create a <b>biicode.conf file </b>wand filled:<ul><li>[dependencies] section with some not automatically detected dependencies.</li><li>[paths] section to include <b>src</b> and <b>include</b> directories in biicode path.</li></ul></li><li>b) Create a <b>CmakeLists.txt</b> reading existing Makefiles of the project.</li></ul><p><b>5. Create [parent] section to publish a new block track and specify in it that we want to create a track named v0.10 of a <b>lasote/libuv</b> block. </b></p><p>Version -1 indicates that there is no version published yet.</p><pre class="crayon-plain-tag">* lasote/libuv(v0.10): -1</pre><p><b>6. Commit your changes to github whenever you want!</b></p><pre class="crayon-plain-tag">&gt; git add .
+&gt; git commit -m "Biicode conf files added to project"
+&gt; git push</pre><p><b>7. Once you are ready, publish it to biicode!</b></p><pre class="crayon-plain-tag">&gt; bii publish --tag STABLE</pre><p><b>8. Test if the block is reusable writing another block with an libuv&#8217;s example.</b></p><p>You can find <a
+title="Libuv examples" href="https://www.biicode.com/search?q=user:examples%20AND%20block:libuv">libuv examples</a> already uploaded to biicode.</p><p><b>9. Repeat again steps from 3 to 8 and prepare 0.11 and 1.0 tracks!</b></p><p>Using this workflow you can use Github to merge the original repository whenever you want and upload to biicode the new releases that come out.</p><p>Remember that block tracks allow you to change the version of your libuv dependency without changing the #includes in your source code.</p><h2>Want to try libuv?</h2><p>For a quick-start using libuv just open some of the examples we have:</p><pre class="crayon-plain-tag">&gt; bii open "lasote/libuv(v1.0)"
+  &gt; bii cpp:build</pre><p>Or develop your own examples just include this line in your header file:</p><pre class="crayon-plain-tag">#include "lasote/libuv/include/uv.h"</pre><p>And specify the track of libuv to depend on in the [<b>requirements]</b> section of your <strong>biicode.conf</strong> file:</p><pre class="crayon-plain-tag">[requirements]
+  #choose just one above and change it to switch between tracks
+  lasote/libuv(v0.10):0 # For libuv 0.10
+  lasote/libuv(v0.11):0 # For libuv 0.11
+  lasote/libuv(v1.0):0 # For libuv 1.0</pre><p>I hope you enjoy this post and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.<br
+/> Enjoy libuv!!!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-biicode-example-5-libuv/">How to upload to biicode. Example 5: Libuv</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-biicode-example-5-libuv/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

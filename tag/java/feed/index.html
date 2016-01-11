@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; java</title> <atom:link href="http://blog.biicode.com/tag/java/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>About non-intrusive polymorphism</title><link>http://blog.biicode.com/about-non-intrusive-polymorphism/</link> <comments>http://blog.biicode.com/about-non-intrusive-polymorphism/#comments</comments> <pubDate>Tue, 19 May 2015 14:59:48 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[java]]></category> <category><![CDATA[polymorphism]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2266</guid> <description><![CDATA[<p>Polymorphism in C++ C++ implements subtyping polymorphism in the form of virtual functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function: [crayon-56886c1233ce2555256289/] In the example above, the Interface class defines a pure virtual function f() that all the hierarchy members should override. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Polymorphism in C++</h2><p>C++ implements <a
+href="http://en.wikipedia.org/wiki/Subtyping">subtyping polymorphism</a> in the form of <code>virtual</code> functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function:</p><pre class="crayon-plain-tag">struct Interface
+{
+    virtual void f() = 0;
+    virtual ~Interface() = default;
+};
+struct A : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "A!" &lt;&lt; std::endl;
+    }
+};
+struct B : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "B!" &lt;&lt; std::endl;
+    }
+};</pre><p><span
+id="more-2266"></span></p><p>In the example above, the <code>Interface</code> class defines a pure virtual function <code>f()</code> that all the hierarchy members should override. Now you can play with objects of that hierarchy in a uniform way, being sure all of those have a <code>f()</code> function of its own.</p><pre class="crayon-plain-tag">void call_f(Interface&amp; i)
+{
+    return i.f();
+}
+int main()
+{
+    A a;
+    B b;
+    call_f(a);
+    call_f(b);
+}</pre><p>One of the most common uses cases of polymorphism is to be able to store multiple heterogeneous objects into the same container and then operate on them on the same way. While <code>virtual</code> ensures each object acts with its correct behavior. This is usually achieved with dynamic allocation: Allocating objects and the use pointers to the base class to refer to them. This way we can refer to any object of the hierarchy using the same pointer type.</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Interface&gt; objects;
+    objects.emplace_back(new A{});
+    objects.emplace_back(new B{});
+    ...
+    for(Interface* o : objects)
+        o-&gt;f();
+}</pre><p>This simple <em>&#8220;Inherit and dynamically allocate&#8221;</em> approach works like a charm, but is very error prone. Did you noticed the memory leak in the example? Also suffers from a little culprint that, IMHO, is not that little: Inheritance. To make all the sorcery work, you should belong to a class hierarchy. What if I want polymorphic behavior for existing types? What if I want polymorphic functions for <code>int</code>? Being bound to a class hierarchy is not the way to go. <em>I&#8217;m looking at you Java</em>.</p><p>Fortunately we are using C++, a multi-paradigm programming language that allows you to write very smart tricks. Meet <span
+style="text-decoration: underline;">non-intrusive polymorphism</span>.</p><h2 id="to-or-not-to-">To <code>:</code> or not to <code>:</code></h2><p>What if you can find a way to provide that kind of polymorphism, <em>a function with a specific implementation for each type</em> and at the same type have easy heterogeneous storage?</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(1);
+    objects.emplace_back("hello world!"s);
+    for(Poly&amp; o : objects)
+        o.f();
+}</pre><p>Bonus: No dynamic memory management, just RAIIfied polymorphism from the beginning.</p><p>The fundamentals are simple: <strong>Hide all the polymorphism intricacies to the user</strong>. We will do exactly the same inheritance, base class, dynamic allocation as above, but all closed inside the <code>Poly</code> class.</p><p>Lets look at the internals of <code>Poly</code>:</p><pre class="crayon-plain-tag">struct Poly
+{
+    void f()
+    {
+        ptr-&gt;f();
+    }
+private:
+    base* ptr;
+};</pre><p>A pointer to a dynamically-allocated object and a <code>f()</code> member function that calls the <code>f()</code> from the object. As I said, all polymorphism will be managed inside the <code>Poly</code> class internally. The point is that having to inherit from a base class to achieve polymorphism <strong>is an implementation detail</strong>, only based on how the language works.</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    base* ptr;
+};</pre><p>The trick consists in being able to store any kind of data dynamically, instead of explicitly asking that type to belong to the <code>base</code> hierarchy. Come in templates!</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    template&lt;typename T&gt;
+    struct derived
+    {
+        T data;
+        void f() overrides
+        {
+            ::f(data);
+        }
+    };
+    base* ptr;
+};</pre><p>Now each type we introduce into <code>Poly</code> has its own implementation of <code>f()</code>. In this example, I supposed there&#8217;s a viable free <code>f()</code> function taking a <code>T</code> as parameter. As long as your type has a valid <code>f()</code> overload, template, whatever, your type can be used in <code>Poly</code>.<br
+/> Here&#8217;s an example:</p><pre class="crayon-plain-tag">void f(int i)
+{
+    std::cout &lt;&lt; "int: " &lt;&lt; i &lt;&lt; std::endl;
+};
+void f(vonst std::string&amp; str)
+{
+    std::cout &lt;&lt; "std::string: " &lt;&lt; str &lt;&lt; std::endl;
+}
+int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(0);
+    objects.emplace_back("hello!"s);
+    for(auto&amp; o : objects)
+        o.f();
+};</pre><p></p><h2 id="some-details">Some details</h2><p>The constructor of <code>Poly</code> does part of the trick: It gets a value and instances the correct derived class dynamically:</p><pre class="crayon-plain-tag">struct Poly
+{
+    template&lt;typename T&gt;
+    Poly(T&amp;&amp; data) :
+        _ptr{ new derived&lt;T&gt;{std::forward&lt;T&gt;(data)}
+    {}
+    ...
+};</pre><p>&nbsp;</p><p>Also don&#8217;t forget to follow <a
+href="http://stackoverflow.com/questions/4782757/rule-of-three-becomes-rule-of-five-with-c11">The Rule Of Five/Three</a> and implement all the special member functions required for correct value semantics of <code>Poly</code> objects. Use a smart pointer instead or raw <code>new</code>/<code>delete</code> if you like.</p><h2 id="references">References</h2><p><a
+href="http://channel9.msdn.com/Events/GoingNative/2013/Inheritance-Is-The-Base-Class-of-Evil">&#8220;Inheritance is The Base Class of Evil&#8221;, Sean Parent</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/about-non-intrusive-polymorphism/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> </channel> </rss>

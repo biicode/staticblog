@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; email</title> <atom:link href="http://blog.biicode.com/tag/email/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</title><link>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/</link> <comments>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/#comments</comments> <pubDate>Tue, 08 Apr 2014 14:23:04 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[CC3000]]></category> <category><![CDATA[email]]></category> <category><![CDATA[example]]></category> <category><![CDATA[temboo]]></category> <category><![CDATA[wifi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=362</guid> <description><![CDATA[<p>In this post we will show how it is possible to send email from Arduino! We registered at the great temboo service which offers connection &#62;100 services (gmail, twiter, github, and many more) and a library for Arduino. But the provided temboo library expects a reference to something implementing the Arduino SDK Client &#8220;interface&#8221;. In the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/">IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In this post we will show how it is possible to send email from Arduino!</p><div><p>We registered at the great <a
+title="Temboo" href="http://www.temboo.com" target="_blank">temboo</a> service which offers connection &gt;100 services (gmail, twiter, github, and many more) and a library for Arduino. But the provided temboo library expects a reference to something implementing the Arduino SDK Client &#8220;interface&#8221;. In the setup we&#8217;re using an Arduino Mega2560 with the Adafruit CC3000 WiFi module.</p><p>If you ever need to connect the CC3000 module with another service, you can do it using this <a
+title="biicode Ardunet block" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master#.U0RdCK2Szc4" target="_blank">Ardunet block with network utilities for Arduino</a>. Unluckily, the <a
+title="biicode Adafruit CC3000 WiFi" href="https://www.biicode.com/adafruit/blocks/adafruit/cc3000_library/branches/master#.U0RdXa2Szc4" target="_blank">Adafruit CC3000 library</a> does not conform with this interface, so I had to roll my own one.</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-363" title="temboo adafruit email biicode" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/temboo-adafruit-email-biicode.jpg" alt="temboo adafruit email biicode" width="400" height="371" /></p><p>&nbsp;</p><p><span
+id="more-362"></span></p><p>And it&#8217;s use is very simple:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "../../../mywifidetails.h"
+//This file, located in your hive root folder define your wifi settings. Do not publish it!
+//#define WLAN_SSID "YOUR_SSID" // cannot be longer than 32 characters!
+//#define WLAN_PASS "your_password"
+//#define WLAN_SECURITY YOUR_WIFI_SECURITY //WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+		ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(9600);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop(void) {
+	client.connect("www.your_url.com", 80);
+	http_get(client, "www.your_url.com", "/");
+	client.stop();
+	delay(6000);
+}</pre><p>&nbsp;</p><p>The <a
+title="temboo" href="http://www.temboo.com" target="_blank">temboo</a> service generates in the web, code you can run in your arduino. If you want to create your own code, it is also quite simple. I have generated some helper functions for the email example. With the following code you should be able to send a couple of emails:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "../../../mywifidetails.h"
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+#include "diego/temboochoreos/choreo.h"
+#include "diego/temboochoreos/sendmail.h"
+//This file will contain your TEMBOO_MYMAIL_CREDENTIAL, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY, do not publish it with your block
+#include "../../../tembooaccount.h"
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+		ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(9600);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop(void) {
+	Serial.println("Send hello email");
+	TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+	sendEmail(choreo, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "Hello", "Hello World!");
+	delay(10000);
+	Serial.println("Send bye email");
+	sendEmail(choreo, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "Bye", "Bye World!");
+	while(1); //Do nothing
+}</pre><p>&nbsp;</p><p>It is not necessary to download or install anything manually! Biicode manages to get everything, the temboo library, the CC300 adapter class and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically. Just do &#8220;bii find&#8221;, and &#8220;bii arduino:upload&#8221; after customising the email address.</p><p>You might notice that<strong> you don&#8217;t need to provide your email password</strong>; you tell temboo to use your credentials (in the example TEMBOO_MYMAIL_CREDENTIAL), which is a name for your settings stored in Temboo, in which you configure your email provider (e.g. gmail), user and password. The connection to temboo is done via your TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME and TEMBOO_APP_KEY, which you can get in temboo web.</p><p>Note that there are a couple of files that are NOT located inside the block, they contain sensitive data: the &#8220;mywifidetails.h&#8221; with details about your WiFi, and &#8220;tembooaccount.h&#8221; with the data of temboo.</p><p>Temboo has hundreds of services, and using the great adafruit HW components is simple with biicode, so let your imagination fly and <strong>build your Internet of Things application</strong>!</div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/">IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> </channel> </rss>

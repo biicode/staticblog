@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; efficency</title> <atom:link href="http://blog.biicode.com/tag/efficency/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>bii internals: C vs Python efficiency</title><link>http://blog.biicode.com/bii-internals-c-vs-python/</link> <comments>http://blog.biicode.com/bii-internals-c-vs-python/#comments</comments> <pubDate>Sat, 12 Jul 2014 08:00:57 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[cython]]></category> <category><![CDATA[efficency]]></category> <category><![CDATA[obfuscate]]></category> <category><![CDATA[python]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=846</guid> <description><![CDATA[<p>In our bii internal series we’ve walked through the process to convert our python code into C code, compile it as a python native extension to distribute it for different platforms. One of the major drawbacks of using native code is that we are not supporting all systems but, on the other side, we gain in [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-c-vs-python/">bii internals: C vs Python efficiency</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In our bii internal series we’ve walked through the process to convert our <a
+title="compiling your python app with cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">python code into C code</a>, compile it as a python native extension to <a
+title="automating pkg genration biicode" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/" target="_blank">distribute it for different platforms</a>. One of the major drawbacks of using native code is that we are not supporting all systems but, on the other side, we gain in efficiency and have more control over the environments where the app runs. We’re doing some benchmark to see how much faster is biicode processing projects: running all in python code or with the native extensions.</p><p><span
+id="more-846"></span></p><p>First of all, let’s explain a bit what biicode does on every operation. At first it makes a <b>check in</b> to read files from the hard disk and it checks if they’ve changed and caches them. Then, if any files have changed, it <b>processes</b> your project which means that it parses source code, searching for dependencies, analyzes your dependencies, configuration etc. The final step is <b>checking out</b> to disk file changes and external dependencies that were already in local cache.</p><p>We’ve tested how biicode processes different libraries: running python code vs cythonized code. We’ve measured following times:</p><ul><li>Check-In: Time to read all files and cache them in memory.</li><li>Process: Time to parse code, and analyze dependencies.</li><li>Reprocess: Time to reprocess files without changes.</li></ul><p>These are the results (in seconds) for SDL library, which contains 2130 files:</p><table><tbody><tr><td></td><td><strong>Python</strong></td><td><strong>Native extensions</strong></td></tr><tr><td><strong>Check-In</strong></td><td>0.26206111908 s</td><td>0.262398004532 s</td></tr><tr><td><strong>Process</strong></td><td>9.54270887375 s</td><td>6.47844004631 s</td></tr><tr><td><strong>Reprocess</strong></td><td>1.45510792732 s</td><td>1.36480784416 s</td></tr></tbody></table><p>As you can see that check-in time is the same in both cases as it involves reading tons of files from disk so it&#8217;s IO bounded not processor bounded.</p><p>Also reprocess time is very similar, with a slightly improvement in native extensions. Reprocess makes sure there’s no need to calculate anything new.</p><p>Where you can notice major improvements is in processing time where native extensions take the 68% of the time of plain python code, 3 seconds of extra time mean a lot in terms of user experience.</p><p>Performance gain is not constant  for every library, but it increases along with number of files/relations being processed. For projects smaller than 500 files performance gain is between 7% and 8%, for larger projects it boosts up to 32%  as observed in SDL case.</p><div
+id="attachment_847" style="width: 610px" class="wp-caption alignnone"><img
+class="wp-image-847 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/image.png" alt="Same code running on python or python native extension" width="600" height="371" /><p
+class="wp-caption-text">Same code running on python or python native extension</p></div><p>So, is it worth compiling to C code? Well, depends on your project, of course. If your program is IO bounded then probably it isn&#8217;t worthy, but if you need to do tons of processing then you might consider it,  setting up the <a
+title="compiling your python app with cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">compile</a>&#8211;<a
+title="packaging a compiled app with pi installer" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/" target="_blank">package</a> process is very easy.</p><p>You can check all the posts in the series, and in case of doubts, I’ll be happy to help you, <a
+title="google plus Julia" href="https://plus.google.com/+JuliaSSimon" target="_blank">contact me</a>.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-c-vs-python/">bii internals: C vs Python efficiency</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-c-vs-python/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>BITSCAN efficiency at a glance</title><link>http://blog.biicode.com/bitscan-efficiency-at-glance/</link> <comments>http://blog.biicode.com/bitscan-efficiency-at-glance/#comments</comments> <pubDate>Fri, 04 Jul 2014 08:00:42 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[bits]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[efficency]]></category> <category><![CDATA[exclusively]]></category> <category><![CDATA[library]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=483</guid> <description><![CDATA[<p>BITSCAN 1.0, our exclusive C++ library developed by Pablo San Segundo for sets of bits greater than the CPU register word, has proven its efficiency! In order to find out if BITSCAN  was fast enough to be a substantial improvement over other libraries that manage bit strings, it has been  compared with std::bitset and  boost::dynamic_bitset similar data structures. A [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">BITSCAN efficiency at a glance</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>BITSCAN 1.0, <a
+href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan/branches/master">our exclusive C++ library developed by Pablo San Segundo</a> for sets of bits greater than the CPU register word, has proven its efficiency!</p><p>In order to find out if BITSCAN  was fast enough to be a substantial improvement over other libraries that manage bit strings, it has been  compared with std::bitset and  boost::dynamic_bitset similar data structures.</p><h3>A comment on basic features</h3><p><a
+title="stl: :bitset" href="http://www.cplusplus.com/reference/bitset/bitset/bitset/" target="_blank">STL &#8216;s Bitset (stl∷bitset)</a> is NOT dynamic (i.e. the size of the bit string must be provided in compilation time by as a template parameter), so it does not actually provide the same functionality.</p><p><a
+title="boost:dynamic_bitset" href="http://www.boost.org/doc/libs/1_36_0/libs/dynamic_bitset/dynamic_bitset.html" target="_blank">Boost´s Dynamic Bitset (boost:dynamic_bitset)</a> is similar in functionality  in fast forward bit scanning. However, Boost does NOT currently support reverse bit scanning which is important in many applications.</p><p><span
+id="more-483"></span></p><h3>The test</h3><p>We have compared the following functions:</p><p>1-<strong>Bit access:</strong> The ability to test whether a given bit is present in a given position</p><p>2<strong>-Population count</strong>: The ability to count the number of bits to 1 in a bitstring</p><p>3-<strong>Forward bit scanning (also known as LSB scanning)</strong> over the whole range of the bit string: Extracts the position of the 1-bits in sequential order starting from the least significant.</p><p>4-<strong>Reverse bit scanning (also known as MSB scanning)</strong> over the full range of the bit string: Same as (3) but in reverse order (and typically slower). As mentioned earlier neither Boost  (nor STL) currently support this functionality in their bit data structures. Actually the boost::dynamic_bitset interface  has only find_first(…) and find_next(…) functions and it would be really nice if in the next version find.last(…)  and find_previous(..) were available, since there are many applications where this is very useful indeed.</p><p>In the cases of bit scanning (3, 4) we have considered two variants which are related to the typical use in concrete applications: A) Destructive and B) Non destructive.</p><ul><li>In (A) or destructive case, once the position of the bit is read it is removed from the bitstring. This somehow easies the task of bit scanning because the main loop only has to look for the least  (most) significant bit at each step. The bad part is that the information is lost.</li><li>In the non-destructive case (B), the bit string is left intact at the end of the process. This requires additional operations w.r.t. (A) to filter out those 1-bits already picked at each 64-bit block.</li></ul><p>The code used to run these tests is located here: <a
+style="color: #1155cc;" href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan_tests/branches/master" target="_blank">https://www.biicode.com/pablodev/blocks/pablodev/bitscan_tests/branches/master</a>.</p><p>BOOST should be installed in your local machine if you want to execute it.</p><h3>Test configuration</h3><p>Tests have been carried out on an Intel(R) Core(TM) i7 CPU 920 @ 3.67GHz, 6GB RAM with a  Windows 7, 64bit O.S.</p><p>We considered bit strings with different populations (<em>n</em> ranging from 500 up to 20.000) and distributions (uniform densities <em>d,</em> range from 0.25 up to 0.9) to test the ability of the data structures to reason from one bit-block to another. In all cases results are averaged over 100.000 repetitions.</p><p><em>Figure 1</em> shows performance results. From now on we will refer to the different bit string implementations by the source  (i.e. BOOST, STL and BITSCAN) for simplicity.  The concrete tests are:</p><ol><li>Population count (Figure 1, A) : Counting of 1 bits has been tested on the three implementations.</li><li>Destructive scans (Figure 1, E and F) : Scans which involve bit deletion after reading have been tested on BITSCAN and BOOST. STL has been left out because it is not dynamic.</li><li>Non destructive scans (Figure 1, C and D) : Scans which do not involve bit deletion after reading have been tested on BITSCAN and BOOST. STL has been left out similar to (2).</li><li>Reverse bit scan (Figure 1, B): It  has been compared against forward bit scanning only in BITSCAN since the other implementations do not offer a specific function for this task.</li><li>Access to bit positions: We have also tested concrete bit access in the 3 implementations. Reported results are not included because performance has been very similar in all cases.</li></ol><p>&nbsp;</p><table><tbody><tr><td
+width="315"> <img
+class="alignnone wp-image-764" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/A-POPULATION-SIZE.png" alt="bitscan test data A POPULATION SIZE" width="315" height="224" /></td><td
+width="315"> <img
+class="alignnone wp-image-765" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/B-reverse-non-destructive.png" alt="bits scan test data B reverse non destructive" width="315" height="223" /></td></tr><tr><td
+width="315">  A) Computation of the number of bits for the three implementations with 0.5 density and varying population.</td><td
+width="315">  B) BITSCAN reverse scanning for n=20.000 and different densities.</td></tr><tr><td
+width="315"><img
+class="alignnone wp-image-766" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/C-non-destructive-n10000.png" alt="bitscan test data C non destructive n10000" width="316" height="204" /></td><td
+width="315"><img
+class="alignnone wp-image-767" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/D-non-destructive-n20000.png" alt="bitscan test data D non destructive n20000" width="315" height="223" /></td></tr><tr><td
+width="315">C) Non destructive scan comparison for n=1.000 and different densities.</td><td
+width="315">D) Non destructive scan comparison for n=20.000 and different densities.</td></tr><tr><td
+width="315"> <img
+class="alignnone wp-image-762" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/e-destructive-n1000.png" alt="bitscan test data e destructive n1000" width="315" height="217" /></td><td
+width="315"><img
+class="alignnone wp-image-763" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/F-destructive-n20000.png" alt="bitscan test data F destructive n20000" width="315" height="230" /></td></tr><tr><td
+width="315">E) Destructive scan comparison for n=1.000 and different densities.</td><td
+width="315">F) Destructive scan comparison for n=20.000 and different densities.</td></tr><tr><td
+colspan="2" width="581"><em>Figure 1. Performance tests for BITSCAN, BOOST and STL bitstring implementations</em></td></tr></tbody></table><h3>Evaluation</h3><p>Population count is between 3x to 5x faster in BITSCAN than BOOST  and  STL, probably because the machine used for the tests exploited Intel´s intrinsic function library to the limit.  Although the result is possibly machine dependent, the order of magnitude of the improvement is indicative.</p><p>In destructive scans, BITSCAN is around 2x compared to BOOST. Noteworthy is that BITSCAN&#8217;s performance does not change much in very dense bit strings (i.e. &gt;0.75) , whereas BOOST shows certain degradation.</p><p>In the &#8220;regular&#8221; non destructive scan, BITSCAN is even slightly better (2.20x approx.) than in the previous case possibly because it caches better critical information related to the last bit read.</p><p>As to reverse (backwards) scanning, it performs comparably to forward scanning in BITSCAN and may be used without penalty.</p><h3>Conclusions</h3><p>This report shows that <a
+title="bitscan code" href="http://www.biicode.com/pablodev/bitscan" target="_blank">BITSCAN </a>is a leading state of the art alternative for programmers which look for efficiency in their implementations. Cutting edge research is showing that many combinatorial problems encoded with bit strings may be solved many times faster. Biicode sincerely hopes BITSCAN helps C, C++ developers throughout the world to make their code faster. It has already been employed successfully in a number of difficult and well known problems from the graph domain and many research papers describe how it can be done [<a
+title="An improved bit parallel exact maximum clique algorithm" href="http://oa.upm.es/11804/2/INVE_MEM_2011_107297.pdf" target="_blank">1</a>, <a
+title="An exact bit parallel algorithm for the maximum clique problem" href="http://dl.acm.org/citation.cfm?id=1860369" target="_blank">2</a>, <a
+title="A new exact bit parallel algorithm for SAT" href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4669756&amp;tag=1" target="_blank">3</a>, &#8230;].</p><p>Moreover Biicode hopes it may be improved by following our reuse paradigm. This will be an even more exciting test!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">BITSCAN efficiency at a glance</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bitscan-efficiency-at-glance/feed/</wfw:commentRss> <slash:comments>5</slash:comments> </item> </channel> </rss>

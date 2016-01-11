@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; graph</title> <atom:link href="http://blog.biicode.com/tag/graph/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Sparse bitsets in C++ with BITSCAN</title><link>http://blog.biicode.com/sparse-bitsets-cpp/</link> <comments>http://blog.biicode.com/sparse-bitsets-cpp/#comments</comments> <pubDate>Tue, 23 Sep 2014 09:01:20 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[bitstring analysis]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[graph]]></category> <category><![CDATA[sparse]]></category> <category><![CDATA[sparse bitsets]]></category> <category><![CDATA[sparsity]]></category> <category><![CDATA[ugraph]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1584</guid> <description><![CDATA[<p>Sparse bitsets in C++ Sparsity when referring to systems indicates that they are loosely coupled. Thus, a sparse matrix is a matrix in which most of its elements are zero, a sparse graph has very few adjacent vertices (its adjacency matrix is also sparse) etc. Opposite to sparsity is density, and dense systems are those [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/sparse-bitsets-cpp/">Sparse bitsets in C++ with BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Sparse bitsets in C++</h2><p><em>Sparsity</em> when referring to systems indicates that they are loosely coupled. Thus, a sparse matrix is a matrix in which most of its elements are zero, a sparse graph has very few adjacent vertices (its adjacency matrix is also sparse) etc. Opposite to sparsity is density, and dense systems are those that are strongly coupled.</p><p>In a recent post we proposed <a
+title="K CORES analysis bitscan" href="http://blog.biicode.com/k-cores-analysis-bitscan/" target="_blank">BITSCAN </a> a recent C++ library to manipulate bit strings. A comparative survey with other state of the art implementations (such as <em>bitset</em> (STL), or <em>dynamic_biset</em>(BOOST)) may be found <a
+href="http://blog.biicode.com/bitscan-efficiency-at-glance/">here</a>. This post brifely describes how BITSCAN operates with sparse bitsets.</p><div
+id="attachment_1592" style="width: 295px" class="wp-caption aligncenter"><img
+class="wp-image-1592 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/sparse-bitstrings-bitscan.png" alt="Sparse bitsets in C++ with biicode's library BITSCAN" width="285" height="177" /><p
+class="wp-caption-text">Figure 1</p></div><p><span
+id="more-1584"></span></p><p>Sparse bitsets are bitstrings with a very high rate of 0-bits. Consider a population set of 1.000 elements (for example production parts per day) from which we want to store a Boolean property (e.g. parts which didn´t pass a specific quality tests). Let´s assume that, in a particular day, only 3 parts were affected. The classical way to deal with such a problem would be to store the 3 elements in an array but if we are interested to <em>reason</em> with that information we might decide on a bitstring encoding. In STL the correct way would look something like this:</p><pre class="crayon-plain-tag">#include &lt;bitset&gt;		//STL implementation for bit strings
+void main(){
+  bitset&lt;1000&gt; bs;		//fixed population size
+  bs.set(0);
+  bs.set(1);
+  bs.set(2);
+}</pre><p>Consider now a production of 1.000.000 parts and again just 3 members in the set. Now bitset&lt;1000000&gt; simply allocates an enormous amount of wasted space. Moreover, reasoning with such degree of sparsity will operate most of the time with empty bit blocks and perform a huge number of spurious bit masking operations.</p><h2>Operating with sparse bitsets</h2><p>BITSCAN treats sparsity as a special case. Internally, sparse bitsets are an ordered array of elements which look similar to the following code (ignore the actual names):</p><pre class="crayon-plain-tag">struct elem{
+  int index;				//index of bit block in the bit string
+  BITBOARD bb;
+}
+class SparseBitString{
+  vector&lt;elem&gt; bitstring;		//sorted array by index
+}</pre><p>&nbsp;</p><p><img
+class="size-full wp-image-1668 alignright" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/2421.jpg" alt="Sparse bitsets are weakly coupled and get a special treatment with BITSCAN in biicode." width="397" height="600" />Each element is a bitblock the size of the register word (typically 64 bits) <em>which contains at least a 1-bit</em>; empty bitblocks are simply ignored. Returning to the previous manufacturing example, the sparse bitstring in BITSCAN would only store the single <em>elem</em> {index=0, bb=00000111} for the whole 1.000.000 population.<em> Figure 1</em> shows another example; there a bit string is used to store all the white pawns in a given position. Considering an 8-bit CPU register size, a BITSCAN sparse bit string would only store the 3 non-zero bit-blocks with their corresponding indexes (3, 4, 7) (assume index 1 refers to the bottom block).</p><p>The actual wrappers for sparse bitstrings are the following data types:</p><ul><li><strong>sparse_bitarray</strong>: The main data type which includes all optimizations. In most cases this is the type to be used.</li><li><strong>simple_sparse_bitarray</strong>: A simpler data type to be used only if compiler/HW does not support intrinsics.</li></ul><p>An elementary example of how to use sparse bitsets in BITSCAN is:</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"	        //one and only header for the BITSCAN block in Biicode
+void main(){
+  sparse_bitarray sba(1000000);			//size of the population
+  sba.set_bit(0);
+  sba.set_bit(1);
+  sba.set_bit(2);
+  //stores just one 64-bit block
+}</pre><p>Features currently included for sparse bitsets are oriented towards fast bit scanning. Set union (OR mask) and intersection (AND mask) are also supported. Note that the sparse storage of bitblocks has a penalty on insertion (set_bit is an <em>ordered</em> insertion which runs in logarithmic time) and so does individual bit retrieval (also logarithmic).</p><p>An example of a (<em>non-destructive</em>) bit scan appears below. This is the typical case in which the bit string remains constant. A more efficient form of scanning (<em>destructive</em>) deletes 1-bits as they are scanned. There are many more such examples in the <em>tests </em>folder of the distribution.</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"	        //one and only header for the BITSCAN block in Biicode
+void main(){
+  sparse_bitarray sba(1000000);			//size of the population
+  //set sba appropiately...
+  int nBit=EMPTY_ELEM;
+  if(sba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+     while(true){
+        nBit=sba.next_bit();
+        if(nBit==EMPTY_ELEM) break;
+        //int foo = nBit...
+     }
+  }
+}</pre><p>A very important application for sparse bitsets is the <span
+style="text-decoration: underline;">encoding of real graphs</span> which tend to be have high order but also tend to be very sparse. The <a
+title="GRAPH LIBRARY BIICODE BITSCAN" href="http://www.biicode.com/pablodev/pablodev/graph/master" target="_blank">GRAPH </a> block in the Biicode repository now contains an illustrative wrapper for sparse graphs based on BITSCAN. It is still very much in alpha, but we are developping regularly an it already includes <a
+href="http://blog.biicode.com/k-cores-analysis-bitscan/">an efficient implementation of k-Core analysis</a>. A post on sparse graphs and GRAPH will be coming out soon!</p><p>Stay tuned by signing up below</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/sparse-bitsets-cpp/">Sparse bitsets in C++ with BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/sparse-bitsets-cpp/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Bit-encoded Graphs</title><link>http://blog.biicode.com/bit-encoded-graph/</link> <comments>http://blog.biicode.com/bit-encoded-graph/#comments</comments> <pubDate>Thu, 31 Jul 2014 08:30:26 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[news]]></category> <category><![CDATA[bit set]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitarray]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[graph]]></category> <category><![CDATA[np-hard]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=969</guid> <description><![CDATA[<p>UPDATED: 11/09/2014 Today, by the hand of Pablo San Segundo, we present graph and ugraph, two simple, easy-to-use, C++ wrappers for unweighted graphs encoded as bit strings. Preliminaries One of the most interesting and versatile applications of bit strings is to encode simple unweighted graphs dynamic in the number of edges (i.e. there is an [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-encoded-graph/">Bit-encoded Graphs</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>UPDATED: 11/09/2014</p><p>Today, by the hand of <a
+title="Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a>, we present g<em>raph</em> and <em>ugraph</em>, two simple, easy-to-use, C++ wrappers for unweighted graphs encoded as bit strings.</p><h2>Preliminaries</h2><p>One of the most interesting and versatile applications of bit strings is to encode simple unweighted graphs dynamic in the number of edges (i.e. there is an efficient way to add/remove edges but not so for the vertices). Graphs encoded as bit strings have recently attracted the attention of researchers in relation to  well known NP-hard problems such as <em>vertex coloring</em> or <em>clique</em>. The main reason is that efficient algorithms that exploit bit-parallelism at CPU level have been found for such problems.</p><p><span
+id="more-969"></span></p><p>The figure shows a simple undirected graph with 6 vertices (in red a 3-clique).  The last two columns show the bit encoding of the adjacency matrix of the graph. Each 1-bit refers to an edge in the graph and each bit string encodes the neighbor set of the corresponding vertex.</p><p><img
+class="aligncenter wp-image-970" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/ugraph-pablo-exmple-bitstring.png" alt="ugraph pablo exmple bitstring" width="630" height="240" /></p><p>For example, the bitstring for V1 is 010010, which indicates that V2 and V5 are its neighbors (we assume bit positions start at 1 and increase from left to right).</p><h2>graph CLASS</h2><p>A graph object refers to a (bit-encoded) simple directed graph. In the current version it is possible either to create an empty graph of any order (and add or remove edges manually) or to read a graph in DIMACS format from a text file.</p><p>Here is an example:</p><pre class="crayon-plain-tag">#include "pablodev/graph/graph.h"   //header for the block in Biicode repository
+graph g1("brock200_1.clq");         //reads the file in g1
+graph g2(3);                        //creates a 3-clique in g2
+g2.add_edge(0,1);
+g2.add_edge(1,2);
+g2.add_edge(0,3);</pre><p><em>graph</em> includes a number of functionalities related to graph configuration, examples of which can be found in the <em>test_graph.cpp</em> file inside the <em>tests</em> folder of the distribution. Adding and removing edges can be done in constant time. However removing vertices modifies the adjacency matrix and requires memory reallocation.</p><p>It is important to remember that graph objects are by default <em>directed</em> (the adjacency matrix is not symmetrical). If you want to ensure that edges are symmetrical use the <em>make_bidirected</em> member function.</p><h2>ugraph CLASS</h2><p>The <em>u</em>g<em>raph</em> class is a specialization of the <em>graph</em> class for undirected graphs. Each time an edge is added to the graph (with the <em>add_edge</em> function) it is always symmetrical. Moreover a number of functions can be implemented more efficiently for the undirected case and have been overridden for <em>graph</em>, such as logical checking for equality, edge processing etc. As before  we refer the reader to the <em>test_graph.cpp</em> file for examples of code.</p><h2>APPLICATIONS</h2><p>The <em>ugraph</em> class has been used to implement <em>BBMC</em>, a leading state of the art algorithm for the maximum clique problem known to be NP-hard. A number of variants for BBMC are described in literature <sup><a
+id="ref1" href="#fn1">1</a></sup> <sup><a
+id="ref2" href="#fn2">2</a></sup> <sup><a
+id="ref3" href="#fn3">3</a></sup><br
+/> . BBMC has also been applied successfully to approximate vertex coloring  and exact coloring <sup><a
+id="ref4" href="#fn4">4</a></sup>. Finally some applications for real problems related to matching can be found in <sup><a
+id="ref5" href="#fn5">5</a> </sup><sup><a
+id="ref6" href="#fn6">6</a></sup>.</p><p><a
+title="Graph Ugraph classes bit-encoding" href="http://www.biicode.com/pablodev/pablodev/graph/master" target="_blank"><em>graph</em> and <em>ugraph</em> types are available exclusively at Biicode. </a>We make them public for researchers and practitioners which are interested in combinatorial problem solving and as an example of  bit string graph encoding. We also hope that Biicode´s reuse paradigm helps to add new exciting features!</p><p>&nbsp;</p><h3>Footnotes</h3><p><sup
+id="fn1">1.    San Segundo, P. Rodriguez-Losada, D., Jimenez, A.; <em>An exact bit-parallel algorithm for the maximum clique problem</em>. Computers &amp; Operations Research  38:2, 2011, 571-581.<a
+title="Jump back to footnote 1 in the text." href="#ref1">↩</a></sup></p><p><sup
+id="fn2">2.    San Segundo, P. Matia, F., Rodriguez-Losada, D., Hernando, M.; <em>An improved bit parallel exact maximum clique algorithm.</em> Optimization Letters.  7:3, Springer 2011, 467-479.<a
+title="Jump back to footnote 2 in the text." href="#ref2">↩</a></sup></p><p><sup
+id="fn3">3.      San Segundo, P., Tapia, C. <em>Relaxed approximate coloring in exact maximum clique search. </em><em>Computers &amp; Operations Research</em>, 44, 2014, 185-192.<a
+title="Jump back to footnote 3 in the text." href="#ref3">↩</a></sup></p><p><sup
+id="fn4">4.      San Segundo, P. <em>A new DSATUR-based algorithm for exact vertex coloring</em>. Computers &amp; Operations Research, 39:7, 2012, 1724-1733.<a
+title="Jump back to footnote 4 in the text." href="#ref4">↩</a></sup></p><p><sup
+id="fn5">5.      San Segundo, P., Rodriguez-Losada, D., Matia, F., Galan, R. <em>Fast exact feature based data correspondence search with an efficient bit-parallel MCP solver</em>. Applied Intelligence, 32:3, 2010, 311-329.<a
+title="Jump back to footnote 5 in the text." href="#ref5">↩</a></sup></p><p><sup
+id="fn6">6.      San Segundo, P., Rodriguez-Losada, D. <em>Robust Global Feature Based Data Association With a Sparse Bit Optimized Maximum Clique Algorithm</em>.  IEEE Transactions on Robotics, 29:5, 2013, 1332-1339.<a
+title="Jump back to footnote 6 in the text." href="#ref6">↩</a></sup><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-encoded-graph/">Bit-encoded Graphs</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bit-encoded-graph/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Europython 2014 in Berlin</title><link>http://blog.biicode.com/europython/</link> <comments>http://blog.biicode.com/europython/#comments</comments> <pubDate>Tue, 22 Jul 2014 10:22:52 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[events]]></category> <category><![CDATA[cython]]></category> <category><![CDATA[databases]]></category> <category><![CDATA[eficiency]]></category> <category><![CDATA[europython]]></category> <category><![CDATA[graph]]></category> <category><![CDATA[python]]></category> <category><![CDATA[talks]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=906</guid> <description><![CDATA[<p>Our employees @hithwen and @fcofdezc are giving talks at @europython! Don&#8217;t miss our employees&#8217;s talks at EuroPython! Francisco Fernández, @fcofdezc  22 July Extending Python, what is the best option for me?  23 July Graph Databases, a little connected tour  Julia S. Simón, @hithwen  24 July Multiplatform binary packaging and distribution of your client apps Stay tuned and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/europython/">Europython 2014 in Berlin</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Our employees <a
+title="twitter hithwen" href="https://twitter.com/hithwen" target="_blank">@hithwen</a> and <a
+title="fcofdezc twitter" href="https://twitter.com/fcofdezc" target="_blank">@fcofdezc</a> are giving talks at <a
+title="europython twitter" href="https://twitter.com/europython" target="_blank">@europython</a>!</p><div
+id="attachment_1215" style="width: 880px" class="wp-caption alignright"><img
+class="size-full wp-image-1215" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/logo-big.png" alt="EuroPython" width="870" height="293" /><p
+class="wp-caption-text">Credit: EuroPython</p></div><h2>Don&#8217;t miss our employees&#8217;s talks at EuroPython!</h2><table><tbody><tr><td
+colspan="2" width="581"><h3>Francisco Fernández, <a
+title="fcofdezc twitter" href="https://twitter.com/fcofdezc" target="_blank">@fcofdezc</a></h3></td></tr><tr><td
+width="315"><ul><li> 22 July</li></ul></td><td
+width="315"><p
+id="site-title" style="font-weight: 300; color: #00788c;"><a
+title="Europython session extending python" href="https://ep2014.europython.eu/en/schedule/sessions/69/" target="_blank">Extending Python, what is the best option for me?</a></p></td></tr><tr><td
+width="315"><ul><li> 23 July</li></ul></td><td
+width="315"><p
+id="site-title" style="font-weight: 300; color: #00788c;"><a
+title="Europython Graph Databases talk" href="https://ep2014.europython.eu/en/schedule/sessions/70/" target="_blank">Graph Databases, a little connected tour</a></p></td></tr><tr><td
+colspan="2" width="581"><h3> Julia S. Simón, <a
+title="twitter hithwen" href="https://twitter.com/hithwen" target="_blank">@hithwen</a></h3></td></tr><tr><td
+width="315"><ul><li> 24 July</li></ul></td><td
+width="315"><p
+id="site-title" style="font-weight: 300; color: #00788c;"><a
+title="Europython talk binary packaging distribution" href="https://ep2014.europython.eu/en/schedule/sessions/31/" target="_blank">Multiplatform binary packaging and distribution of your client apps</a></p></td></tr></tbody></table><p>Stay tuned and follow <a
+title="biicode twitter" href="https://twitter.com/biicode" target="_blank">@biicode</a> , all talks will be announced, so you can see them in streaming!<span
+id="more-906"></span></p><p>These are the slides Francisco used an our ago in his talk: Extending Python, what is the best option for me?</p><p>&nbsp;</p><p><iframe
+src="http://www.slideshare.net/slideshow/embed_code/37231985" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe><div
+style="margin-bottom:5px"> <strong> <a
+href="https://www.slideshare.net/fcofdezc/extensions-37231985" title="Extending Python - EuroPython 2014" target="_blank">Extending Python &#8211; EuroPython 2014</a> </strong> from <strong><a
+href="http://www.slideshare.net/fcofdezc" target="_blank">fcofdezc</a></strong></div><p>&nbsp;</p><p>And Julia, will be talking about MultiPlatform binary packaging and distribution of client apps, the same approach she has followed on her <a
+title="bii-internals series in our blog" href="http://blog.biicode.com/tag/bii-internals/">bii:internals series</a>.</p><p><img
+class="alignleft wp-image-913" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/multiplatform-binary-packaging.png" alt="multiplatform binary packaging" width="400" height="235" /></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/europython/">Europython 2014 in Berlin</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/europython/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,1171 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/software-design-proposal/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:44:04 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>A software design proposal - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="The author argues that functionality should be available despite software design constraints. A deps manager would solve this issue."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="A software design proposal - biicode Blog" /><meta
+property="og:description" content="The author argues that functionality should be available despite software design constraints. A deps manager would solve this issue." /><meta
+property="og:url" content="http://blog.biicode.com/software-design-proposal/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="dependency management" /><meta
+property="article:tag" content="functionality vs. design" /><meta
+property="article:tag" content="software desing" /><meta
+property="article:section" content="Software design" /><meta
+property="article:published_time" content="2014-10-30T12:47:46+00:00" /><meta
+property="article:modified_time" content="2014-10-30T16:14:35+00:00" /><meta
+property="og:updated_time" content="2014-10-30T16:14:35+00:00" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="A software design proposal - biicode Blog"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; A software design principle: Don&#8217;t make me use your design Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index13c2.html?p=1862' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-1862 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/software-design/index.html" rel="v:url" property="v:title">Software design</a> » <strong
+class="breadcrumb_last">A software design principle: Don&#8217;t make me use your design</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-1862" class="post-1862 post type-post status-publish format-standard hentry category-software-design tag-dependency-management tag-functionality-vs-design tag-software-desing"> <header
+class="entry-header"><h1 class="entry-title">A software design principle: Don&#8217;t make me use your design</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="12:47" rel="bookmark"><time
+class="entry-date" datetime="2014-10-30T12:47:46+00:00">October 30, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/diego/index.html" title="View all posts by diego" rel="author">diego</a></span></span></div> </header><div
+class="entry-content"><h2>Or why there is no SerialPort in C++</h2><p>Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out there. So communicating over a serial port in a portable way should be straightforward.</p><p><span
+id="more-1862"></span></p><p>Probably as straightforward as it is in python. To send a few bytes, with just a bare python installation, all you have to do (in any OS) is:</p><p><code>$ pip install pyserial</code></p><p>this downloads and sets up a dozen files, just a few KBs. Then, write your code:</p><div
+id="crayon-56886bf08a206443966439" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+import serial
+ser = serial.Serial(0)
+ser.write("hello")
+ser.close()</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886bf08a206443966439-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a206443966439-2">2</div><div
+class="crayon-num" data-line="crayon-56886bf08a206443966439-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a206443966439-4">4</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886bf08a206443966439-1"><span
+class="crayon-e">import </span><span
+class="crayon-e">serial</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a206443966439-2"><span
+class="crayon-v">ser</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">serial</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">Serial</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886bf08a206443966439-3"><span
+class="crayon-v">ser</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">write</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"hello"</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a206443966439-4"><span
+class="crayon-v">ser</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">close</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>And that’s it!</p><p>Lets do it now in C++. Suppose you want to write a similar application just to send some bytes over the serial port. The first difficulty is that seems there’s nothing as “standard” or widely accepted, so my first attempt was to use <a
+href="http://www.mrpt.org/">MRPT</a>. MRPT is a robotics library plenty of great drivers, algorithms, tools, interfaces… an amazing and very popular tool kit for robotics. I could use the whole MRPT, but lets say I am not willing to introduce a dependency to it, it is very large (60Mb of source code, &gt;5k source files) and contains tons of stuff I do not need. I want to get just the SerialPort functionality. Going down to the code, you can find a <code>CSerialPort_win.cpp</code> and a <code>CSerialPort_lin.cpp</code> files, both implementing the same CSerialPort class, declared in <code>CSerialPort.h</code> header file. In the implementation file you can find:</p><div
+id="crayon-56886bf08a218091796756" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+void  CSerialPort::open( )
+{
+	MRPT_START
+	…
+	// Open the serial port:
+	if ( INVALID_HANDLE_VALUE == (
+	            hCOM = CreateFileA( m_serialName.c_str(), // Serial Port name</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886bf08a218091796756-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a218091796756-2">2</div><div
+class="crayon-num" data-line="crayon-56886bf08a218091796756-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a218091796756-4">4</div><div
+class="crayon-num" data-line="crayon-56886bf08a218091796756-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a218091796756-6">6</div><div
+class="crayon-num" data-line="crayon-56886bf08a218091796756-7">7</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886bf08a218091796756-1"><span
+class="crayon-t">void</span><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">CSerialPort</span><span
+class="crayon-o">::</span><span
+class="crayon-e">open</span><span
+class="crayon-sy">(</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a218091796756-2"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a218091796756-3"><span
+class="crayon-h"> </span><span
+class="crayon-v">MRPT</span><span
+class="crayon-sy">_</span>START</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a218091796756-4"><span
+class="crayon-h"> </span>…<span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886bf08a218091796756-5"><span
+class="crayon-h"> </span><span
+class="crayon-c">// Open the serial port:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a218091796756-6"><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-h"> </span><span
+class="crayon-v">INVALID_HANDLE_VALUE</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span></div><div
+class="crayon-line" id="crayon-56886bf08a218091796756-7"><span
+class="crayon-h"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">hCOM</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">CreateFileA</span><span
+class="crayon-sy">(</span><span
+class="crayon-h"> </span><span
+class="crayon-v">m_serialName</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">c_str</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-c">// Serial Port name</span></div></div></td></tr></table></div></div><p>And in the header:</p><div
+id="crayon-56886bf08a222208207997" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+class HWDRIVERS_IMPEXP CSerialPort : public CStream
+		{
+			friend class PosixSignalDispatcherImpl;
+		public:</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886bf08a222208207997-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a222208207997-2">2</div><div
+class="crayon-num" data-line="crayon-56886bf08a222208207997-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a222208207997-4">4</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886bf08a222208207997-1"><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-e">HWDRIVERS_IMPEXP </span><span
+class="crayon-v">CSerialPort</span><span
+class="crayon-h"> </span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-m">public</span><span
+class="crayon-h"> </span><span
+class="crayon-e">CStream</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a222208207997-2"><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a222208207997-3"><span
+class="crayon-h"> </span><span
+class="crayon-t">friend</span><span
+class="crayon-h"> </span><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">PosixSignalDispatcherImpl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a222208207997-4"><span
+class="crayon-h"> </span><span
+class="crayon-m">public</span><span
+class="crayon-o">:</span></div></div></td></tr></table></div></div><p>That&#8217;s it, the implementation relies on a macro MRPT_START (it allows profiling and exception handling), which seems could be easily removed, but the header inherits from CStream, a base class for streams (network, files, output, etc), which in turn depends on a serialization framework (CSerializable, CObject).</p><p>While the overall software design of the library is great, it is very difficult to isolate what, in my opinion, should be a very independent and low coupled component. Please, do not misunderstand my opinion, MRPT is really great. The problem is simply that the library was not designed with that goal in mind.</p><p>My guess was that something more generic, not tied to robotics, solution already existed. So I googled for it a little and it seemed that the most accepted solution (at least in stackoverflow) was using <code>boost::asio</code>. It seemed reasonable to me that depending on 500 Mb of source code is probably overkill for sending some bytes, so I also tried to extract the serial port functionality. But I found some high levels of abstractions over it, for example, in the file <code>basic_serial_port.hpp</code>:</p><div
+id="crayon-56886bf08a22c205647831" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+template &lt;typename SerialPortService = serial_port_service&gt;
+class basic_serial_port
+  : public basic_io_object&lt;SerialPortService&gt;,
+    public serial_port_base
+{
+public:</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886bf08a22c205647831-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a22c205647831-2">2</div><div
+class="crayon-num" data-line="crayon-56886bf08a22c205647831-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a22c205647831-4">4</div><div
+class="crayon-num" data-line="crayon-56886bf08a22c205647831-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a22c205647831-6">6</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886bf08a22c205647831-1"><span
+class="crayon-t">template</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;</span><span
+class="crayon-r">typename</span><span
+class="crayon-h"> </span><span
+class="crayon-v">SerialPortService</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">serial_port_service</span><span
+class="crayon-o">&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a22c205647831-2"><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">basic_serial_port</span></div><div
+class="crayon-line" id="crayon-56886bf08a22c205647831-3"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-m">public</span><span
+class="crayon-h"> </span><span
+class="crayon-v">basic_io_object</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-v">SerialPortService</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">,</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a22c205647831-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-m">public</span><span
+class="crayon-h"> </span><span
+class="crayon-e">serial_port_base</span></div><div
+class="crayon-line" id="crayon-56886bf08a22c205647831-5"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a22c205647831-6"><span
+class="crayon-m">public</span><span
+class="crayon-o">:</span></div></div></td></tr></table></div></div><p>You have to dig deeply into <code>win_iocp_serial_port_service.ipp</code> to actually find the code that opens the port in Win:</p><div
+id="crayon-56886bf08a236451967299" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+boost::system::error_code win_iocp_serial_port_service::open(
+    win_iocp_serial_port_service::implementation_type&amp; impl,
+    const std::string&amp; device, boost::system::error_code&amp; ec)
+{
+  if (is_open(impl))
+  {
+    ec = boost::asio::error::already_open;
+    return ec;
+  }
+  // Open a handle to the serial port.
+  ::HANDLE handle = ::CreateFileA(name.c_str()</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886bf08a236451967299-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a236451967299-2">2</div><div
+class="crayon-num" data-line="crayon-56886bf08a236451967299-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a236451967299-4">4</div><div
+class="crayon-num" data-line="crayon-56886bf08a236451967299-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a236451967299-6">6</div><div
+class="crayon-num" data-line="crayon-56886bf08a236451967299-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a236451967299-8">8</div><div
+class="crayon-num" data-line="crayon-56886bf08a236451967299-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a236451967299-10">10</div><div
+class="crayon-num" data-line="crayon-56886bf08a236451967299-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a236451967299-12">12</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886bf08a236451967299-1"><span
+class="crayon-v">boost</span><span
+class="crayon-o">::</span><span
+class="crayon-v">system</span><span
+class="crayon-o">::</span><span
+class="crayon-e">error_code </span><span
+class="crayon-v">win_iocp_serial_port_service</span><span
+class="crayon-o">::</span><span
+class="crayon-e">open</span><span
+class="crayon-sy">(</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a236451967299-2"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">win_iocp_serial_port_service</span><span
+class="crayon-o">::</span><span
+class="crayon-v">implementation_type</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">impl</span><span
+class="crayon-sy">,</span></div><div
+class="crayon-line" id="crayon-56886bf08a236451967299-3"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-m">const</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-t">string</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">device</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">boost</span><span
+class="crayon-o">::</span><span
+class="crayon-v">system</span><span
+class="crayon-o">::</span><span
+class="crayon-v">error_code</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ec</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a236451967299-4"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a236451967299-5"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-e">is_open</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">impl</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a236451967299-6"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a236451967299-7"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">ec</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">boost</span><span
+class="crayon-o">::</span><span
+class="crayon-v">asio</span><span
+class="crayon-o">::</span><span
+class="crayon-v">error</span><span
+class="crayon-o">::</span><span
+class="crayon-v">already_open</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a236451967299-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ec</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a236451967299-9"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a236451967299-10">&nbsp;</div><div
+class="crayon-line" id="crayon-56886bf08a236451967299-11"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-c">// Open a handle to the serial port.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a236451967299-12"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">::</span><span
+class="crayon-e">HANDLE </span><span
+class="crayon-v">handle</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-o">::</span><span
+class="crayon-e">CreateFileA</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">name</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">c_str</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>Surprisingly, the functionality is spread between different files, for example, the latter contains code for opening, closing and setting parameters, but the code for sending and receiving bytes is located in another file.</p><p>Basically the conclusion is that you cannot use the serial port separately, you are forced to use it with Asio. We’re facing the same problem again: boost is really amazing and asio is also brilliant. And surely their serial port implementations (both MRPT and boost::asio) are more configurable and powerful than the python one is. I personally wish someday I could write code half as good as the one in any of those projects. But I see a pattern here, one, that doesn&#8217;t allow to have a small and simple SerialPort functionality to just synchronously send and receive some bytes over the serial port. So I dare to state what IMHO could be considered as a design principle:</p><h2>Let me use your functionality without using your design</h2><p>Of course, this principle is nothing new. It is very related to many well known principles and patterns. It is very related to the trending functional programming approach, and could be considered as a consequence of many patterns as single responsibility, low coupling, separation of concerns, high cohesion, etc. But I have never seen it stated as above, and I think it could be another perspective to be taken into account. By &#8220;without using your design&#8221; I mean architectural design, obviously every single line of code has some design in it.</p><p>How do I think the SerialPort example should be addressed? The main problem I see with it, is the failure to identify SerialPort as a first level building block, and thus it deserves its own “package”, namespace, library… you named it. With that in mind, it could be very easy to build it in those libraries. For example, in the MRPT case, you can have both the SerialPort and a streams and serialization framework independent from each other. Then, bind both things very easily with templates (very simplified for clarity, just an idea):</p><div
+id="crayon-56886bf08a240099185720" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">C++</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+class SerialPort{
+public:
+	void write(char c);
+};
+class MyBaseStream{
+	virtual void write(std::string str)=0;
+	friend MyBaseStream&amp; operator &lt;&lt;(MyBaseStream&amp; mystream, std::string str){
+		mystream.write(str);
+		return mystream;
+	}
+};
+template &lt;typename T&gt;
+class Stream: public MyBaseStream{
+public:
+	Stream(T&amp; _port): port(_port){}
+	virtual void write(std::string str){
+		for(auto c: str)
+			port.write(c);
+	}
+private:
+	T port;
+};
+//example client code of generic streams
+void write2stream(MyBaseStream&amp; stream, std::string str){
+	stream&lt;&lt;str;
+}
+using SerialPortStream = Stream&lt;SerialPort&gt;;
+int main(){
+SerialPort serial;
+    SerialPortStream serial_stream(serial);
+    serial_stream&lt;&lt;"Hello World\n";
+    write2stream(serial_stream, "Good Bye\n");
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-2">2</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-4">4</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-6">6</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-8">8</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-10">10</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-12">12</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-14">14</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-16">16</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-18">18</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-20">20</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-22">22</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-24">24</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-26">26</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-28">28</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-30">30</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-32">32</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-33">33</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-34">34</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-35">35</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-36">36</div><div
+class="crayon-num" data-line="crayon-56886bf08a240099185720-37">37</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886bf08a240099185720-38">38</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886bf08a240099185720-1"><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-e">SerialPort</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-2"><span
+class="crayon-m">public</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-3"><span
+class="crayon-h"> </span><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">write</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">char</span><span
+class="crayon-h"> </span><span
+class="crayon-v">c</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-4"><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-6"><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-e">MyBaseStream</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-7"><span
+class="crayon-h"> </span><span
+class="crayon-m">virtual</span><span
+class="crayon-h"> </span><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">write</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-t">string</span><span
+class="crayon-h"> </span><span
+class="crayon-v">str</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-8"><span
+class="crayon-h"> </span><span
+class="crayon-t">friend</span><span
+class="crayon-h"> </span><span
+class="crayon-v">MyBaseStream</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-t">operator</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">MyBaseStream</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">mystream</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-t">string</span><span
+class="crayon-h"> </span><span
+class="crayon-v">str</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-9"><span
+class="crayon-h"> </span><span
+class="crayon-v">mystream</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">write</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">str</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-10"><span
+class="crayon-h"> </span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-v">mystream</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-11"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-12"><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-13">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-14"><span
+class="crayon-t">template</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;</span><span
+class="crayon-r">typename</span><span
+class="crayon-h"> </span><span
+class="crayon-v">T</span><span
+class="crayon-o">&gt;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-15"><span
+class="crayon-t">class</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Stream</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-m">public</span><span
+class="crayon-h"> </span><span
+class="crayon-e">MyBaseStream</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-16"><span
+class="crayon-m">public</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-17"><span
+class="crayon-h"> </span><span
+class="crayon-e">Stream</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">T</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">_port</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">port</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">_port</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-18"><span
+class="crayon-h"> </span><span
+class="crayon-m">virtual</span><span
+class="crayon-h"> </span><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">write</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-t">string</span><span
+class="crayon-h"> </span><span
+class="crayon-v">str</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-19"><span
+class="crayon-h"> </span><span
+class="crayon-st">for</span><span
+class="crayon-sy">(</span><span
+class="crayon-i">auto</span><span
+class="crayon-h"> </span><span
+class="crayon-v">c</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-v">str</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-20"><span
+class="crayon-h"> </span><span
+class="crayon-v">port</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">write</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">c</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-21"><span
+class="crayon-h"> </span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-22"><span
+class="crayon-m">private</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-23"><span
+class="crayon-h"> </span><span
+class="crayon-i">T</span><span
+class="crayon-h"> </span><span
+class="crayon-v">port</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-24"><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-25">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-26"><span
+class="crayon-c">//example client code of generic streams</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-27"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">write2stream</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">MyBaseStream</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">stream</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-t">string</span><span
+class="crayon-h"> </span><span
+class="crayon-v">str</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-28"><span
+class="crayon-h"> </span><span
+class="crayon-v">stream</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">str</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-29"><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-30">&nbsp;</div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-31"><span
+class="crayon-r">using</span><span
+class="crayon-h"> </span><span
+class="crayon-v">SerialPortStream</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Stream</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-v">SerialPort</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-32">&nbsp;</div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-33"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-34"><span
+class="crayon-e">SerialPort </span><span
+class="crayon-v">serial</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-35"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">SerialPortStream </span><span
+class="crayon-e">serial_stream</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">serial</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-36"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">serial_stream</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-s">"Hello World\n"</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886bf08a240099185720-37"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">write2stream</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">serial_stream</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Good Bye\n"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886bf08a240099185720-38"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>In this way, both the SerialPort and the Stream classes become two independent first class citizens in our project. It becomes very easy to test (and mock), understand, maintain and extend them, and it is also simpler to grow and scale the whole project using them. I know I am not saying something very new with this software design proposal, for example it is similar to Alexandrescu’s policy based design, though the final goal could be different.</p><h3>Failures to follow this principle are more common in C/C++</h3><p>I have seen this pattern a few times in C and C++ projects, but very rarely in other languages (at least those that I have used more as java and python) and I believe there is a reason, not directly related to software design for it: the lack of a widely used dependency manager. And no, OS package managers, installers and so, are not enough to solve this problem. Even if the authors of these libraries decide to decouple the functionality of the SerialPort basic wrapper in their design, there is little gain in it, users should still manually extract those files and integrate them in their projects, which doesn&#8217;t sound as reasonable engineering and will produce, for sure, maintenance problems and lack of updates. It is really unlikely that the authors will decide to create a separate project/library for the SerialPort, it is more effort not only to do it in the short term, but also to maintain and work with it in the mid and long terms. So developers just roll out their designs, and fill the functionality in it as required. I’ve done it so many times too.</p><p>On the contrary, if a dependency manager existed, it is very likely that a simple, independent and robust SerialPort implementation would emerge and be widely adopted, and people creating asynchronous communication frameworks or robotics applications would use it and have less code to write.</p><p>Hopefully such a dependency manager for C and C++ will someday be a reality :D</p><p>&nbsp;</p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com/">docs</a> and <a
+href="http://forum.biicode.com/">forum</a>.</p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../about-non-intrusive-polymorphism/index.html" title="About non-intrusive polymorphism">About non-intrusive polymorphism</a></li><li><a
+href="../cpp-will-never-die/index.html" title="Criticizing the Rust Language, and Why C and C++ Will Never Die">Criticizing the Rust Language, and Why C and C++ Will Never Die</a></li><li><a
+href="../the-pragmatic-cpp-programmer/index.html" title="The Pragmatic C++ Programmer">The Pragmatic C++ Programmer</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/software-design-proposal/' addthis:title='A software design principle: Don&#8217;t make me use your design' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/software-design/index.html" rel="category tag">Software design</a> and tagged <a
+href="../tag/dependency-management/index.html" rel="tag">dependency management</a>, <a
+href="../tag/functionality-vs-design/index.html" rel="tag">functionality vs. design</a>, <a
+href="../tag/software-desing/index.html" rel="tag">software desing</a>. Bookmark the <a
+href="index.html" title="Permalink to A software design principle: Don&#8217;t make me use your design" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../multiplatform-arcade-sdl/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a></div><div
+class="next"><a
+href="../template-metaprogramming-modern-cpp-haskell-metaphor/index.html" rel="next">Metaprogramming with Modern C++: The Haskell Metaphor <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="post pingback"><p>Pingback: <a
+href='http://okpanico.wordpress.com/2014/11/02/visto-nel-web-155/' rel='external nofollow' class='url'>Visto nel Web &#8211; 155 | Ok, panico</a>()</p></li></li><li
+class="comment even thread-even depth-1" id="dsq-comment-145"><div
+id="dsq-comment-header-145" class="dsq-comment-header"><cite
+id="dsq-cite-145"> <span
+id="dsq-author-user-145">Rob Grainger</span></cite></div><div
+id="dsq-comment-body-145" class="dsq-comment-body"><div
+id="dsq-comment-message-145" class="dsq-comment-message"><p>It&#8217;s all really just an application of the Single Responsibility Principle. The serial port class should be responsible for access to a serial port, not making the serial port appear as a stream.</p></div></div><ul
+class="children"><li
+class="comment odd alt depth-2" id="dsq-comment-147"><div
+id="dsq-comment-header-147" class="dsq-comment-header"><cite
+id="dsq-cite-147"> http://about.me/diego.rlosada <span
+id="dsq-author-user-147">Diego</span></cite></div><div
+id="dsq-comment-body-147" class="dsq-comment-body"><div
+id="dsq-comment-message-147" class="dsq-comment-message"><p>Yes, very, very related, but not only. Also related to coupling. A very simplified example:.</p><p>float distance(Point2D p1, Point2D p2){return sqrt((pow(p2.x-p1.x,2)+pow(p2.y-p1.y, 2);}</p><p>It clearly has a Single Responsibility, but it is still coupled with a design (Point2D, which typically could be an instatiation of Point&#8230; and so on&#8230;).</p><p>float distance(float x1, float y1, float x2, float y2);</p><p>is not.</p><p>Obviously not the best solution for this simple example, but if the distance algorithm had 100 lines long, IMHO it is better to code it as independent as possible of your current project types and classes, then build an adaptor/wrapper to it for your project.</p></div></div></li></ul></li><li
+class="comment even thread-odd thread-alt depth-1" id="dsq-comment-149"><div
+id="dsq-comment-header-149" class="dsq-comment-header"><cite
+id="dsq-cite-149"> <span
+id="dsq-author-user-149">Craig Brandenburg</span></cite></div><div
+id="dsq-comment-body-149" class="dsq-comment-body"><div
+id="dsq-comment-message-149" class="dsq-comment-message"><p>Yet another way of saying it: Make tools, not frameworks.</p></div></div></li><li
+class="comment odd alt thread-even depth-1" id="dsq-comment-154"><div
+id="dsq-comment-header-154" class="dsq-comment-header"><cite
+id="dsq-cite-154"> <span
+id="dsq-author-user-154">Steve Wolf</span></cite></div><div
+id="dsq-comment-body-154" class="dsq-comment-body"><div
+id="dsq-comment-message-154" class="dsq-comment-message"><p>Not possible for any code that is more than a little complex &#8211; and if it were only a little complex, you wouldn&#8217;t need to go get a library to help you manage it, or to have it written for you.</p><p>The reality is that to write SerialPort, you have to sit on top of something &#8211; the OS specific APIs, or a language abstraction.  C++ doesn&#8217;t have a good language abstraction for I/O &#8211; not disk i/o, not serial i/o.  Don&#8217;t get me wrong: it has abstractions / language support &#8211; but its support is crufty at best, and needs some additional layers to make it sane (such as asio).</p><p>Your own example of &#8216;distance&#8217; function &#8211; that uses Point2D.  That is a good interface.  It *should* rely on Point2D &#8211; breaking everything down to char* and float (or double?) is a terrible idea.  It drops what can be expressed down to a really lame crufty level of language-only support.  And in C/C++, that level is terrible.  Until you add things like asio and Point2D and so on, C++ is manual labor and does not lend itself to reducing work or solving problems.</p><p>Does this suck?  Yes.  But that&#8217;s at the core of C++.  Unless it is going to get really good core libraries, and finally solve platform-independent I/O, graphics I/O, windowing, GUI events, etc., it will always be mired in this exact issue: to make anything genuinely useful and expressive &#8211; you&#8217;re going to have drag a whole bunch of enabling libraries with your own library.  I&#8217;m sorry. :(</p></div></div><ul
+class="children"><li
+class="comment even depth-2" id="dsq-comment-156"><div
+id="dsq-comment-header-156" class="dsq-comment-header"><cite
+id="dsq-cite-156"> http://about.me/diego.rlosada <span
+id="dsq-author-user-156">Diego</span></cite></div><div
+id="dsq-comment-body-156" class="dsq-comment-body"><div
+id="dsq-comment-message-156" class="dsq-comment-message"><p>Sure, the example about Point2D is an extreme pedagogical simplification, normally, you should rely on it in normal SW engineering.</p><p>But the idea is still valid, you certainly do not need Asio (and its boost dependencies) to be able to send a few bytes over the serial port. Python pyserial is a great example, just a few files (at the end, they are also C!!!) that make a perfect, simple and modular level of abstraction over a HW serial port, not coupled with any asynchronous framework. There is nothing in C/C++ that disallows such modularity.</p><p>Of course it is no sense to break down everything to primitive parameters, but there are many situations where it is extremely simple to introduce such an intermediate layer of abstraction, and benefit from the lower coupling. The presented Point2D &#8211; distance is a prototypical example: DataModel &#8211; Algorithm, when both tend to become complex. It might become more obvious with the STL, it is exactly the same principle we are applying:</p><p>The way to decouple both is to introduce such a &#8220;primitivization&#8221; of the parameters. If you have a std::vector (our Point2D), and you want to std::sort (our distance) it, then:</p><p>std::sort (v.begin(), v.end());</p><p>std::sort implements a functionality very decoupled of the actual vector design. So decoupled that allows to sort also other containers. Nothing impedes to write a simple wrapper of the form mysort(v) to do exactly the same. My thesis is that this can and should be done more often that we are currently doing, we are many times doing mysort(v)  distance(p1, p2) as the only design, but many many times, especially if Point2D couples with a large hiearchy of templates, serialization, maybe even visualization (I have seen it many times), then it is very necessary (assuming that the distance function is large and complex) to decouple at some point, as defining distance(p1.x, p1.y, p2.x, p2.y), and then a wrapper distance(p1, p2) that just uses the other. Otherwise, you will soon find that you need to compute distances onboard without display, in a very similar application, and you will not be able to use what you have done in your distance function, because it is coupled with your Point2D design (as visualization!) unnecesarily.</p></div></div><ul
+class="children"><li
+class="comment odd alt depth-3" id="dsq-comment-159"><div
+id="dsq-comment-header-159" class="dsq-comment-header"><cite
+id="dsq-cite-159"> <span
+id="dsq-author-user-159">Steve Wolf</span></cite></div><div
+id="dsq-comment-body-159" class="dsq-comment-body"><div
+id="dsq-comment-message-159" class="dsq-comment-message"><p>I appreciate your goal.  It is laudable, and I strive for it, as I think many others do.<br
+/> That said&#8230; I feel deeply defeated by C++.  Hell, I can&#8217;t even deal with a string of text in a manner that lends itself to decoupled algorithms well.  The truth (in my experience) is that the lowly string comes in so many different flavors, and all of them have idiosyncrasies, leading to software that ends up having multiple string libraries linked in.<br
+/> In my world, we have std::string, char*, TCHAR*, wchar_t*, CStringA, CStringW, BSTR, and a few lesser representations, and that doesn&#8217;t even account for the fact that some are represented as UTF-8 or UTF-16LE or local code page ANSI and on &amp; on.<br
+/> Again &#8211; avoiding _gratuitous_ coupling is laudable.  Trying to get truly decoupled algorithms is often impossible &#8211; compromises are the black-flies of my daily programming life.  They crop up everywhere and multiply incessantly.  Because the common ground is still too weak, and C++ doesn&#8217;t handle genuinely decoupled algorithms (though it&#8217;s not black and white, and I agree you can do what you can to strive towards that goal).</p><p>But even in the case of a serial port interface &#8211; you don&#8217;t have to take asio, but you then limit yourself to something less general.  You&#8217;re now tightly coupled to one OS&#8217;s serial I/O, such as Windows API.  And you don&#8217;t dove-tail as nicely with other interfaces that are designed around asio.  (I&#8217;m not particular to asio, just saying that things tend to work within domains to inter-operate, and it is because of C++ lack of good standard domain that we have this mess &#8211; python has a far more robust core library / language support for abstraction across platforms and good basic types, so doesn&#8217;t run into 25x string implementations or huge platform-independence libraries coming along for the serial-io ride).</p><p>Call me jaded.  I wish this were a lot easier in practice to accomplish.  Personally, I hate the std libraries approach to decoupling, because it fails.  distance() is a fine example: you&#8217;re limited to using &#8220;decoupled&#8221; algorithms against a tight subset of actual implementation types or else your performance goes into the crapper.  std::vector will give you excellent performance there, but std::map won&#8217;t.  I would have preferred a more tightly coupled sort(container) where its algorithm was tailored to the actual container&#8217;s implementation so that it could give you best-case performance in all cases, rather than pushing onto the programmer hidden requirements about performance characteristics that you cannot see in the code-as-written.</p><p>Sorry, maybe this is getting dense with assumptions about how much I know or you know about how things work &#8211; but for my 2 cents &#8211; I think the STL approach was a flawed exercise by an academic mind-set, and ultimately has saddled C++ with a terrible standard.</p></div></div><ul
+class="children"><li
+class="comment even depth-4" id="dsq-comment-160"><div
+id="dsq-comment-header-160" class="dsq-comment-header"><cite
+id="dsq-cite-160"> http://about.me/diego.rlosada <span
+id="dsq-author-user-160">Diego</span></cite></div><div
+id="dsq-comment-body-160" class="dsq-comment-body"><div
+id="dsq-comment-message-160" class="dsq-comment-message"><p>I agree with the strings issues, not that much about the STL,  but I would say that overall we mostly agree: It is necessary to have and to talk about these principles, even if it can be hard to apply them in practice many times. C++ can have some complexities, but I believe that the C++ community can definitely improve, things are getting much better with the latest standards. And I think things are not always black or white, so thinking about the problems and trying to improve the existing approaches is what at the end, slowly gets us out those hells; so thanks very much for your interesting contribution to this discussion.</p></div></div></li></ul></li></ul></li></ul></li><li
+class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-164"><div
+id="dsq-comment-header-164" class="dsq-comment-header"><cite
+id="dsq-cite-164"> <span
+id="dsq-author-user-164">Serge Pavlovsky</span></cite></div><div
+id="dsq-comment-body-164" class="dsq-comment-body"><div
+id="dsq-comment-message-164" class="dsq-comment-message"><p>you can write toy serialport class for use in toy program. asio is for real programs, and they already use asio anyway.</p></div></div></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '1862%20http_/blog.biicode.com/index13c2.html?p=1862';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "A software design principle: Don&#8217;t make me use your design";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index66a1.html?cf_action=sync_comments&amp;post_id=1862';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/software-design-proposal/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:44:04 GMT -->
+</html>

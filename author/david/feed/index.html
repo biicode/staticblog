@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; david</title> <atom:link href="http://blog.biicode.com/author/david/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to adapt your Arduino sketches (I)</title><link>http://blog.biicode.com/adapt-arduino-sketches-i/</link> <comments>http://blog.biicode.com/adapt-arduino-sketches-i/#comments</comments> <pubDate>Tue, 31 Mar 2015 10:40:02 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Arduino]]></category> <category><![CDATA[Arduino sketches]]></category> <category><![CDATA[Github code]]></category> <category><![CDATA[ino to cpp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1972</guid> <description><![CDATA[<p>In this first example we going to see how to adapt an Arduino code from github to biicode in a simple way. Let&#8217;s go! Create a biicode project and copy your code inside First, create a new biicode project and a block. [crayon-56886dae72c73603004082/] The following layout has been created: [crayon-56886dae72c83593571217/] Make your code grow with [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/adapt-arduino-sketches-i/">How to adapt your Arduino sketches (I)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>In this first example we going to see how to adapt an Arduino code from github to biicode in a simple way. Let&#8217;s go!</h3><p><img
+class="aligncenter wp-image-2140 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/post-arduino.png" alt="Arduino sketches work like a charm with biicode" width="638" height="336" /><br
+/> <span
+id="more-1972"></span></p><h2><strong>Create a biicode project and copy your code inside</strong></h2><p>First, create a new biicode project and a block.</p><pre class="crayon-plain-tag">$ git clone https://github.com/br3ttb/Arduino-PID-Library.git
+...
+$ cd Arduino-PID-Library/
+$ bii init -L
+Successfully initialized biicode project
+$ bii work
+INFO: Processing changes...
+Work done!</pre><p>The following layout has been created:</p><pre class="crayon-plain-tag">├── bii
+├── biicode.conf
+├── PID_v1
+│   ├── Examples
+│   │   ├── PID_AdaptiveTunings
+│   │   │   └── PID_AdaptiveTunings.ino
+│   │   ├── PID_Basic
+│   │   │   └── PID_Basic.ino
+│   │   └── PID_RelayOutput
+│   │       └── PID_RelayOutput.ino
+│   ├── keywords.txt
+│   ├── PID_v1.cpp
+│   └── PID_v1.h
+└── README.txt</pre><p></p><h2><strong>Make your code grow with all the power of C++</strong></h2><p><img
+class="aligncenter wp-image-2119 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/ito_to_cpp-1024x389.png" alt="Ino files to cpp files through biicode" width="630" height="239" /></p><p>Change your .ino executables to .cpp and add #include &#8220;Arduino.h&#8221; at the top. To know which are executables or not, just see if the file has the loop() function inside it.</p><pre class="crayon-plain-tag">├── bii
+├── biicode.conf
+├── PID_v1
+│   ├── Examples
+│   │   ├── PID_AdaptiveTunings
+│   │   │   └── PID_AdaptiveTunings.cpp
+│   │   ├── PID_Basic
+│   │   │   └── PID_Basic.cpp
+│   │   └── PID_RelayOutput
+│   │       └── PID_RelayOutput.cpp
+│   ├── keywords.txt
+│   ├── PID_v1.cpp
+│   └── PID_v1.h
+└── README.txt</pre><p>Now, check your unresolved dependencies. There are 3 unresolved dependencies of the file PID_v1.h, it is because the #include paths are relative.</p><pre class="crayon-plain-tag">$ bii deps --detail
+david/Arduino-PID-Library depends on:
+       david/Arduino-PID-Library (self)
+          PID_v1/PID_v1.cpp
+                PID_v1/PID_v1.h (I)
+          PID_v1/PID_v1.h
+                PID_v1/PID_v1.cpp (E)
+       system:
+          Arduino.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp
+                PID_v1/PID_v1.cpp
+       unresolved:
+          PID_v1.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp
+          WProgram.h
+                PID_v1/PID_v1.cpp</pre><p>To solve it, just include the PID_v1.h path relative to your block,  <em>/PID_v1,</em> in your biicode.conf. You can change the file&#8217;s #include from <em>#include &#8220;PID_v1.h&#8221;</em> to <em>#include &#8220;david/Arduino-PID-Library/PID_v1/PID_v1.h&#8221;</em>, but this change broke the compatibility with the Arduino IDE so we prefer  touch the code as little as posible.</p><pre class="crayon-plain-tag"># Biicode configuration file
+[requirements]
+[parent]
+[paths]
+    /PID_v1
+[dependencies]
+[mains]
+[tests]
+[hooks]
+[includes]
+[data]</pre><p>Check your deps again and see that the unresolved dependendencies to <em>PID_v1/PID_v1.h</em> have desapiered.</p><pre class="crayon-plain-tag">$ bii deps --detail
+david/Arduino-PID-Library depends on:
+       david/Arduino-PID-Library (self)
+          PID_v1/PID_v1.cpp
+                PID_v1/PID_v1.h (I)
+          PID_v1/PID_v1.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp (E)
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp (E)
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp (E)
+                PID_v1/PID_v1.cpp (E)
+       system:
+          Arduino.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp
+                PID_v1/PID_v1.cpp
+       unresolved:
+          WProgram.h
+                PID_v1/PID_v1.cpp</pre><p></p><h2><strong> Build and Upload your Code with biicode</strong></h2><h3>Configure your project</h3><p>Connect your Arduino and configure the project settings with the info of your Arduino SDK and your board name. If you need help with the name of your board write <em>/o</em> when biicode ask you for the <em>board</em>.</p><p>It&#8217;s important that you connect your Arduino first.</p><p><img
+class="aligncenter wp-image-2120 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/Arduino-Plug-it-in.jpg" alt="Plugged Arduino Uno board ready to work with biicode" width="600" height="450" /></p><pre class="crayon-plain-tag">$ bii arduino:settings
+Installed SDKs:
+ [0.] version=1.0.6 path=/home/david/.biicode_env/arduino-1.0.6
+ [1.] version=1.5.8 path=/home/david/.biicode_env/arduino-1.5.8
+ [2.] version=1.6.0 path=/home/david/.biicode_env/arduino-1.6.0
+Enter SDK number or type path (/home/david/.biicode_env/arduino-1.0.6): 2
+Enter board (/o list supported options): mega2560
+Using arduino port: /dev/ttyACM0
+WARN: Arduino toolchain defined, regenerating project
+Creating toolchain for Arduino
+Run "bii cpp:configure -t arduino" to activate it
+Run "bii cpp:configure -t" to disable it</pre><p>Now. configure your project.</p><pre class="crayon-plain-tag">$ bii configure -t arduino
+INFO: Processing changes...
+...</pre><p></p><h3> Build your code</h3><p>Now, build your code as usual with biicode. Just execute <em>bii build</em>.</p><pre class="crayon-plain-tag">$ bii build
+INFO: Processing changes...
+Building: "/home/david/.biicode/cmake-3.0.2-Linux-64/bin/cmake" --build .
+Scanning dependencies of target mega2560_CORE
+[  3%] Building CXX object david/Arduino-PID-Library/CMakeFiles/mega2560_CORE.dir/home/david/.biicode_env/arduino-1.0.6/hardware/arduino/cores/arduino/WString.cpp.obj
+...
+[ 92%] Building CXX object david/Arduino-PID-Library/CMakeFiles/david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings.dir/PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp.obj
+Linking CXX executable /home/david/Escritorio/pid_arduino/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings.elf
+Generating EEP image
+Generating HEX image
+Calculating image size
+Firmware Size:  [Program: 5116 bytes (2.0%)]  [Data: 104 bytes (1.3%)] on atmega2560
+EEPROM   Size:  [Program: 0 bytes (0.0%)]  [Data: 0 bytes (0.0%)] on atmega2560
+[ 92%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings
+Scanning dependencies of target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+[ 96%] Building CXX object david/Arduino-PID-Library/CMakeFiles/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.dir/PID_v1/Examples/PID_Basic/PID_Basic.cpp.obj
+Linking CXX executable /home/david/Escritorio/pid_arduino/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.elf
+Generating EEP image
+Generating HEX image
+Calculating image size
+Firmware Size:  [Program: 4890 bytes (1.9%)]  [Data: 80 bytes (1.0%)] on atmega2560
+EEPROM   Size:  [Program: 0 bytes (0.0%)]  [Data: 0 bytes (0.0%)] on atmega2560
+[ 96%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+Scanning dependencies of target david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput
+[100%] Building CXX object david/Arduino-PID-Library/CMakeFiles/david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput.dir/PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp.obj
+Linking CXX executable /home/david/Escritorio/pid_arduino/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput.elf
+Generating EEP image
+Generating HEX image
+Calculating image size
+Firmware Size:  [Program: 4460 bytes (1.7%)]  [Data: 86 bytes (1.0%)] on atmega2560
+EEPROM   Size:  [Program: 0 bytes (0.0%)]  [Data: 0 bytes (0.0%)] on atmega2560
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput</pre><p></p><h3> Upload your Arduino sketches</h3><p>To upload your code in the Arduino just need to execute <em>bii arduino:upload.</em></p><pre class="crayon-plain-tag">$ bii arduino:upload
+INFO: Processing changes...
+Building: "/home/david/.biicode/cmake-3.0.2-Linux-64/bin/cmake" --build .
+[ 76%] Built target mega2560_CORE
+[ 80%] Built target mega2560_PID_v1
+[ 88%] Built target david_Arduino-PID-Library
+[ 92%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings
+[ 96%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput
+Using arduino port: /dev/ttyACM0
+You have the following firmwares:
+  david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings
+  david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+  david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput
+Firmware name: PID_Basic
+Uploading...
+[sudo] password for david:
+[ 85%] Built target mega2560_CORE
+[ 89%] Built target mega2560_PID_v1
+[ 96%] Built target david_Arduino-PID-Library
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+Scanning dependencies of target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic-upload
+avrdude: AVR device initialized and ready to accept instructions
+Reading | ################################################## | 100% 0.02s
+avrdude: Device signature = 0x1e9801
+avrdude: reading input file "/tmp/Arduino-PID-Library/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.hex"
+avrdude: writing flash (4782 bytes):
+Writing | ################################################## | 100% 0.84s
+avrdude: 4782 bytes of flash written
+avrdude: reading input file "/tmp/Arduino-PID-Library/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.eep"
+avrdude: writing eeprom (0 bytes):
+Writing | ################################################## | 100% 0.00s
+avrdude: 0 bytes of eeprom written
+avrdude: safemode: Fuses OK (H:FF, E:D0, L:FF)
+avrdude done.  Thank you.
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic-upload
+Upload finished</pre><p>We hope you liked this first example of many to come, feel free to comment below.<br
+/> As you know, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/adapt-arduino-sketches-i/">How to adapt your Arduino sketches (I)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/adapt-arduino-sketches-i/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Raspberry Pi 2 in depth with biicode</title><link>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/</link> <comments>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/#comments</comments> <pubDate>Wed, 04 Mar 2015 15:48:35 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[ARM GNU/Linux distributions]]></category> <category><![CDATA[Cross compilation]]></category> <category><![CDATA[Raspberry Pi 2]]></category> <category><![CDATA[Windows 10]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2075</guid> <description><![CDATA[<p>The new Raspberry Pi 2 900MHz quad-core ARM Cortex-A7 CPU (~6x performance) 1GB LPDDR2 SDRAM (2x memory) Complete compatibility with Raspberry Pi 1 Last Monday, the new Raspberry Pi 2 arrived. It can run the full range of ARM GNU/Linux distributions, including Snappy Ubuntu Core, as well as Microsoft Windows 10. In this case, we have installed [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/">Raspberry Pi 2 in depth with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>The new Raspberry Pi 2</h2><ul><li>900MHz quad-core ARM Cortex-A7 CPU (~6x performance)</li><li>1GB LPDDR2 SDRAM (2x memory)</li><li>Complete compatibility with Raspberry Pi 1</li></ul><p><img
+class="aligncenter wp-image-2076 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/jake.gif" alt="Jake from Adventure Time really like's biicode's analysis of the new Raspberry Pi 2" width="499" height="281" /></p><p><span
+id="more-2075"></span></p><p>Last Monday, the new Raspberry Pi 2 arrived. It can run the full range of ARM GNU/Linux distributions, including Snappy Ubuntu Core, as well as Microsoft Windows 10. In this case, we have installed Raspbian.</p><p>When you turn on the Raspberry Pi 2, one can see it works better than the Raspberry Pi 1, <strong>we never thought we could surf the web, talk through Hangouts and code at the same time without needing more power</strong>. The improvements in speed and fluency of the new Raspberry Pi are just amazing. Follow us in this mini-tutorial on how to configure the flashy new Raspberry Pi 2 with biicode.</p><h2>Step 1: Install native or cross compilation biicode.</h2><h3>Native biicode</h3><p>Of course, <strong>the latest version of biicode works perfectly with the Raspberry Pi 2</strong>. In fact we updated the <code>setup:cpp</code> in order to install properly all the tools and provide all the power of biicode to program it.</p><h4>Download the Raspbian version</h4><p>Just download biicode&#8217;s Raspbian versión <a
+href="https://www.biicode.com/downloads" target="_blank">from the downloads page</a>.</p><h4><img
+class="aligncenter wp-image-2101 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/downloads.png" alt="biicode's download's section where to download raspbian version of biicode" width="1100" height="304" /></h4><h4>Install biicode and the developer tools</h4><p></p><pre class="crayon-plain-tag">cd Downloads
+dpkg -i bii-debian-armv6&lt;version&gt;.deb
+bii setup:cpp</pre><p></p><h3>Cross compilation with biicode.</h3><h4>Download the Linux version</h4><p>If you want to use the <strong>default crossbuild tools, you need to use a Debian distribution</strong>. Download biicode&#8217;s Ubuntu versión <a
+href="https://www.biicode.com/downloads" target="_blank">from the downloads page</a>.</p><p><strong>If you want to use Windows</strong>,  you have an example about <a
+href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/" target="_blank">how to make a cross compilation with biicode from Windows</a> too.</p><p><img
+class="aligncenter wp-image-2102 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/downloads2.png" alt="Another section of biicode downloads featuring this time Ubuntu 32 and 64" width="1100" height="304" /></p><h4>Install biicode and the development tools.</h4><p></p><pre class="crayon-plain-tag">cd Downloads
+dpkg -i bii-debian-ubuntu&lt;version&gt;.deb
+bii setup:rpi</pre><p></p><p
+class="tw-data-text vk_txt tw-ta tw-text-medium ">If you have never used biicode to make a cross compilation or you don&#8217;t know what is it,  you can read the <a
+href="http://docs.biicode.com/raspberrypi.html" target="_blank">biicode support for Raspberry Pi cross compilation</a> section of our documentation.</p><h2 class="tw-data-text vk_txt tw-ta tw-text-medium " style="text-align: center">Raspberry Pi 2 vs Raspberry Pi 1<br
+/> (Native Compilation)</h2><h3 class="tw-data-text vk_txt tw-ta tw-text-medium "><img
+class="  aligncenter wp-image-2087" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/rpi_vs.png" alt="Both Raspberry Pi 1 and Raspberry Pi 2 are supported by biicode" width="663" height="266" /></h3><h3 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">First test: OpenCV</h3><p>The first test compared how much time was spent compiling a big library in a Raspberry Pi 1 and a Raspberry Pi 2. The Raspberry Pi 2 spent more than 30 minutes however, the Raspberry Pi 1 spent more than 1 hour and it had only compiled 39% of the library, so we decided to stop the process in order to continue with more productive things.</p><h4>Raspberry Pi 2</h4><p></p><pre class="crayon-plain-tag">bii open diego/opencv
+...
+time bii cpp:build
+...
+Building: cmake --build .
+real	33m36.365s
+user	92m1.850s
+sys	2m51.010s</pre><p></p><h4>Raspberry Pi 1</h4><p></p><pre class="crayon-plain-tag">bii open diego/opencv
+...
+time bii cpp:build
+...
+[ 39%] Built target IlmImf
+Scanning dependencies of target pch_Generate_opencv_ts
+[ 39%] Generating precomp.hpp
+[ 39%] Generating precomp.hpp.gch/opencv_ts_Release.gch
+real	85m7.442s
+user	42m1.970s
+sys	4m13.870s</pre><p></p><h2 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">Second test: libfreenect</h2><p>In this test, we compiled the library to use the kinect, libfreenect, and executed the example to see the difference between the two Raspberries Pi.</p><p>In the compilation test, the Raspberry Pi 2 spent 42 seconds and the Raspberry Pi 1 spent 2 min (120 seconds), so <strong>the  Raspberry Pi 2 was 2.85 times faster than the Raspberry Pi 1</strong>.</p><h4>Raspberry Pi 2</h4><p></p><pre class="crayon-plain-tag">$ bii open david/libfreenect
+$ bii cpp:configure
+$ time bii cpp:build
+...
+[100%] Built target david_libfreenect_wrappers_cpp_cppview
+real	0m42.068s
+user	0m29.940s
+sys	0m2.890s</pre><p></p><h4>Raspberry Pi 1</h4><p></p><pre class="crayon-plain-tag">$ bii open david/libfreenect
+$ bii cpp:configure
+$ time bii cpp:build
+...
+[100%] Built target david_libfreenect_wrappers_cpp_cppview
+real	2m0.091s
+user	1m28.790s
+sys	0m6.500s</pre><p></p><h2 id="tw-target-text" class="tw-data-text vk_txt tw-ta tw-text-medium ">Last test: WiringPi</h2><p>The last test <strong>tried to compile WiringPi in the Raspberry Pi 2</strong>. The previous version of the WiringPi was obsolete and <strong>we needed to update it with the last commits of the official Git repository, </strong><em><strong>git://git.drogon.net/wiringPi</strong>, </em>It was easy and painless.</p><p>If you want to use the last version, it&#8217;s under my namespace <a
+href="https://www.biicode.com/david/WiringPi" target="_blank">david/WiringPi</a> and <a
+href="https://github.com/davidsanfal/WiringPi" target="_blank">it&#8217;s in GitHub too</a>.</p><pre class="crayon-plain-tag">#include &lt;stdio.h&gt;
+#include &lt;david/WiringPi/wiringPi/wiringPi.h&gt;
+// LED Pin - wiringPi pin 0 is BCM_GPIO 17.
+#define LED 0
+int main (void)
+{
+  printf ("Raspberry Pi blink\n") ;
+  wiringPiSetup () ;
+  pinMode (LED, OUTPUT) ;
+  for (;;)
+  {
+    digitalWrite (LED, HIGH) ;    // On
+    delay (500) ;        // mS
+    digitalWrite (LED, LOW) ;    // Off
+    delay (500) ;
+  }
+  return 0 ;
+}</pre><p>&nbsp;</p><p><img
+class="aligncenter" src="http://wiki.scn.sap.com/wiki/download/attachments/394107021/rpi-blink_bb.png?version=1&amp;modificationDate=1414177337000&amp;api=v2" alt="Diagram of a raspberry pi 2" width="481" height="452" /></p><p>So the conclusion is that the new Raspberry Pi 2 is a brilliant piece of hardware that has considerably improved its main benchmarks. Now that we know what we have between our hands we will start thinking what use should we give it at biicode. If you want to propose any kind of project or experiment please drop the idea in the comments section.<br
+/> We hope you enjoy this post and don&#8217;t forget to check our <a
+title="C++ documentation" href="http://docs.biicode.com/c++.html">complete C++ documentation</a>! If you&#8217;ve any doubt, contact us through our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or ask directly in <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/">Raspberry Pi 2 in depth with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/raspberry-pi-2-in-depth-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Kinect XBOX360 with biicode</title><link>http://blog.biicode.com/kinect-xbox360-biicode/</link> <comments>http://blog.biicode.com/kinect-xbox360-biicode/#comments</comments> <pubDate>Fri, 16 Jan 2015 15:01:27 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[Hacking kinect]]></category> <category><![CDATA[Kinect]]></category> <category><![CDATA[Open Kinect]]></category> <category><![CDATA[Xbox360]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2014</guid> <description><![CDATA[<p>&#160; Kinect is a line of motion sensing input devices by Microsoft for Xbox 360 and Xbox One video game consoles and Windows PCs. Based around a webcam-style add-on peripheral, it enables users to control and interact with their console/computer without the need for a game controller, through a natural user interface using gestures and spoken [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/kinect-xbox360-biicode/">Kinect XBOX360 with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><img
+class="aligncenter wp-image-2019" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/hack-your-kinect.png" alt="hack your kinect with biicode" width="416" height="488" /></p><p><span
+id="more-2014"></span></p><p>&nbsp;</p><p><strong>Kinect</strong> is a <strong>line of motion sensing input devices</strong> by Microsoft for Xbox 360 and Xbox One video game consoles and Windows PCs. Based around a webcam-style add-on peripheral, it <strong>enables users to control and interact with their console/computer without the need for a game controller</strong>, through a natural user interface using gestures and spoken commands.</p><p><img
+class="aligncenter" src="http://files.channel9.msdn.com/wlwimages/9c00b398b405423b99d19efa016fae96/image%5B7%5D-1.png" alt="A kinect camera's parts. Detection motion in any C/C++ project with biicode and this hack." width="418" height="273" /></p><p>Thanks to OpenKinect, you can use your Kinect with biicode.</p><p
+class="">OpenKinect is an open community of people interested in making use of the amazing Xbox Kinect hardware with our PCs and other devices. They are working on free, open source libraries that will enable the Kinect to be used with Windows, Linux, and Mac.</p><p
+class=""><a
+href="http://openkinect.org/wiki/Main_Page" target="_blank"><br
+/> </a><a
+href="http://openkinect.org/wiki/Main_Page" target="_blank"><img
+class="aligncenter" src="http://openkinect.org/w/images/d/da/Logo_openkinect_shaded.svg" alt="Open Kinect libs have come in really handy in this hack with biicode." width="404" height="65" /></a></p><p
+class="" style="text-align: center">You can read all the info about this community in <a
+href="http://openkinect.org/wiki/Main_Page" target="_blank">their wiki</a>.</p><p>Do you want to make your own Johnny-5? don&#8217;t know what sensor used to make the head? we have the solution, <strong>use a kinect!</strong></p><p><img
+class="aligncenter wp-image-2021" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/jhonny5.png" alt="Make your own Johnny 5 with this kinect hack" width="471" height="321" /></p><h2>How to use it with biicode?</h2><p>Just use the <a
+href="https://www.biicode.com/david/libfreenect">david/libfreenect</a> block like always, open the block and build it. If you don&#8217;t know what biicode is, please <a
+href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank">read first the getting started</a>.</p><p>First version is only available for Ubuntu.</p><pre class="crayon-plain-tag">bii init kinect
+cd kinect
+bii open david/libfreenect
+bii build</pre><p>When you use this block, it installs all libs and drivers you need to use your kinect. It creates a</p><p>Now, run the glview example an play!</p><pre class="crayon-plain-tag">cd bin
+./david_libfreenect_examples_glview</pre><p><em>To install kinect&#8217;s drivers, go ahead to the next item:<strong> </strong></em><strong><em>(Optional) How to install the Kinect Drivers on Linux</em></strong><em>.</em></p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/_tcrQZye8Xw?feature=oembed" frameborder="0" allowfullscreen></iframe></p><h2>(Optional) How to install the Kinect Drivers on Linux</h2><p>If you have any problem with the drivers of your kinect, you can install a new kernel driver. To install the kinect drivers we recommend to use the <a
+class="js-current-repository" href="https://github.com/xxorde/librekinect" target="_blank"><span
+class="author">xxorde</span><span
+class="path-divider">/l</span>ibrekinect</a> github repository, but you can use the one you want. here are two examples about how to di it.</p><h3>Example for Ubuntu 14.04</h3><p></p><pre class="crayon-plain-tag">sudo apt-get install git build-essential
+git clone https://github.com/xxorde/librekinect.git
+cd librekinect
+make
+make load</pre><p></p><h3>Example for Raspberry PI</h3><p></p><pre class="crayon-plain-tag">sudo -s
+apt-get install build-essential bc ncurses-dev tmux git
+tmux
+cd /usr/src/
+# find out which kernel you are using – in my case 3.12.20+
+uname -r
+# get the source – in my case 3.12.y (change if needed)
+wget https://github.com/raspberrypi/linux/archive/rpi-3.12.y.tar.gz
+tar xfvz rpi-3.12.y.tar.gz
+mv linux-rpi-3.12.y linux
+ln -s /usr/src/linux /lib/modules/$(uname -r)/build
+ln -s /usr/src/linux /lib/modules/$(uname -r)/source
+cd /usr/src/linux
+make mrproper
+# get your config
+gzip -dc /proc/config.gz &gt; .config
+# building, that is going to take a while! more than 12 hours.
+make
+make modules_prepare
+make modules_install
+# copy the new kernel image
+cp /usr/src/linux/arch/arm/boot/zImage /boot/linux-3.12.y
+# choose it
+echo "kernel=linux-3.12.y" &gt;&gt; /boot/config.txt
+reboot</pre><p>after reboot</p><pre class="crayon-plain-tag">git clone https://github.com/xxorde/librekinect.git
+cd librekinect
+make
+make load</pre><p>Hope you enjoy this great hack and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/kinect-xbox360-biicode/">Kinect XBOX360 with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/kinect-xbox360-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Arduino Yun now supported</title><link>http://blog.biicode.com/arduino-yun/</link> <comments>http://blog.biicode.com/arduino-yun/#comments</comments> <pubDate>Wed, 07 Jan 2015 12:00:23 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[Arduino Yun]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1944</guid> <description><![CDATA[<p>Arduino Yun is the first member of a new groundbreaking line of WiFi products combining the power of Linux with Arduino&#8217;s simplicity. The first Arduino Yun is the combination of an Arduino Leonardo with a WiFi system-ona-chip running Linino (GNU/Linux based on OpenWRT). The board has built-in Ethernet and WiFi support, a USB-A port, micro-SD card slot, 20 [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the first member of a new groundbreaking line of <strong>WiFi</strong> products combining the power of <strong>Linux</strong> with Arduino&#8217;s simplicity. The first <strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the combination of an <a
+href="http://arduino.cc/en/Main/ArduinoBoardLeonardo" target="_blank">Arduino Leonardo</a> with a <strong>WiFi system-ona-chip running <a
+href="https://openwrt.org/" target="_blank">Linino (GNU/Linux based on OpenWRT)</a></strong>.</p><p><img
+class="aligncenter" src="http://tavendo.com/static/img/blog/arduino-yun-getting-started-part-1/arduino-yun.jpg" alt="Arduino Yun board is supported by biicode" width="649" height="431" /></p><p><span
+id="more-1944"></span></p><p>The board has built-in Ethernet and <strong><span
+class="wikiword">WiFi</span> support</strong>, a <strong>USB-A port</strong>, <strong>micro-SD card slot</strong>, <strong>20 digital input/output</strong> pins (of which 7 can be used as PWM outputs and 12 as analog inputs), a <strong>16 <span
+class="wikiword">MHz</span></strong> crystal oscillator, a <strong>micro USB</strong> connection, an<strong> ICSP header</strong> and a <strong>3 reset buttons</strong>.</p><p><strong>It can communicate with the Linux</strong> distribution onboard, offering a powerful networked computer with the ease of Arduino. In addition to Linux commands like cURL, <strong>you can write your own shell scripts for robust interactions</strong>.</p><p>&nbsp;</p><p><img
+class="aligncenter" src="http://arduino.cc/en/uploads/Main/BridgeInShort.png" alt="How the Arduino Yun enviroment connects to the Linux enviroment." width="650" height="361" /></p><p>The Bridge library facilitates communication between the two processors, giving Arduino sketches the ability to run shell scripts, communicate with network interfaces, and receive information from the <span
+class="wikiword">AR9331</span> processor. The USB host, network interfaces and SD card are not connected to the 32U4, but the <span
+class="wikiword">AR9331</span>, and the Bridge library also enables the Arduino to interface with those peripherals.</p><p>Arduino gives us a lot of references about this board in a great <a
+href="http://arduino.cc/en/Guide/ArduinoYun" target="_blank">gide to the Arduino Yun</a> and a sumary of the <a
+href="http://arduino.cc/en/Reference/YunBridgeLibrary" target="_blank">bridge Yun library</a>, a library to enable all the power the Yun can provide.</p><h2>How to use the Arduino Yun with biicode</h2><p>Just specify the Arduino SDK path of the 1.5.8 or higher. If you don&#8217;t have it yet, you can <a
+title="Arduino Download" href="http://arduino.cc/en/Main/Software" target="_blank">download it from the Arduino download page</a> and unzip it into <em>biicode_env</em> folder.</p><pre class="crayon-plain-tag">bii arduino:settings
+Enter SDK path (C:/biicode_env/arduino-1.0.6):C:/biicode_env/arduino-1.5.8
+Enter board (/o list supported options):yun
+Using arduino port: COM12</pre><p>If you want to upload your firmaware by ssh to 192.168.240.1:</p><pre class="crayon-plain-tag">bii arduino:upload --ssh</pre><p>Or specify a different IP.</p><pre class="crayon-plain-tag">bii arduino:upload --ssh 192.168.2.1</pre><p>Now, hacking something via wifi is easier!</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-yun/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Hacklab UPM &#8211; bq</title><link>http://blog.biicode.com/hacklab-upm-bq/</link> <comments>http://blog.biicode.com/hacklab-upm-bq/#comments</comments> <pubDate>Thu, 04 Dec 2014 12:42:50 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[BQ]]></category> <category><![CDATA[Hacklab]]></category> <category><![CDATA[UPM]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1936</guid> <description><![CDATA[<p>HackLab UPM &#8211; bq was born on October the 16, 2014 as an initiative from both bq and ETSIDI-UPM. It is a work-space for students to materialize their ideas. As simple as a group of students who want to develop their maker spirit, learn programming, electronics and 3D design. Hacklab UPM &#8211; bq: Unleash your Arduino projects [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/hacklab-upm-bq/">Hacklab UPM &#8211; bq</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><a
+href="http://hacklabupm.bq.com/doku.php">HackLab UPM &#8211; bq</a> was born on October the 16, 2014 as an initiative from both <a
+href="http://www.bq.com/es/">bq</a> and <a
+href="http://etsidi-upm">ETSIDI-UPM</a>. It is a work-space for students to materialize their ideas. As simple as a group of students who want to develop their maker spirit, learn programming, electronics and 3D design.</p><h2>Hacklab UPM &#8211; bq: Unleash your Arduino projects with biicode</h2><p>On November 27,2014 we had the great chance to spread the word about using biicode to unleash Arduino projects.</p><p><img
+class="aligncenter" src="https://static-bqreaders.s3.amazonaws.com/img/web/productView/zum/bq-zum.jpg" alt="Hacklab UPM-BQ: Unleashing Arduino projects with biicode" width="369" height="313" /></p><p><span
+id="more-1936"></span></p><p>Not only was it great to introduce biicode, but also to enjoy first hand  <a
+href="http://www.bq.com/es/productos/zum.html">ZUM BT-328</a>, the new bq board developed for educational robotics. It&#8217;s 100% compatible with <a
+href="http://arduino.cc/en/pmwiki.php?n=Main/ArduinoBoardUno">Arduino UNO</a> and it works perfectly with biicode, just selecting UNO as board.</p><p>ZUM BT-328 includes new features such as integrated bluetooth, male pins with separate power and ground, ON/OFF button and a 3A stage power that enables connecting many things directly to your arduino.</p><p>These are the slides we used in the workshop to explain how to use biicode with arduino:</p><p><iframe
+src="https://www.slideshare.net/slideshow/embed_code/42262771" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe><div
+style="margin-bottom:5px"> <strong> <a
+href="https://www.slideshare.net/DavidSanchezFalero/biicode-hacklab-bq" title="Biicode hacklab bq" target="_blank">Biicode hacklab bq</a> </strong> from <strong><a
+href="http://www.slideshare.net/DavidSanchezFalero" target="_blank">David Sanchez Falero</a></strong></div><p>As you already know, advanced projects can be achieved with biicode and Arduino, <a
+title="blog arduino biicode" href="http://blog.biicode.com/tag/arduino-2/">just take a look to some example projects. </a></p><p>What are you planning to hack for Christmas? Let us know.</p><p>We look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/hacklab-upm-bq/">Hacklab UPM &#8211; bq</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/hacklab-upm-bq/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Unleash your Arduino projects</title><link>http://blog.biicode.com/unleash-arduino-projects/</link> <comments>http://blog.biicode.com/unleash-arduino-projects/#comments</comments> <pubDate>Tue, 02 Dec 2014 12:38:08 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[advanced programming]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[projects]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1933</guid> <description><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino. So let&#8217;s get started, Biicode is a [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino.</p><p>So let&#8217;s get started, Biicode is a client interface aplication (CLI)  and to use it open the Terminal of your computer.</p><p><img
+class="aligncenter" src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/720px-Arduino_Logo.svg.png" alt="Arduino projects easily setup in biicode" width="240" height="163" /></p><p>biicode technology gives you several advantages to richen your Arduino experience:</p><div><ul><li><strong>Save your project in different folders</strong> for a better organization.</li><li><strong>Reuse yours and other user´s code</strong>. Reuse made easy: just <tt
+class="docutils literal"><span
+class="pre">#include</span></tt> the file you need and you get it. No more copy and paste files from project to project or dowloading zip files from tutorials.</li><li>This is a <strong>simple</strong> and <strong>fast</strong> way to <strong>compile and upload</strong> your code to your Arduino.</li><li>Use your favorite IDE or text editor, we also provide <strong>Eclipse integration</strong>.</li><li>We are hosting <a
+class="reference external" href="https://www.biicode.com/adafruit">adafruit</a>, <a
+class="reference external" href="https://www.biicode.com/sparkfun">sparkfun</a> and many other libraries, <strong>you won’t need to download and install libraries in your SDK anymore</strong>.</li></ul></div><p><span
+id="more-1933"></span></p><h1>1. How to program your arduino with biicode</h1><h2>Installing biicode and Arduino tools</h2><div
+id="installing-biicode-and-arduino-tools" class="section"><p><a
+href="https://www.biicode.com/downloads" target="_blank">Download</a> and install biicode, then make sure it is installed:</p><div
+id="installing-biicode-and-arduino-tools" class="section"><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii --version</pre></div></div></div><div
+id="create-your-project" class="section"></div><p>Then, install a group of tools with the following command. Open you terminal write:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii setup:arduino</pre></div></div></div><div
+id="create-your-project" class="section"><h2>Create Arduino projects</h2><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init myproject</pre></div></div><p>Then we can use the <tt
+class="docutils literal"><span
+class="pre">new</span></tt> command to create some folders and a “Simple Blink” Arduino main file. You can do it manually too.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ cd myproject
+~/myproject$ bii new myuser/myblock --hello=arduino</pre></div></div><div
+class="infonote container">You can directly type <tt
+class="docutils literal"><span
+class="pre">myuser</span></tt> or your real username.  This is the resulting layout:</div><div
+class="highlight-text"><div
+class="highlight"><pre class="crayon-plain-tag">+-- myproject
+|    +-- bii
+|    +-- blocks
+|    |    +-- myuser
+|    |    |    +-- myblock
+|    |    |    |    +-- main.cpp
+|    +-- deps</pre></div></div></div><div
+id="define-your-board" class="section"><h2>Define your board</h2><p>Define your Arduino board using <tt
+class="docutils literal"><span
+class="pre">arduino:settings</span></tt> command. We are using an Arduino Uno but use the /o option to show a list of the default boards, even though any board is welcomed!</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">Enter SDK path (/../biicode_env/arduino-1.0.6): [ENTER]
+Enter board (/o list supported options):uno
+Using arduino port: COM4</pre></div></div></div><div
+id="build-and-upload-your-program" class="section"><h2>Upload your program to the Arduino</h2><p>Now, build and upload the blink to your Arduino.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/myproject$ bii arduino:build
+...
+[100%] Built target myuser_myblock_main
+~/myproject$ bii arduino:upload
+...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div></div><div
+id="depending-on-fenix-blink" class="section"><h2><img
+class="aligncenter wp-image-1935 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/pin13-200x300.png" alt="pin13" width="200" height="300" /></h2><h1>2. Difference between .ino and .cpp blink</h1><p>First, compare both main files. There are only two differences, the first include and the extension of the files. As you will see, this pair of differences will bring you lots of advantages.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p><strong> main.ino</strong></p><pre class="crayon-plain-tag">int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p></p><div><h1>3. How to use the code on biicode?</h1><p>Usual &#8220;blink&#8221; project blocks your Arduino, so it&#8217;s obstructed to do anything else but blinking. We are #including here a “blink” utility class that<strong> blinks without delays or blocking your Arduino</strong>. Reuse from<a
+href="https://www.biicode.com/fenix/fenix/blink/master" target="_blank"> fenix&#8217;s blink library</a>, copy the following code containing the new blink into the <em>main.cpp</em> file.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "fenix/blink/blink.h"
+Blink my_blink;
+void setup() {
+  //pin = 13, interval = 1000 ms
+  my_blink.setup(13, 1000);
+}
+void loop() {
+  my_blink.loop();
+}</pre><p>Execute the command below to find unresolved dependencies and retrieve necessary files from servers:</p><pre class="crayon-plain-tag">~/myproject$ bii find</pre><p>Now can now build your firmware and upload it to your Arduino:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/arduino_hello_project$ bii arduino:upload
+      ...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div><p>That’s it, if you see that output fenix’s blink.h was downloaded and uploaded in your project! You can check the deps folder, the blink.h code is there.</p><h1>4. Next steps</h1><p>Many tutorials are available on this blog&#8217;s<a
+href="http://blog.biicode.com/tag/arduino-2/" target="_blank"> Arduino projects with biicode</a>.</p><p>Hope you enjoy this basic unleash your Arduino Projects Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p></div></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/unleash-arduino-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Give wings to the whale: biicode with docker</title><link>http://blog.biicode.com/biicode-docker/</link> <comments>http://blog.biicode.com/biicode-docker/#comments</comments> <pubDate>Wed, 08 Oct 2014 10:27:16 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[biicode image]]></category> <category><![CDATA[docker]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1776</guid> <description><![CDATA[<p>We have uploaded a docker image with biicode pre-installed. So, you can quickly try biicode thanks to docker! Don&#8217;t you know what&#8217;s docker? Let&#8217;s start with a short explanation about it. What&#8217;s docker Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-docker/">Give wings to the whale: biicode with docker</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have uploaded a docker image with biicode pre-installed. So, you can quickly try biicode thanks to docker!</p><p>Don&#8217;t you know what&#8217;s docker? Let&#8217;s start with a short explanation about it.</p><h2>What&#8217;s docker</h2><p><img
+class="alignright" src="https://d3oypxn00j2a10.cloudfront.net/0.10.3/img/homepage/docker-whale-home-logo.png" alt="Now biicode works with docker. Yays!" width="346" height="197" /><strong><a
+title="What is Docker?" href="https://www.docker.com/whatisdocker/" target="_blank">Docker</a></strong> is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and automating workflows, Docker enables apps to be quickly assembled from components and eliminates the friction between development, QA, and production environments. As a result, IT can ship faster and run the same app, unchanged, on laptops, data center VMs, and any cloud.</p><h2></h2><p><span
+id="more-1776"></span></p><h2>How to run the biicode image</h2><p>First of all, you need to have <strong><a
+title="docker installation" href="https://docs.docker.com/installation/#installation" target="_blank">docker installed</a></strong> . Then, run the following command to download and run a docker container with the ubuntu 14.04 image with biicode pre-installed.</p><pre class="crayon-plain-tag">sudo docker run -t -i davidsanfal/ubuntu14_biicode:latest /bin/bash
+Unable to find image 'davidsanfal/ubuntu14_biicode:latest' locally
+Pulling repository davidsanfal/ubuntu14_biicode
+eb94c93951d5: Download complete
+511136ea3c5a: Download complete
+b18d0a2076a1: Download complete
+67b66f26d423: Download complete
+...
+root@dc7e87dcfc2b:~#</pre><p>Now, try the biicode installation.</p><pre class="crayon-plain-tag">root@dc7e87dcfc2b:~#  bii
+ERROR: None or bad command. Type "bii --help" for available commands</pre><p>And this is all you need to use <strong>biicode with docker!</strong></p><h2>How to use biicode inside the docker container</h2><p>Now, let&#8217;s make an <a
+title="sqlite example" href="http://docs.biicode.com/c++/examples/sqlite.html" target="_blank"><strong>example with SQLite</strong></a>.</p><p>First, open and build the <a
+title="sqlite example" href="http://www.biicode.com/examples/sqlite_basic" target="_blank"><strong>examples/sqlite_basic</strong></a> block.</p><pre class="crayon-plain-tag">root@dc7e87dcfc2b:~# bii init sql
+Successfully initialized biicode project sql
+root@dc7e87dcfc2b:~# cd sql
+root@dc7e87dcfc2b:~/sql# bii open examples/sqlite_basic
+INFO: Processing changes...
+Opened examples/sqlite_basic
+root@dc7e87dcfc2b:~/sql# bii cpp:build
+INFO: Processing changes...
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+(...)
+[100%] Built target examples_sqlite_basic_main</pre><p>Now, <strong>run the example</strong>.</p><pre class="crayon-plain-tag">root@dc7e87dcfc2b:~/sql# ./bin/examples_sqlite_basic_main
+Opened database successfully
+SELECT, List Veggies
+STORE = Veggies
+NAME = Spinach
+NUMBER = 3
+STORE = Veggies
+NAME = Onion
+NUMBER = 1
+SELECT, List Drinks
+STORE = Drinks
+NAME = Coffee
+NUMBER = 7
+SELECT, Updated Lists:
+STORE = Drinks
+NAME = Coffee
+NUMBER = 2
+STORE = Veggies
+NAME = Onion
+NUMBER = 1
+Closed database successfully</pre><p>If you want to know how to upload an image to docker-hub or anything, you can see the <a
+title="docker-hub docs" href="https://docs.docker.com/introduction/#docker-hub" target="_blank">docker-hub docs</a> or visit our <a
+class="reference external" title="biicode forum" href="http://forum.biicode.com/">forum</a> and ask any questions. feel free to upload your own images!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-docker/">Give wings to the whale: biicode with docker</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicode-docker/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Arduino: A simple way to use I2C</title><link>http://blog.biicode.com/arduino-use-i2c/</link> <comments>http://blog.biicode.com/arduino-use-i2c/#comments</comments> <pubDate>Mon, 28 Apr 2014 11:50:33 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[i2c]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=373</guid> <description><![CDATA[<p>As they say in the instructables article: I2C between Arduino&#8217;s, “Ever wanted to connect more Arduino&#8217;s to transfer data or commands between them?”. If you want to use more than two Arduinos and don&#8217;t want to use many pins, the I2C protocol is your best option. Arduino I2C requires analog pins 4 and 5 and two [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-use-i2c/">Arduino: A simple way to use I2C</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As they say in the instructables article: <a
+title="I2C between Arduino's | Instructables" href="http://www.instructables.com/id/I2C-between-Arduinos/" target="_blank">I<sup>2</sup>C between Arduino&#8217;s</a>, <em>“Ever wanted to connect more Arduino&#8217;s to transfer data or commands between them?”</em>. If you want to use more than two Arduinos and don&#8217;t want to use many pins, the <a
+title="I²C (Inter-Integrated Circuit) | Wikipedia" href="http://en.wikipedia.org/wiki/I%C2%B2C" target="_blank">I<sup>2</sup>C</a> protocol is your best option.</p><p><div
+id="attachment_375" style="width: 435px" class="wp-caption aligncenter"><img
+class="wp-image-375 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/i2c_425px-I2C.png" alt="I2C schematic" width="425" height="150" /><p
+class="wp-caption-text">A sample schematic with one master (a microcontroller), three slave nodes (an ADC, a DAC, and a microcontroller), and pull-up resistors Rp [source: Wikipedia]</p></div><span
+id="more-373"></span></p><p><a
+title="Arduino Wire library" href="http://arduino.cc/en/reference/wire" target="_blank">Arduino I<sup>2</sup>C</a> requires analog pins 4 and 5 and two pull-up resistors. You can connect more than 100 Arduino&#8217;s on the same 2 pins. It&#8217;s simple, reliable and easy-to-use. <a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/i2c_bb.png"><img
+class="aligncenter wp-image-376" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/i2c_bb.png" alt="Arduino I2C" width="630" height="427" /></a>Whenever you want to communicate two or more Arduinos, <strong>you have to build a communication protocol that separates the data into bytes and re-builds the data at the receiver</strong>. This new library works on the Arduino I<sup>2</sup>C library and implements a number of functions that automate the process of splitting the data bytes to send (by it’s type), the shipping and data reconstruction. If you want to see a more extensive explanation of the library, you can do it using this <a
+title="david/easy_i2c block at biicode" href="https://www.biicode.com/david/blocks/david/easy_i2c/branches/master#.U0e1Evl_vD1" target="_blank">I<sup>2</sup>C/TWI communication block for Arduino</a>. In this library the master and the slave are separated. This way, it’s easier to use them.</p><h4 id="example">Example:</h4><p>This example has two different firmwares to upload into two different Arduinos. The first example, <strong>ex_master.cpp is the master</strong>. First, the master sends a float (2.0f) to a slave on the addres 2 and then requests another float to the slave and prints it on the serial port.</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "david/easy_i2c/master.h"
+Master myMaster;
+void setup()
+{
+	Serial.begin(9600);
+}
+void loop()
+{
+	myMaster.writeTo(2,2.0f);
+	float data = myMaster.readFloatFrom(2);
+	Serial.println(data);
+}</pre><p>The second example, <strong>ex_slave.cpp is the slave</strong>. The slave reads a float from the master and adds it to it’s variable count. If the master requests information, the slave writes the count variable as float to the master.</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "david/easy_i2c/slave.h"
+void requestEvent();
+void recieveEvent(int num);
+Slave mySlave(2, requestEvent, recieveEvent);
+float count = 0.0f;
+void setup(){}
+void loop(){}
+void requestEvent()
+{
+	mySlave.write(count);
+}
+void recieveEvent(int num){
+	if(num &gt; 0){
+		count += mySlave.readFloat();
+	}
+}</pre><p>Give it a try today! <a
+title="Biicode downloads page" href="https://www.biicode.com/downloads" target="_blank">Download biicode now!</a><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-use-i2c/">Arduino: A simple way to use I2C</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-use-i2c/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

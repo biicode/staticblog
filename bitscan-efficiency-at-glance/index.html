@@ -1,0 +1,473 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/bitscan-efficiency-at-glance/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:39:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index35c6.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>BITSCAN efficiency at a glance - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="biicode is a unique c/cpp dependency manager, work with its exclusive and fast cpp library: bitscan, for sets of bits greater than the CPU register word."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="BITSCAN efficiency at a glance - biicode Blog" /><meta
+property="og:description" content="biicode is a unique c/cpp dependency manager, work with its exclusive and fast cpp library: bitscan, for sets of bits greater than the CPU register word." /><meta
+property="og:url" content="http://blog.biicode.com/bitscan-efficiency-at-glance/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:author" content="biicode" /><meta
+property="article:tag" content="bits" /><meta
+property="article:tag" content="bitscan" /><meta
+property="article:tag" content="efficency" /><meta
+property="article:tag" content="exclusively" /><meta
+property="article:tag" content="library" /><meta
+property="article:section" content="biicoders" /><meta
+property="article:published_time" content="2014-07-04T10:00:42+00:00" /><meta
+property="article:modified_time" content="2014-08-29T11:12:05+00:00" /><meta
+property="og:updated_time" content="2014-08-29T11:12:05+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/A-POPULATION-SIZE.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/B-reverse-non-destructive.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/C-non-destructive-n10000.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/D-non-destructive-n20000.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/e-destructive-n1000.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/F-destructive-n20000.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="BITSCAN efficiency at a glance"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; BITSCAN efficiency at a glance Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index3758.html?p=483' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-483 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/biicoders/index.html" rel="v:url" property="v:title">biicoders</a> » <strong
+class="breadcrumb_last">BITSCAN efficiency at a glance</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-483" class="post-483 post type-post status-publish format-standard hentry category-biicoders tag-bits tag-bitscan tag-efficency tag-exclusively tag-library"> <header
+class="entry-header"><h1 class="entry-title">BITSCAN efficiency at a glance</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="10:00" rel="bookmark"><time
+class="entry-date" datetime="2014-07-04T10:00:42+00:00">July 4, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/biicode/index.html" title="View all posts by biicode Team" rel="author">biicode Team</a></span></span></div> </header><div
+class="entry-content"><p>BITSCAN 1.0, <a
+href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan/branches/master">our exclusive C++ library developed by Pablo San Segundo</a> for sets of bits greater than the CPU register word, has proven its efficiency!</p><p>In order to find out if BITSCAN  was fast enough to be a substantial improvement over other libraries that manage bit strings, it has been  compared with std::bitset and  boost::dynamic_bitset similar data structures.</p><h3>A comment on basic features</h3><p><a
+title="stl: :bitset" href="http://www.cplusplus.com/reference/bitset/bitset/bitset/" target="_blank">STL &#8216;s Bitset (stl∷bitset)</a> is NOT dynamic (i.e. the size of the bit string must be provided in compilation time by as a template parameter), so it does not actually provide the same functionality.</p><p><a
+title="boost:dynamic_bitset" href="http://www.boost.org/doc/libs/1_36_0/libs/dynamic_bitset/dynamic_bitset.html" target="_blank">Boost´s Dynamic Bitset (boost:dynamic_bitset)</a> is similar in functionality  in fast forward bit scanning. However, Boost does NOT currently support reverse bit scanning which is important in many applications.</p><p><span
+id="more-483"></span></p><h3>The test</h3><p>We have compared the following functions:</p><p>1-<strong>Bit access:</strong> The ability to test whether a given bit is present in a given position</p><p>2<strong>-Population count</strong>: The ability to count the number of bits to 1 in a bitstring</p><p>3-<strong>Forward bit scanning (also known as LSB scanning)</strong> over the whole range of the bit string: Extracts the position of the 1-bits in sequential order starting from the least significant.</p><p>4-<strong>Reverse bit scanning (also known as MSB scanning)</strong> over the full range of the bit string: Same as (3) but in reverse order (and typically slower). As mentioned earlier neither Boost  (nor STL) currently support this functionality in their bit data structures. Actually the boost::dynamic_bitset interface  has only find_first(…) and find_next(…) functions and it would be really nice if in the next version find.last(…)  and find_previous(..) were available, since there are many applications where this is very useful indeed.</p><p>In the cases of bit scanning (3, 4) we have considered two variants which are related to the typical use in concrete applications: A) Destructive and B) Non destructive.</p><ul><li>In (A) or destructive case, once the position of the bit is read it is removed from the bitstring. This somehow easies the task of bit scanning because the main loop only has to look for the least  (most) significant bit at each step. The bad part is that the information is lost.</li><li>In the non-destructive case (B), the bit string is left intact at the end of the process. This requires additional operations w.r.t. (A) to filter out those 1-bits already picked at each 64-bit block.</li></ul><p>The code used to run these tests is located here: <a
+style="color: #1155cc;" href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan_tests/branches/master" target="_blank">https://www.biicode.com/pablodev/blocks/pablodev/bitscan_tests/branches/master</a>.</p><p>BOOST should be installed in your local machine if you want to execute it.</p><h3>Test configuration</h3><p>Tests have been carried out on an Intel(R) Core(TM) i7 CPU 920 @ 3.67GHz, 6GB RAM with a  Windows 7, 64bit O.S.</p><p>We considered bit strings with different populations (<em>n</em> ranging from 500 up to 20.000) and distributions (uniform densities <em>d,</em> range from 0.25 up to 0.9) to test the ability of the data structures to reason from one bit-block to another. In all cases results are averaged over 100.000 repetitions.</p><p><em>Figure 1</em> shows performance results. From now on we will refer to the different bit string implementations by the source  (i.e. BOOST, STL and BITSCAN) for simplicity.  The concrete tests are:</p><ol><li>Population count (Figure 1, A) : Counting of 1 bits has been tested on the three implementations.</li><li>Destructive scans (Figure 1, E and F) : Scans which involve bit deletion after reading have been tested on BITSCAN and BOOST. STL has been left out because it is not dynamic.</li><li>Non destructive scans (Figure 1, C and D) : Scans which do not involve bit deletion after reading have been tested on BITSCAN and BOOST. STL has been left out similar to (2).</li><li>Reverse bit scan (Figure 1, B): It  has been compared against forward bit scanning only in BITSCAN since the other implementations do not offer a specific function for this task.</li><li>Access to bit positions: We have also tested concrete bit access in the 3 implementations. Reported results are not included because performance has been very similar in all cases.</li></ol><p>&nbsp;</p><table><tbody><tr><td
+width="315"> <img
+class="alignnone wp-image-764" src="../wp-content/uploads/sites/2/2014/07/A-POPULATION-SIZE.png" alt="bitscan test data A POPULATION SIZE" width="315" height="224" /></td><td
+width="315"> <img
+class="alignnone wp-image-765" src="../wp-content/uploads/sites/2/2014/07/B-reverse-non-destructive.png" alt="bits scan test data B reverse non destructive" width="315" height="223" /></td></tr><tr><td
+width="315">  A) Computation of the number of bits for the three implementations with 0.5 density and varying population.</td><td
+width="315">  B) BITSCAN reverse scanning for n=20.000 and different densities.</td></tr><tr><td
+width="315"><img
+class="alignnone wp-image-766" src="../wp-content/uploads/sites/2/2014/07/C-non-destructive-n10000.png" alt="bitscan test data C non destructive n10000" width="316" height="204" /></td><td
+width="315"><img
+class="alignnone wp-image-767" src="../wp-content/uploads/sites/2/2014/07/D-non-destructive-n20000.png" alt="bitscan test data D non destructive n20000" width="315" height="223" /></td></tr><tr><td
+width="315">C) Non destructive scan comparison for n=1.000 and different densities.</td><td
+width="315">D) Non destructive scan comparison for n=20.000 and different densities.</td></tr><tr><td
+width="315"> <img
+class="alignnone wp-image-762" src="../wp-content/uploads/sites/2/2014/07/e-destructive-n1000.png" alt="bitscan test data e destructive n1000" width="315" height="217" /></td><td
+width="315"><img
+class="alignnone wp-image-763" src="../wp-content/uploads/sites/2/2014/07/F-destructive-n20000.png" alt="bitscan test data F destructive n20000" width="315" height="230" /></td></tr><tr><td
+width="315">E) Destructive scan comparison for n=1.000 and different densities.</td><td
+width="315">F) Destructive scan comparison for n=20.000 and different densities.</td></tr><tr><td
+colspan="2" width="581"><em>Figure 1. Performance tests for BITSCAN, BOOST and STL bitstring implementations</em></td></tr></tbody></table><h3>Evaluation</h3><p>Population count is between 3x to 5x faster in BITSCAN than BOOST  and  STL, probably because the machine used for the tests exploited Intel´s intrinsic function library to the limit.  Although the result is possibly machine dependent, the order of magnitude of the improvement is indicative.</p><p>In destructive scans, BITSCAN is around 2x compared to BOOST. Noteworthy is that BITSCAN&#8217;s performance does not change much in very dense bit strings (i.e. &gt;0.75) , whereas BOOST shows certain degradation.</p><p>In the &#8220;regular&#8221; non destructive scan, BITSCAN is even slightly better (2.20x approx.) than in the previous case possibly because it caches better critical information related to the last bit read.</p><p>As to reverse (backwards) scanning, it performs comparably to forward scanning in BITSCAN and may be used without penalty.</p><h3>Conclusions</h3><p>This report shows that <a
+title="bitscan code" href="http://www.biicode.com/pablodev/bitscan" target="_blank">BITSCAN </a>is a leading state of the art alternative for programmers which look for efficiency in their implementations. Cutting edge research is showing that many combinatorial problems encoded with bit strings may be solved many times faster. Biicode sincerely hopes BITSCAN helps C, C++ developers throughout the world to make their code faster. It has already been employed successfully in a number of difficult and well known problems from the graph domain and many research papers describe how it can be done [<a
+title="An improved bit parallel exact maximum clique algorithm" href="http://oa.upm.es/11804/2/INVE_MEM_2011_107297.pdf" target="_blank">1</a>, <a
+title="An exact bit parallel algorithm for the maximum clique problem" href="http://dl.acm.org/citation.cfm?id=1860369" target="_blank">2</a>, <a
+title="A new exact bit parallel algorithm for SAT" href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4669756&amp;tag=1" target="_blank">3</a>, &#8230;].</p><p>Moreover Biicode hopes it may be improved by following our reuse paradigm. This will be an even more exciting test!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../exclusively-at-biicode-bitscan-library/index.html" title="Exclusively at biicode, BitScan library!">Exclusively at biicode, BitScan library!</a></li><li><a
+href="../meet-the-team-weve-got-a-new-biicoder-jorge-combalia/index.html" title="Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia!">Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia!</a></li><li><a
+href="../codemotion-rome-2014-2/index.html" title="Codemotion Rome 2014">Codemotion Rome 2014</a></li><li><a
+href="../cppmicroservices-biicode/index.html" title="Lessons learnt adapting CppMicroServices to biicode">Lessons learnt adapting CppMicroServices to biicode</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/bitscan-efficiency-at-glance/' addthis:title='BITSCAN efficiency at a glance' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/biicoders/index.html" rel="category tag">biicoders</a> and tagged <a
+href="../tag/bits/index.html" rel="tag">bits</a>, <a
+href="../tag/bitscan/index.html" rel="tag">bitscan</a>, <a
+href="../tag/efficency/index.html" rel="tag">efficency</a>, <a
+href="../tag/exclusively/index.html" rel="tag">exclusively</a>, <a
+href="../tag/library/index.html" rel="tag">library</a>. Bookmark the <a
+href="index.html" title="Permalink to BITSCAN efficiency at a glance" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Do you recognize the early signs of storm? Get help with an Arduino weather station!</a></div><div
+class="next"><a
+href="../fab10-barcelona-wafate-airboard/index.html" rel="next">Fab10 Barcelona <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="post pingback"><p>Pingback: <a
+href='../exclusively-at-biicode-bitscan-library/index.html' rel='external nofollow' class='url'>Exclusively at biicode, BitScan library! | Biicode Blog</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='../quick-approach-bitscan/index.html' rel='external nofollow' class='url'>A quick approach to BITSCAN - Biicode Blog</a>()</p></li></li><li
+class="comment even thread-even depth-1" id="dsq-comment-39"><div
+id="dsq-comment-header-39" class="dsq-comment-header"><cite
+id="dsq-cite-39"> http://Cisco <span
+id="dsq-author-user-39">Arvind Umrao</span></cite></div><div
+id="dsq-comment-body-39" class="dsq-comment-body"><div
+id="dsq-comment-message-39" class="dsq-comment-message"><p>I am trying to download bitscan soure code but it seems links are broken. It would be great if broken links are restored or email me source code and test applications.</p><p>Thanks and Regards<br
+/> -Arvind</p></div></div></li><li
+class="post pingback"><p>Pingback: <a
+href='../sparse-bitsets-cpp/index.html' rel='external nofollow' class='url'>Sparse bitsets in C++ with BITSCAN - biicode Blog</a>()</p></li></li><li
+class="post pingback"><p>Pingback: <a
+href='../bitscan-cpp-library-bit-strings/index.html' rel='external nofollow' class='url'>BITSCAN: C++ library for bit strings - biicode Blog</a>()</p></li></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '483%20http_/blog.biicode.com/index3758.html?p=483';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "BITSCAN efficiency at a glance";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'indexb476.html?cf_action=sync_comments&amp;post_id=483';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/bitscan-efficiency-at-glance/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:40:04 GMT -->
+</html>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Ross Bencina</title> <atom:link href="http://blog.biicode.com/tag/ross-bencina/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to upload to biicode. Example 4: Oscpack by Ross Bencina</title><link>http://blog.biicode.com/upload-to-biicode-oscpack/</link> <comments>http://blog.biicode.com/upload-to-biicode-oscpack/#comments</comments> <pubDate>Mon, 17 Nov 2014 16:08:32 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[OScpack]]></category> <category><![CDATA[Ross Bencina]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1886</guid> <description><![CDATA[<p>Updated for biicode 2.0! As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series: Example 1: Json11 by Dropbox Example [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li></ul><h2></h2><p><span
+id="more-1886"></span></p><h2>Upload to biicode Oscpack</h2><p>Oscpack is a set of C++ classes for packing and unpacking Open Sound Control (OSC) packets. Developed by Ross Bencina, Oscpack proved to be an essential library requested in our forum. As Ross Bencina explains, <a
+title="Oscpack library" href="http://www.rossbencina.com/code/oscpack" target="_blank">Oscpack</a> includes a minimal set of UDP networking classes for Windows and POSIX. It enables an easy way to construct, send, receive and parse OSC packets.</p><h3>Basics</h3><p><a
+title="download biicode" href="http://www.biicode.com/downloads" target="_blank">Install biicode </a>and make sure you&#8217;ve got the latest version of the library you want to use. To keep the biicode version updated, fork or clone the library on a public git repository (as Bitbucket or Github). <a
+href="https://code.google.com/p/oscpack/" target="_blank">Oscpack 1.1.0 is available on google code hosting</a>. This guide uses Bitbucket, but the same steps apply to <a
+title="Github Travis Continous Integration" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Github and Travis CI fans</a>.</p><p>Create a new BIICODE project:</p><pre class="crayon-plain-tag">~$ bii init osc
+~$ cd osc
+~$ bii new mariadeanton/oscpack
+~$ cd blocks/mariadeanton/oscpack</pre><p>Put the content of the latest version of Oscpack into <code>blocks/mariadeanton/oscpack </code> folder. Adapt the readme file to notify users the specifics of the lib and its biicode adaptation.</p><p>Create a new Bitbucket repository:</p><p><img
+class="size-large wp-image-1887 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/bitbucket1-1024x174.png" alt="bitbucket repository" width="630" height="107" /></p><p>Copy the HTTPS or SSH address as marked in red on the image. You will need this on the steps below to establish a &#8220;remote origin&#8221;:</p><pre class="crayon-plain-tag">git init
+git add .
+git commit -m "first commit"
+git remote add origin git@bitbucket.org:mariadeanton/oscpack-biicode.git
+git push -u origin master</pre><p>Once first commit is pushed the original library is ready to be adapted.</p><h3>Specifics</h3><h4>A. Check if biicode finds the links between sources</h4><p>Execute <code>bii deps </code> to get all information related to biicode&#8217;s dependency scanning:</p><pre class="crayon-plain-tag">bii deps</pre><p><img
+class="size-full wp-image-1890 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/biideps1.png" alt="biideps1" width="348" height="537" /></p><p>Seems we&#8217;ve got to include the current working directory into dependency search and build.</p><p>If you execute:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>It won&#8217;t compile.</p><h5>A.1. Create a <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a>  file into blocks/username/blockname/ folder</h5><p>and write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/</pre><p>&nbsp;</p><h4></h4><p><img
+class="aligncenter size-large wp-image-1991" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-paths-1024x328.png" alt="osc-paths" width="630" height="201" /></p><h4>B. Build and compile</h4><h5>B.1. Ensure original code logic remains</h5><p>Just with these updates, both biicode and compiler know they should include current source directory, but <code>bii cpp:build</code> can&#8217;t compile properly, why is this happening?</p><p>Check out the previous <code>CMakeLists.txt</code>, it separates the versions of <code>NetworkingUtils.cpp</code> depending on whether the OS is Win32 or POSIX based. It also includes <code>winmm</code> library when using Win32 . As Ross Bencina himself explains &#8220;the IpSystemTypePath selects the correct ones based on the current platform&#8221;.</p><p>Update your <code>CMakeLists.txt</code> to ignore posix folder content while on Win32 and vice versa. It also adds a line after <code>ADD_BIICODE_TARGETS </code>to link <code>winmm</code> lib on Win32:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Discard Posix Folder while on Win32 and vice versa
+  IF(WIN32)
+  list(REMOVE_ITEM  BII_LIB_SRC ip/posix/NetworkingUtils.cpp ip/posix/UdpSocket.cpp)
+  ELSE()
+  list(REMOVE_ITEM  BII_LIB_SRC ip/win32/NetworkingUtils.cpp ip/win32/UdpSocket.cpp)
+  ENDIF()
+  ADD_BIICODE_TARGETS()
+  # Link winmm lib while on Win32
+  IF(WIN32)
+  TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC winmm)
+  ENDIF()
+  # Include base block directory
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+ELSE()
+  # Previous CMakeLists.txt goes here</pre><p></p><h5>B.2. See for yourself what&#8217;s going on</h5><p>Execute:</p><pre class="crayon-plain-tag">~$ bii cpp:build</pre><p><em>(A successful build happens on POSIX OS but not on Win32)</em><br
+/> Let&#8217;s check the <code>bii_username_blockname_vars.cmake</code> file located into the <code>cmake</code> folder on your project. You can see all source code files linked here.<br
+/> <img
+class="aligncenter size-full wp-image-1892" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/cmake.png" alt="cmake" width="953" height="606" /></p><p>There it is! <code>ip/win32/UdpSocket.cpp</code> is missing.</p><h5>B.3. Manually specify dependencies</h5><p>Establish a dependency between <code>ip/UdpSocket.h</code> and <code>ip/win32/UdpSocket.cpp</code> just writing in the <em>[dependencies]</em> section of your <a
+title="biicode conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> file:</p><pre class="crayon-plain-tag">ip/UdpSocket.h + ip/win32/UdpSocket.cpp</pre><p>&nbsp;</p><p><img
+class="aligncenter size-large wp-image-1990" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-dependencies-1024x227.png" alt="osc-dependencies" width="630" height="139" /></p><p>Save all changes and you&#8217;re ready to go!</p><h4>C. Publish</h4><p>Push your changes to Bitbucket and publish to biicode, Oscpack library is ready to be reused!</p><pre class="crayon-plain-tag">bii publish</pre><p>Once you&#8217;ve tested Oscpack library on the different OS you can publish it as stable:</p><pre class="crayon-plain-tag">bii publish --tag=STABLE</pre><p></p><h4>D. Enjoy!</h4><p>Use <a
+href="http://www.biicode.com/Maria/oscpack" target="_blank">Oscpack library on biicode.</a> For example, you can include:</p><pre class="crayon-plain-tag">#include "Maria/oscpack/osc/OscPrintReceivedElements.h"
+//or
+#include "Maria/oscpack/ip/UdpSocket.h"</pre><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-oscpack/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

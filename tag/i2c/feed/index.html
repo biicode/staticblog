@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; i2c</title> <atom:link href="http://blog.biicode.com/tag/i2c/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Arduino: A simple way to use I2C</title><link>http://blog.biicode.com/arduino-use-i2c/</link> <comments>http://blog.biicode.com/arduino-use-i2c/#comments</comments> <pubDate>Mon, 28 Apr 2014 11:50:33 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[i2c]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=373</guid> <description><![CDATA[<p>As they say in the instructables article: I2C between Arduino&#8217;s, “Ever wanted to connect more Arduino&#8217;s to transfer data or commands between them?”. If you want to use more than two Arduinos and don&#8217;t want to use many pins, the I2C protocol is your best option. Arduino I2C requires analog pins 4 and 5 and two [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-use-i2c/">Arduino: A simple way to use I2C</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As they say in the instructables article: <a
+title="I2C between Arduino's | Instructables" href="http://www.instructables.com/id/I2C-between-Arduinos/" target="_blank">I<sup>2</sup>C between Arduino&#8217;s</a>, <em>“Ever wanted to connect more Arduino&#8217;s to transfer data or commands between them?”</em>. If you want to use more than two Arduinos and don&#8217;t want to use many pins, the <a
+title="I²C (Inter-Integrated Circuit) | Wikipedia" href="http://en.wikipedia.org/wiki/I%C2%B2C" target="_blank">I<sup>2</sup>C</a> protocol is your best option.</p><p><div
+id="attachment_375" style="width: 435px" class="wp-caption aligncenter"><img
+class="wp-image-375 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/i2c_425px-I2C.png" alt="I2C schematic" width="425" height="150" /><p
+class="wp-caption-text">A sample schematic with one master (a microcontroller), three slave nodes (an ADC, a DAC, and a microcontroller), and pull-up resistors Rp [source: Wikipedia]</p></div><span
+id="more-373"></span></p><p><a
+title="Arduino Wire library" href="http://arduino.cc/en/reference/wire" target="_blank">Arduino I<sup>2</sup>C</a> requires analog pins 4 and 5 and two pull-up resistors. You can connect more than 100 Arduino&#8217;s on the same 2 pins. It&#8217;s simple, reliable and easy-to-use. <a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/i2c_bb.png"><img
+class="aligncenter wp-image-376" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/i2c_bb.png" alt="Arduino I2C" width="630" height="427" /></a>Whenever you want to communicate two or more Arduinos, <strong>you have to build a communication protocol that separates the data into bytes and re-builds the data at the receiver</strong>. This new library works on the Arduino I<sup>2</sup>C library and implements a number of functions that automate the process of splitting the data bytes to send (by it’s type), the shipping and data reconstruction. If you want to see a more extensive explanation of the library, you can do it using this <a
+title="david/easy_i2c block at biicode" href="https://www.biicode.com/david/blocks/david/easy_i2c/branches/master#.U0e1Evl_vD1" target="_blank">I<sup>2</sup>C/TWI communication block for Arduino</a>. In this library the master and the slave are separated. This way, it’s easier to use them.</p><h4 id="example">Example:</h4><p>This example has two different firmwares to upload into two different Arduinos. The first example, <strong>ex_master.cpp is the master</strong>. First, the master sends a float (2.0f) to a slave on the addres 2 and then requests another float to the slave and prints it on the serial port.</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "david/easy_i2c/master.h"
+Master myMaster;
+void setup()
+{
+	Serial.begin(9600);
+}
+void loop()
+{
+	myMaster.writeTo(2,2.0f);
+	float data = myMaster.readFloatFrom(2);
+	Serial.println(data);
+}</pre><p>The second example, <strong>ex_slave.cpp is the slave</strong>. The slave reads a float from the master and adds it to it’s variable count. If the master requests information, the slave writes the count variable as float to the master.</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "david/easy_i2c/slave.h"
+void requestEvent();
+void recieveEvent(int num);
+Slave mySlave(2, requestEvent, recieveEvent);
+float count = 0.0f;
+void setup(){}
+void loop(){}
+void requestEvent()
+{
+	mySlave.write(count);
+}
+void recieveEvent(int num){
+	if(num &gt; 0){
+		count += mySlave.readFloat();
+	}
+}</pre><p>Give it a try today! <a
+title="Biicode downloads page" href="https://www.biicode.com/downloads" target="_blank">Download biicode now!</a><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-use-i2c/">Arduino: A simple way to use I2C</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-use-i2c/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

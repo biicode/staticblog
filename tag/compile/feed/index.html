@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; compile</title> <atom:link href="http://blog.biicode.com/tag/compile/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Compiling with biicode: CMake, build process, IDEs and more</title><link>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/</link> <comments>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/#comments</comments> <pubDate>Thu, 30 Apr 2015 13:44:43 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[Build system]]></category> <category><![CDATA[CLion]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[compile]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[Visual Studio]]></category> <category><![CDATA[VS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2234</guid> <description><![CDATA[<p>biicode knows how source code files connect to each other. With this information, it creates a boilerplate CMake layout to build your project automatically. biicode then detects how sources connect and builds a dependency graph following #includes and implementations generating, for each block, a CMakeLists.txt defining variables to the dependency graph detected. This translates into a CMakeLists.txt [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/">Compiling with biicode: CMake, build process, IDEs and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>biicode knows how source code files connect to each other. With this information, it creates a boilerplate <b>CMake</b> layout to build your project automatically. biicode then detects how sources connect and builds a dependency graph following #includes and implementations generating, for each block, a <em>CMakeLists.txt</em> defining variables to the dependency graph detected.</p><p>This translates into a <em>CMakeLists.txt</em> file with just one line by default:</p><pre class="crayon-plain-tag">ADD_BII_TARGETS()</pre><p>Even though the boilerplate might be enough for some projects, <a
+href="http://docs.biicode.com/c++/building.html" target="_blank">here’s a guide to fully control the building process</a>.</p><p>Today, we explain the different options available in biicode once you’ve got your <em>CMakeLists.txt</em> ready.</p><p><img
+class="aligncenter wp-image-2235 size-full" title="biicode works just fine with these popular IDEs" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/compiling-ide-biicode.jpg" alt="Compiling with biicode" width="640" height="350" /></p><p><span
+id="more-2234"></span></p><h2>Compiling with biicode</h2><p><b>bii configure</b> or <b>bii build</b> commands generate a <i>CMakeLists.txt</i> file in each block. Both commands accept CMake directives. For example, you can switch between building with gcc or clang just by running:</p><pre class="crayon-plain-tag">bii configure -DCMAKE_CXX_COMPILER=g++</pre><p>or</p><pre class="crayon-plain-tag">bii configure -DCMAKE_CXX_COMPILER=$(which clang++)</pre><p>You can also choose the build type:</p><pre class="crayon-plain-tag">bii configure -DCMAKE_BUILD_TYPE=DEBUG</pre><p>Possible values are: <b>DEBUG</b>, <b>RELEASE</b>, <b>RELWITHDEBINFO </b>and <b>MINSIZEREL.</b></p><p>You can build your projects with the parameters CMake offers depending on your OS.</p><h2>IDEs</h2><p>By default, biicode configures projects with no IDE. Using MinGW in Windows UNIX Makefiles in MacOS and Linux. But you can use CMake generators to <b>create biicode projects for different IDEs and platforms.</b></p><blockquote><p>A <i>CMake Generator</i> is responsible for writing the input files for a native build system. Exactly one of the <a
+href="http://www.cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html#cmake-generators">CMake Generators</a> must be selected for a build tree to determine what native build system is to be used. CMake Generators are platform-specific so each may be available only on certain platforms.</p></blockquote><p>Execute <code>cmake --help</code> to see the full list of CMake generators available in your system:</p><pre class="crayon-plain-tag">cmake --help</pre><p>Let&#8217;s get into specifics using generators available for common IDEs:</p><h3>Eclipse CDT</h3><p>Linux/Mac OSX users:</p><pre class="crayon-plain-tag">bii configure -G "Eclipse CDT4 - Unix Makefiles"</pre><p>If you are using Eclipse with <b>Mac OS X</b>, you may need some additional setup to execute your binaries within this IDE. <a
+href="http://docs.biicode.com/c++/troubleshooting.html#eclipse-osx-binaries"><i>Read this troubleshooting section for more information</i></a>.</p><p>Windows users:</p><pre class="crayon-plain-tag">bii configure -G "Eclipse CDT4 - MinGW Makefiles"</pre><p>And once done, you can  import your project into Eclipse:</p><ol><li>Choose: <i>File &gt; import&#8230;</i></li><li>Now, <i>general &gt; Existing Projects into Workspace &gt; n</i>ext.</li><li>Select the root directory as the <b>root folder of your project</b>.</li><li>You should see a project already selected in the <i>projects</i> box. Click <i>finish</i>.</li></ol><h3>Visual Studio</h3><p>Generate a Microsoft Visual Studio 12 (2013) project:</p><pre class="crayon-plain-tag">bii configure -G "Visual Studio 12"</pre><p>Open your project with Visual Studio. Just double-click on the .sln file inside the build folder of your project and a VS project opens.</p><h3>CLion</h3><p>CLion&#8217;s compatibility is way easier, just get into your project’s folder and execute:</p><pre class="crayon-plain-tag">bii init  -L=clion</pre><p>Configure your project to set the changes:</p><pre class="crayon-plain-tag">bii configure</pre><p>Open the biicode project with CLion <i>(File -&gt; Open)</i>.</p><p>And use biicode’s commands from the embedded Terminal in CLion, open it with: <b>Alt+F12</b> or <i>View -&gt; Tool Windows -&gt; Terminal</i>.</p><h2>Your turn</h2><p>There are many options available, even some we haven&#8217;t tried yet, give it a try and tell us how you use biicode, we&#8217;re waiting forward to hear from you!</p><p>Some biicoders are hacking around already:</p><blockquote
+class="twitter-tweet" lang="en"><p
+dir="ltr" lang="en">Pumped that <a
+href="https://twitter.com/biicode">@biicode</a> now works with KDevelop using the clion layout.</p><p>— Zachary Grafton (@zackgrafton) <a
+href="https://twitter.com/zackgrafton/status/576761064131559424">March 14, 2015</a></p></blockquote><p><script src="//platform.twitter.com/widgets.js" async="" charset="utf-8"></script></p><p>&nbsp;</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/">Compiling with biicode: CMake, build process, IDEs and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Compile for Arduino using any editor</title><link>http://blog.biicode.com/compile-for-arduino-using-any-editor/</link> <comments>http://blog.biicode.com/compile-for-arduino-using-any-editor/#comments</comments> <pubDate>Wed, 07 May 2014 12:15:01 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[compile]]></category> <category><![CDATA[editor]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[multiplatform]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=243</guid> <description><![CDATA[<p>Arduino IDE is a great tool for starters as it sets introduction to programming friction to a minimum. However, as soon as you want to develop more complex projects you discover it’s not enough. Sure you can edit your code with any editor, but you still need to respect Arduino IDE code structure (which is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compile-for-arduino-using-any-editor/">Compile for Arduino using any editor</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><a
+title="Arduino IDE" href="http://arduino.cc/en/main/software" target="_blank">Arduino IDE</a> is a great tool for starters as it sets introduction to programming friction to a minimum. However, as soon as you want to develop more complex projects you discover <strong>it’s not enough</strong>. Sure you can edit your code with any editor, but you still need to respect <strong>Arduino IDE code structure</strong> (which is a bit restricting) if you want to be able to compile the code and flash it to your board.</p><p><span
+id="more-243"></span></p><p>We think you should be able to use any editor of your choice, be it a simple one as <a
+title="Notepad++ free code editor" href="http://notepad-plus-plus.org/" target="_blank">Notepad++</a> or a complex IDE as <a
+title="Eclipse IDE" href="http://www.eclipse.org/ide/" target="_blank">Eclipse</a>, and you should also be able to organize your code in different folders and files.</p><p>There are a few alternate IDEs out there and some plugins for existing ones. All of them have the added complexity of having to learn a new program. Also, all of them still require you to download and install the libraries you want to use and none of them allows a simple way of sharing your code.</p><p><strong>With biicode you can use any simple plain text editor</strong> and only need to learn two commands to get started: <a
+title="bii find command reference" href="http://docs.biicode.com/biicode/reference/commands.html#bii-find-retrieving-dependencies" target="_blank">bii find</a> and <a
+title="bii arduino:upload command reference" href="http://docs.biicode.com/arduino/reference/commands.html#bii-arduino-upload-upload-a-firmware-in-arduino" target="_blank">bii arduino:upload</a>. That’s it. Biicode will search any needed libraries on the cloud, compile your code and flash it to your board.</p><p>These are <strong>examples of simple editors</strong> you can use, depending on your platform:</p><ul><li><strong>Windows</strong>: <a
+title="Sublime Text 2 code editor" href="http://www.sublimetext.com/2" target="_blank">Sublime Text</a>, <a
+title="Notepad++" href="http://notepad-plus-plus.org/" target="_blank">Notepad++</a> (biicode asks you if you want to install it when you run bii setup:cpp)</li><li><strong>Linux</strong>: <a
+title="gedit, Gnome text editor" href="https://wiki.gnome.org/Apps/Gedit" target="_blank">gedit</a>, <a
+title="Kate, a KDE multi-document editor" href="http://kate-editor.org/" target="_blank">Kate</a>, <a
+title="Sublime Text 2 code editor" href="http://www.sublimetext.com/2" target="_blank">Sublime Text</a></li><li><strong>Macos</strong>: <a
+title="TextMate, the missing editor" href="http://macromates.com/" target="_blank">TextMate</a>, <a
+title="Xcode" href="https://developer.apple.com/xcode/" target="_blank">Xcode</a>, <a
+title="Sublime Text 2 code editor" href="http://www.sublimetext.com/2" target="_blank">Sublime Text</a></li></ul><p>Note for advanced users: If you want to know how we set up project compilation you can have a look to our Meta-configuration of C/C++ projects with CMake post that has been published in <a
+title="Meta-configuration of C/C++ projects with CMake | The Source" href="http://www.kitware.com/source/home/post/136" target="_blank">Kitware magazine</a>.</p><p>Step up your Arduino coding!</p><p>Try a new editor &amp; <a
+title="biicode login" href="https://www.biicode.com/accounts/login" target="_blank">biicode</a>, you&#8217;ll notice the improvements!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compile-for-arduino-using-any-editor/">Compile for Arduino using any editor</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/compile-for-arduino-using-any-editor/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

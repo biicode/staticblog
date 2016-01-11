@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+> <channel><title>Comments on: Connect your Arduino to the World!</title> <atom:link href="http://blog.biicode.com/connect-your-arduino-to-the-world/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com/connect-your-arduino-to-the-world/</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Wed, 16 Sep 2015 03:33:00 +0000</lastBuildDate> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>By: Dani_MTB</title><link>http://blog.biicode.com/connect-your-arduino-to-the-world/#comment-205</link> <dc:creator><![CDATA[Dani_MTB]]></dc:creator> <pubDate>Wed, 04 Mar 2015 10:58:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=337#comment-205</guid> <description><![CDATA[Hi lumbricus:
+Not doing anything wrong really.
+As you report, we experience the same problem compiling the libraries for this project. The block lasote/carriots_stream is working fine but having troubles with lasote/weather.
+It seems to be a problem with the AVR compiler inside the Arduino SDK. We use an AVR&#039;s version distributed with Arduino&#039;s 1.0.6 version.
+A possible solution would be using the latest AVR GCC following this &quot;guide&quot;: http://forum.arduino.cc/index.php/topic,37965.msg281176.html#msg281176
+It is a well-known error with the AVR linker: http://stackoverflow.com/questions/8188849/avr-linker-error-relocation-truncated-to-fit
+We are still working on it and will update to the most recent version of AVR and Arduino as soon as we get a stable version of the arduino SDK.
+Hope this helps you and keep trying more arduino examples!]]></description> <content:encoded><![CDATA[<p>Hi lumbricus:</p><p>Not doing anything wrong really.<br
+/> As you report, we experience the same problem compiling the libraries for this project. The block lasote/carriots_stream is working fine but having troubles with lasote/weather.</p><p>It seems to be a problem with the AVR compiler inside the Arduino SDK. We use an AVR&#8217;s version distributed with Arduino&#8217;s 1.0.6 version.</p><p>A possible solution would be using the latest AVR GCC following this &#8220;guide&#8221;: <a
+href="http://forum.arduino.cc/index.php/topic,37965.msg281176.html#msg281176" rel="nofollow">http://forum.arduino.cc/index.php/topic,37965.msg281176.html#msg281176</a></p><p>It is a well-known error with the AVR linker: <a
+href="http://stackoverflow.com/questions/8188849/avr-linker-error-relocation-truncated-to-fit" rel="nofollow">http://stackoverflow.com/questions/8188849/avr-linker-error-relocation-truncated-to-fit</a></p><p>We are still working on it and will update to the most recent version of AVR and Arduino as soon as we get a stable version of the arduino SDK.</p><p>Hope this helps you and keep trying more arduino examples!</p> ]]></content:encoded> </item> <item><title>By: lumbricus</title><link>http://blog.biicode.com/connect-your-arduino-to-the-world/#comment-204</link> <dc:creator><![CDATA[lumbricus]]></dc:creator> <pubDate>Mon, 02 Mar 2015 22:27:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=337#comment-204</guid> <description><![CDATA[I have problems compiling your libraries, I get: &quot;relocation
+truncated to fit: R_AVR_13_PCREL against symbol `__fp_nan&#039; defined in
+.text.avr-libc.fplib section in
+/usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr6/libm.a(fp_nan.o)&quot;
+Do you hve any hints what I am doing wrong? Thank you!]]></description> <content:encoded><![CDATA[<p>I have problems compiling your libraries, I get: &#8220;relocation<br
+/> truncated to fit: R_AVR_13_PCREL against symbol `__fp_nan&#8217; defined in<br
+/> .text.avr-libc.fplib section in<br
+/> /usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr6/libm.a(fp_nan.o)&#8221;<br
+/> Do you hve any hints what I am doing wrong? Thank you!</p> ]]></content:encoded> </item> </channel> </rss>

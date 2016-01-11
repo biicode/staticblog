@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; lasote</title> <atom:link href="http://blog.biicode.com/author/lasote/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>OpenSSL is now available in biicode!</title><link>http://blog.biicode.com/openssl-available-biicode/</link> <comments>http://blog.biicode.com/openssl-available-biicode/#comments</comments> <pubDate>Wed, 28 Jan 2015 11:52:00 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[Heartbleed]]></category> <category><![CDATA[Secure Connections]]></category> <category><![CDATA[SSL]]></category> <category><![CDATA[TLS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2028</guid> <description><![CDATA[<p>The OpenSSL Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support. It was born in 1998 and today about 66% of internet servers are using OpenSSL. &#160; UPDATE! [10-Feb-2015] OpenSSL last version 1.0.2 is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openssl-available-biicode/">OpenSSL is now available in biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The <a
+title="OpenSSL website" href="https://www.openssl.org/"><strong>OpenSSL</strong></a> Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support.<br
+/> It was born in 1998 and today about 66% of internet servers are using OpenSSL.</p><p><img
+class="aligncenter wp-image-2038 size-full" title="OpenSSL is now supported in biicode" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/openSSL.jpeg" alt="Secure connections can now be used from C/C++ source code with biicode and OpenSSL" width="431" height="117" /></p><p>&nbsp;</p><p><strong>UPDATE!</strong> [10-Feb-2015] OpenSSL <a
+title="OpenSSL 1.0.2 " href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">last version 1.0.2 is ready on biicode! </a> We created a <a
+title="block tracks help" href="http://docs.biicode.com/c++/dependencies.html?highlight=track#depending-on-a-block-track" target="_blank">block track</a> lasote/openssl(v1.0.2).<br
+/> Remeber, you can switch between v1.0.1 and v1.0.2 just changing the requirements line in biicode.conf file.</p><p><span
+id="more-2028"></span></p><h2>Benefits</h2><p>→ Keeping your dependencies updated is really important, specially with this kind of projects. <a
+title="Heart bleed bug" href="http://heartbleed.com/">Heartbleed</a> bug affected half a million widely trusted websites. It&#8217;s proven, it is essential to keep OpenSSL updated. With <strong>biicode</strong> updating versions is easy. Just change the requirements version in <strong>biicode.conf</strong> file.</p><p>→ Code in <a
+title="lasote/openssl github" href="https://github.com/lasote/openssl/tree/OpenSSL_1_0_1l_biicode" target="_blank">github</a>: You can check <a
+title="diff code" href="https://github.com/lasote/openssl/compare/openssl:OpenSSL_1_0_1l...OpenSSL_1_0_1l_biicode" target="_blank">the diff</a> between original source code and source code used in biicode. There are only few changes to be build the library with CMake and biicode.</p><p>→ Tested on <strong>Windows</strong> with <strong>MinGW</strong> and <strong>Visual Studio</strong>, <strong>Linux</strong> with <strong>gcc</strong> and <strong>OSx</strong> with <strong>Clang</strong>.</p><h2>You can use OpenSSL in your C/C++ projects following these steps:</h2><h3>1. Create a new biicode project and a new block</h3><p></p><pre class="crayon-plain-tag">bii init myproject
+ cd myproject
+ bii new myuser/myblock</pre><p></p><h3>2. Create a main.cpp and paste this example code in it</h3><p><b> myproject/blocks/myuser/myblock/main.cpp </b></p><pre class="crayon-plain-tag">#include "lasote/openssl/include/openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h3>3. Download your dependencies and build your project</h3><p></p><pre class="crayon-plain-tag">bii find # This will find 1.0.1 track, if you want 1.0.2 edit biicode.conf file.
+ bii build</pre><p>If you want to keep your #includes the traditional way &#8220;openssl/sha.h&#8221; you can do it editing <b>biicode.conf</b> file and using <a
+title="Include paths" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html#includes" target="_blank">&#8220;include paths&#8221;</a> feature. If you want OpenSSL v1.0.2 version there is a v1.0.2 track available in biicode, just specify (v1.0.2):</p><pre class="crayon-plain-tag"># Biicode configuration file
+[requirements]
+     lasote/openssl(v1.0.2): 0 # Version of lasote/openssl to require
+[paths]
+[dependencies]
+[mains]
+[hooks]
+[includes]
+    # This will append **lasote/openssl/include** when find a openssl/*.h include
+    openssl/*.h: lasote/openssl/include
+[data]</pre><p>Build again:</p><pre class="crayon-plain-tag">bii build</pre><p>As you can see, the number of libraries uploaded to biicode is growing fast. Building professional software with a dependency manager involves lots of benefits, and it is now possible with C and C++ with biicode.</p><p>OpenSSL has a <a
+href="https://www.openssl.org/support/" target="_blank">support section</a> in their site to join, donate to, fund and/or hire members of this fantastic project. We encourage you to collaborate with them.</p><p>Hope you enjoy OpenSSL and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openssl-available-biicode/">OpenSSL is now available in biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/openssl-available-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>C++ Docker remote API client</title><link>http://blog.biicode.com/cpp-docker-remote-api-client/</link> <comments>http://blog.biicode.com/cpp-docker-remote-api-client/#comments</comments> <pubDate>Tue, 20 Jan 2015 17:15:32 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[c++ docker client]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[docker]]></category> <category><![CDATA[docker daemon]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2010</guid> <description><![CDATA[<p>I&#8217;ve built a block to control Docker daemon from C++ source code. It&#8217;s available here: lasote/docker_client What’s Docker Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-docker-remote-api-client/">C++ Docker remote API client</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>I&#8217;ve built a block to control Docker daemon from C++ source code. It&#8217;s available here: <a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank">lasote/docker_client</a></p><p><a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank"><img
+class=" size-full wp-image-2055 alignnone" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/biicode-cplus-docker.jpg" alt="biicode-cplus-docker" width="638" height="279" /></a></p><h2>What’s Docker</h2><p><strong><a
+title="What is Docker?" href="https://www.docker.com/whatisdocker/" target="_blank"><br
+/> Docker</a></strong> is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and automating workflows, Docker enables apps to be quickly assembled from components and eliminates the friction between development, QA, and production environments. As a result, IT can ship faster and run the same app, unchanged, on laptops, data center VMs, and any cloud.</p><h2>What&#8217;s Docker remote API?</h2><p>Docker also exposes a <a
+title="Docker REST API" href="http://https://docs.docker.com/reference/api/docker_remote_api/" target="_blank">REST API</a> to control your docker service. This API is at least as powerfull as the Docker client.</p><h2>Why would I need a C++ Docker client for Docker&#8217;s remote API?</h2><p>Because you can fully control Docker daemon from your C++ source code!<br
+/> For example, you may want to automate the creation of some images, or run some linux instances on demand to build your software, maybe build a CI platform&#8230;</p><p><span
+id="more-2010"></span></p><h3>Brief comments about <a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank">lasote/docker_client</a></h3><ul><li>It&#8217;s the very first docker client for C++ language.</li><li>Multiplatform, tested on Windows with Visual Studio and MinGW, Linux with GCC and MacOSx with Clang.</li><li>It&#8217;s based on <a
+title="Libuv repository" href="https://github.com/libuv/libuv" target="_blank">libuv</a> library for event driven networking.</li><li>Modern C++11 style.</li></ul><h2>Want to try it?</h2><p><a
+title="Getting started" href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank">Get started</a> with biicode.</p><h3>Create a new biicode project and a new block</h3><p></p><pre class="crayon-plain-tag">bii init myproject
+ cd myproject
+ bii new myuser/myblock</pre><p></p><h3>Enable TCP access for your docker instance</h3><p>You can follow <a
+title="Enable REST API docker" href="http://www.virtuallyghetto.com/2014/07/quick-tip-how-to-enable-docker-remote-api.html" target="_blank">this tutorial</a> to enable TCP access for your docker instance.</p><h3>Create a main.cpp and paste this example code</h3><p><strong>NOTE</strong>: In this example I used lambda functions, but if you prefer the &#8220;classic code&#8221; you can pass any &#8220;function&#8221; object to success callback and error callback.</p><p>Paste in <b>myproject/blocks/myuser/myblock/main.cpp</b>:</p><pre class="crayon-plain-tag">#include "lasote/docker_client/client.h"
+#include &lt;iostream&gt;
+using namespace lasote;
+int main() {
+  DockerClient client("http://localhost:4243");
+  //Callback function for error handle
+  ERR_F error_cb = [] (int status, string desc) {
+      cout &lt;&lt; "Error: " &lt;&lt; status &lt;&lt;  endl  &lt;&lt; desc;
+  };
+  // EXAMPLE 1: CREATE A CONTAINER, START IT AND ATTACH IT ALL IN ONE.
+  // REMEMBER, YOU CAN USE ANY "function" OBJECT, I LIKE TO NEST API CALLS
+  // IN SUCCESS CALLBACK... YES, I LOVE JAVASCRIPT
+  //Command parameters
+  jsonxx::Array commands;
+  commands &lt;&lt; "/bin/python";
+  jsonxx::Object create_params;
+  create_params &lt;&lt; "Cmd" &lt;&lt; commands;
+  create_params &lt;&lt; "Image" &lt;&lt; "fedora_lint";
+  // Create the container and in success callback start the container
+  auto c2 = client.create_container([&amp;client, error_cb] ( jsonxx::Object ret) {
+     cout &lt;&lt; "CREATE CONTAINER RETURN: " &lt;&lt; ret.json() &lt;&lt; endl;
+     auto container_id = ret.get&lt;jsonxx::String&gt;("Id");
+     cout &lt;&lt; "CONTAINER ID: " &lt;&lt; container_id &lt;&lt; endl;
+     auto c4 = client.start_container([container_id, &amp;client, error_cb] ( jsonxx::Object ret) {
+        cout &lt;&lt; "START CONTAINER RETURN: " &lt;&lt; ret.json() &lt;&lt; endl;
+        auto c2 = client.attach_to_container(
+            [] ( jsonxx::Object ret) {
+               cout &lt;&lt; "Response: " &lt;&lt; ret.json() &lt;&lt; endl;
+            },
+            error_cb,
+            [] (const char *p, size_t len) {
+                cout &lt;&lt; string(p, len) ;
+            },
+            container_id, true, true, true, true);
+     }, error_cb, container_id);
+  }, error_cb, create_params);
+  //EXAMPLE 2: SHOW THE CONTAINERS LOGS
+  auto c5 = client.logs_container([] (string out) {
+       cout &lt;&lt; "Response: " &lt;&lt; out &lt;&lt; endl;
+  }, error_cb, "c7ddced66641", true, true, true, true, "all");
+  //EXAMPLE 3: LIST ALL THE CONTAINERS
+  auto c6 = client.list_containers([] ( jsonxx::Object ret) {
+    cout &lt;&lt; "Containers: " &lt;&lt; ret.json() &lt;&lt; endl;
+  }, error_cb, false, 13);
+  //EXAMPLE 4: LIST ALL THE IMAGES
+  auto c7 = client.list_images([] ( jsonxx::Object ret) {
+      cout &lt;&lt; "Images: " &lt;&lt; ret.json() &lt;&lt; endl;
+  }, error_cb);
+  // RUN THE LOOP TO LAUNCH ALL THE REQUESTS ASYNC
+  run_loop();
+}</pre><p></p><h3>Just build it!</h3><p></p><pre class="crayon-plain-tag">bii find
+ bii cpp:build</pre><p></p><h2>TODO</h2><p>&#8211; This library implements about a 70% of docker v1.16 interface. Most important methods are already implemented.<br
+/> &#8211; Libuv doesn&#8217;t support SSL/TLS so, it does not support HTTPs yet. You can replace Libuv easily replaced and use any other network framework to support it. It does not support unix socket for the same reason.</p><p>All <a
+href="https://github.com/lasote/docker_client"> github pull request</a> are welcome, so please contribute! See the <a
+href="https://github.com/lasote/docker_client/issues" target="_blank">issues </a>on GitHub for work to be done.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-docker-remote-api-client/">C++ Docker remote API client</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-docker-remote-api-client/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 5: Libuv</title><link>http://blog.biicode.com/upload-biicode-example-5-libuv/</link> <comments>http://blog.biicode.com/upload-biicode-example-5-libuv/#comments</comments> <pubDate>Mon, 22 Dec 2014 16:51:21 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[blocks]]></category> <category><![CDATA[libuv]]></category> <category><![CDATA[tracks]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1905</guid> <description><![CDATA[<p>Recently, I wrote a post about biicode&#8217;s tracks. &#8220;Biicode Tracks&#8221; mean just that: Actual working versions of the same lib uploaded into different tracks of the same block.  Biicode tracks enable quick using and switching of versions. Let&#8217;s see how I used block tracks to upload Libuv. This is a successful example of maintaining a library developed using [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-biicode-example-5-libuv/">How to upload to biicode. Example 5: Libuv</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Recently, I wrote a post about <strong><a
+title="block tracks post" href="http://blog.biicode.com/new-feature-block-tracks">biicode&#8217;s tracks.</a> &#8220;Biicode Tracks&#8221;</strong> mean just that: Actual working versions of the same lib uploaded into different tracks of the same block.<strong> </strong></p><p>Biicode tracks enable quick using and switching of versions.</p><p>Let&#8217;s see how I used block tracks to upload Libuv. This is a successful example of maintaining a library developed using github with several versions, being each one a different line of development.</p><p><img
+class="alignnone wp-image-1910 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/banner.png" alt="libuv's logo" width="1024" height="384" /></p><p><span
+id="more-1905"></span></p><p>I won&#8217;t get into details about how to adapt the libuv source code to upload it to biicode. If you want to learn how to adapt your source code to upload it to biicode, the previous posts address this topic widely:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li><li>Example 4: <a
+href="http://blog.biicode.com/upload-to-biicode-oscpack/">Oscpack by Ross Bencina</a></li></ul><h2>Libuv library</h2><p><a
+title="Github libuv" href="https://github.com/joyent/libuv" target="_blank">Libuv</a> is an awesome multi-platform library for asynchronous networking, file-system operations and many more uses. It was primarily developed to use with <a
+title="Node.js" href="http://nodejs.org/" target="_blank">Node.js</a> but it&#8217;s also used with <a
+title="luvit.io" href="http://luvit.io/" target="_blank">Luvit</a>, <a
+title="julia" href="http://julialang.org/" target="_blank">Julia</a>, <a
+title="Pyuv" href="https://github.com/saghul/pyuv" target="_blank">pyuv</a>, and <a
+title="others using libuv" href="https://github.com/joyent/libuv/wiki/Projects-that-use-libuv" target="_blank">others</a>.</p><p>You can find <a
+title="github libuv" href="https://github.com/libuv/libuv" target="_blank">libuv original source code on github</a>. It&#8217;s a well organized project development. It has branches and tags each version, stable or not:</p><p><img
+class="alignnone wp-image-1907 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/libuv_github.png" alt="libuv's github repo" width="1010" height="722" /></p><p>As you can see, there are three main versions:</p><ul><li><b>0.10</b> (Stable, used by Nodejs)</li><li><b>0.11</b> (Non stable, but commonly used)</li><li><b>1.0</b> (Made stable few days ago)</li></ul><p>The three versions are outstanding and I wanted to upload all of them to biicode.</p><h2>How to upload to biicode (workflow)</h2><p><b>1. Fork <a
+title="github libuv" href="https://github.com/joyent/libuv">libuv github</a> repository:</b></p><p><img
+class="alignnone wp-image-1909 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/forklibuv.png" alt="forking in github libuv" width="1004" height="60" /></p><p><b>2. Create a biicode project and a block named &#8220;libuv&#8221;:</b></p><pre class="crayon-plain-tag">&gt; bii init libuv_project
+&gt; cd libuv_project
+&gt; bii new lasote/libuv
+&gt; cd blocks/lasote/libuv</pre><p><b>3. Clone repo and checkout tag v0.10.29 (last 0.10 stable) and branch it. </b></p><p>I have created a branch <a
+title="Libuv branched 0.10.29" href="https://github.com/lasote/libuv/tree/v0.10.29_biicode" target="_blank">named</a> <b>v0.10.29_biicode</b>:</p><pre class="crayon-plain-tag">&gt; git clone https://github.com/lasote/libuv.git .
+&gt; git checkout v0.10.28
+&gt; git checkout -b v0.10.29_biicode</pre><p><b>4. Adapt the code to work well with biicode.</b></p><p>As I said, I won&#8217;t get into details because it&#8217;s not the purpose of this blog-post, but here&#8217;s a review of changes, <a
+title="Libuv branch biicode" href="https://github.com/lasote/libuv/tree/v0.10.29_biicode/bii" target="_blank">explore the code</a> to see the details:</p><ul><li>a) Create a <b>biicode.conf file </b>wand filled:<ul><li>[dependencies] section with some not automatically detected dependencies.</li><li>[paths] section to include <b>src</b> and <b>include</b> directories in biicode path.</li></ul></li><li>b) Create a <b>CmakeLists.txt</b> reading existing Makefiles of the project.</li></ul><p><b>5. Create [parent] section to publish a new block track and specify in it that we want to create a track named v0.10 of a <b>lasote/libuv</b> block. </b></p><p>Version -1 indicates that there is no version published yet.</p><pre class="crayon-plain-tag">* lasote/libuv(v0.10): -1</pre><p><b>6. Commit your changes to github whenever you want!</b></p><pre class="crayon-plain-tag">&gt; git add .
+&gt; git commit -m "Biicode conf files added to project"
+&gt; git push</pre><p><b>7. Once you are ready, publish it to biicode!</b></p><pre class="crayon-plain-tag">&gt; bii publish --tag STABLE</pre><p><b>8. Test if the block is reusable writing another block with an libuv&#8217;s example.</b></p><p>You can find <a
+title="Libuv examples" href="https://www.biicode.com/search?q=user:examples%20AND%20block:libuv">libuv examples</a> already uploaded to biicode.</p><p><b>9. Repeat again steps from 3 to 8 and prepare 0.11 and 1.0 tracks!</b></p><p>Using this workflow you can use Github to merge the original repository whenever you want and upload to biicode the new releases that come out.</p><p>Remember that block tracks allow you to change the version of your libuv dependency without changing the #includes in your source code.</p><h2>Want to try libuv?</h2><p>For a quick-start using libuv just open some of the examples we have:</p><pre class="crayon-plain-tag">&gt; bii open "lasote/libuv(v1.0)"
+  &gt; bii cpp:build</pre><p>Or develop your own examples just include this line in your header file:</p><pre class="crayon-plain-tag">#include "lasote/libuv/include/uv.h"</pre><p>And specify the track of libuv to depend on in the [<b>requirements]</b> section of your <strong>biicode.conf</strong> file:</p><pre class="crayon-plain-tag">[requirements]
+  #choose just one above and change it to switch between tracks
+  lasote/libuv(v0.10):0 # For libuv 0.10
+  lasote/libuv(v0.11):0 # For libuv 0.11
+  lasote/libuv(v1.0):0 # For libuv 1.0</pre><p>I hope you enjoy this post and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.<br
+/> Enjoy libuv!!!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-biicode-example-5-libuv/">How to upload to biicode. Example 5: Libuv</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-biicode-example-5-libuv/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>New feature: Block tracks</title><link>http://blog.biicode.com/new-feature-block-tracks/</link> <comments>http://blog.biicode.com/new-feature-block-tracks/#comments</comments> <pubDate>Fri, 19 Dec 2014 11:23:00 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1900</guid> <description><![CDATA[<p>biicode&#8217;s latest release 2.0 includes the &#8220;block tracks&#8221; feature. With block tracks you can have different &#8216;versions&#8217; of a block using the same block namespace, so you can keep the same #includes in the source code. When do block tracks come in handy? When maintaining different development versions of your source code When overriding a dependency in [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-block-tracks/">New feature: Block tracks</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>biicode&#8217;s latest <strong>release 2.0</strong> includes the <strong>&#8220;block tracks&#8221;</strong> feature.<br
+/> With <strong>block tracks</strong> you can have different <strong>&#8216;versions&#8217;</strong> of a block using the same block namespace, so you can keep the same #includes in the source code.</p><p><img
+class="alignnone wp-image-1901 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/libuv_versions.png" alt="libuv version will help us explain biicode 2.0's new feature: block tracks" width="1108" height="258" /></p><h2></h2><p><span
+id="more-1900"></span></p><h2>When do block tracks come in handy?</h2><ol><li>When maintaining different development versions of your source code</li><li>When overriding a dependency in your project</li></ol><h3>1. Maintaining different development versions of your source code</h3><p>Last week we uploaded to biicode the powerful <strong>libuv library</strong>. This library has 3 versions or &#8220;tracks&#8221;:</p><ul><li><b>0.10</b> (Stable, used by Nodejs)</li><li><b>0.11</b> (Non stable, but commonly used)</li><li><b>1.0</b> (Made stable a few days ago)</li></ul><p>There is no right or wrong version of libuv. Well,  maybe 0.11 but it&#8217;s just been replaced by version 1.0. But 1.0 has only been stable for a few days&#8230;<br
+/> We want the three versions of libuv in biicode so you can choose the one you need or, why not, change or upgrade between libuv versions.</p><h4>How can I depend on a specific version of libuv?</h4><p>Edit the <strong>[requirements]</strong> section of your <strong>biicode.conf</strong> file and write the track in brackets. E.g.:</p><pre class="crayon-plain-tag">lasote/libuv(v0.11):0</pre><p>Try different libuv &#8220;tracks&#8221; in your source code just changing this file.<br
+/> Update to the new libuv 1.0:</p><pre class="crayon-plain-tag">lasote/libuv(v1.0):0</pre><p><div
+style="width: 231px" class="wp-caption alignnone"><img
+src="http://media.giphy.com/media/txk8EnRxmPj1e/giphy.gif" alt="Switching block tracks is fun and easy" width="221" height="239" /><p
+class="wp-caption-text">Switching Tracks</p></div></p><h4>How can I publish a new track of my block?</h4><p>Edit the <em>[parents]</em> section in your <strong>biicode.conf</strong> file, put the track name between brackets and specify -1 version to create a new block. E.g.:</p><pre class="crayon-plain-tag">* mike/myblock(track1):-1</pre><p>Note that you don&#8217;t need to change your source code&#8217;s <b>#includes</b> to change the version of libuv used.</p><h3>2. Override a dependency in your project</h3><p>We truly believe that a good dependency manager should allow users to override a dependency on their projects. Regardless of depending on a package directly or indirectly.</p><h4>How can we do it?</h4><p>Let&#8217;s see an example:</p><p><b>&#8220;mike/block&#8221;</b> block depends directly on  <b>&#8220;foo/bar&#8221; </b>block version 5, and <b>&#8220;foo/bar&#8221;</b> has a dependency to <b>&#8220;sam/myblock&#8221;</b> (version 8). So your block <b>&#8220;mike/block&#8221;</b> has a dependency to <b>&#8220;sam/myblock&#8221;</b> (version 8).</p><p><img
+class="alignnone wp-image-1903 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/grafico_post1.png" alt="A typical dependency chain in which block tracks might come in handy" width="208" height="421" /></p><p>What if you (Mike) wanted to depend on <b>&#8220;sam/myblock&#8221;</b> version 10 instead? Well, that&#8217;s easy you can do it with biicode without the block tracks feature.</p><p>Just edit <em><strong>[requirements]</strong> section of your <strong>biicode.conf</strong></em><strong> </strong>file and add a line specifying the version you want. Biicode will override <b>&#8220;foo/bar&#8221;</b> dependency to <b>&#8220;sam/myblock&#8221;</b> version 10.</p><blockquote><p><em><strong>[requirements]</strong></em></p><p>foo/bar:5<br
+/> <strong>sam/myblock:10</strong></p></blockquote><p>But, what happens if you need to change <b>&#8220;sam/myblock&#8221;</b> to adapt it to your needs or to fix a bug?<br
+/> Well, a rather ugly/dirty fix is to copy the source code to a new block in your workspace and publish it in your namespace. That way, you can have <b>&#8220;mike/block&#8221;</b>, but all its #includes should be overriden to &#8220;point&#8221; to <b>&#8220;mike/myblock&#8221;</b>.<br
+/> And if Sam, the original author of <b>&#8220;sam/myblock&#8221;</b>, repairs the block and releases a new version you will need to change again all the #includes in your source code.</p><p>A better solution is to create a track of <b>&#8220;sam/myblock&#8221;</b>:</p><ol><li>Open <b>&#8220;sam/myblock&#8221;</b> (bii open <b>sam/myblock</b>)</li><li>Update<em> <b>[parent]</b> </em>section in your <em><strong>biicode.conf</strong> </em>file to point to your track: Replace <b>&#8220;* sam/myblock:8&#8243;</b> with <b>&#8220;* sam/myblock(mike/mytrack):-1&#8243;</b></li><li>Publish your block as usual (bii publish)</li></ol><p>In <strong>[parent] </strong>section you are specifying that the parent block is a track of original <b>&#8220;sam/myblock&#8221;</b> called &#8220;mytrack&#8221; in the &#8220;mike&#8221; namespace. Specifying -1 version means that there is no version published yet, so this command will create the new block.</p><p>Tell biicode to use your version of sam/myblock in the<strong> [requirements]</strong> section of your <strong>biicode.conf</strong> file:</p><blockquote><p><strong><em>[requirements]</em></strong></p><p>foo/bar:5<br
+/> <strong><b>sam/myblock(mike/mytrack):</b>0</strong></p></blockquote><p>You may think this looks like a branch or a fork of a block, but this is not it, this is a way to control your dependencies. Branch or Fork are concepts for a control version system and involve merging, diff, pull requests, merge requests&#8230; etc. biicode is not a control version system, it&#8217;s just a dependency manager. We recommend using git and use Github or Bitbucket to manage your version control.</p><p>In the next days I will write another blog post about how I have uploaded libuv library to biicode and showing you how to work with <strong>Git</strong> and block tracks in a real project.</p><p>I hope you enjoy this post and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-block-tracks/">New feature: Block tracks</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/new-feature-block-tracks/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Improving our search engine with Elastic Search</title><link>http://blog.biicode.com/improved-search-engine-elastic-search/</link> <comments>http://blog.biicode.com/improved-search-engine-elastic-search/#comments</comments> <pubDate>Wed, 19 Nov 2014 11:55:05 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[blocks]]></category> <category><![CDATA[Elastic Search]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1895</guid> <description><![CDATA[<p>A few days ago, I got a lovely message from Jordi our marketer: I’m typing “Manu” and the search engine doesn’t find manu343726’s blocks. The search engine is crap. Well, Jordi was right. Our users are asking to find the libraries available in biicode easily. So I decided to recharge my batteries and thanks to Elastic [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/improved-search-engine-elastic-search/">Improving our search engine with Elastic Search</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A few days ago, I got a lovely message from Jordi our marketer:</p><blockquote><p>I’m typing “Manu” and the search engine doesn’t find <a
+href="https://www.biicode.com/manu343726">manu343726’s blocks</a>. The search engine is crap.</p></blockquote><p>Well, Jordi was right. Our users are asking to find the libraries available in biicode easily.<br
+/> So I decided to recharge my batteries and thanks to <a
+href="http://www.elasticsearch.org/">Elastic Search</a>, I can now show you the new amazing search features.</p><p><img
+class="aligncenter size-full wp-image-1897" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Search-bar.png" alt="Improving biicode's blocks search function with Elastic Search" width="669" height="76" /></p><p><span
+id="more-1895"></span></p><h2>Elastic Search features: Prefix and Suffix search</h2><p>Just by simply writing some words in the search box, without any advanced token (don’t worry I will explain you this later on), we are adding “*” before and after each word you type in.</p><p>So if you write <strong>“manu”</strong> it will search for <strong>“*manu*”</strong> and if you search for <strong>“manu turbo”</strong> it will search for<strong> “*manu* *turbo*”</strong>.</p><p>The search engine will find this words in user names, block names and block descriptions.<br
+/> This way, with a simple search, you will get better results and Jordi will be happy to find <strong>“manu343726”</strong> and his blocks.</p><h2>Advanced search</h2><p><strong>To make complex queries, use these special symbols (learn more about them on Elastic Search docs)</strong></p><ul><li>| signifies OR operation (OR is also valid)</li><li><strong>+</strong> signifies AND operation (AND is also valid)</li><li><strong>&#8211;</strong> negates a single token</li><li><strong>&#8220;</strong> wraps a number of tokens to signify a phrase for searching</li><li><strong>*</strong> at the end of a term signifies a prefix query</li><li><strong>( and )</strong> signify precedence</li><li><strong>~N</strong> after a word signifies edit distance (fuzziness)</li><li><strong>~N</strong> after a phrase signifies slop amount</li></ul><p><strong>Biicode’s custom filters:</strong></p><ul><li><strong>“block:”</strong> Search only in block field</li><li><strong>“desc:”</strong> Search only in description field</li><li><strong>“user:”</strong> Search only in user field</li><li><strong>“tag:”</strong> Search only in block tags</li></ul><h2>Useful examples</h2><p>All blocks from lasote user that have http in block name:</p><pre class="crayon-plain-tag">user:lasote AND block:*http*</pre><p>All blocks from users that username is something like “duego” or something similar:</p><pre class="crayon-plain-tag">user:duego~</pre><p>All blocks from user lasote and user miguel but not containing http in the description:</p><pre class="crayon-plain-tag">(user:lasote OR user:miguel) -desc:*http*</pre><p>All blocks which name is similar to sfm:</p><pre class="crayon-plain-tag">block:sfm~</pre><p>All blocks tagged with NETWORKING tag for user diego:</p><pre class="crayon-plain-tag">tag:NETWORKING AND user:diego</pre><p></p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/improved-search-engine-elastic-search/">Improving our search engine with Elastic Search</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/improved-search-engine-elastic-search/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>How to upload to biicode. Example 1: JSON11 by Dropbox</title><link>http://blog.biicode.com/upload-to-biicode-i/</link> <comments>http://blog.biicode.com/upload-to-biicode-i/#comments</comments> <pubDate>Tue, 30 Sep 2014 12:03:01 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[dropbox]]></category> <category><![CDATA[how to]]></category> <category><![CDATA[json11]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1754</guid> <description><![CDATA[<p>A few days ago, we came across this fantastic library from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use. Also, this library is an ideal example to show how to upload to biicode your library like I did. Why would you want to upload to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A few days ago, we came across <a
+title="Json11" href="https://github.com/dropbox/json11" target="_blank">this fantastic library</a> from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use.<br
+/> Also, this library is an ideal example to show how to upload <a
+title="lasote/json11" href="http://www.biicode.com/lasote/json11" target="_blank">to biicode</a> your library like I did.</p><h2>Why would you want to upload to biicode your library ?</h2><p>Once it&#8217;s uploaded to biicode, everyone (including yourself) can reuse it easily and without any complex configuration.<br
+/> This is key: If you make a good job configuring and uploading the library to biicode, nobody will EVER do this job again. The library will work for anyone just by typing <em>#include &#8220;lasote/json11/json11.hpp&#8221;</em>.</p><div
+id="attachment_1761" style="width: 160px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1761" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/DBTWCard.jpg" alt="Upload to biicode " width="150" height="155" /><p
+class="wp-caption-text">JSON11 by DROPBOX</p></div><h2></h2><p><span
+id="more-1754"></span></p><h2>Ok, it sounds convincing, show me how to do it!</h2><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to <a
+title="dropbox/json11" href="https://github.com/dropbox/json11" target="_blank">original repository</a> and click on fork:<br
+/> <img
+class="alignnone wp-image-1757 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/fork1.jpg" alt="JSON11 fork ready to upload to biicode" width="1016" height="162" /></p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init json
+$ cd json
+$ bii new lasote/json11</pre><p>If you already have a biicode user you can replace &#8220;lasote&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/lasote/json</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\lasote\json11
+$ git clone git@github.com:lasote/json11.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command &#8220;<strong>bii deps</strong>&#8221; give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class=" wp-image-1758 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/deps.jpg" alt="manage your dependencies with biicode" width="283" height="365" /></p><p>If biicode doesn&#8217;t find an #include it is shown under the &#8220;unresolved&#8221; section. As you can see in this case, everything is OK!<br
+/> In future posts we will explain how to proceed in case of unresolved files.</p><h4>5. Build our library</h4><p></p><pre class="crayon-plain-tag">$ bii build</pre><p>Wow! It fails a lot! What happened?</p><p>If we analyze the trace of the compilation we see this:</p><pre class="crayon-plain-tag">c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard.
+This support is currently experimental, and must be enabled with the -std=c++11 or -std=gnu++11 compiler options.</pre><p>It&#8217;s asking us to activate c++11. Expected&#8230; the original library needs c++11.</p><h4>How can we activate C++11?</h4><p>Biicode uses CMake for C/C++ project compilation. It creates a CMakeList.txt file where we can specify compilation flags etc.<br
+/> If we edit the file we can see a lot of commented code with sample cases. In there, you can find how to activate C++11.</p><p>In this case, we want our library to be multi-platform and reusable so I will include these lines after <em>ADD_BIICODE_TARGETS()</em></p><pre class="crayon-plain-tag"># If exist BII_LIB_TARGET activate c++11 for target with PUBLIC flag. This way, all blocks that include this one will
+# have activated c++11 automatically
+IF(BII_LIB_TARGET)
+  IF(APPLE)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11")
+  ENDIF(APPLE)
+# If not exist, simply add CXX_FLAGS to compilation
+ELSE()
+  IF(APPLE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ENDIF(APPLE)
+ENDIF()</pre><p>Hereinafter, when someone #include (s)  our library, he doesn&#8217;t need to activate C++11. Its ready!</p><p><strong>NOTE</strong>: Maybe it seems too difficult, don&#8217;t you think? <del>We are working on a feature to share or include CMakes recipes like this. Meanwhile you can just copy and paste this code to enable C++11 in your project.</del></p><p><strong>UPDATE:</strong> With biicode you can reuse CMake recipes, so<strong> to activate C++11 you can include &#8220;biicode/cmake&#8221; block</strong> to search for &#8216;tools.cmake&#8217; where this code is already implemented. Open <em>CMakelists.txt</em> in your project, include &#8216;<em>tools</em>&#8216; and activate C++11 like this:</p><pre class="crayon-plain-tag">INCLUDE(biicode/cmake/tools) #Here you include "biicode/cmake/tools" file
+ADD_BIICODE_TARGETS()
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET}) #Here you activate c++11</pre><p>If we run build again:</p><pre class="crayon-plain-tag">$ bii build</pre><p>It fails again, why? Let&#8217;s check the trace.</p><pre class="crayon-plain-tag">In function 'int main(int, char**)':
+ test.cpp:92:66: error: 'memcmp' was not declared in this scope
+     assert(memcmp(uni[0].string_value().data(), utf8, sizeof utf8) == 0);</pre><p>It seems it cannot find <em>memcmp</em>, we <em>#include &#8220;string.h&#8221;</em> in test.cpp and if we build again:</p><pre class="crayon-plain-tag">Building: cmake --build .
+BLOCK: lasote/json11
+-----------------------------------------------------------
++ EXE: lasote_json11_test
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/json11/build
+[ 50%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/test.cpp.o
+[100%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/json11.cpp.o
+Linking CXX executable /tmp/json11/bin/lasote_json11_test
+[100%] Built target lasote_json11_test</pre><p>Now the library has been compiled! Go to &#8220;bin&#8221; folder and execute the main example:</p><pre class="crayon-plain-tag">$ cd json11/bin
+$ ./lasote_json11_test</pre><p></p><pre class="crayon-plain-tag">k1: v1b
+k3: ["a", 123, true, false, null]
+- "a"
+- 123
+- true
+- false
+- null
+obj: {"k1": "v1", "k2": 42, "k3": ["a", 123, true, false, null]}
+{"key1": "value1", "key2": false, "key3": [1, 2, 3]}
+[[1, 2], [10, 20], [100, 200]]</pre><p></p><h4>6. Upload to biicode: Publish the library</h4><p></p><pre class="crayon-plain-tag">$ bii publish</pre><p>Congrats! Now your library is on biicode&#8217;s cloud! :D</p><p><strong>NOTE</strong>: Don&#8217;t forget to commit and push the changes to github if you forked the repository!</p><h4>7. Check if anybody can reuse the library</h4><p>After you upload to biicode the first version, its a good practice to create another biicode project and reuse from (include) the library to check if everything is working fine. This way we&#8217;ll simulate a third person reusing our code.</p><p>Exit previous biicode project folder and create another one:</p><pre class="crayon-plain-tag">$ bii init example_json11</pre><p></p><pre class="crayon-plain-tag">$ cd example_json11
+$ bii new lasote/example</pre><p>Write an example in a file &#8220;main.cpp&#8221; in blocks/lasote/example directory that #include our lasote/json11 library:</p><pre class="crayon-plain-tag">#include "string.h"
+#include "lasote/json11/json11.hpp"
+#include &lt;iostream&gt;
+using namespace json11;
+using std::string;
+int main(int argc, char **argv) {
+    // STRING TO JSON
+    const string simple_test = R"({"k1":"v1", "k2":42, "k3":["a",123,true,false,null]})";
+    string err;
+    auto json = Json::parse(simple_test, err);
+    std::cout &lt;&lt; "k1: " &lt;&lt; json["k1"].string_value() &lt;&lt; "\n";
+    std::cout &lt;&lt; "k3: " &lt;&lt; json["k3"].dump() &lt;&lt; "\n";
+}</pre><p>Build the example and run the example!</p><pre class="crayon-plain-tag">$ bii build</pre><p></p><pre class="crayon-plain-tag">$ example_json11/bin/lasote_example_json11_main</pre><p></p><pre class="crayon-plain-tag">k1: v1
+k3: ["a", 123, true, false, null]</pre><p>Yeeeeha!</p><p>We need your feedback! What do you think? Is it easy enough to upload to biicode? Do you think that we should share CMake recipes? What would you like?<br
+/> If you want to upload to biicode your library  we will be pleased to help if you need. Write us in the <a
+title="Biicode forum" href="http://forum.biicode.com" target="_blank">biicode forum</a> and we will give you support!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-i/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Our first DDoS attack!!</title><link>http://blog.biicode.com/first-ddos-attack/</link> <comments>http://blog.biicode.com/first-ddos-attack/#comments</comments> <pubDate>Tue, 12 Aug 2014 09:26:45 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode Team]]></category> <category><![CDATA[BOFHers]]></category> <category><![CDATA[DDoS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1060</guid> <description><![CDATA[<p>Yesterday biicode suffered a DDoS attack on this wordpress blog. DDoS attack (Distributed Denial of Service) tries to make a resource (this blog) unavailable using servers distributed all over the world. In this case, sources came from Korea, USA, Europe&#8230; More than a hundred simultaneous connections brought down our blog. &#160; What happened? We received [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-ddos-attack/">Our first DDoS attack!!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Yesterday biicode suffered a DDoS attack on this wordpress blog.</p><p><a
+title="DDoS attack" href="http://en.wikipedia.org/wiki/Denial-of-service_attack" target="_blank">DDoS attack</a> (Distributed Denial of Service) tries to make a resource (this blog) unavailable using servers distributed all over the world.<br
+/> In this case, sources came from Korea, USA, Europe&#8230; More than a hundred simultaneous connections brought down our blog.</p><p>&nbsp;</p><div
+style="width: 1144px" class="wp-caption aligncenter"><img
+src="http://www.datasoft.ws/images/ddos-attacks1.png" alt="DDoS attack can seriously damage your system." width="1134" height="768" /><p
+class="wp-caption-text">DDoS attack</p></div><p><span
+id="more-1060"></span></p><h2>What happened?</h2><p>We received an alert about our blog not responding right. We connected inmediatly to the server and started looking into the server logs.</p><h2>Why did the blog go down?</h2><p>Well, the first sign that something was going wrong was a message telling us the server couldn&#8217;t connect to the database.<br
+/> At that moment we connected to the server and tried to restart mysql service&#8230; but the service went down almost inmediatly.<br
+/> We looked at the mysql error log and we found it was a memory issue.<br
+/> After looking up in google the error code we decided to increase the server memory (easy to do with a virtualized instance) but it didn&#8217;t work, memory wasn&#8217;t being used and the problem persisted.<br
+/> We even tried to increase the swap partition&#8230; but our disk got full.</p><h2>What the f*** is going on!!!??</h2><p>That was our reaction before all we tried failed.<br
+/> We started to think that maybe we were under some kind of attack.<br
+/> We executed netstat command to look at port 80. More than a hundred connections were stablished.</p><pre class="crayon-plain-tag">netstat -plan|grep :80 | wc -l</pre><p>With these command options I could check the connected IPs:</p><pre class="crayon-plain-tag">netstat -plan|grep :80|awk {'print $5'}|cut -d: -f 1|sort|uniq -c|sort -nk 1</pre><p></p><h2>Well&#8230; we definitely are under a DDoS attack&#8230;now what?</h2><p>Repealing a DDoS attack may be very complex. The most important thing is to understand the attack and think of a way to stop it.<br
+/> We looked in the Apache access log and we saw hundreds of access to the same resource: &#8220;xmlrpc.php&#8221;</p><p>Xmlrpc.php is an API to remote publish contents to wordpress. Attackers are POSTing big files to this resource. Files were not getting published though, because the attacker didn&#8217;t have the right credentials, however, WordPress was receiving a laaaaaaarge amount of data and loading it into server memory which eventually was full.</p><p>The solution was simple&#8230; We moved that php file to a non accessible location. The server started to respond 404 for all these requeste and all the system went to normal. We don&#8217;t need xmlrpc and after what happened&#8230; We prefer never to use it again.</p><h2>Conclusion</h2><p>Despite this, we are happy with the results of this DDoS attack. We are in beta, we are not perfect, our systems are not configured perfectly, but we are learning a lot and we are greatful to be able to fix any problem that affects our fantastic users!. Also we know that we are gaining interest and an attack like this confirms that!</p><p>Happy summer!!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-ddos-attack/">Our first DDoS attack!!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/first-ddos-attack/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Connect your Arduino to the World!</title><link>http://blog.biicode.com/connect-your-arduino-to-the-world/</link> <comments>http://blog.biicode.com/connect-your-arduino-to-the-world/#comments</comments> <pubDate>Thu, 24 Apr 2014 08:30:08 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[carriots]]></category> <category><![CDATA[example]]></category> <category><![CDATA[openweathermap]]></category> <category><![CDATA[weather]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=337</guid> <description><![CDATA[<p>OUTDATED: The lasote/weather block is not curretly working due to problems with AVR compiler for Arduino. In previous blog posts, I showed two blocks: lasote/weather: To get current weather and forecast from your Arduino. lasote/carriots_stream: To connect Carriots service and send data to it. Today I&#8217;m going back to check this classes so you can [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/connect-your-arduino-to-the-world/">Connect your Arduino to the World!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><strong>OUTDATED: </strong>The <em>lasote/weather</em> block is not curretly working due to problems with AVR compiler for Arduino.</p><p>In previous blog posts, I showed two blocks:</p><ol><li><a
+title="lasote/weather block" href="https://www.biicode.com/lasote/blocks/lasote/weather/branches/master" target="_blank">lasote/weather</a>: To get current weather and forecast from your Arduino.</li><li><a
+title="lasote/carriots_stream block" href="https://www.biicode.com/lasote/blocks/lasote/carriots_stream/branches/master" target="_blank">lasote/carriots_stream</a>: To connect Carriots service and send data to it.</li></ol><p>Today I&#8217;m going back to check this classes so you can program your own classes for making Arduino talk with the world.</p><p><span
+id="more-337"></span></p><p>Carriots stream service allows you to setup listeners that will receive events (in this case from an Arduino) for sending emails, sms, tweets etc.</p><h4>How does it work?</h4><p>Main:</p><pre class="crayon-plain-tag">//Our hardware adapter is Enc28J60 HanRun module
+EthernetClient client;
+//Instance a carriots client for checking weather
+CarriotsStreamClient carriots_client(API_KEY, DEVICE_ID, client, Serial);</pre><p>Setup:</p><pre class="crayon-plain-tag">//Setup your hardware adapter
+uint8_t mac[6] = {0x10,0x31,0x02,0x33,0x04,0x65};
+Ethernet.begin(mac);</pre><p>Loop:</p><pre class="crayon-plain-tag">//Read sensors and put variables in client
+carriots_client.add_variable("sensor1", "foo");
+carriots_client.send_data();</pre><p></p><h4> How is it made?</h4><p>CarriotsStreamClient class uses <a
+title="lasote/arduino_http biicode block" href="https://www.biicode.com/lasote/blocks/lasote/arduino_http/branches/master" target="_blank">lasote/arduino_http</a> HttpClient class.<br
+/> This service requires you to make a http request to &#8220;http://api.carriots.com/streams&#8221;with some special headers including carriots.apikey for sending your API key.</p><p>Let&#8217;s have a look to the principal method of the class:</p><pre class="crayon-plain-tag">bool CarriotsStreamClient::send_data(){
+http_client-&gt;reset(); //Reset processors and custom headers
+//We can add custom headers to the request
+http_client-&gt;add_custom_header("Content-Type", "application/json");
+http_client-&gt;add_custom_header("Accept", "application/json");
+http_client-&gt;add_custom_header("User-Agent", device_id);
+http_client-&gt;add_custom_header("carriots.apikey", api_key);
+// Skipped code for not being relevant for the example
+// Construct a string with a json representation for your variables
+total = construct_request_json(...)
+int sent = http_client-&gt;post("api.carriots.com", "/streams", total, 80);
+if(sent){
+    if(short int ret_code = http_client-&gt;receive()){
+        if(ret_code == 200){
+            stream.println("Code 200 OK!");
+            return true;
+        }
+    }
+... // Skipped code for not being relevant for the example
+}</pre><p></p><ul><li>At the beggining of the method we add to http_client some custom headers required by Carriots Service.</li><li>Later we construct a char* with a JSON with the data that Carriots needs and your “sensor variables”.</li><li>Finally we make a post request to “api.carriots.com/streams” url to the port 80.</li></ul><p>Because Carriots service doesn’t return important data, except the return code, I have used no processor in order to parse the return.</p><p>Simple isn’t it?</p><h4>Open Weather Map</h4><p>In this case I have used <a
+title="Open Weather Map API" href="http://openweathermap.org/API" target="_blank">a GET request to their API</a> and captured the return trought an StreamJsonProcessor.</p><h4><strong>How does it work?</strong></h4><p>Main:</p><pre class="crayon-plain-tag">EthernetClient client;
+//Instance a weather client for check weather
+WeatherClient weather_client(client, Serial);</pre><p>Setup:</p><pre class="crayon-plain-tag">//Setup your hardware adapter
+uint8_t mac[6] = {0x10,0x31,0x02,0x33,0x04,0x65};
+Ethernet.begin(mac);</pre><p>Loop:</p><pre class="crayon-plain-tag">//future_days == 0 =&gt; TODAY
+bool ret = weather_client.get_weather(w, city, future_days);
+if(ret){
+    Serial.println(w.description); Serial.print(F("Max temp:"));
+    Serial.println(w.max_temp); Serial.print(F("Min temp:"));
+    Serial.println(w.min_temp);
+}</pre><p></p><h4><strong>How its made?</strong></h4><p>Construct the URL with the parameters we want:</p><pre class="crayon-plain-tag">char tmp[strlen(city) + 35];
+tmp[0] = '';
+strcat_P(tmp, PSTR("/data/2.5/weather?q="));
+strcat(tmp, city);
+strcat_P(tmp, PSTR("&amp;units=metric"));</pre><p>Construct the queries we want to pass to StreamJsonProcessor:</p><pre class="crayon-plain-tag">const char* queries[] = { "weather.0.description", "main.temp_min", "main.temp_max" };</pre><p>Call the service and get the return:</p><pre class="crayon-plain-tag">http_client-&gt;processors.reset();
+http_client-&gt;reset();
+StreamJsonProcessor processor(queries, 3, 20, 30, 30);
+http_client-&gt;processors.add_item(&amp;processor);
+uint8_t connected = http_client-&gt;get("api.openweathermap.org", uri);
+if(connected){
+    stream.println(F("Connected ok!"));
+    int http_code = http_client-&gt;receive();
+    if(http_code==200){ //OK!
+        if(processor.finished()){
+            //Fill a weather object with the results and return it
+            strcpy(we.description, processor.results[0]);
+            we.min_temp = atof(processor.results[1]);
+            we.max_temp = atof(processor.results[2]);
+            return true;
+        }
+    }
+}</pre><p>There are hundreds of internet services you can use for make your Arduino talk to the world… <strong>Biicode will help you to make your adapter as simple as you have seen!</strong></p><p>What are you waiting for?<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/connect-your-arduino-to-the-world/">Connect your Arduino to the World!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/connect-your-arduino-to-the-world/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>IoT: Who else wants to check weather forecast with Arduino</title><link>http://blog.biicode.com/iot-arduino-weather-forecast/</link> <comments>http://blog.biicode.com/iot-arduino-weather-forecast/#comments</comments> <pubDate>Mon, 21 Apr 2014 10:15:20 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[weather]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=287</guid> <description><![CDATA[<p>OUTDATED: The lasote/weather block is not curretly working due to problems with AVR compiler for Arduino. Do you want to know current weather and forecast with Arduino? It’s possible with lasote/weather block and Open Weather Map. This is how the lasote/weather block works: [crayon-56886ec014458053591044/] Hardware Ethernet Enc28j60 no-shield module for connecting to internet. LCD 16&#215;2. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-arduino-weather-forecast/">IoT: Who else wants to check weather forecast with Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><strong>OUTDATED: </strong>The <em>lasote/weather</em> block is not curretly working due to problems with AVR compiler for Arduino.</p><p>Do you want to know current weather and forecast with Arduino? It’s possible with <a
+title="lasote/weather block at biicode" href="https://www.biicode.com/lasote/blocks/lasote/weather/branches/master" target="_blank">lasote/weather</a> block and <a
+title="Open Weather Map" href="http://openweathermap.org/" target="_blank">Open Weather Map</a>.</p><p><span
+id="more-287"></span></p><p>This is how the lasote/weather block works:</p><pre class="crayon-plain-tag">//Instances a weather client for check weather passing your internet client instance
+WeatherClient weather_client(client, Serial);
+//Container for weather_client results
+weather w;
+//LOOP
+bool ret = weather_client.get_weather(w, "Madrid", future_days);
+if(ret){
+	Serial.println(w.description);
+	Serial.print(F("Max temp:"));
+	Serial.println(w.max_temp);
+	Serial.print(F("Min temp:"));
+	Serial.println(w.min_temp);
+}</pre><p></p><h4>Hardware</h4><ol><li><a
+title="enc28j60 ethernet lan network module arduino" href="http://www.ebay.com/sch/i.html?_odkw=enc28j60%20ethernet%20lan%20network%20module&amp;_osacat=0&amp;_from=R40&amp;_trksid=p2045573.m570.l1313.TR0.TRC0.H0.Xenc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_nkw=enc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_sacat=0" target="_blank">Ethernet Enc28j60 no-shield module</a> for connecting to internet.</li><li><a
+title="Arduino LiquidCrystal" href="http://arduino.cc/es/Tutorial/LiquidCrystal#.U0uWSRe9g8Q" target="_blank">LCD 16&#215;2</a>.</li><li><a
+title="Arduino Mega 2560" href="http://arduino.cc/en/Main/arduinoBoardMega2560" target="_blank">Arduino Mega2560</a>.</li></ol><p><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/schema_weather.png"><img
+class="aligncenter wp-image-288" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/schema_weather.png" alt="Arduino weather forecast schema" width="600" height="413" /></a></p><h4>Create your biicode hive and upload (flash) to your Arduino</h4><ol><li>New with biicode? Follow this tutorial for <a
+title="Getting started with Arduino | Biicode Docs" href="http://docs.biicode.com/arduino/arduino-getting-started.html" target="_blank">getting started with Arduino</a>.</li><li>If you are not using <a
+title="Arduino ethernet module" href="http://www.ebay.com/sch/i.html?_odkw=enc28j60%20ethernet%20lan%20network%20module&amp;_osacat=0&amp;_from=R40&amp;_trksid=p2045573.m570.l1313.TR0.TRC0.H0.Xenc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_nkw=enc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_sacat=0" target="_blank">Ethernet Enc28j60 no-shield module</a>, you will need to pass an instance of Client for your hardware adapter to WeatherClient and setup the adapter.</li><li>Copy the following source code to a file in your block.</li><li>Execute these two commands:</li></ol><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii arduino:upload</pre><p></p><h4>Source code:</h4><p></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "ntruchsess/arduino_uip/uipethernet.h"
+#include &lt;lasote/weather/weather_client.h&gt;
+#include &lt;LiquidCrystal.h&gt;
+#define STATUS_PIN 13
+#define DELAY_SECONDS 5//Time between calls to api
+using namespace lasote;
+//Our hardware adapter is Enc28J60 HanRun module
+EthernetClient client;
+//Instance a weather client for check weather
+WeatherClient weather_client(client, Serial);
+//Init lcd
+LiquidCrystal lcd(2, 3, 8, 9, 10, 11);
+bool get_weather(const char* city, int future_days){
+    //reset previous status for a clean request
+    Serial.println(F("Lets check weather!"));
+    //weather object
+    weather w;
+    bool ret = weather_client.get_weather(w, city, future_days);
+    if(ret){
+        Serial.println(w.description); Serial.print(F("Max temp:"));
+        Serial.println(w.max_temp);  Serial.print(F("Min temp:"));
+        Serial.println(w.min_temp);
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        if(strlen(w.description) &gt; 16){
+            w.description[15] = '';
+        }
+        lcd.print(w.description);
+        lcd.setCursor(0, 1);
+        lcd.print(w.min_temp);
+        lcd.print("-");
+        lcd.print(w.max_temp);
+    }
+    else{
+        lcd.print(w.description);
+        lcd.setCursor(0, 1);
+        lcd.print("ERROR");
+    }
+}
+void setup() {
+    Serial.begin(9600);
+    Serial.println(F("***********SETUP****************"));
+    //MAC init
+    uint8_t mac[6] = {0x10,0x31,0x02,0x33,0x04,0x65};
+    Ethernet.begin(mac);
+    pinMode(STATUS_PIN, OUTPUT);
+    // initialize the library with the numbers of the interface pins
+    lcd.begin(16, 2);
+    delay(4000);
+}
+void loop() {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.write("Now...");
+    //Today
+    get_weather("Madrid", 0);
+    delay(DELAY_SECONDS * 1000);
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.write("Tomorrow...");
+    //Tomorrow
+    get_weather("Madrid", 1); //Tomorrow
+    delay(DELAY_SECONDS * 1000);
+}</pre><p>In following blog post I will show you how to write your own adapters for connecting to your favourite web APIs on internet!</p><p>Enjoy it!!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-arduino-weather-forecast/">IoT: Who else wants to check weather forecast with Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-arduino-weather-forecast/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>IoT: Get a temperature email alert with Arduino and Carriots</title><link>http://blog.biicode.com/iot-temperature-email-arduino-carriots/</link> <comments>http://blog.biicode.com/iot-temperature-email-arduino-carriots/#comments</comments> <pubDate>Tue, 15 Apr 2014 08:50:58 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[carriots]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[temperature]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=304</guid> <description><![CDATA[<p>In this post we will show you how to receive a temperature email alert via Arduino. Using Biicode lasote/carriots_stream block and Carriots service it’s very easy! How does the lasote/carriots_stream block work? Instances CarriotsStreamClient passing your Carriots credentials and an Arduino Client instance. Adds the variables you need and call send_data() [crayon-56886ec014ea7645735386/] Now, we&#8217;ll show [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-temperature-email-arduino-carriots/">IoT: Get a temperature email alert with Arduino and Carriots</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In this post we will show you <strong>how to receive a temperature email alert via Arduino</strong>.<br
+/> Using Biicode <a
+title="lasote/carriots_stream block, biicode" href="https://www.biicode.com/lasote/blocks/lasote/carriots_stream/branches/master" target="_blank">lasote/carriots_stream</a> block and <a
+title="Carriots, Internet of Things platform" href="http://www.carriots.com/" target="_blank">Carriots</a> service it’s very easy!</p><h4><img
+class="aligncenter wp-image-307 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/arduino_schema_temperature.png" alt="Arduino schema for room temperature" width="600" height="496" /></h4><p><span
+id="more-304"></span></p><h4>How does the lasote/carriots_stream block work?</h4><ul><li>Instances CarriotsStreamClient passing your Carriots credentials and an <a
+title="Arduino ClientConstructor" href="http://arduino.cc/es/Reference/ClientConstructor" target="_blank">Arduino Client instance</a>.</li><li>Adds the variables you need and call send_data()</li></ul><p></p><pre class="crayon-plain-tag">CarriotsStreamClient carriots_client(API_KEY, DEVICE_ID, client, Serial);
+carriots_client.add_variable("sensor1", "foo"); carriots_client.send_data();</pre><p>Now, we&#8217;ll show how to use it with an example:</p><h4>Step 1. Hardware used</h4><ul><li><a
+title="Arduino ethernet module" href="http://www.ebay.com/sch/i.html?_odkw=enc28j60%20ethernet%20lan%20network%20module&amp;_osacat=0&amp;_from=R40&amp;_trksid=p2045573.m570.l1313.TR0.TRC0.H0.Xenc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_nkw=enc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_sacat=0" target="_blank">Ethernet Enc28j60</a> no-shield module for connecting to internet.</li><li><a
+title="Adafruit 10-DOF IMU" href="https://www.adafruit.com/products/1604" target="_blank">Adafruit 10-DOF IMU</a> for temperature measuring.</li><li><a
+title="Arduino Mega2560" href="http://arduino.cc/en/Main/arduinoBoardMega2560" target="_blank">Arduino Mega2560</a>.</li></ul><h4>Step 2. Create a Carriots account and configure a device and a listener.</h4><ol><li><a
+title="Carriots service registration" href="https://www.carriots.com/joinus" target="_blank">Get a free account in Carriots</a> service.</li><li>Create a new device on <strong>Device Management</strong> section.</li></ol><h4><img
+class="aligncenter wp-image-309" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_device_creation.png" alt="Carriots device creation" width="630" height="434" /></h4><ol
+start="3"><li>Create a new Listener with the <code
+style="color: #dd1144">Wizard Create Listener</code> on <code
+style="color: #dd1144">Rules Management</code> section, select <code
+style="color: #dd1144">Send Email</code> and your device. In next step write the email account will receive the comunications.</li></ol><p><img
+class="aligncenter wp-image-313 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_wizard_1.png" alt="Carriots listener wizard (1)" width="600" height="192" /></p><p><img
+class="aligncenter size-full wp-image-315" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_wizard_2.png" alt="Carriots listener wizard (2)" width="600" height="202" /></p><ol
+start="4"><li>In the last step we can custom the email content.</li></ol><p><img
+class="aligncenter size-full wp-image-316" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_wizard_3.png" alt="Carriots listener wizard (2)" width="800" height="409" /></p><h4>Step 3. Create your biicode hive and upload to your Arduino</h4><ol><li>New at biicode? Follow this tutorial for <a
+title="Getting started with Arduino | Biicode Docs" href="http://docs.biicode.com/arduino/gettingstarted.html" target="_blank">getting started with Arduino</a>.</li><li>You will need to pass an instance of Client for your hardware adapter to CarriotsStreamClient.</li><li>Copy the following source code into a file in your block and fill your Carriots credentials API_KEY and DEVICE_ID.</li><li>Execute these two commands:</li></ol><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii arduino:upload</pre><p>And this is the source code example:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;Wire.h&gt;
+#include &lt;adafruit/ada_10dof/adafruit_10dof.h&gt;
+#include "ntruchsess/arduino_uip/uipethernet.h"
+#include "lasote/carriots_stream/carriots_stream_client.h"
+using namespace lasote;
+#define DEVICE_ID "*********************" //YOUR DEVICE ID
+#define API_KEY "***********************" //YOUR CARRIOT API KEY
+/* Assign a unique ID to the sensors */
+Adafruit_BMP085_Unified  bmp   = Adafruit_BMP085_Unified(18001);
+//Our hardware adapter is Ethernet Enc28J60 HanRun module
+EthernetClient client;
+//Instance a carriots client for check weather
+CarriotsStreamClient carriots_client(API_KEY, DEVICE_ID, client, Serial);
+void setup(void)
+{
+    //MAC init
+    uint8_t mac[6] = {0x10,0x31,0x02,0x33,0x04,0x65};
+    Ethernet.begin(mac);
+    delay(4000);
+    if(!bmp.begin()){
+        /* There was a problem detecting the BMP085 ... check your connections */
+        Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+    }
+}
+void loop(void)
+{
+    //Clear previous loop sensor variables
+    carriots_client.reset();
+    /* Get a new sensor event */
+    sensors_event_t event;
+    /* Display the pressure sensor results (barometric pressure is measure in hPa) */
+    bmp.getEvent(&amp;event);
+    float temperature;
+    if (event.pressure){
+        bmp.getTemperature(&amp;temperature);
+    }
+    char buf[6];
+    dtostrf(temperature, 2, 2, buf);
+    //Put temperature to client in variable "sensor1"
+    carriots_client.add_variable("sensor1", buf);
+    //Send!
+    carriots_client.send_data();
+    delay(60*1000);
+}</pre><p>You can use <a
+title="lasote/carriots_stream block at Biicode" href="https://www.biicode.com/lasote/blocks/lasote/carriots_stream/branches/master" target="_blank">lasote/carriots_stream</a> block and <a
+title="Carriots service" href="http://www.carriots.com/" target="_blank">Carriots</a> service for many purposes.</p><p>Let your imagination flow and stay tuned!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-temperature-email-arduino-carriots/">IoT: Get a temperature email alert with Arduino and Carriots</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-temperature-email-arduino-carriots/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

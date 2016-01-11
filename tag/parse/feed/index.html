@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; parse</title> <atom:link href="http://blog.biicode.com/tag/parse/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to parse JSON on Arduino</title><link>http://blog.biicode.com/arduino-parse-json/</link> <comments>http://blog.biicode.com/arduino-parse-json/#comments</comments> <pubDate>Fri, 04 Apr 2014 13:15:05 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[json]]></category> <category><![CDATA[parse]]></category> <category><![CDATA[reader]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=320</guid> <description><![CDATA[<p>JSON on Arduino JSON is a human-readable standard format to transmit data objects consisting of attribute-value pairs. It’s very useful for data interchange in network communications like HTTP or even a simple socket connection. There are several libraries to manage JSON with your favorite programming language. You can use php, python, java, javascript… even c [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-parse-json/">How to parse JSON on Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>JSON on Arduino</h2><p><a
+title="JSON (JavaScript Object Notation)" href="http://www.json.org/" target="_blank">JSON</a> is a human-readable standard format to transmit data objects consisting of <a
+title="Attribute-value pairs | Wikipedia" href="http://en.wikipedia.org/wiki/Attribute%E2%80%93value_pair" target="_blank">attribute-value pairs</a>. It’s very useful for data interchange in network communications like HTTP or even a simple socket connection. There are several libraries to manage JSON with your favorite programming language. You can use php, python, java, javascript… even c or c++. But these libraries become useless with Arduino. Why?<div
+id="attachment_1918" style="width: 170px" class="wp-caption aligncenter"><img
+class="wp-image-1918 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/04/JSON_vector_logo.png" alt="JSON on Arduino with biicode" width="160" height="160" /><p
+class="wp-caption-text">«<a
+href="http://commons.wikimedia.org/wiki/File:JSON_vector_logo.svg#mediaviewer/File:JSON_vector_logo.svg">JSON vector logo</a>» por Douglas Crockford. Disponible bajo la licencia Public domain vía <a
+href="//commons.wikimedia.org/wiki/">Wikimedia Commons</a>.</p></div> <span
+id="more-320"></span></p><h4>Let’s see an example: Imagine that you have an Arduino connected to the Internet with an</h4><p><a
+title="Arduino Ethernet" href="http://arduino.cc/en/Main/ArduinoBoardEthernet" target="_blank">ethernet adapter</a>. Now you want to connect it to a web API that provides the weather forecast like <a
+title="Open Weather Map, data API for developers" href="http://openweathermap.org/API" target="_blank">Open Weather Map</a>. A simple http request to this service will return a JSON document with all the weather information:</p><p></p><pre class="crayon-plain-tag">{
+   "coord":{
+      "lon":-0.13,
+      "lat":51.51
+   },
+   "sys":{
+      "message":0.0388,
+      "country":"GB",
+      "sunrise":1396502992,
+      "sunset":1396550245
+   },
+   "weather":[
+      {
+         "id":721,
+         "main":"Haze",
+         "description":"haze",
+         "icon":"50d"
+      }
+   ],
+   "base":"cmc stations",
+   "main":{
+      "temp":288.29,
+      "pressure":999,
+      "temp_min":285.37,
+      "temp_max":290.37,
+      "humidity":76
+   },
+   "wind":{
+      "speed":1.03,
+      "gust":2.57,
+      "deg":63
+   },
+   "clouds":{
+      "all":88
+   },
+   "dt":1396523434,
+   "id":2643743,
+   "name":"London",
+   "cod":200
+}</pre><p></p><p>It isn’t that long… is it? Certainly,</p><p><strong>even for a tiny computer like Raspberry PI it’s easy to read the whole JSON</strong> document and parse it. Then you can access to any node value doing weather[0].description to read the description of the weather. Well, <strong>this is not possible with Arduino</strong>. Just reading this little JSON document <strong>would take 416 bytes in <a
+title="Arduino Memory" href="http://arduino.cc/en/Tutorial/Memory" target="_blank">SRAM</a></strong>. What’s even worse, processing this data structure with all the values would easily take more than 5KB of SRAM. So by all means <strong>you need at least 5KB to get the weather forecast</strong>.</p><h4>How much memory have Arduino boards?</h4><table
+border="1" align="center"><tbody><tr><td></td><td><p
+dir="ltr"> <strong>ATMega168</strong></p></td><td><p
+dir="ltr"> <strong>ATMega328P</strong></p></td><td><p
+dir="ltr"> <strong>ATmega1280</strong></p></td><td><p
+dir="ltr"> <strong>ATmega2560</strong></p></td></tr><tr><td><p
+dir="ltr"> <strong>SRAM</strong></p></td><td><p
+dir="ltr"> 1KB</p></td><td><p
+dir="ltr"> 2KB</p></td><td><p
+dir="ltr"> 8KB</p></td><td><p
+dir="ltr"> 8KB</p></td></tr></tbody></table><p>You can not waste 5KB of memory only parsing this tiny JSON document. The most frustrating thing is that we may not want all the data; maybe just one or two fields: current temperature and weather description. But we needed to keep in memory the whole document in order to read these two fields.</p><p><strong>But not any longer</strong>.</p><h4>The solution I have programmed a block called</h4><p><a
+title="lasote/json_stream_reader block at biicode" href="https://www.biicode.com/lasote/blocks/lasote/stream_json_reader/branches/master" target="_blank">stream_json_reader</a> that will receive char by char the JSON document. It only will store in memory a few bytes for know JSON structure using a state machine and the results you need. So you can query the class for the results you want and will process the JSON.</p><h4>Example:</h4><p></p><pre class="crayon-plain-tag">// When JSON node is an array we indicate the index as a number
+static const char* queries[] = { "list.0.deg", "list.0.weather.0.main"};
+StreamJsonReader jsonreader(queries, 2); // 2 queries
+while(char c  =  read()){
+           jsonreader.process_char(c);
+}
+cout &lt;&lt; jsonreader.results[0] &lt;&lt; endl;
+cout &lt;&lt; jsonreader.results[1] &lt;&lt; endl;</pre><p></p><p>In upcoming blog posts we will show you how to use this with a real http request!! Wanna try it? copy and paste the</p><p><a
+title="example code for parsing JSON with Arduino" href="https://www.biicode.com/lasote/blocks/lasote/stream_json_reader/branches/master/versions/24/cells/examples/main.cpp" target="_blank">complete example published here</a> in your project:</p><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:run</pre><p></p><p>Or don&#8217;t even copy the code</p><p></p><pre class="crayon-plain-tag">$ bii init json_project
+$ cd json_project
+$ bii open lasote/stream_json_reader
+$ bii cpp:run examples_main</pre><p></p><p>Happy coding! If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our</p><p><a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-parse-json/">How to parse JSON on Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-parse-json/feed/</wfw:commentRss> <slash:comments>6</slash:comments> </item> </channel> </rss>

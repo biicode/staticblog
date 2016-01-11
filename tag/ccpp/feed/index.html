@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; c/cpp</title> <atom:link href="http://blog.biicode.com/tag/ccpp/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>C++14 is out!</title><link>http://blog.biicode.com/cpp14/</link> <comments>http://blog.biicode.com/cpp14/#comments</comments> <pubDate>Wed, 20 Aug 2014 16:57:47 +0000</pubDate> <dc:creator><![CDATA[josedaniel]]></dc:creator> <category><![CDATA[news]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[C++ standard]]></category> <category><![CDATA[c++14]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[cpp14]]></category> <category><![CDATA[DIS]]></category> <category><![CDATA[DIS 14882]]></category> <category><![CDATA[ISO c++]]></category> <category><![CDATA[ISO cpp]]></category> <category><![CDATA[ISO/IEC 14882:2014]]></category> <category><![CDATA[ISO/IEC JTC1]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1236</guid> <description><![CDATA[<p>Professor Jose Daniel García (UC3M) explains its main features: This week ISO/IEC JTC1 has reported that DIS 14882, the revision to the C++ Standard, has been APPROVED with 0 negative votes. What does this mean in practice? Well, it is just another step towards the publication of the new version of the C++ standard that [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp14/">C++14 is out!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Professor Jose Daniel García (UC3M) explains its main features:</h2><p
+style="text-align: left;">This week ISO/IEC JTC1 has reported that DIS 14882, the revision to the C++ Standard, has been <strong>APPROVED</strong> with 0 negative votes. What does this mean in practice? Well, it is just another step towards the publication of the new version of the C++ standard that will eventually get the official name of ISO/IEC 14882:2014 (C++14 for friends).</p><div
+id="attachment_1240" style="width: 640px" class="wp-caption aligncenter"><img
+class="wp-image-1240" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/cpp2.jpg" alt="C++14 is out thanks to this people's consensus. " width="630" height="420" /><p
+class="wp-caption-text">The ISO C++ committee aka WG21. Not standard people at all!</p></div><p
+style="text-align: left;"><span
+id="more-1236"></span></p><p
+style="text-align: left;">After the long process that took a decade to produce C++11, the standards committee tried to define a more streamlined process to deliver updates and new versions of the C++ language and its standard library more frequently. The first target was to produce a new version for 2014. Now we can say that we have achieved the milestone.</p><h2 style="text-align: left;">What’s new in C++14</h2><p
+style="text-align: left;">So, what&#8217;s new in C++14? In the language itself you will find a bunch of new/improved features. If you ask which is the most relevant new feature, the most common answer you may get is &#8220;generic lambdas&#8221;.</p><h3 style="text-align: left;">GENERIC LAMBDAS</h3><p
+style="text-align: left;">What do generic lambdas allow? In essence, they allow to define a lambda where one or more arguments have a generic type (denoted by auto):</p><p></p><pre class="crayon-plain-tag">template &lt;class C&gt;
+void print_elements(const C &amp; c) {
+  std::for_each(begin(c), end(c), [](auto &amp; x) {
+    std::cout &lt;&lt; x &lt;&lt; " ";
+  });
+  std::cout &lt;&lt; std::endl;
+}</pre><p></p><p
+style="text-align: left;">This new feature will allow you to use print elements like this:</p><p></p><pre class="crayon-plain-tag">vector&lt;int&gt; v { 1, 2, 3 };
+list&lt;string&gt; w { "C++", "is", "cool" };</pre><p></p><pre class="crayon-plain-tag">print_elements(v);
+print_elements(w);</pre><p></p><h3>OTHER C++14 FEATURES</h3><p><strong>Digit separators</strong>: Now you can use the &#8216; symbol as a digit separator in a numeric literal.</p><pre class="crayon-plain-tag">int x = 1'000'000'000; // 1 billion
+int y = 0'333'333'777; // Octal value 333333777
+int z = 0xFFFF'0000'1A2B'CCCC; // 0xFFFF00001A2BCCCC
+double a = 1'427.25; // 1427.25</pre><p></p><p
+style="text-align: left;"><strong>Binary literals</strong>: New prefixes for binary literals.</p><p></p><pre class="crayon-plain-tag">int x = 0b0011; // 3
+int y = 0B'0000'1111; // 15</pre><p></p><p
+style="text-align: left;">Lambdas <strong>init captures</strong> allow to declare and init non-static data members for the closure object associated to a lambda.</p><p></p><pre class="crayon-plain-tag">auto f = [lower = lower_bound(), upper = upper_bound() ] (int x) &gt; int {
+  if (x&lt;lower) return lower;
+  if (x&gt;upper) return upper;
+  return x;
+};</pre><p></p><p
+style="text-align: left;"><strong>Variable templates</strong> allow defining a family of constants by using a template:</p><p></p><pre class="crayon-plain-tag">template &lt;class T&gt;
+constexpr T pi = T(3.1415926535897932385);</pre><p></p><pre class="crayon-plain-tag">template &lt;class T&gt;
+T circle_area(T r) {
+  return pi * r * r;
+}</pre><p></p><p
+style="text-align: left;"><strong>Relaxed requirements for constexpr</strong>. C++11 was very restrictive in regards with what you could do inside a constexpr function. Now you can use control structures and use local variables. Still you can only modify local variables.</p><p></p><pre class="crayon-plain-tag">constexpr int min(std::initializer_list&lt;int&gt; xs) {
+  int min = std::numeric_limits::max();
+  for (int x : xs)
+    if (x &lt; min) min = x;
+  return min;
+}</pre><p></p><pre class="crayon-plain-tag">constexpr int z = min({1, 3, -2, 4});</pre><p></p><p
+style="text-align: left;"><strong>Return type deduction</strong>. You can now declare a function with auto return type. The return type will be deduced by the compiler from the return statement.</p><p></p><pre class="crayon-plain-tag">auto f(int x) { return x*x; } // int f(int x);</pre><p></p><p
+style="text-align: left;"><strong>Dynamic memory management</strong> specification has been reworked. These changes allow the possibility of collapsing, under certain circumstances, multiple calls to the memory manager. You may find example of such optimizations in TCMalloc (<a
+href="https://code.google.com/p/gperftools/">https://code.google.com/p/gperftools/</a>).</p><p
+style="text-align: left;">Finally, the <em>[[deprecated]]</em> attribute will allow you to mark an item in your API as deprecated.</p><h3 style="text-align: left;">LIBRARY IMPROVEMENTS</h3><p
+style="text-align: left;">On the library side there have been a lot of improvements. One addition that I especially like is <em>make_unique</em> (the <em>unique_ptr</em> counterpart of <em>make_shared</em>).</p><p></p><pre class="crayon-plain-tag">auto p = make_unique&lt;int&gt;(42); // p is unique_ptr&lt;int&gt;</pre><p></p><p
+style="text-align: left;">With this tiny addition, there is probably no justification to find any new or delete in your code.</p><p
+style="text-align: left;">Besides, in the C++14 standard library you will find :</p><ul><li>Metaprogramming support: Improved transformation traits, integral constants evaluation, and compile time integer sequences.</li><li>Utilities: Tuple access by element type, tuple metafunction aliases, and pre-defined user defined literals.</li><li>Improvements to the STL: Null iterators, more robust non-modifying algorithms, and standard function objects with constexpr evaluation.</li></ul><h2 style="text-align: left;">C++14 IS HERE NOW</h2><p
+style="text-align: left;">The good news is that you can start experimenting with most of this features if you have access to a recent version of the gcc or clang compilers. The clang compiler has completed all the language features in its 3.4 version (<a
+href="http://clang.llvm.org/cxx_status.html">http://clang.llvm.org/cxx_status.html</a>). On the other hand, gcc status (<a
+href="https://gcc.gnu.org/projects/cxx1y.html">https://gcc.gnu.org/projects/cxx1y.html</a>) is rather advanced, but not complete.</p><div
+id="attachment_1248" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1248" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/logo-sun.jpg" alt="C++14 is out!" width="400" height="214" /><p
+class="wp-caption-text">Credit: https://isocpp.org/</p></div><p
+style="text-align: left;">Of course, C++14 is only one additional step, as the committee is working in several technical specifications (some of them to be released really soon) and it is also targeting its next major revision that could be released around 2017-2018. Stay tuned!</p><p
+style="text-align: left;">Find the official ISO C++ announcement on the release of C++14 <a
+href="https://isocpp.org/blog/2014/08/we-have-cpp14">here</a>.</p><p>&nbsp;</p><hr
+/><p>&nbsp;</p><p
+style="text-align: left;">By Jose Daniel García member of the the ISO/IEC JTC1/SC22/WG21 who has participated in the development of C++14.</p><div
+id="attachment_1280" style="width: 146px" class="wp-caption aligncenter"><img
+class="wp-image-1280" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/daniel.jpg" alt="Prof. JD García member of the C++ ISO Committee" width="136" height="136" /><p
+class="wp-caption-text">Credit: UC3M</p></div><p>Find professor García at <a
+href="http://es.linkedin.com/in/jdanielgarcia">LinkedIn</a> and <a
+href="http://www.twitter.com/jdgarciauc3m">Twitter</a>.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp14/">C++14 is out!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp14/feed/</wfw:commentRss> <slash:comments>13</slash:comments> </item> <item><title>A quick approach to BITSCAN</title><link>http://blog.biicode.com/quick-approach-bitscan/</link> <comments>http://blog.biicode.com/quick-approach-bitscan/#comments</comments> <pubDate>Fri, 25 Jul 2014 08:00:40 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[chess]]></category> <category><![CDATA[combinatorial problems]]></category> <category><![CDATA[control inteligente]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[features]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=922</guid> <description><![CDATA[<p>Pablo San Segundo, professor of Robotics at UPM in Madrid, after years of scientific investigation and many hours of devoted work on his passion: chess (he's a Chess Grandmaster), have lead him to propose BITSCAN library as a help with many complex combinatorial problems. He has been using BITSCAN with the help of biicode and it works just fine. It has clearly  proved to be more efficient than other implementations widespread in the developer community. Give it a try!</p><p><a
+href="http://blog.biicode.com/quick-approach-bitscan/"> Read More...</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/quick-approach-bitscan/">A quick approach to BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>This is is a small explanation about BITSCAN, the C++ library exclusively developed by <a
+title="Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a>.</p><p>BITSCAN is dedicated to the efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of 1s and 0s. It gets interesting when those 1s and 0s refer to a Boolean property of a group, so that each element of this group is identified by a bit of that chain.</p><h2>Time to move your pawns forward</h2><p>A good example of this is the game of chess. In a chessboard each position is formed by six different types of pieces with two possible colours. A string of 64 bits can encode the position of all pieces of the same type and color on the board (e.g. &#8220;white pawns&#8221;) by referring each bit to a square with the semantics of a value to 1 (TRUE) if the square is occupied by a piece of the chosen type and 0 (FASLE) otherwise.<span
+id="more-922"></span></p><p>The figure below shows an example. The white pawns on the board are encoded the 64-bit string to the right.<br
+/> <img
+class="aligncenter wp-image-923" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/bitscan-example-blogpost.png" alt="bitscan example blogpost" width="630" height="346" /><br
+/> Recently bit strings have had much impact in the scientific community because it has been shown that bit-parallel algorithms can accelerate up to one order of magnitude the solution of a number of complex combinatorial problems.<br
+/> After years of research in combinatorial optimization, Professor San Segundo has developed C++ bit string library BITSCAN optimizing those features that he found useful in his work, including different types of bit scanning.</p><h3>More on BITSCAN</h3><p>As you can recall, in a recent <a
+title="survey BITSCAN" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">comparative</a> BITSCAN was proven clearly more efficient than other C, C++ widespread implementations (i.e. STL bitset and BOOST dynamic_bitset).</p><p>Are you interested in scanning bits? Pablo is going to release soon a great surprise for those interested in encoding simple unweighted graphs.</p><p>Stay tuned!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/quick-approach-bitscan/">A quick approach to BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/quick-approach-bitscan/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Work hard, play hard: new release, biicode 1.0 is already here!</title><link>http://blog.biicode.com/work-hard-play-hard-new-release-biicode-1-0-is-already-here/</link> <comments>http://blog.biicode.com/work-hard-play-hard-new-release-biicode-1-0-is-already-here/#comments</comments> <pubDate>Wed, 23 Jul 2014 10:00:51 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[Biicode 1.0]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[dependency manager]]></category> <category><![CDATA[dependency manager c++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=858</guid> <description><![CDATA[<p>Every once in a while, we all have to work harder than ever. It&#8217;s probably different for each one of us, but we all feel the willpower to achieve greatness. For us, biicoders, it means working pretty hard (for almost two months) on a major release: Biicode 1.0 , with numerous demanded features you have been asking for. This is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/work-hard-play-hard-new-release-biicode-1-0-is-already-here/">Work hard, play hard: new release, biicode 1.0 is already here!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Every once in a while, we all have to work harder than ever. It&#8217;s probably different for each one of us, but we all feel the willpower to achieve greatness.</p><p>For us, biicoders, it means working pretty hard (for almost two months) on a major release: <a
+title="Download biicode" href="http://www.biicode.com/downloads" target="_blank">Biicode 1.0 </a>, with numerous demanded features you have been asking for.</p><p>This is a foretaste before you <a
+title="getting started biicode" href="http://web.biicode.com/learn/getting-started/" target="_blank">Get Started</a>!</p><ul><li>no more workspaces.</li><li>no sign up needed.</li><li>flat-files, fully integrable with version control systems.</li><li>greater configuration options of biicode with CMake.</li><li>you can publish as DEV, the development tag, so you can test your stuff.</li></ul><p>And to take a breath right before putting the finishing touches to biicode 1.0, we went to play paint-ball.</p><p><img
+class="alignnone wp-image-860" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/DSC_0248.jpg" alt="Paint-Ball Biicode" width="630" height="354" /></p><p>After that we joined for a tasty barbecue!</p><p><a
+title="Sign up" href="https://www.biicode.com/accounts/signup/" target="_blank">Sign up </a> today and don&#8217;t miss the results of this work hard &#8211; play hard!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/work-hard-play-hard-new-release-biicode-1-0-is-already-here/">Work hard, play hard: new release, biicode 1.0 is already here!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/work-hard-play-hard-new-release-biicode-1-0-is-already-here/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Build a smiley mechatronic face today with biicode and arduino!</title><link>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/</link> <comments>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/#comments</comments> <pubDate>Thu, 17 Jul 2014 14:36:34 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=863</guid> <description><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control. This biiday project comes in by Julio Caso, one of our users! Follow this step by step recipe to successfully build this project. If any doubts come, just post [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control.</p><p>This biiday project comes in by Julio Caso, one of our users!</p><p><img
+class="alignnone wp-image-864" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/mechatronic-face-biicode.png" alt="mechatronic face biicode" width="600" height="398" /></p><p>Follow this step by step recipe to successfully build this project. If any doubts come, just post a comment!</p><h3><span
+id="more-863"></span>Mechatronic Face Main Ingredients:</h3><ul><li><a
+title="Arduino uno" href="http://arduino.cc/en/Main/arduinoBoardUno" target="_blank">Arduino Uno</a></li><li><a
+title="Makey Makey Board" href="http://www.thinkgeek.com/product/f082/" target="_blank">Makey Makey board</a></li><li><a
+href="http://www.dx.com/p/ir-receiver-module-wireless-remote-control-kit-for-arduino-1-x-cr2025-135520">IR Receiver Module, Wireless Remote Control Kit for Arduino</a></li><li><a
+title="wii nunchuck" href="http://www.dx.com/es/p/wired-nunchuk-controller-for-wii-u-white-80cm-cable-191948#.U8etXvl_ttZ" target="_blank">Wii Nunchuck</a></li><li>Servo Control</li><li>Arduino Sensor Shield 5</li><li>The usual electronic stuff: wires, leds, protoboard&#8230;</li><li>screws and a screwdriver</li></ul><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li> Led 1</li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+width="315"><ul><li> Led 2</li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+colspan="2" width="581"> The nunchuck:</td></tr><tr><td
+width="315"><ul><li> Power Pin</li></ul></td><td
+width="315">  Pin A3</td></tr><tr><td
+width="315"><ul><li>Trigger Pin</li></ul></td><td
+width="315">  Pin 5</td></tr><tr><td
+width="315"><ul><li>Servo Pin</li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li> GND Pin</li></ul></td><td
+width="315">  Pin A2</td></tr><tr><td
+colspan="2" width="581">And finally, build the face and screw the different parts.</td></tr></tbody></table><p>&nbsp;</p><p>All the coding, connections and 3-D plans are located in <a
+title="readme mechatronic face biicode" href="https://www.biicode.com/blown/blown/cabeza/master/1/readme.md" target="_blank">here</a>.</p><p>Want to try it?  Execute this commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open blown/cabeza
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Watch Julio&#8217;s demo:</p><p><iframe
+width="854" height="510" src="//www.youtube.com/embed/pUikbi9BqMk" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p><p>&nbsp;</p><p>Summer is a great time to be a maker, what are you making?</p><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>#biicontest 2014 submit deadline is here!</title><link>http://blog.biicode.com/biicontest2014-submit-deadline/</link> <comments>http://blog.biicode.com/biicontest2014-submit-deadline/#comments</comments> <pubDate>Mon, 14 Apr 2014 12:47:44 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[#biicontest2014]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <category><![CDATA[raspberry pi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=58</guid> <description><![CDATA[<p>You can relax now, we’ve got all your awesome projects. Now it’s time for our great jurors to discuss which project is better. We’re pretty certain that their experienced hands, will choose accurately! We’ll announce the winners April 30th 2014. Wanna know more about our contestants? Meet PROHUS Telecoum Team: 1. By whom is composed PROHUS Teloucom? [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicontest2014-submit-deadline/">#biicontest 2014 submit deadline is here!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>You can relax now, we’ve got all your awesome projects.</h3><p>Now it’s time for our great jurors to discuss which project is better. We’re pretty certain that their experienced hands, will choose accurately!</p><p>We’ll announce the winners April 30th 2014.</p><p>Wanna know more about our contestants? Meet PROHUS Telecoum Team:</p><p><span
+id="more-58"></span></p><h4><strong>1. By whom is composed PROHUS Teloucom? What do you do in life?</strong></h4><p>We are three old friends from school, Lops, Tronxo and Peri.</p><p>Lops is an Industrial Engineering student at UPM, Madrid, currently working on his final project in the Electronics department, also a member of RESET (an electronics student society in his university).</p><p>Tronxo is again a student at UPM, currently finishing his final project in Telecommunication Engineering in Sweden.</p><p>Peri is a Maths graduate from UCM, Madrid, currently working on his Master&#8217;s project in Complex Systems, in the UK.</p><h4><strong>2. How long have you been playing with RaspberryPi/Arduino?</strong></h4><p>Lops met Arduino about five years ago, in a musical electronics lecture. He has participated in several robotic contests from then on.</p><p>Tronxo has actually never used either of those before, but has experience with other microcontrollers and platforms.</p><p>Peri discovered the Raspberry Pi two years ago, and Arduino last Christmas. He has been trying to teach himself something useful since then.</p><h4><strong>3. What caught your attention from #biicontest2014? What made you sign up?</strong></h4><p>The opportunity to work in something we like and having the chance to win nice prizes is very tempting!</p><p>Also, as we all live in different countries at the moment, it is a good way to keep in touch.</p><h4><strong>4. Would you advise others to join?</strong></h4><p>Of course! Sharing is the main feature in Biicode, the more the merrier.</p><p>We would also like to thank Antonio Barrientos for letting us know through <a
+title="Reset ETSII" href="http://reset.etsii.upm.es/es/" target="_blank">RESET</a>&#8216;s newsletter!</p><p><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/prohus.png"><img
+class="alignnone size-full wp-image-59" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/prohus.png" alt="prohus" width="730" height="598" /></a><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicontest2014-submit-deadline/">#biicontest 2014 submit deadline is here!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicontest2014-submit-deadline/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>bicontest2014 registration is now closed</title><link>http://blog.biicode.com/bicontest2014-registration-closed/</link> <comments>http://blog.biicode.com/bicontest2014-registration-closed/#comments</comments> <pubDate>Wed, 09 Apr 2014 14:46:17 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[#biicontest2014]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <category><![CDATA[raspberry pi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=98</guid> <description><![CDATA[<p>We want to thank all the teams for joining #biicontest2014, we’re delighted that they had enough courage to participate. The moment of truth has arrived:  put the icing on your cakes and deliver them before the 13th April 2014. We’re waiting forward to see the results of your hard work! By now, you can get [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bicontest2014-registration-closed/">bicontest2014 registration is now closed</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We want to thank all the teams for joining <a
+title="biicontest2014 biicode" href="https://www.biicode.com/biicontest2014-en" target="_blank">#biicontest2014</a>, we’re delighted that they had enough courage to participate.</p><p>The moment of truth has arrived:  <strong>put the icing on your cakes and deliver them before the 13th April 2014.</strong></p><p>We’re waiting forward to see the results of your hard work!</p><p><span
+id="more-98"></span></p><p>By now, you can get to know better some of our newest teams:</p><p>Our contestant María, she’s <strong>Nunen</strong> team all by herself. She is technical computing engineer, she tinkers a little with Raspberry Pi and Arduino. Biicontest caught her eye in cause of the chance to develop a project and try a new tool.</p><p><strong>Pruli</strong> team is formed by Álvaro López, technical industrial engineer and current student of the master about automatic and robotics and Carlos Sánchez is studying engineering in telecomunications. They’re friends from school.</p><p>Each of them started playing with Raspberry PI and Arduino in different times, Álvaro began 4 o 5 years ago when in College, they bought a 3D printer and became interested in this world, making small projects with arduino and helping his partners with their hardware projects, even though I’ve never used Raspberry PI. Carlos started making small projects with Raspberry Pi 2 or 3 years ago. He usually made software projects: using a Raspbery to develop a database server, a web server … His first experience with Arduino was making a 3D printer at home and he has done different projects involving Arduino an 3D printing ever since.</p><p><strong>What caught their attention?</strong></p><p>In their own words: “the contest was launched by a Spanish company, in Madrid to be precise, it also caught our attention the amount of sponsors, companies where we usually buy. The prizes were relevant too. In addition to everything mentioned, Álvaro knows some of the people involved in Biicode.”</p><p><strong>Would they advise others to join?</strong></p><p><strong>Nunen</strong> doesn’t doubt it: for sure she will.</p><p>And <strong>Pruli</strong> clearly recommend to everyone who loves this world to join now, because first of all they’ll know a tool that can be very useful for their next projecs, and they can win fantastic prizes.</p><p>&nbsp;</p><p>Happy coding!</p><p><img
+class="alignleft wp-image-105 size-full" title="biicontest2014 logo" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/biicontest2014.png" alt="biicontest2014" width="332" height="75" /></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bicontest2014-registration-closed/">bicontest2014 registration is now closed</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bicontest2014-registration-closed/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>The road out of Arduino libraries-mess</title><link>http://blog.biicode.com/road-out-libraries-mess/</link> <comments>http://blog.biicode.com/road-out-libraries-mess/#comments</comments> <pubDate>Mon, 24 Mar 2014 12:50:40 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[news]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[library]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=119</guid> <description><![CDATA[<p>On any given occasion that you start an Arduino project with new hardware, the first of all things to be done is looking for libraries that support your hardware for Arduino. This invariably wastes your time: manual search, manual download &#38; installation of the libraries. And not a single version control in the process (you [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/road-out-libraries-mess/">The road out of Arduino libraries-mess</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>On any given occasion that you start an <strong>Arduino project</strong> with new hardware, the first of all things to be done is looking for <strong>libraries that support your hardware</strong> for Arduino.</p><p>This invariably wastes your time: manual search, manual download &amp; installation of the libraries. And not a single version control in the process (you can’t have different versions of the same named library).</p><div
+id="attachment_1146" style="width: 290px" class="wp-caption aligncenter"><img
+class="wp-image-1146" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/03/Arduino_Uno_-_R3.jpg" alt="Arduino libraries" width="280" height="280" /><p
+class="wp-caption-text">Credit: Wikipedia</p></div><p><span
+id="more-119"></span></p><p>What’s even worse? When you finally get to finish the whole process, you use it once and then it’s probably forgotten.</p><p><H2>biicode provides you Arduino libraries!</h2><p>We feature a <strong>central Arduino libraries Repository that automatically retrieves them</strong>. We get to do all the heavy lifting, configuring the libraries into your project and flashing the whole thing into your Arduino.</p><p>You can see at this video how simple is to integrate a bunch of adafruit libraries:</p><p><script id="asciicast-8324" src="https://asciinema.org/a/8324.js" async=""></script></p><p>So, if you want a way out of messines, go ahead and <a
+title="Biicode's way to reuse" href="https://www.biicode.com/">try biicode&#8217;s way</a>!</p><p>Happy coding!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/road-out-libraries-mess/">The road out of Arduino libraries-mess</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/road-out-libraries-mess/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

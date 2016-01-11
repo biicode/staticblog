@@ -1,0 +1,862 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; bitscan</title> <atom:link href="http://blog.biicode.com/tag/bitscan/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Bit-parallel approximate coloring</title><link>http://blog.biicode.com/bit-parallel-approximate-coloring/</link> <comments>http://blog.biicode.com/bit-parallel-approximate-coloring/#comments</comments> <pubDate>Wed, 26 Nov 2014 14:34:26 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit parallelism]]></category> <category><![CDATA[bit-parallel transmission]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[Maximum Cliqué Problem]]></category> <category><![CDATA[SEQ]]></category> <category><![CDATA[sequential greedy coloring]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1914</guid> <description><![CDATA[<p>The vertex coloring problem (VCP) is an NP-hard classical problem in graph theory which can be traced back to a letter written to W.R. Hamilton by A. de Morgan in 1852 in which the famous Four Color Theorem has its roots. Besides its obvious theoretical relevance, it has found practical applications connected to scheduling and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-parallel-approximate-coloring/">Bit-parallel approximate coloring</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The vertex coloring problem (VCP) is an NP-hard classical problem in graph theory which can be traced back to a letter written to W.R. Hamilton by A. de Morgan in 1852 in which the famous <em>Four Color Theorem</em> has its roots. Besides its obvious theoretical relevance, it has found practical applications connected to scheduling and allocation of resources (i.e. memory for different processes, frequencies for WLANs etc.).<br
+/> A (proper) vertex coloring of a simple undirected graph G=(V, E) is an assignment of color numbers to all vertices such that pairwise adjacent vertices have different colors. The size of the coloring is the number of different colors employed. The chromatic number of a graph χ(G) is the minimum number of colors required to color G, i.e. the size of its optimum coloring. The VCP can be formulated as finding a minimum coloring for a given graph.<br
+/> Compared with other related graph optimization problems such as the maximum clique problem (i.e. finding the largest possible subgraph in a given graph), VCP is considerably more challenging; for example it is possible to compute a maximum clique exactly in massive sparse graphs with millions of vertices, whereas fast exact coloring of a random graph with 80 vertices and 0.5 edge density already requires efficient algorithms and a powerful CPU.</p><p><span
+id="more-1914"></span></p><h2>Sequential greedy approximate coloring (SEQ)</h2><p>This post is concerned with a specific approximate coloring procedure called sequential greedy coloring (usually referred to as SEQ). It is a very useful and simple heuristic which produces reasonably tight colorings. A typical implementation runs in O(|V|* |V|) although procedures in O(|E|) are also known and employed in large sparse graphs.<br
+/> SEQ assigns the smallest possible color number to each vertex in order consistent with the current partial coloring. Pseudocode for SEQ appears in listing 1.</p><pre class="crayon-plain-tag">SEQ (G(V={v1, v2, …, vn} , E))
+1. for v≔v1 to vn
+2.   assign the smallest possible color to v
+3. endfor</pre><p><strong>Listing 1</strong>. Sequential greedy coloring.</p><p
+align="justify"><span
+lang="en-US"><b>Figure 1</b></span><span
+lang="en-US"> below shows an example of a coloring produced by SEQ. The numbers inside the vertices indicate the predefined ordering. In the example SEQ starts by labelling vertex 1 with color number 1 (green) and then proceeds to label vertex 2 with color number 2 (yellow) because it is adjacent to 1. Thereafter the smallest possible color for vertex 3 is green, vertex 4 is colored yellow and finally vertex 5 requires an additional color number (cyan) because it is adjacent to 1 and 4.</span></p><p>&nbsp;</p><table
+width="100%" cellspacing="0" cellpadding="7"><tbody><tr><td
+width="51%"><img
+class="aligncenter wp-image-1915 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/greedy-coloring1.png" alt="Examples of SEQ " width="341" height="299" /></td><td
+width="49%"><img
+class="aligncenter wp-image-1916 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/greedy-coloring2.png" alt="Example 2 of SEQ" width="342" height="300" /></td></tr><tr><td
+colspan="2" valign="top" width="100%"><b>Figure 1</b>. An example of sequential greedy coloring (in this case also a minimum coloring and solution to the VCP)</td></tr></tbody></table><p
+style="text-align: left;"> <span
+lang="en-US">The resulting coloring C(G)={C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US">, C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US">, C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">} has size three with color sets C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US">={1, 3}, C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US">={2, 4} and C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">={5}. Note that each color set is an </span><span
+lang="en-US"><i>independent set</i></span><span
+lang="en-US">, i.e. all its members are pairwise non-adjacent. This is a common property of all vertex colorings.</span></p><h2>An efficient bit-parallel implementation of SEQ</h2><p>We will now show a very efficient way of implementing SEQ in a bit-encoded graph to exploit bit-parallel transmission. We assume the reader has a minimum knowledge of both  <a
+title="GRAPH block in Biicode repository" href="https://www.biicode.com/pablodev/graph">GRAPH</a> and <a
+title="BITSCAN block in Biicode repository" href="https://www.biicode.com/pablodev/bitscan">BITSCAN</a> C++ libraries. If this is not the case we refer the reader to the documentation in the corresponding blocks in the Biicode repository.</p><p
+align="justify"><span
+lang="en-US">The bit-encoded graph encoded by GRAPH contains |V| bitarrays which map the neighbor sets of every vertex (i.e. each row of the adjacency matrix). In the example of </span><span
+lang="en-US"><b>figure 1</b></span><span
+lang="en-US"> the graph is encoded with the following 5 bitstrings: B{1} = 01011, B{2}=10101, B{3}=01011, B{4}=10101 and B{5}=11110. In a similar fashion, vertex sets and induced subgraphs are mapped to bitstrings when needed making use of BITSCAN.</span></p><p
+align="justify"><span
+lang="en-US">When exploiting bit-parallelism it is important that algorithms are carefully designed so that the critical operations are computed through bitmasks. Typical </span><span
+lang="en-US"><i>good</i></span><span
+lang="en-US"> operations when working with bit-encoded sets are </span><span
+lang="en-US"><i>set-intersection</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>set-difference</i></span><span
+lang="en-US">. A </span><span
+lang="en-US"><i>bad</i></span><span
+lang="en-US"> operation frequently needed is </span><span
+lang="en-US"><i>set element enumeration</i></span><span
+lang="en-US"> (i.e. determining the position of all 1-bits in the bitarray). </span></p><p
+align="justify"><span
+lang="en-US">In the case of SEQ a good compromise between </span><span
+lang="en-US"><i>good</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>bad</i></span><span
+lang="en-US"> operations is achieved by changing the control flow </span><span
+lang="en-US"><i>to produce color sets sequentially </i></span><span
+lang="en-US">(in the example first C</span><sub><span
+lang="en-US">1</span></sub><span
+lang="en-US"> then C</span><sub><span
+lang="en-US">2</span></sub><span
+lang="en-US"> and finally C</span><sub><span
+lang="en-US">3</span></sub><span
+lang="en-US">). Note that now no vertex is assigned color number </span><span
+lang="en-US"><i>k</i></span><span
+lang="en-US"> until all color sets below </span><span
+lang="en-US"><i>k</i></span><span
+lang="en-US"> have been completed. </span><span
+lang="en-US"><b>Listing 2</b></span><span
+lang="en-US"> describes the proposed modification for the SEQ algorithm.</span></p><p></p><pre class="crayon-plain-tag">BIT_PARALLEL_SEQ (G)
+Initial step: U≔V, k:=1, C:= EMPTY
+Output: A greedy sequential class coloring C(G)
+1. while U is not empty
+2.    Ck≔U                                                              //candidate set to color
+3.    repeat until all vertices in Ck have been selected
+4.      choose the first vertex v from Ck not previously selected
+5.      remove from Ck vertices not adjacent to v                       //main coloring operation
+6.      remove v from U                                                 //mark v as colored
+7.    endrepeat                                                         //end of color Ck
+8. add Ck to the output coloring C
+9. k≔k+1                                                                //next color set
+10.endwhile</pre><p><strong>Listing 2.</strong> BIT_PARALLEL_SEQ. It computes color classes sequentially.</p><p
+align="justify"><span
+lang="en-US"><b>Listing 3</b></span><span
+lang="en-US"> describes an efficient implementation of BIT_PARALLEL_SEQ with GRAPH. The procedure receives as input the graph to be colored (encoded as the</span><span
+lang="en-US"><i> ugraph</i></span><span
+lang="en-US"> type from GRAPH) and returns the size of the coloring and the concrete color assignments (in vector </span><span
+lang="en-US"><i>color</i></span><span
+lang="en-US"> passed as parameter). The procedure uses two auxiliary vertex sets </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> bit-encoded with BITSCAN. </span><span
+lang="en-US"><i>m_unsel</i></span> <i> </i><span
+lang="en-US">refers to the</span><i> </i><span
+lang="en-US">remaining uncolored vertices; </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> contains the candidate vertices which can enlarge the current color class. Initially </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> is mapped to V (i.e. all bits are set to one).</span></p><p></p><pre class="crayon-plain-tag">#include "pablodev/graph/graph.h"		//header for GRAPH in Biicode repository
+int BIT_PARALLEL_SEQ (ugraph&amp; G, vector&lt;int&gt;&amp; color){
+  //initial values
+  int N=G.number_of_vertices(), k=0, v= EMPTY_ELEM, from=EMPTY_ELEM;
+  color.assign(N, EMPTY_ELEM);
+  m_unsel.set_bit(0, N-1);                       //initially maps to V: all bits to 1
+  //main loop
+  while(true){
+    m_sel=m_unsel;
+    m_sel.init_scan(bbo::DESTRUCTIVE);
+    while(true){
+       if((v=m_sel.next_bit_del(from, m_unsel))==EMPTY_ELEM) break;
+       color[v]=k;                                //stores the vertex color number
+       if((--N)==0)
+               return k;                          //exit point
+       //computes next vertex of the current color class
+       m_sel.erase_block(from, G.get_neighbors(v));
+    }
+    ++k;                                          //next color
+  }
+  return k;                                       //should not reach here
+}</pre><p><strong>Listing 3.</strong> The proposed BIT_PARALLEL_SEQ implementation.</p><p
+align="justify"><span
+lang="en-US">The procedure is made up of two nested loops. The outer loop sets the candidate vertices of a new color set C</span><sub><span
+lang="en-US">k</span></sub><span
+lang="en-US"> in</span><span
+lang="en-US"><i> m_sel</i></span><span
+lang="en-US">, while the inner loop computes C</span><sub><span
+lang="en-US">k</span></sub><span
+lang="en-US">. Critical operations that make use of bit-parallel transmission are:</span></p><ol><li><p
+align="justify"><span
+lang="en-US">Copy of uncolored vertices from </span><span
+lang="en-US"><i>m_unsel</i></span><span
+lang="en-US"> to </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> at the beginning of the outer loop.</span></p></li><li><p
+align="justify"><span
+lang="en-US">Filtering of candidate vertices for the current color set by the BITSCAN </span><span
+lang="en-US"><i>erase_block</i></span><span
+lang="en-US"> function (computed as a set_difference operation).</span></p></li></ol><p
+align="justify"><span
+lang="en-US">Enumeration of vertices in </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> is one of the </span><span
+lang="en-US"><i>bad </i></span><span
+lang="en-US">operations but is implemented as an efficient </span><span
+lang="en-US"><i>destructive BITSCAN loop</i></span><span
+lang="en-US"> (see BITSCAN reference) in the inner loop of BIT_PARALLEL_SEQ:</span></p><p></p><pre class="crayon-plain-tag">m_sel.init_scan(bbo::DESTRUCTIVE);
+while(true){
+  if((v=m_sel.next_bit_del(from, m_unsel))==EMPTY_ELEM) break;
+  //…
+}</pre><p></p><p
+align="justify"><span
+lang="en-US">Inside the inner loop, each time a vertex </span><span
+lang="en-US"><i>v </i></span><span
+lang="en-US">is selected it is deleted simultaneously from </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> and </span><span
+lang="en-US"><i>m_unsel </i></span><span
+lang="en-US">in </span><span
+lang="en-US"><i>next_bit_del</i></span><span
+lang="en-US"> which is a useful optimization. Afterwards </span><span
+lang="en-US"><i>color </i></span><span
+lang="en-US">is updated with the new label for </span><span
+lang="en-US"><i>v </i></span><span
+lang="en-US">(color[v]=k) and the empty set condition is evaluated (&#8211;N==0) to check if all vertices are colored. If this is not the case the procedure enters into the </span><span
+lang="en-US"><i>erase_block</i></span><span
+lang="en-US"> coloring operation which removes those vertices which cannot now make part of the current color class and proceeds with the next iteration. Noteworthy is that </span><span
+lang="en-US"><i>erase_block </i></span><span
+lang="en-US">has been optimized in BITSCAN so that only blocks in </span><span
+lang="en-US"><i>m_sel</i></span><span
+lang="en-US"> containing the current vertex </span><span
+lang="en-US"><i>v</i></span><span
+lang="en-US"> (index block </span><span
+lang="en-US"><i>from</i></span><span
+lang="en-US">) and higher are considered in the filter.</span></p><p
+align="justify"><span
+lang="en-US">We hope readers enjoy BIT_PARALLEL_SEQ. It is extremely fast and is currently being used as part of <em>state-of-the-art</em> maximum clique algorithm <a
+title="Reference to BBMC algorithm" href="http://dl.acm.org/citation.cfm?id=1860369">BBMC</a> in to compute clique upper bounds. The implementation described here is available in the combinatorial optimization block <a
+title="Combinatorial block in Biicode repository" href="https://www.biicode.com/pablodev/copt">pablodev/copt </a> in the Biicode repository.</span></p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p><p><a
+href="http://www.codeproject.com/script/Articles/BlogFeedList.aspx?amid=<11052799>&#8221; rel=&#8221;tag&#8221;>CodeProject style=&#8221;display:none&#8221;</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-parallel-approximate-coloring/">Bit-parallel approximate coloring</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bit-parallel-approximate-coloring/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>BITSCAN: a C++ library for bit strings</title><link>http://blog.biicode.com/bitscan-cpp-library-bit-strings/</link> <comments>http://blog.biicode.com/bitscan-cpp-library-bit-strings/#comments</comments> <pubDate>Fri, 17 Oct 2014 11:03:03 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[bitscanning]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1840</guid> <description><![CDATA[<p>A comprehensive view of BITSCAN BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>A comprehensive view of BITSCAN</h2><p>BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is identified by a bit in the chain. In previous posts I have repeatedly stated that BITSCAN “is a useful library to manage bit strings”, and that was that. Readers of our blog have questioned the usefulness of bit strings in practice so I will start this post explaining some common situations in which bit strings may be an alternative to more common data structures.</p><p><img
+class="aligncenter wp-image-1841 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bitstring_logo.png" alt="Bit strings can now be processed more powerfully with BITSCAN hosted in biicode" width="359" height="123" /></p><p><span
+id="more-1840"></span></p><h2>Bit strings in practice</h2><p>Say you need to store and compare subsets of <em>different</em> numbers from 1 to N; or possibly you need to encode that a collection of objects belong to a set, or perhaps reason with two such collections and find those common to both. These situations are quite frequent in practice and commonly solved by mapping objects to identifiers, storing them (typically in some predefined order) in containers and employ their built-in methods to make the required inferences.</p><p>Here is an example: a subset of students takes an exam; each student has a different ID and writes it on the exam. A possible (non-efficient) solution to the query as to which students did not assist using STL collections appears below:</p><pre class="crayon-plain-tag">//… appropiate headers
+template&lt;class Collection&gt;
+void printCol(Collection&amp; col){
+	copy(col.begin(), col.end(), ostream_iterator&lt;Collection::value_type&gt;(cout, " "));
+}
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	set&lt;int&gt; s_ids;		// student ids
+	set&lt;int&gt; e_ids;		// exam ids
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		s_ids.insert(i);
+		if((i%2)==0)
+			e_ids.insert(i);
+	}
+	//students which did not assist
+	set&lt;int&gt; s_not_assist;
+  	set_difference(s_ids.begin(), s_ids.end(), e_ids.begin(), e_ids.end(),
+                             insert_iterator&lt;set&lt;int&gt;&gt; (s_not_assist, s_not_assist.begin()) );
+	printCol(s_not_assist);
+}</pre><p>&nbsp;</p><p>In the PREVIOUS example  each call to <code>insert</code> is logarithmic and <code>set_difference</code> is linear in the number of total students. Now compare with a bit string encoding for exams and students (a 1-bit indicates membership):</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"		//BITSCAN header in biicode repository
+using namespace std;
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	bitarray s_ids(NUMBER_OF_STUDENTS);	// student ids
+	bitarray e_ids(NUMBER_OF_STUDENTS);	// exam ids
+	s_ids.set_bit(0,NUMBER_OF_STUDENTS-1);
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		if((i%2)==0)
+		e_ids.set_bit(i-1);		//id is 0 based
+	}
+	//students which passed the exam
+	bitarray s_not_assist(s_ids);
+	s_not_assist.erase_bit(e_ids);
+	//I/O
+	s_not_assist.print();
+}</pre><p>From the point of view of efficiency, students are inserted in the (bit) sets in constant time. The reasoning is computed in the <code>erase_bit</code> function in linear time, but there is a reduction by a constant factor related to register word size (typically 64 in today’s computers) because processing occurs in chunks of bit blocks. Moreover, the code is no less readable (possibly <em>more</em> readable) than its counterpart and slightly more compact.</p><p>Note that the example did not intend to suggest that bit strings are better than typical STL collections (exlcude std::bitset) or anything like that. It only shows that bit strings can be a useful alternative to consider in everyday programming.</p><h2>Data types available in BITSCAN</h2><p>Having made a case in favor of bit strings I will now comment briefly on the data types available in BITSCAN and the kind of problems they address. As stated in <a
+href="http://blog.biicode.com/category/bitscan-2/">previous posts</a>, I developed BITSCAN to deal with hard combinatorial optimization problems in the graph domain. Why did I not use other common solutions such as <code>std</code><code>∷</code><code>bitset</code> or boost<code>∷</code><code>dynamic_bitset</code> containers? Simply because the majority of functions I required back then (say almost a decade ago) were not built-in (they still aren&#8217;t, specifically those related to different types of efficient bit scanning) not to mention the fact that the size of <code>std</code><code>∷</code><code>bitset</code> has to be hard wired at compile time. Also some critical optimization issues appeared which required ad hoc solutions. I therefore decided to start from scratch at my own risk. The types in BITSCAN are a result of a decade of experience in algorithmic optimization. The current release is intended to share this knowledge in the hope that it is useful to others and that it may be improved. In this sense I find Biicode ideal for managing and sharing the code.</p><p>Back to business, and sorry for the digression. The main types in BITSCAN are <em>bitblock</em>, <em>bitarray</em> and <em>sparse_bitarray</em> and most of the time you will only be using these. Other types are meant for compilers which do not accept assembly or intrinsic instructions (i.e. <em>simple_bitarray</em>, <em>simple_sparse_array</em>) or some specific optimization (i.e. <em>watched_bitarray</em>). I will leave the latter types for a future post.</p><h3>TYPE bitblock</h3><p>The <em>bitblock</em> type is a wrapper for bit twiddling inside 64 bit numbers. It includes typical least- significant-bit (LSB) and most-significant-bit (MSB) functions as well as different implementations of population counts (i.e. number of 1-bits in the number).  Useful inline macros are MASK_1 and MASK_0 which change bits in a predefined range (see example below).</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+void main(){
+	BITBOARD bb=0xFFFF;
+	cout&lt;&lt;"number of 1-bits in bb:"&lt;&lt;bitblock::popc64(bb)&lt;&lt;endl;
+	//useful masks
+	bitblock::print(bb &amp; bitblock::MASK_0(4,8));    //removes bits 4-8 from bb
+	bitblock::print(bb | bitblock::MASK_1(4,8));    //sets bits 4-8 in bb
+}</pre><p></p><h3>TYPE bitarray</h3><p><em>bitarray</em> extends the <em>bitblock</em> type to arrays of bitblocks and it is BITSCAN&#8217;s basic type. Besides typical operations which may be found elsewhere (bit masks etc.), the wrapper contains a number of optimizations mainly concerned with extracting the information from bit strings (alias bitscanning) which I have found pretty useful when solving combinatorial problems. In particular:</p><ul><li>Caching bitblock index and position of the last bit scanned in a bit scanning loop.</li><li>Specific implementation for destructive (simultaneous scanning and deletion) scans.</li><li>Specific implementation for reverse scans (i.e. from last to least significant bit of the bitstring).</li></ul><p>Here is a simple example of how to implement normal and destructive scanning loops with BITSCAN:</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATON_SIZE-1);     //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::NON_DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+	cout&lt;&lt;endl;
+	//bit scanning loop (destructive)
+	nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit_del();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+}</pre><p><span
+style="font-size: 13px;">It is worth noting that bit scanning introduces critical overhead compared to standard data structures. I strongly recommend to avoid it as much as possible in critical problem solving routines  in favor of reasoning with bit masks (the good part). Still, at some point you will surely need to enumerate the elements (1-bits) in the bit sets and the above functions (and others available in BITSCAN) will come in handy.</span></p><h3>TYPE sparse_bitarray</h3><p>This type introduces specific functionality to deal with the sparse case. A sparse bit string typically holds many more 0-bits than 1-bits (usually the useful chunks of information) and using  the general purpose <em>bitarray</em> type will generally lead to dealing with a lot of useless chunks of 0-bits. I recommend to use the <em>sparse_bitarray</em> type in such cases. The interface for most operations is very much the same. BELOW is the code for the normal bit scanning loop in the previous examples but using the sparse type.</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	sparse_bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATION_SIZE-1);      //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+		while(true){
+			nBit=bba.next_bit();
+			if(nBit==EMPTY_ELEM) break;
+			cout&lt;&lt;nBit&lt;&lt;" ";
+		}
+	}
+	cout&lt;&lt;endl;
+}</pre><p>Notice that the code is exactly the same as for the <em>bitarray</em> type (now <em>sparse_bitarray</em>) with the exception of the empty checking condition at the beginning of the bit scanning loop:</p><pre class="crayon-plain-tag">if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM)(…}</pre><p>This is necessary because sparse bitarrays have empty semantics: an empty bitarray (i.e. with no allocated bitblocks) might just as well not be used as refer to a bitset exent of 1-bits. Either way entering the main scanning loop will result in an error during execution.</p><h2>Current status</h2><p>As indicated in other posts, BITSCAN is still very much in Alpha but it is being actively developed.  As such it suffers from lack of proper doc, non standardization of names and namespaces etc.  Still, it is very simple to use and including it in your projects requires no effort using Biicode (just include the header  #include &#8220;pablodev/bitscan/bitscan.h&#8221; and you are done). It has been tested both in Linux and Windows (64 bit).</p><p>If you are wondering about efficiency,  BITSCAN is in the core of BBMC <sup><a
+href="#fn1" id="ref1">[1]</a></sup><sup><a
+href="#fn2" id="ref2">[2]</a></sup><sup><a
+href="#fn3" id="ref3">[3]</a></sup> and PASS <sup><a
+href="#fn4" id="ref4">[4]</a></sup>, two state of the art algorithms for the NP-hard maximum clique and vertex coloring problems respectively. Also worth reading is a performance comparison with STL and BOOST in <sup><a
+href="#fn5" id="ref5">[5]</a></sup>. If you finally decide that it is worth a try please read the legal stuff. In case you use it for research purposes, please include the indicated citations. Finally, any feedback or improvement is most welcome.</p><p>&nbsp;</p><p><sup
+id="fn1"><a
+href="http://dl.acm.org/citation.cfm?id=1860369%20">[1] An exact bit-parallel algorithm for the maximum clique problem</a></sup></p><p><sup
+id="fn2"><a
+href="http://link.springer.com/article/10.1007%2Fs11590-011-0431-y">[2] An improved bit parallel exact maximum clique algorithm</a></sup></p><p><sup
+id="fn3"><a
+href="http://dl.acm.org/citation.cfm?id=2566230">[3] Relaxed approximate coloring in exact maximum clique search</a></sup></p><p><sup
+id="fn4"><a
+href="/oa.upm.es/11802/2/INVE_MEM_2011_107285.pdf">[4] A new DSATUR-based algorithm for exact vértex coloring</a></sup></p><p><sup
+id="fn5"><a
+href="http://blog.biicode.com/bitscan-efficiency-at-glance/">[5] BITSCAN efficiency at a glance</a></sup></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bitscan-cpp-library-bit-strings/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Sparse bitsets in C++ with BITSCAN</title><link>http://blog.biicode.com/sparse-bitsets-cpp/</link> <comments>http://blog.biicode.com/sparse-bitsets-cpp/#comments</comments> <pubDate>Tue, 23 Sep 2014 09:01:20 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[bitstring analysis]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[graph]]></category> <category><![CDATA[sparse]]></category> <category><![CDATA[sparse bitsets]]></category> <category><![CDATA[sparsity]]></category> <category><![CDATA[ugraph]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1584</guid> <description><![CDATA[<p>Sparse bitsets in C++ Sparsity when referring to systems indicates that they are loosely coupled. Thus, a sparse matrix is a matrix in which most of its elements are zero, a sparse graph has very few adjacent vertices (its adjacency matrix is also sparse) etc. Opposite to sparsity is density, and dense systems are those [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/sparse-bitsets-cpp/">Sparse bitsets in C++ with BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Sparse bitsets in C++</h2><p><em>Sparsity</em> when referring to systems indicates that they are loosely coupled. Thus, a sparse matrix is a matrix in which most of its elements are zero, a sparse graph has very few adjacent vertices (its adjacency matrix is also sparse) etc. Opposite to sparsity is density, and dense systems are those that are strongly coupled.</p><p>In a recent post we proposed <a
+title="K CORES analysis bitscan" href="http://blog.biicode.com/k-cores-analysis-bitscan/" target="_blank">BITSCAN </a> a recent C++ library to manipulate bit strings. A comparative survey with other state of the art implementations (such as <em>bitset</em> (STL), or <em>dynamic_biset</em>(BOOST)) may be found <a
+href="http://blog.biicode.com/bitscan-efficiency-at-glance/">here</a>. This post brifely describes how BITSCAN operates with sparse bitsets.</p><div
+id="attachment_1592" style="width: 295px" class="wp-caption aligncenter"><img
+class="wp-image-1592 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/sparse-bitstrings-bitscan.png" alt="Sparse bitsets in C++ with biicode's library BITSCAN" width="285" height="177" /><p
+class="wp-caption-text">Figure 1</p></div><p><span
+id="more-1584"></span></p><p>Sparse bitsets are bitstrings with a very high rate of 0-bits. Consider a population set of 1.000 elements (for example production parts per day) from which we want to store a Boolean property (e.g. parts which didn´t pass a specific quality tests). Let´s assume that, in a particular day, only 3 parts were affected. The classical way to deal with such a problem would be to store the 3 elements in an array but if we are interested to <em>reason</em> with that information we might decide on a bitstring encoding. In STL the correct way would look something like this:</p><pre class="crayon-plain-tag">#include &lt;bitset&gt;		//STL implementation for bit strings
+void main(){
+  bitset&lt;1000&gt; bs;		//fixed population size
+  bs.set(0);
+  bs.set(1);
+  bs.set(2);
+}</pre><p>Consider now a production of 1.000.000 parts and again just 3 members in the set. Now bitset&lt;1000000&gt; simply allocates an enormous amount of wasted space. Moreover, reasoning with such degree of sparsity will operate most of the time with empty bit blocks and perform a huge number of spurious bit masking operations.</p><h2>Operating with sparse bitsets</h2><p>BITSCAN treats sparsity as a special case. Internally, sparse bitsets are an ordered array of elements which look similar to the following code (ignore the actual names):</p><pre class="crayon-plain-tag">struct elem{
+  int index;				//index of bit block in the bit string
+  BITBOARD bb;
+}
+class SparseBitString{
+  vector&lt;elem&gt; bitstring;		//sorted array by index
+}</pre><p>&nbsp;</p><p><img
+class="size-full wp-image-1668 alignright" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/2421.jpg" alt="Sparse bitsets are weakly coupled and get a special treatment with BITSCAN in biicode." width="397" height="600" />Each element is a bitblock the size of the register word (typically 64 bits) <em>which contains at least a 1-bit</em>; empty bitblocks are simply ignored. Returning to the previous manufacturing example, the sparse bitstring in BITSCAN would only store the single <em>elem</em> {index=0, bb=00000111} for the whole 1.000.000 population.<em> Figure 1</em> shows another example; there a bit string is used to store all the white pawns in a given position. Considering an 8-bit CPU register size, a BITSCAN sparse bit string would only store the 3 non-zero bit-blocks with their corresponding indexes (3, 4, 7) (assume index 1 refers to the bottom block).</p><p>The actual wrappers for sparse bitstrings are the following data types:</p><ul><li><strong>sparse_bitarray</strong>: The main data type which includes all optimizations. In most cases this is the type to be used.</li><li><strong>simple_sparse_bitarray</strong>: A simpler data type to be used only if compiler/HW does not support intrinsics.</li></ul><p>An elementary example of how to use sparse bitsets in BITSCAN is:</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"	        //one and only header for the BITSCAN block in Biicode
+void main(){
+  sparse_bitarray sba(1000000);			//size of the population
+  sba.set_bit(0);
+  sba.set_bit(1);
+  sba.set_bit(2);
+  //stores just one 64-bit block
+}</pre><p>Features currently included for sparse bitsets are oriented towards fast bit scanning. Set union (OR mask) and intersection (AND mask) are also supported. Note that the sparse storage of bitblocks has a penalty on insertion (set_bit is an <em>ordered</em> insertion which runs in logarithmic time) and so does individual bit retrieval (also logarithmic).</p><p>An example of a (<em>non-destructive</em>) bit scan appears below. This is the typical case in which the bit string remains constant. A more efficient form of scanning (<em>destructive</em>) deletes 1-bits as they are scanned. There are many more such examples in the <em>tests </em>folder of the distribution.</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"	        //one and only header for the BITSCAN block in Biicode
+void main(){
+  sparse_bitarray sba(1000000);			//size of the population
+  //set sba appropiately...
+  int nBit=EMPTY_ELEM;
+  if(sba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+     while(true){
+        nBit=sba.next_bit();
+        if(nBit==EMPTY_ELEM) break;
+        //int foo = nBit...
+     }
+  }
+}</pre><p>A very important application for sparse bitsets is the <span
+style="text-decoration: underline;">encoding of real graphs</span> which tend to be have high order but also tend to be very sparse. The <a
+title="GRAPH LIBRARY BIICODE BITSCAN" href="http://www.biicode.com/pablodev/pablodev/graph/master" target="_blank">GRAPH </a> block in the Biicode repository now contains an illustrative wrapper for sparse graphs based on BITSCAN. It is still very much in alpha, but we are developping regularly an it already includes <a
+href="http://blog.biicode.com/k-cores-analysis-bitscan/">an efficient implementation of k-Core analysis</a>. A post on sparse graphs and GRAPH will be coming out soon!</p><p>Stay tuned by signing up below</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/sparse-bitsets-cpp/">Sparse bitsets in C++ with BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/sparse-bitsets-cpp/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Determining k-cores in a network: a new BITSCAN application</title><link>http://blog.biicode.com/k-cores-analysis-bitscan/</link> <comments>http://blog.biicode.com/k-cores-analysis-bitscan/#comments</comments> <pubDate>Thu, 04 Sep 2014 09:45:37 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[internet graphs]]></category> <category><![CDATA[k-core]]></category> <category><![CDATA[k-cores]]></category> <category><![CDATA[network analysis]]></category> <category><![CDATA[road graphs]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1507</guid> <description><![CDATA[<p>What is k-cores analysis? A major concern of social network analysis is to determine subgroups of actors which cooperate together within a network, in other words from cohesive subsets. To this avail a number of notions were introduced in the past such as cliques,  k-plexes, lambda sets, k-cores etc. Most of these notions are difficult [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/k-cores-analysis-bitscan/">Determining k-cores in a network: a new BITSCAN application</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>What is k-cores analysis?</h2><p>A major concern of social network analysis is to determine subgroups of actors which cooperate together within a network, in other words from <em>cohesive subsets</em>. To this avail a number of notions were introduced in the past such as <em>cliques</em>,  <em>k-plexes</em>, <em>lambda sets</em>, <em>k-cores</em> etc. Most of these notions are difficult to compute (non linear and many in NP), but computing cores is the exception because linear algorithms are known to exist<sup><a
+id="ref1" href="#fn1">1</a></sup> .This makes k-cores analysis an important source of information for real networks with hundreds of thousands of nodes, such as road graphs, internet graphs etc.</p><div
+id="attachment_1508" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1508" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/k-core-image.png" alt="k-cores decomposition of networks" width="400" height="230" /><p
+class="wp-caption-text">k-core decomposition (0-core, 1-core, 2-core, 3-core)</p></div><p
+style="text-align: left;"><span
+id="more-1507"></span></p><div><p>A<em> k-core</em> (first introduced by Seidy in 1983<sup><a
+id="ref2" href="#fn2">2</a>.</sup>) is any induced subgraph in which all its vertices have at least degree <em>k</em> and the subgraph is maximum with this property. The core of maximum order is called the <em>main core</em>. The core number of any vertex is the k-order of the highest core which contains this vertex. Finally the k-core number of a graph is the k-order of its main core. Note that the way degree is defined (in-degree, out-degree, in-degree + out-degree, …) determines different types of cores.</p><div
+id="attachment_1511" style="width: 310px" class="wp-caption alignleft"><img
+class="wp-image-1511" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/k-core-example-image.png" alt="k-cores example analysis" width="300" height="229" /><p
+class="wp-caption-text">A starred network: k-core number is 1</p></div><p>Core analysis is eminently <em>hierarchical</em>, as the above figure (borrowed from [1]) illustrates. The graph in the figure has four cores (0-core, 1-core, 2-core and 3-core) which are depicted in different shades of grey. 0-core is trivially the full graph, while the largest core (3-core) is shaded in the darkest grey. Note that cores do not have to be connected in the general case (e.g. in the figure, the 2-core contains two disconnected subgraphs). In very large sparse graphs k-core analysis typically helps to understand structure better with linear cost. It is much more informative than linear degree related notions. Consider as an example the starred computer network to the left. It is easy to see that the maximum graph degree of the network is 5 (the order of the graph minus 1); in contrast the k-core number is just 1. Note that this automatically gives a 2 upper bound (the k-core number incremented by one) for the clique number of the network as well.</p></div><div><span
+style="color: #262626;">Pablo San Segundo, the chess grand master, expert in graphs and PhD IN Artificial Intelligence, has </span>uploaded in the <a
+href="https://www.biicode.com/pablodev/pablodev/graph/master">GRAPH repository</a> a SW tool to analyse graph properties. It is located in the pablodev/graph block and has been released as part of the GRAPH library. The aim of this, as yet, small C++ library is to show how to apply the bitstring library <a
+href="https://www.biicode.com/pablodev/bitscan">BITSCAN</a> (available exclusively at Biicode) to encode graphs efficiently.  A recent post on basic GRAPH functionality can be found <a
+href="http://blog.biicode.com/bit-encoded-graph/">here</a>. More information on how to use GRAPH and BITSCAN to compute k-core decomposition coming soon!</div><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><h3>Footnotes</h3><p><sup
+id="fn1">1. V. Batagelj and M. Zaversnik, An O(m) algorithm for cores decomposition of networks, cs.DS/0310049, 2003.    <a
+title="Jump back to footnote 1 in the text." href="#ref1">↩</a></sup></p><p><sup
+id="fn2">2.S. B. Seidman, Network structure and minimum degree, Social Networks, 1983.&#8221;.<a
+title="Jump back to footnote 2 in the text." href="#ref2">↩</a></sup></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/k-cores-analysis-bitscan/">Determining k-cores in a network: a new BITSCAN application</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/k-cores-analysis-bitscan/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>A quick approach to BITSCAN</title><link>http://blog.biicode.com/quick-approach-bitscan/</link> <comments>http://blog.biicode.com/quick-approach-bitscan/#comments</comments> <pubDate>Fri, 25 Jul 2014 08:00:40 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[chess]]></category> <category><![CDATA[combinatorial problems]]></category> <category><![CDATA[control inteligente]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[features]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=922</guid> <description><![CDATA[<p>Pablo San Segundo, professor of Robotics at UPM in Madrid, after years of scientific investigation and many hours of devoted work on his passion: chess (he's a Chess Grandmaster), have lead him to propose BITSCAN library as a help with many complex combinatorial problems. He has been using BITSCAN with the help of biicode and it works just fine. It has clearly  proved to be more efficient than other implementations widespread in the developer community. Give it a try!</p><p><a
+href="http://blog.biicode.com/quick-approach-bitscan/"> Read More...</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/quick-approach-bitscan/">A quick approach to BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>This is is a small explanation about BITSCAN, the C++ library exclusively developed by <a
+title="Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a>.</p><p>BITSCAN is dedicated to the efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of 1s and 0s. It gets interesting when those 1s and 0s refer to a Boolean property of a group, so that each element of this group is identified by a bit of that chain.</p><h2>Time to move your pawns forward</h2><p>A good example of this is the game of chess. In a chessboard each position is formed by six different types of pieces with two possible colours. A string of 64 bits can encode the position of all pieces of the same type and color on the board (e.g. &#8220;white pawns&#8221;) by referring each bit to a square with the semantics of a value to 1 (TRUE) if the square is occupied by a piece of the chosen type and 0 (FASLE) otherwise.<span
+id="more-922"></span></p><p>The figure below shows an example. The white pawns on the board are encoded the 64-bit string to the right.<br
+/> <img
+class="aligncenter wp-image-923" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/bitscan-example-blogpost.png" alt="bitscan example blogpost" width="630" height="346" /><br
+/> Recently bit strings have had much impact in the scientific community because it has been shown that bit-parallel algorithms can accelerate up to one order of magnitude the solution of a number of complex combinatorial problems.<br
+/> After years of research in combinatorial optimization, Professor San Segundo has developed C++ bit string library BITSCAN optimizing those features that he found useful in his work, including different types of bit scanning.</p><h3>More on BITSCAN</h3><p>As you can recall, in a recent <a
+title="survey BITSCAN" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">comparative</a> BITSCAN was proven clearly more efficient than other C, C++ widespread implementations (i.e. STL bitset and BOOST dynamic_bitset).</p><p>Are you interested in scanning bits? Pablo is going to release soon a great surprise for those interested in encoding simple unweighted graphs.</p><p>Stay tuned!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/quick-approach-bitscan/">A quick approach to BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/quick-approach-bitscan/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>BITSCAN efficiency at a glance</title><link>http://blog.biicode.com/bitscan-efficiency-at-glance/</link> <comments>http://blog.biicode.com/bitscan-efficiency-at-glance/#comments</comments> <pubDate>Fri, 04 Jul 2014 08:00:42 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[bits]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[efficency]]></category> <category><![CDATA[exclusively]]></category> <category><![CDATA[library]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=483</guid> <description><![CDATA[<p>BITSCAN 1.0, our exclusive C++ library developed by Pablo San Segundo for sets of bits greater than the CPU register word, has proven its efficiency! In order to find out if BITSCAN  was fast enough to be a substantial improvement over other libraries that manage bit strings, it has been  compared with std::bitset and  boost::dynamic_bitset similar data structures. A [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">BITSCAN efficiency at a glance</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>BITSCAN 1.0, <a
+href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan/branches/master">our exclusive C++ library developed by Pablo San Segundo</a> for sets of bits greater than the CPU register word, has proven its efficiency!</p><p>In order to find out if BITSCAN  was fast enough to be a substantial improvement over other libraries that manage bit strings, it has been  compared with std::bitset and  boost::dynamic_bitset similar data structures.</p><h3>A comment on basic features</h3><p><a
+title="stl: :bitset" href="http://www.cplusplus.com/reference/bitset/bitset/bitset/" target="_blank">STL &#8216;s Bitset (stl∷bitset)</a> is NOT dynamic (i.e. the size of the bit string must be provided in compilation time by as a template parameter), so it does not actually provide the same functionality.</p><p><a
+title="boost:dynamic_bitset" href="http://www.boost.org/doc/libs/1_36_0/libs/dynamic_bitset/dynamic_bitset.html" target="_blank">Boost´s Dynamic Bitset (boost:dynamic_bitset)</a> is similar in functionality  in fast forward bit scanning. However, Boost does NOT currently support reverse bit scanning which is important in many applications.</p><p><span
+id="more-483"></span></p><h3>The test</h3><p>We have compared the following functions:</p><p>1-<strong>Bit access:</strong> The ability to test whether a given bit is present in a given position</p><p>2<strong>-Population count</strong>: The ability to count the number of bits to 1 in a bitstring</p><p>3-<strong>Forward bit scanning (also known as LSB scanning)</strong> over the whole range of the bit string: Extracts the position of the 1-bits in sequential order starting from the least significant.</p><p>4-<strong>Reverse bit scanning (also known as MSB scanning)</strong> over the full range of the bit string: Same as (3) but in reverse order (and typically slower). As mentioned earlier neither Boost  (nor STL) currently support this functionality in their bit data structures. Actually the boost::dynamic_bitset interface  has only find_first(…) and find_next(…) functions and it would be really nice if in the next version find.last(…)  and find_previous(..) were available, since there are many applications where this is very useful indeed.</p><p>In the cases of bit scanning (3, 4) we have considered two variants which are related to the typical use in concrete applications: A) Destructive and B) Non destructive.</p><ul><li>In (A) or destructive case, once the position of the bit is read it is removed from the bitstring. This somehow easies the task of bit scanning because the main loop only has to look for the least  (most) significant bit at each step. The bad part is that the information is lost.</li><li>In the non-destructive case (B), the bit string is left intact at the end of the process. This requires additional operations w.r.t. (A) to filter out those 1-bits already picked at each 64-bit block.</li></ul><p>The code used to run these tests is located here: <a
+style="color: #1155cc;" href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan_tests/branches/master" target="_blank">https://www.biicode.com/pablodev/blocks/pablodev/bitscan_tests/branches/master</a>.</p><p>BOOST should be installed in your local machine if you want to execute it.</p><h3>Test configuration</h3><p>Tests have been carried out on an Intel(R) Core(TM) i7 CPU 920 @ 3.67GHz, 6GB RAM with a  Windows 7, 64bit O.S.</p><p>We considered bit strings with different populations (<em>n</em> ranging from 500 up to 20.000) and distributions (uniform densities <em>d,</em> range from 0.25 up to 0.9) to test the ability of the data structures to reason from one bit-block to another. In all cases results are averaged over 100.000 repetitions.</p><p><em>Figure 1</em> shows performance results. From now on we will refer to the different bit string implementations by the source  (i.e. BOOST, STL and BITSCAN) for simplicity.  The concrete tests are:</p><ol><li>Population count (Figure 1, A) : Counting of 1 bits has been tested on the three implementations.</li><li>Destructive scans (Figure 1, E and F) : Scans which involve bit deletion after reading have been tested on BITSCAN and BOOST. STL has been left out because it is not dynamic.</li><li>Non destructive scans (Figure 1, C and D) : Scans which do not involve bit deletion after reading have been tested on BITSCAN and BOOST. STL has been left out similar to (2).</li><li>Reverse bit scan (Figure 1, B): It  has been compared against forward bit scanning only in BITSCAN since the other implementations do not offer a specific function for this task.</li><li>Access to bit positions: We have also tested concrete bit access in the 3 implementations. Reported results are not included because performance has been very similar in all cases.</li></ol><p>&nbsp;</p><table><tbody><tr><td
+width="315"> <img
+class="alignnone wp-image-764" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/A-POPULATION-SIZE.png" alt="bitscan test data A POPULATION SIZE" width="315" height="224" /></td><td
+width="315"> <img
+class="alignnone wp-image-765" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/B-reverse-non-destructive.png" alt="bits scan test data B reverse non destructive" width="315" height="223" /></td></tr><tr><td
+width="315">  A) Computation of the number of bits for the three implementations with 0.5 density and varying population.</td><td
+width="315">  B) BITSCAN reverse scanning for n=20.000 and different densities.</td></tr><tr><td
+width="315"><img
+class="alignnone wp-image-766" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/C-non-destructive-n10000.png" alt="bitscan test data C non destructive n10000" width="316" height="204" /></td><td
+width="315"><img
+class="alignnone wp-image-767" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/D-non-destructive-n20000.png" alt="bitscan test data D non destructive n20000" width="315" height="223" /></td></tr><tr><td
+width="315">C) Non destructive scan comparison for n=1.000 and different densities.</td><td
+width="315">D) Non destructive scan comparison for n=20.000 and different densities.</td></tr><tr><td
+width="315"> <img
+class="alignnone wp-image-762" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/e-destructive-n1000.png" alt="bitscan test data e destructive n1000" width="315" height="217" /></td><td
+width="315"><img
+class="alignnone wp-image-763" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/F-destructive-n20000.png" alt="bitscan test data F destructive n20000" width="315" height="230" /></td></tr><tr><td
+width="315">E) Destructive scan comparison for n=1.000 and different densities.</td><td
+width="315">F) Destructive scan comparison for n=20.000 and different densities.</td></tr><tr><td
+colspan="2" width="581"><em>Figure 1. Performance tests for BITSCAN, BOOST and STL bitstring implementations</em></td></tr></tbody></table><h3>Evaluation</h3><p>Population count is between 3x to 5x faster in BITSCAN than BOOST  and  STL, probably because the machine used for the tests exploited Intel´s intrinsic function library to the limit.  Although the result is possibly machine dependent, the order of magnitude of the improvement is indicative.</p><p>In destructive scans, BITSCAN is around 2x compared to BOOST. Noteworthy is that BITSCAN&#8217;s performance does not change much in very dense bit strings (i.e. &gt;0.75) , whereas BOOST shows certain degradation.</p><p>In the &#8220;regular&#8221; non destructive scan, BITSCAN is even slightly better (2.20x approx.) than in the previous case possibly because it caches better critical information related to the last bit read.</p><p>As to reverse (backwards) scanning, it performs comparably to forward scanning in BITSCAN and may be used without penalty.</p><h3>Conclusions</h3><p>This report shows that <a
+title="bitscan code" href="http://www.biicode.com/pablodev/bitscan" target="_blank">BITSCAN </a>is a leading state of the art alternative for programmers which look for efficiency in their implementations. Cutting edge research is showing that many combinatorial problems encoded with bit strings may be solved many times faster. Biicode sincerely hopes BITSCAN helps C, C++ developers throughout the world to make their code faster. It has already been employed successfully in a number of difficult and well known problems from the graph domain and many research papers describe how it can be done [<a
+title="An improved bit parallel exact maximum clique algorithm" href="http://oa.upm.es/11804/2/INVE_MEM_2011_107297.pdf" target="_blank">1</a>, <a
+title="An exact bit parallel algorithm for the maximum clique problem" href="http://dl.acm.org/citation.cfm?id=1860369" target="_blank">2</a>, <a
+title="A new exact bit parallel algorithm for SAT" href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4669756&amp;tag=1" target="_blank">3</a>, &#8230;].</p><p>Moreover Biicode hopes it may be improved by following our reuse paradigm. This will be an even more exciting test!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">BITSCAN efficiency at a glance</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bitscan-efficiency-at-glance/feed/</wfw:commentRss> <slash:comments>5</slash:comments> </item> <item><title>Exclusively at biicode, BitScan library!</title><link>http://blog.biicode.com/exclusively-at-biicode-bitscan-library/</link> <comments>http://blog.biicode.com/exclusively-at-biicode-bitscan-library/#comments</comments> <pubDate>Fri, 16 May 2014 11:22:27 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[news]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[library]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=453</guid> <description><![CDATA[<p>We like having at your disposal all types of libraries and today we&#8217;re bringing BITSCAN, a new C++  64bit library that our co-founder Pablo San Segundo built. BITSCAN is optimized for fast bitscanning operations. How does it operate?  It manages bit strings and collects the bits in strings of 64 bits . BITSCAN library has been used successfully to implement BBMC [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/exclusively-at-biicode-bitscan-library/">Exclusively at biicode, BitScan library!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We like having at your disposal all types of libraries and today we&#8217;re bringing BITSCAN, a new C++  64bit library that our <span
+style="color: #262626;">co-founder</span> <a
+title="wikipedia Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a> built.</p><p>BITSCAN is optimized for fast bitscanning operations.</p><p>How does it operate?  It manages bit strings and collects the bits in strings of 64 bits .</p><p>BITSCAN library<a
+title="researchgate profile Pablo BitScan bit board maximum clique" href="https://www.researchgate.net/profile/Pablo_San_Segundo" target="_blank"> has been used successfully to implement BBMC (bit board maximum clique)</a>, an efficient state of the art maximum clique algorithm.</p><p><span
+id="more-453"></span></p><p>BitBoard class wraps the data structure and implements typical operations such as LSB(), MSB() or popcount for 64-bit words (aka bitboards).<br
+/> BitBoardN, BBIntrin and BBSentinel classes manage structures in order to group them, allowing an efficent scan between them.</p><p>A bit string in BITSCAN is an array of bitboards. The base wrapper class for a bit string is BitBoardN. BBIntrin extends BitBoardN using Windows compiler intrinsics over 64 bitboards.</p><p>BBIntrin has been made portable to POSIX with the appropriate asm equivalent functions.</p><p>Moreover, the BBSentinel class extends a bit string management to sparse cases. Empty bit blocks are still stored in full, but two pointers (aka sentinels) which point to the highest and the lowest empty blocks respectively, determine the range of useful bitmasks.</p><p>Can’t wait to try it?</p><p><a
+title="BitScan Library Biicode" href="https://www.biicode.com/pablodev/blocks/pablodev/bitscan/branches/master/versions/8" target="_blank">You can find BitScan Library here.</a></p><p>Keep watching, on Tuesday we&#8217;ll release an <a
+title="BitScan Efficiency Post" href="http://blog.biicode.com/bitscan-efficiency-at-glance/" target="_blank">analysis that proves BITSCAN efficiency</a>!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/exclusively-at-biicode-bitscan-library/">Exclusively at biicode, BitScan library!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/exclusively-at-biicode-bitscan-library/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

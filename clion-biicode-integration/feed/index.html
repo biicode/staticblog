@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+> <channel><title>Comments on: When CLion met biicode</title> <atom:link href="http://blog.biicode.com/clion-biicode-integration/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com/clion-biicode-integration/</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Wed, 16 Sep 2015 03:33:00 +0000</lastBuildDate> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>By: Marius Marais</title><link>http://blog.biicode.com/clion-biicode-integration/#comment-219</link> <dc:creator><![CDATA[Marius Marais]]></dc:creator> <pubDate>Fri, 27 Mar 2015 04:19:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2144#comment-219</guid> <description><![CDATA[That helps, thanks!
+Had to put it in the CMakeLists.txt next to the main.cpp. Still missing a few things, but I&#039;ll go ask a detailed question in the forum.
+Looks like CLion might finally be an easy-to-use &amp; powerful IDE for Arduino!]]></description> <content:encoded><![CDATA[<p>That helps, thanks!</p><p>Had to put it in the CMakeLists.txt next to the main.cpp. Still missing a few things, but I&#8217;ll go ask a detailed question in the forum.</p><p>Looks like CLion might finally be an easy-to-use &amp; powerful IDE for Arduino!</p> ]]></content:encoded> </item> <item><title>By: María</title><link>http://blog.biicode.com/clion-biicode-integration/#comment-214</link> <dc:creator><![CDATA[María]]></dc:creator> <pubDate>Thu, 26 Mar 2015 15:12:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2144#comment-214</guid> <description><![CDATA[Hi Marius,
+You have to tell CLion where to find those headers.
+As far as I&#039;ve used CLion the way to do so is setting include_directories variable in CMakeLists.txt to a proper value and CLion will search the headers following these paths.
+INCLUDE_DIRECTORIES(/path/to/sdk/goes/here)
+If you installed Arduino SDK along with biicode paths are:
+MAC: ~/.biicode_env/arduino-1.0.6/Arduino.app/Contents/Resources/Java/hardware/arduino/cores/arduino
+Linux: ~/.biicode_env/arduino-1.0.6/hardware/arduino/cores/arduino
+Windows: C:biicode_envarduino-1.0.6hardwarearduinocoresarduino
+We&#039;re available at our forum (forum.biicode.com) for any further troubleshooting. Let me know if you work this out!]]></description> <content:encoded><![CDATA[<p>Hi Marius,</p><p>You have to tell CLion where to find those headers.</p><p>As far as I&#8217;ve used CLion the way to do so is setting include_directories variable in CMakeLists.txt to a proper value and CLion will search the headers following these paths.</p><p>INCLUDE_DIRECTORIES(/path/to/sdk/goes/here)</p><p>If you installed Arduino SDK along with biicode paths are:</p><p>MAC: ~/.biicode_env/arduino-1.0.6/Arduino.app/Contents/Resources/Java/hardware/arduino/cores/arduino<br
+/> Linux: ~/.biicode_env/arduino-1.0.6/hardware/arduino/cores/arduino<br
+/> Windows: C:biicode_envarduino-1.0.6hardwarearduinocoresarduino</p><p>We&#8217;re available at our forum (forum.biicode.com) for any further troubleshooting. Let me know if you work this out!</p> ]]></content:encoded> </item> <item><title>By: Marius Marais</title><link>http://blog.biicode.com/clion-biicode-integration/#comment-212</link> <dc:creator><![CDATA[Marius Marais]]></dc:creator> <pubDate>Thu, 26 Mar 2015 13:47:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2144#comment-212</guid> <description><![CDATA[This is great :) One glitch with Arduino though:
+I&#039;ve just followed the normal biicode Arduino steps using &quot;bii init -l clion myproject&quot; instead of just &quot;bii init myproject&quot; and it opens in Clion, but Clion can&#039;t find the Arduino libraries, causing &quot;Can&#039;t resolve variable name&quot; errors for delay(), digitalWrite(), etc.
+Everything works from the command-line, it&#039;s just Clion that can&#039;t find the references.
+Any pointers?]]></description> <content:encoded><![CDATA[<p>This is great :) One glitch with Arduino though:</p><p>I&#8217;ve just followed the normal biicode Arduino steps using &#8220;bii init -l clion myproject&#8221; instead of just &#8220;bii init myproject&#8221; and it opens in Clion, but Clion can&#8217;t find the Arduino libraries, causing &#8220;Can&#8217;t resolve variable name&#8221; errors for delay(), digitalWrite(), etc.</p><p>Everything works from the command-line, it&#8217;s just Clion that can&#8217;t find the references.</p><p>Any pointers?</p> ]]></content:encoded> </item> </channel> </rss>

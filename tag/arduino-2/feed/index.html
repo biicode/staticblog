@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; arduino</title> <atom:link href="http://blog.biicode.com/tag/arduino-2/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Project Domo: Domotics with Arduino</title><link>http://blog.biicode.com/domotics-with-arduino/</link> <comments>http://blog.biicode.com/domotics-with-arduino/#comments</comments> <pubDate>Fri, 24 Apr 2015 10:26:22 +0000</pubDate> <dc:creator><![CDATA[danimtb]]></dc:creator> <category><![CDATA[Arduino]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[domotics]]></category> <category><![CDATA[Domotics with Arduino]]></category> <category><![CDATA[Project Domo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2207</guid> <description><![CDATA[<p>Turning the heating on before arriving home, watching real-time video from the inside, automatically turning the alarm on when you leave home… These are common tasks you would like to implement in a smart domotized home. However, incorporating domotic systems to our home is still hard due to lack of an effective, simple and cheap commercial solution that [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/domotics-with-arduino/">Project Domo: Domotics with Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+style="text-align: justify;">Turning the heating on before arriving home, watching real-time video from the inside, automatically turning the alarm on when you leave home… These are common tasks you would like to implement in a smart domotized home.</p><p
+style="text-align: justify;">However, incorporating domotic systems to our home is still hard due to lack of an effective, simple and cheap commercial solution that fits our needs, or maybe the steps required to make it yourself are far too complex. When you realize the options available aren’t what you were looking for, and you have tried DIY solutions to automate things with Arduino, the idea comes up clear to your mind: <strong>I want to create my own domotics with arduino</strong>.</p><p
+style="text-align: justify;"><img
+class="aligncenter wp-image-2230 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/domotica1.png" alt="Domotics with Arduino" width="640" height="350" /></p><p
+style="text-align: justify;">In this post I will talk about my domotics project using Arduino to incorporate some automation to my bedroom.</p><p
+style="text-align: justify;"><span
+id="more-2207"></span></p><h3 style="text-align: justify;">Cheap, simple and completely customizable</h3><p
+style="text-align: justify;">When I started to think about my own domotic system I tried to follow three main ideas:</p><ul
+style="text-align: justify;"><li><strong>Simple:</strong> Easy to develop system focused on usefulness. Both form the hardware and the software side.</li><li><strong>Cheap:</strong> Minimum high-cost components, standard parts, common Arduino sensors and JUST ONE Arduino board.</li><li><strong>Customizable:</strong> Modular design, easy to expand and completely adjusted to fit someone needs.</li></ul><h1 style="text-align: justify;"><b>Project Domo</b>: Domotics with Arduino</h1><p
+style="text-align: justify;">My domotics project is mainly based on the automation of <span
+style="text-decoration: underline;">lights</span>, <span
+style="text-decoration: underline;">blinds,</span> <span
+style="text-decoration: underline;">plugs</span> and the <span
+style="text-decoration: underline;">alarm clock</span>.</p><p
+style="text-align: justify;">Currently the project is still developing and things working are:</p><ul
+style="text-align: justify;"><li>Automatic lights</li><li>Smart plug</li><li>Remote Control</li></ul><p
+style="text-align: justify;">This is the configuration of my bedroom:</p><p
+style="text-align: justify;"><img
+class="  wp-image-2231 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/Bedroom1.jpg" alt="Bedroom" width="490" height="296" /></p><ul
+style="text-align: justify;"><li><span
+style="text-decoration: underline;">Two lights</span>, one in the corridor (at the entrance) and the main light.</li><li><span
+style="text-decoration: underline;">Two double three-way-switches</span>, one next to the door and the other one nex to to my bed.</li><li><span
+style="text-decoration: underline;">One plug</span> at the right wall.</li><li><span
+style="text-decoration: underline;">Arduino MEGA 2560</span> next to the bed (centralized control).</li></ul><h2 style="text-align: justify;"><strong><strong> </strong></strong><b>Materials</b></h2><ul
+style="text-align: justify;"><li>Arduino Mega 2560</li><li>2 PIR sensors</li><li>4 conductor wire</li><li>3 Relay modules</li><li>Buttons</li><li>IR receiver</li><li>Remote Control</li></ul><p
+style="text-align: justify;">The domotic system incorporates just one <strong>Arduino Mega 2560</strong> board to ensure a high amount of digital I/O pins. The board is connected to different electronic modules of sensors/actuators by a <strong>4 conductor wire</strong>.</p><p
+style="text-align: justify;"><img
+class="  aligncenter wp-image-2221" title="4 conductor wire in display for the hardware lovers!" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/4-connector-wirepp-300x169.jpg" alt="Domotics with Arduino requires indeed of good Arduino boards and cables" width="364" height="205" /></p><p
+style="text-align: justify;">The original wires for the switches of my bedroom were replaced by this other kind. Power supply goes directly to the lights which are now controlled by a relay.</p><p
+style="text-align: justify;"><strong>Plugs</strong> maintain original wiring and are only equipped with another relay to control power supply and a button to interact with its operation modes.</p><p
+style="text-align: justify;"><strong>PIR (Passive InfraRed)</strong> sensors are placed above the door and the other on the ceiling next to the main light.</p><p
+style="text-align: justify;"><img
+class="  aligncenter wp-image-2222" title="PIR sensor looks like the Gregorian system of the Arecibo radiotelescope." src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/PIR_sensor-300x169.jpg" alt="Domotics with Arduino requires too infrared sensors." width="366" height="206" /></p><p
+style="text-align: justify;"><strong><strong> </strong></strong>The<strong> IR receiver</strong> is next to the Arduino board to ensure the maximum visibility to control everything from the <strong>remote control</strong>.</p><p
+style="text-align: justify;"><strong><strong><img
+class="attachment-266x266 aligncenter" title="IR receiver + Remote Control. It's a bedroom, no one wants to work out there." src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/IRreceiver-RemoeControl-Internet-300x257.jpg" alt="Domotics with arduino requires to an IR receiver to send commands from the remote control." width="266" height="228" /></strong></strong></p><h2 style="text-align: justify;"><b>Hacking Arduino</b></h2><p
+style="text-align: justify;"><strong><strong> </strong></strong>There are great projects using Arduino with domotic pruposes, like <a
+href="https://www.openhomeautomation.net/home-automation-arduino/">Open Home Automation</a>, that are very well developed or more specific ones, like <a
+href="http://www.souliss.net/">Souliss</a> or <a
+href="http://forum.arduino.cc/index.php?topic=179673.0">Excontrol</a>, but those solutions use more than one Arduino board and have more expensive components.</p><p
+style="text-align: justify;"><img
+class="aligncenter wp-image-2229 size-full" title="Domotics with Arduino" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/arduino1.png" alt="Arduino powered by biicode" width="640" height="300" /></p><p
+style="text-align: justify;">To program Arduino in a robust and structured way I have chosen <strong>C++ language</strong> and splitted the code in a modular way (the same way the electronics are set-up). This f<span
+style="text-decoration: underline;">unctionalities are decoupled and can be incorporated progressively to the domotic system or reused in other similar projects.</span> Here’s where the potential of <strong>biicode&#8217;s way of programming</strong> comes to make the difference.</p><p
+style="text-align: justify;">Utilities to incorporate to an Arduino project are countless, but many times there’s no reusable code and you have to completely adapt it. biicode lets you reuse third-party code and include it directly to your project.</p><p
+style="text-align: justify;"><strong><strong> </strong></strong>My domotic project is stored at <a
+href="http://www.biicode.com/Dani_MTB/Domo/master">Dani_MTB/Domo</a> block and it has two implementations:</p><ul
+style="text-align: justify;"><li><em>main.cpp</em>: currently code running in the domotic system of my bedroom.</li><li><em>domo.cpp</em>: parallel implementation to test new features.</li></ul><p
+style="text-align: justify;">This is <em>main.cpp&#8217;</em>s code:</p><p></p><pre class="crayon-plain-tag">#include "kenshirriff/irremote/irremote.h"
+#include "Dani_MTB/SimpleTimer/SimpleTimer.h"
+#include "Dani_MTB/MultiwaySwitches/MultiwaySwitches.h"
+#include "Dani_MTB/Relay/Relay.h"
+#include "Dani_MTB/SmartPlug/SmartPlug.h"
+#include "Dani_MTB/PIR/PIR.h"
+Relay corridorLight;				//Corridor lights of my bedroom
+Relay centralLight;		            //Main lights of my bedroom
+MultiwaySwitches switchesCentral;	//Two switches (one near my bed and other one at the entrance) that control main lights
+MultiwaySwitches switchesCorridor;	//Two switches (one near my bed and other one at the entrance) that control corridor lights
+PIR corridorSensor=PIR(14);			//PIR sensor in corridor of my bedroom
+PIR centralSensor=PIR(15);			//PIR sensor in the center of my bedroom
+SmartPlug rightPlug=SmartPlug(50, LOW_LVL, 200000, 51);	//Plug at the right, pin 50 for relay, activated with a relay with LOW LEVEL, 200 seconds to desactivate, and 51 for PLUG button
+IRrecv IR(40);						//Pin for remote IR receiver
+decode_results remoteCode;			//Variable to store RemoteControl's codes
+bool MODE=false;
+void setup()
+{
+	Serial.begin(9600);
+   switchesCentral.setSwitch(2);	//Switch 1 near my bed for main lights
+   switchesCentral.setSwitch(3);	//Switch 2 near the door for main lights
+   switchesCorridor.setSwitch(4);	//Switch 3 near my bed for corridor lights
+   switchesCorridor.setSwitch(5);	//Switch 4 near the door for corridor lights
+   centralLight.setup(9, HIGH_LVL);	//Relay (active at HIGH LEVEL) controlling main lights
+   centralLight.off();				//Main Lights start OFF (In case power supply of arduino comes OFF and program resets)
+   corridorLight.setup(8, LOW_LVL);	//Relay (active at LOW LEVEL) controlling corridor lights
+   corridorLight.off();				//Corridor Lights start OFF (In case power supply of arduino comes OFF and program resets)
+   IR.enableIRIn();
+   IR.blink13(true);
+}
+void loop()
+{
+   rightPlug.loop();						//Internal loop for SmartPlug
+   if(switchesCentral.change())			//If the state of switches for main lights changes
+   {
+	   centralLight.commute();				//Commute the state of the main lights
+   }
+   if(switchesCorridor.change())		//If the state of switches for main lights changes
+   {
+	   corridorLight.commute();				//Commute the state of the main lights
+   }
+   if(corridorSensor.rising_edge())		//If there's a positive edge in corridor's PIR sensor (detects a person)
+   {
+		   corridorLight.on();				//Power ON Corridor Lights
+   }
+   if(corridorSensor.falling_edge())	//If there's a negative edge in corridor's PIR sensor (NOT detects a person)
+   {
+	   corridorLight.off();					//Power OFF Corridor Lights
+   }
+   if(centralSensor.rising_edge())		//If there's a positive edge in main's PIR sensor (detects a person)
+   {
+		   corridorLight.on();				//Power ON Main Lights
+   }
+   if(centralSensor.falling_edge())		//If there's a negative edge in main's PIR sensor (NOT detects a person)
+   {
+	   corridorLight.off();					//Power OFF Main Lights
+   }
+//+++++++++++++++++++REMOTE CONTROL CODE++++++++++++++++++++++
+   if(IR.decode(&amp;remoteCode))
+   {
+	   if(remoteCode.value==16736925) 	//If MODE button is pressed
+		   MODE=true;						//Enable MODE
+	   if(remoteCode.value==16753245) 	//If 1 button is pressed Remote Power ON/OFF central light
+	   {
+		  if(centralLight.getState())		//Power ON/OFF main lights
+		  	centralLight.off();
+		  else
+		  	centralLight.on();
+	   }
+	   if(remoteCode.value==16724175) 	//If 0 button is pressed
+	   {
+		   if(rightPlug.getState()) 			//If plug is ON
+		  {
+			  rightPlug.off();  					//Power off the Plug
+		  }
+		  else								//If plug is OFF
+		  {
+			  if(MODE) 							//If MODE is enabled
+			  {
+				  rightPlug.on_Sensor();				//Power ON Plug in Sensor mode
+				  MODE=false;
+			  }
+			  else								//If MODE is disabled, and plug is OFF
+				rightPlug.on();							//Power ON plug in Normal mode
+		   }
+	   }
+	   IR.resume();						//Resume receiving remote codes
+   }
+// ++++++++++++++++++++DISABLE PLUG IF SENSORS ARE OFF+++++++++++++++++++++
+	if(!centralSensor.getState() &amp;&amp; !corridorSensor.getState())	//If both PIR sensors don't detect
+	{
+		rightPlug.off_Sensor();											//Power off rightPlug in sensor mode
+	}
+}</pre><p></p><p
+style="text-align: justify;">As you can see there are some class definitions that make the program look so much cleaner and it also makes it easy to understand what&#8217;s going on!</p><h3 style="text-align: justify;">Reusing code: Make domotics powerful</h3><p
+style="text-align: justify;">If you take a look at [requirements] section you&#8217;ll notice that some portions of code (the classes used in the code) are reused from other blocks, and even those other blocks reuse more blocks again.</p><p
+style="text-align: justify;"><img
+class="aligncenter wp-image-2224 size-full" title="Domo's requirements" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/requirements-domo.png" alt="Requirements of Domo: Domotics with Arduino" width="848" height="541" /></p><p
+style="text-align: justify;">Here is a brief explanation for each one:</p><ul
+style="text-align: justify;"><li><strong>MultiwaySwitches: </strong><a
+href="https://www.biicode.com/Dani_MTB/MultiwaySwitches">This block</a> implements a C++ class that encapsulates the usage of three-way switches that power on and off the same light. Switches  are now digital arduino inputs (5v), which is safer for people when manipulating them.</li><li><strong>SmartPlug:</strong> <a
+href="https://www.biicode.com/Dani_MTB/SmartPlug">Here is where the code for plugs is stored</a>. This class incorporates the activation of power supply by a relay when a button is pressed. You can select two modes: Normal activation and Sensor activation. It also incorporates a security time to automatically power off the plug. SmartPlug is useful if you want to connect an electric stove for example. This block reuses some other utilities in other blocks of biicode like <a
+href="https://www.biicode.com/Dani_MTB/SimpleTimer">SimpleTimer</a>, <a
+href="https://www.biicode.com/hithwen/button">Button</a> or <a
+href="https://www.biicode.com/Dani_MTB/Relay">Relay</a>.</li><li><strong>Relay: </strong><a
+href="https://www.biicode.com/Dani_MTB/Relay">Relay block</a> simplifies the usage of relays with arduino (handles HIGH or LOW level activation). In my case, it is useful to control lights and plugs.</li><li><strong>IRremote: </strong><a
+href="https://www.biicode.com/kenshirriff/irremote">IRremote </a>implements and simplifies the usage of a remote control receiver for different kinds of standard remotes.</li><li><strong>PIR:</strong> <a
+href="https://www.biicode.com/Dani_MTB/PIR">A class that encapsulates PIR sensor’s code</a>, with methods to detect rising or falling edges and the state of the sensor.</li></ul><p
+style="text-align: justify;">Other developed classes and utilities are already allocated in biicode so you can incorporate and use them in your project with just an #include: <a
+href="http://www.biicode.com/Dani_MTB/Clock">Clock</a> (Non-blocking Real Time clock without RTC module), <a
+href="https://www.biicode.com/pablotoledo/pablotoledo/drinkuino_arduino/master/1/libs/ultrasonic/ultrasonic.h">Ultrasonic</a>&#8230;</p><h2 style="text-align: justify;">Future implementations</h2><p
+style="text-align: justify;">There’s still a lot work ahead in my small domotic system based in arduino: internet wireless connection, a graphical user interface with a display (under construction), blind implementation… However, thanks to its modularity, robust C++ code and biicode powered Arduino, this system is a great bet to achieve a full domotic system for our bedroom.</p><p
+style="text-align: justify;">As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/domotics-with-arduino/">Project Domo: Domotics with Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/domotics-with-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Arduino Yun now supported</title><link>http://blog.biicode.com/arduino-yun/</link> <comments>http://blog.biicode.com/arduino-yun/#comments</comments> <pubDate>Wed, 07 Jan 2015 12:00:23 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[Arduino Yun]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1944</guid> <description><![CDATA[<p>Arduino Yun is the first member of a new groundbreaking line of WiFi products combining the power of Linux with Arduino&#8217;s simplicity. The first Arduino Yun is the combination of an Arduino Leonardo with a WiFi system-ona-chip running Linino (GNU/Linux based on OpenWRT). The board has built-in Ethernet and WiFi support, a USB-A port, micro-SD card slot, 20 [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the first member of a new groundbreaking line of <strong>WiFi</strong> products combining the power of <strong>Linux</strong> with Arduino&#8217;s simplicity. The first <strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the combination of an <a
+href="http://arduino.cc/en/Main/ArduinoBoardLeonardo" target="_blank">Arduino Leonardo</a> with a <strong>WiFi system-ona-chip running <a
+href="https://openwrt.org/" target="_blank">Linino (GNU/Linux based on OpenWRT)</a></strong>.</p><p><img
+class="aligncenter" src="http://tavendo.com/static/img/blog/arduino-yun-getting-started-part-1/arduino-yun.jpg" alt="Arduino Yun board is supported by biicode" width="649" height="431" /></p><p><span
+id="more-1944"></span></p><p>The board has built-in Ethernet and <strong><span
+class="wikiword">WiFi</span> support</strong>, a <strong>USB-A port</strong>, <strong>micro-SD card slot</strong>, <strong>20 digital input/output</strong> pins (of which 7 can be used as PWM outputs and 12 as analog inputs), a <strong>16 <span
+class="wikiword">MHz</span></strong> crystal oscillator, a <strong>micro USB</strong> connection, an<strong> ICSP header</strong> and a <strong>3 reset buttons</strong>.</p><p><strong>It can communicate with the Linux</strong> distribution onboard, offering a powerful networked computer with the ease of Arduino. In addition to Linux commands like cURL, <strong>you can write your own shell scripts for robust interactions</strong>.</p><p>&nbsp;</p><p><img
+class="aligncenter" src="http://arduino.cc/en/uploads/Main/BridgeInShort.png" alt="How the Arduino Yun enviroment connects to the Linux enviroment." width="650" height="361" /></p><p>The Bridge library facilitates communication between the two processors, giving Arduino sketches the ability to run shell scripts, communicate with network interfaces, and receive information from the <span
+class="wikiword">AR9331</span> processor. The USB host, network interfaces and SD card are not connected to the 32U4, but the <span
+class="wikiword">AR9331</span>, and the Bridge library also enables the Arduino to interface with those peripherals.</p><p>Arduino gives us a lot of references about this board in a great <a
+href="http://arduino.cc/en/Guide/ArduinoYun" target="_blank">gide to the Arduino Yun</a> and a sumary of the <a
+href="http://arduino.cc/en/Reference/YunBridgeLibrary" target="_blank">bridge Yun library</a>, a library to enable all the power the Yun can provide.</p><h2>How to use the Arduino Yun with biicode</h2><p>Just specify the Arduino SDK path of the 1.5.8 or higher. If you don&#8217;t have it yet, you can <a
+title="Arduino Download" href="http://arduino.cc/en/Main/Software" target="_blank">download it from the Arduino download page</a> and unzip it into <em>biicode_env</em> folder.</p><pre class="crayon-plain-tag">bii arduino:settings
+Enter SDK path (C:/biicode_env/arduino-1.0.6):C:/biicode_env/arduino-1.5.8
+Enter board (/o list supported options):yun
+Using arduino port: COM12</pre><p>If you want to upload your firmaware by ssh to 192.168.240.1:</p><pre class="crayon-plain-tag">bii arduino:upload --ssh</pre><p>Or specify a different IP.</p><pre class="crayon-plain-tag">bii arduino:upload --ssh 192.168.2.1</pre><p>Now, hacking something via wifi is easier!</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-yun/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Unleash your Arduino projects</title><link>http://blog.biicode.com/unleash-arduino-projects/</link> <comments>http://blog.biicode.com/unleash-arduino-projects/#comments</comments> <pubDate>Tue, 02 Dec 2014 12:38:08 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[advanced programming]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[projects]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1933</guid> <description><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino. So let&#8217;s get started, Biicode is a [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino.</p><p>So let&#8217;s get started, Biicode is a client interface aplication (CLI)  and to use it open the Terminal of your computer.</p><p><img
+class="aligncenter" src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/720px-Arduino_Logo.svg.png" alt="Arduino projects easily setup in biicode" width="240" height="163" /></p><p>biicode technology gives you several advantages to richen your Arduino experience:</p><div><ul><li><strong>Save your project in different folders</strong> for a better organization.</li><li><strong>Reuse yours and other user´s code</strong>. Reuse made easy: just <tt
+class="docutils literal"><span
+class="pre">#include</span></tt> the file you need and you get it. No more copy and paste files from project to project or dowloading zip files from tutorials.</li><li>This is a <strong>simple</strong> and <strong>fast</strong> way to <strong>compile and upload</strong> your code to your Arduino.</li><li>Use your favorite IDE or text editor, we also provide <strong>Eclipse integration</strong>.</li><li>We are hosting <a
+class="reference external" href="https://www.biicode.com/adafruit">adafruit</a>, <a
+class="reference external" href="https://www.biicode.com/sparkfun">sparkfun</a> and many other libraries, <strong>you won’t need to download and install libraries in your SDK anymore</strong>.</li></ul></div><p><span
+id="more-1933"></span></p><h1>1. How to program your arduino with biicode</h1><h2>Installing biicode and Arduino tools</h2><div
+id="installing-biicode-and-arduino-tools" class="section"><p><a
+href="https://www.biicode.com/downloads" target="_blank">Download</a> and install biicode, then make sure it is installed:</p><div
+id="installing-biicode-and-arduino-tools" class="section"><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii --version</pre></div></div></div><div
+id="create-your-project" class="section"></div><p>Then, install a group of tools with the following command. Open you terminal write:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii setup:arduino</pre></div></div></div><div
+id="create-your-project" class="section"><h2>Create Arduino projects</h2><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init myproject</pre></div></div><p>Then we can use the <tt
+class="docutils literal"><span
+class="pre">new</span></tt> command to create some folders and a “Simple Blink” Arduino main file. You can do it manually too.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ cd myproject
+~/myproject$ bii new myuser/myblock --hello=arduino</pre></div></div><div
+class="infonote container">You can directly type <tt
+class="docutils literal"><span
+class="pre">myuser</span></tt> or your real username.  This is the resulting layout:</div><div
+class="highlight-text"><div
+class="highlight"><pre class="crayon-plain-tag">+-- myproject
+|    +-- bii
+|    +-- blocks
+|    |    +-- myuser
+|    |    |    +-- myblock
+|    |    |    |    +-- main.cpp
+|    +-- deps</pre></div></div></div><div
+id="define-your-board" class="section"><h2>Define your board</h2><p>Define your Arduino board using <tt
+class="docutils literal"><span
+class="pre">arduino:settings</span></tt> command. We are using an Arduino Uno but use the /o option to show a list of the default boards, even though any board is welcomed!</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">Enter SDK path (/../biicode_env/arduino-1.0.6): [ENTER]
+Enter board (/o list supported options):uno
+Using arduino port: COM4</pre></div></div></div><div
+id="build-and-upload-your-program" class="section"><h2>Upload your program to the Arduino</h2><p>Now, build and upload the blink to your Arduino.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/myproject$ bii arduino:build
+...
+[100%] Built target myuser_myblock_main
+~/myproject$ bii arduino:upload
+...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div></div><div
+id="depending-on-fenix-blink" class="section"><h2><img
+class="aligncenter wp-image-1935 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/pin13-200x300.png" alt="pin13" width="200" height="300" /></h2><h1>2. Difference between .ino and .cpp blink</h1><p>First, compare both main files. There are only two differences, the first include and the extension of the files. As you will see, this pair of differences will bring you lots of advantages.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p><strong> main.ino</strong></p><pre class="crayon-plain-tag">int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p></p><div><h1>3. How to use the code on biicode?</h1><p>Usual &#8220;blink&#8221; project blocks your Arduino, so it&#8217;s obstructed to do anything else but blinking. We are #including here a “blink” utility class that<strong> blinks without delays or blocking your Arduino</strong>. Reuse from<a
+href="https://www.biicode.com/fenix/fenix/blink/master" target="_blank"> fenix&#8217;s blink library</a>, copy the following code containing the new blink into the <em>main.cpp</em> file.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "fenix/blink/blink.h"
+Blink my_blink;
+void setup() {
+  //pin = 13, interval = 1000 ms
+  my_blink.setup(13, 1000);
+}
+void loop() {
+  my_blink.loop();
+}</pre><p>Execute the command below to find unresolved dependencies and retrieve necessary files from servers:</p><pre class="crayon-plain-tag">~/myproject$ bii find</pre><p>Now can now build your firmware and upload it to your Arduino:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/arduino_hello_project$ bii arduino:upload
+      ...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div><p>That’s it, if you see that output fenix’s blink.h was downloaded and uploaded in your project! You can check the deps folder, the blink.h code is there.</p><h1>4. Next steps</h1><p>Many tutorials are available on this blog&#8217;s<a
+href="http://blog.biicode.com/tag/arduino-2/" target="_blank"> Arduino projects with biicode</a>.</p><p>Hope you enjoy this basic unleash your Arduino Projects Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p></div></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/unleash-arduino-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Arduino File Manager and Editor project</title><link>http://blog.biicode.com/arduino-file-manager-editor-project/</link> <comments>http://blog.biicode.com/arduino-file-manager-editor-project/#comments</comments> <pubDate>Tue, 02 Sep 2014 10:00:22 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[editor]]></category> <category><![CDATA[file manager]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source]]></category> <category><![CDATA[project]]></category> <category><![CDATA[reuse]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1053</guid> <description><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard. Thanks to Juan who developed this project called blocporc! List of Arduino file manager and editor parts: Arduino Mega 2560 GLCD display: preferably a KS0108 based. Depending on the type [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Make a cute Arduino file manager and editor. It&#8217;s also intended for hosting sketches and interact with them in an easy way using a PS2 Keyboard.</p><p>Thanks to <a
+title="Mrquesito twitter" href="https://twitter.com/mrquesito" target="_blank">Juan</a> who developed this project called blocporc!</p><p><img
+class="aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/arduino-file-manager.png" alt="arduino file manager" width="630" height="352" /></p><p><span
+id="more-1053"></span></p><h2>List of Arduino file manager and editor parts:</h2><ul><li><strong>Arduino Mega 2560</strong></li><li><strong>GLCD display</strong>: preferably a KS0108 based. Depending on the type of panel (A, B or C) the connections will vary, but it&#8217;s really well explained at the docs of the glcd library (<a
+style="color: #f48123;" href="https://www.biicode.com/mrquesito/blocks/mrquesito/glcd_v3rc3/branches/master#.U0rkJPl_vCc">https://www.biicode.com/mrquesito/glcd_v3rc3</a>).</li><li><strong>SD card reader</strong> (remember that SD cards are 3.3v-powered devices! You can accomplish by using a voltage divider implemented with two resistors):<br
+/><table><tbody><tr><td><b>SD Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>DO</td><td>50</td></tr><tr><td>CLK</td><td>52</td></tr><tr><td>DI</td><td>51</td></tr><tr><td>CS</td><td>53</td></tr></tbody></table></li><li><strong>PCF8583</strong>: it uses the I2C bus. Since this IC can be powered from 3 to 5 volts, you can use two diodes for adding the 3v cell battery. <strong>Note</strong>: due to the high speed of this bus and to the proximity of a lot of signals (SD, Keyboard&#8230;) it&#8217;s highly likely that you will need to twist and shield the wires. I&#8217;ve shielded them with a lot of aluminium foil; it works great!</li><li><strong>Keyboard</strong>:<br
+/><table><tbody><tr><td><b>Keyboard Pin</b></td><td><b>Mega Pin</b></td></tr><tr><td>Data</td><td>4</td></tr><tr><td>IRQ</td><td>3</td></tr></tbody></table></li><li><strong>Enclosure</strong>: a wooden or plastic box.</li></ul><h2>The coding.</h2><p>Open the terminal and execute these commands to see everything on your computer and then compile it and upload to your Arduino.</p><pre class="crayon-plain-tag">~/$ bii init blocporc</pre><p></p><pre class="crayon-plain-tag">~/$ cd blocporc
+~/blocporc$ bii open mrquesito/blocporc
+~/blocporc$ bii find
+~/blocporc$ bii arduino:build
+~/blocporc$ bii arduino:upload</pre><p>Broadly speaking, with blocporc you can create and edit .txt files that are stored in a SD card.</p><p>To read a step by step guide and the code used to build this project, take a look into its biicode repository online: <a
+title="arduino file manager code" href="//www.biicode.com/mrquesito/blocporc" target="_blank"> https://www.biicode.com/mrquesito/blocporc</a></p><p>Happy hacking!</p><p><object
+width="729" height="410"><param
+name="movie" value="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0"></param><param
+name="allowFullScreen" value="true"></param><param
+name="allowscriptaccess" value="always"></param><embed
+src="//www.youtube.com/v/4mtEbUgCFmM?hl=en_US&amp;version=3&amp;rel=0" type="application/x-shockwave-flash" width="729" height="410" allowscriptaccess="always" allowfullscreen="true"></embed></object><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-file-manager-editor-project/">Arduino File Manager and Editor project</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-file-manager-editor-project/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Open Source Arduino Smart Watch</title><link>http://blog.biicode.com/open-source-arduino-smart-watch/</link> <comments>http://blog.biicode.com/open-source-arduino-smart-watch/#comments</comments> <pubDate>Wed, 27 Aug 2014 08:00:02 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[DIY]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source hack]]></category> <category><![CDATA[smart watch]]></category> <category><![CDATA[wrist watch]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1049</guid> <description><![CDATA[<p>Watchduino is an open source Arduino Smart Watch that combines inexpensive electronic parts with complex Arduino (C++) code. It&#8217;s fully hackable from hardware to software. You can build your own one, it&#8217;s useful and reprogrammable. @coconauts has optimized the code and the components after a lot of prototypes. The final result includes a small battery that [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/open-source-arduino-smart-watch/">Open Source Arduino Smart Watch</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Watchduino is an open source Arduino Smart Watch that combines inexpensive electronic parts with complex Arduino (C++) code. It&#8217;s fully hackable from hardware to software. You can build your own one, it&#8217;s useful and reprogrammable.</p><div
+id="attachment_1050" style="width: 306px" class="wp-caption aligncenter"><img
+class="wp-image-1050 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/watchduino.png" alt="Arduino Smart Watch" width="296" height="196" /><p
+class="wp-caption-text">Credit: Coconauts</p></div><p><span
+id="more-1049"></span></p><p><a
+title="Coconauts Twitter" href="https://twitter.com/coconauts" target="_blank">@coconauts</a> has optimized the code and the components after a lot of prototypes. The final result includes a small battery that can last more than a week without recharging.</p><h2>Components to replicate the Arduino Smart Watch:</h2><ul><li>ATMega 328 with Arduino boot</li><li>Crystal oscillator (16Mhz)</li><li>LiPo battery (240mAh)</li><li>LiPo battery charger (usb)</li><li>Nokia 5110 LCD screen</li><li>6 x Mini push buttons</li><li>Breadboard</li><li>Stripboard</li><li>Jump Wires</li><li>Buzzer</li><li>Any 4 pin connector (LiPo /Usb mini)</li></ul><h2>The coding.</h2><p>Execute these commands to see everything on your computer and then compile it and upload to your Arduino.</p><pre class="crayon-plain-tag">~/$ bii init watchduino</pre><p></p><pre class="crayon-plain-tag">~/$ cd watchduino
+~/watchduino$ bii new username/smart --hello=cpp</pre><p>Just remember you can directly type username cause there&#8217;s no need to sign up to reuse.</p><p>Now substitute the main.cpp file content for this one:</p><pre class="crayon-plain-tag">/*Copyright 2014 Coconauts
+This file is part of WatchDuino.
+WatchDuino is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+WatchDuino is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with WatchDuino. If not, see http://www.gnu.org/licenses/.*/
+#include "coconauts/watchduino/watchcore.h"
+#include "coconauts/watchduino/screen.h"
+#include "coconauts/watchduino/notes.h"
+#include "coconauts/arduino/wstring.h"
+#include "adafruit/gfx_library/adafruit_gfx.h"
+#include "coconauts/adafruit_pcd8544/adafruit_pcd8544.h"
+// Add your own!
+Screen *custom_screens[] ={
+};
+// default melody, ff fanfarre
+const int alarm_melody[] = {  NOTE_B4, NOTE_B4, NOTE_B4, NOTE_B4, NOTE_G4, NOTE_A4, NOTE_B4 , NOTE_A4, NOTE_B4};
+const int alarm_durations[] = { 1, 1, 1, 4 , 4, 4, 2, 1, 4 };
+const int ALARM_SIZE = 9;
+int main(void) {
+    return sysloop(custom_screens, alarm_melody, alarm_durations, ALARM_SIZE);
+}</pre><p>Save the new file, execute this and you&#8217;re ready to go:</p><pre class="crayon-plain-tag">~/watchduino$ bii find
+~/watchduino$ bii arduino:build</pre><p></p><pre class="crayon-plain-tag">~/watchduino$ bii arduino:upload</pre><p>Want to see the code you are using or opening locally? <a
+title="Open Source Arduino Smart Watch Code" href="https://www.biicode.com/coconauts/watchduino/" target="_blank">Watchduino&#8217;s code is located in biicode</a></p><p>This block has the following dependencies:</p><ul><li><a
+style="color: #f48123;" href="http://www.biicode.com/adafruit/blocks/adafruit/gfx_library/branches/master">adafruit/gfx_library</a></li><li><a
+style="color: #f48123;" href="http://www.biicode.com/coconauts/blocks/coconauts/adafruit_pcd8544/branches/master">coconauts/adafruit_pcd8544</a> &#8211; Originaly <a
+style="color: #f48123;" href="http://www.biicode.com/adafruit/blocks/adafruit/pcd8544_nokia_5110_lcd_library/branches/master">adafruit/pcd8544_nokia_5110_lcd_library</a>, but needed to be customized.</li><li><a
+style="color: #f48123;" href="http://www.biicode.com/coconauts/blocks/coconauts/jeelib/branches/master">coconauts/jeelib</a> &#8211; A working copy of the <a
+style="color: #f48123;" href="http://github.com/jcw/jeelib">Jeelib utility library</a>.</li><li><a
+style="color: #f48123;" href="https://www.biicode.com/coconauts/blocks/coconauts/time/branches/master">coconauts/time</a> &#8211; A working copy of <a
+style="color: #f48123;" href="http://www.pjrc.com/teensy/td_libs_Time.html">Teensy Time library</a>.</li><li><a
+style="color: #f48123;" href="http://www.biicode.com/coconauts/blocks/coconauts/arduino/branches/master">coconauts/arduino</a> &#8211; Contains some Arduino core libraries that coconauts uploaded.</li></ul><p>A Smart watch is as smart as you program it. Coconauts added lots of functionality to their needs, but it&#8217;s a nice idea to program yours  by providing your own custom apps, alarms or whatever you can imagine. You can also hack the system. The developers recommend to build a physical WatchDuino, even if it is on a breadboard so you can try the code you make or that their code works.</p><p>You can also use watchduino as a framework and program your own customization to plug on it.</p><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/CtgR1YiwnEY?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p>Interested?  <a
+title="Watchduino bitbucket mount" href="https://bitbucket.org/rephus/watchduino/src/master/docs/how_to_replicate.md" target="_blank">You can find how to mount it in their repo&#8217;s explanation</a>.</p><p>Happy hacking!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/open-source-arduino-smart-watch/">Open Source Arduino Smart Watch</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/open-source-arduino-smart-watch/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Drinkuino &#8211; An Arduino Cocktail Maker with Android remote control</title><link>http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/</link> <comments>http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/#comments</comments> <pubDate>Fri, 08 Aug 2014 10:58:00 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[android]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[cocktail maker]]></category> <category><![CDATA[DIY]]></category> <category><![CDATA[drink]]></category> <category><![CDATA[project]]></category> <category><![CDATA[remote control]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1032</guid> <description><![CDATA[<p>Make an Arduino Cocktail Maker. With Drinkuino project, you can order your drinks through your Android mobile phone and via bluetooth your Arduino will receive the order and serve them to you. Are you ready to make your own Arduino cocktail maker? Thanks to Drinkuino team for this great project! Drinkuino has 4 containers, and each [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/">Drinkuino &#8211; An Arduino Cocktail Maker with Android remote control</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Make an Arduino Cocktail Maker.</h2><p>With Drinkuino project, you can order your drinks through your Android mobile phone and via bluetooth your Arduino will receive the order and serve them to you. Are you ready to make your own Arduino cocktail maker?</p><p>Thanks to <a
+title="Drinkuino races at biicontest2014" href="http://blog.biicode.com/drinkuino-races-at-biicontest2014/">Drinkuino</a> team for this great project!</p><p><img
+class="aligncenter wp-image-1034 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/descarga.jpg" alt="Arduino Cocktail Maker" width="178" height="178" /></p><p><span
+id="more-1032"></span></p><p><del></del>Drinkuino has 4 containers, and each container has an 220V electrovalve. The Arduino is programmed to sequentially open a certain time each electrovalve.  The cocktail maker uses the Arduino to check if there&#8217;s a glass placed at the correct distance, and turns on the blue leds. Send with your phone the percentages of each liquid you want to serve. Once done, the Arduino plays an initial sound, serves the drink by opening each valve the calculated time.</p><p>Once poured the drink, the Arduino sends a singnal to the Android app , plays a &#8220;end&#8221; sound and the leds start blinking!</p><p>&nbsp;</p><p>If there&#8217;s no glass the leds will turn on red as an indicator.</p><h2>Hardware connections:</h2><p>Grab your Arduino ,potentiometers, wires, resistors, microcontrollers, and start hacking!</p><p><img
+class="aligncenter wp-image-1033" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/drinkuino-schema.png" alt="drinkuino schema" width="630" height="511" /></p><p>Dare to try? The hardest part will be building the container&#8217;s structure.  If you want to make one,  you can find all the information about <a
+title="Drinkuino Arduino Project " href="https://www.biicode.com/pablotoledo/drinkuino_arduino" target="_blank">Drinkuino and the Android App to control the cocktail machine is available here.</a></p><p>Just execute:</p><pre class="crayon-plain-tag">~/$ bii init drinkuino</pre><p></p><pre class="crayon-plain-tag">~/$ bii open pablotoledo/drinkuino:arduino</pre><p>to see everything on your computer and then compile it and upload to your Arduino.</p><p>It uses its own library called drinkuino, Meet Android library for Amarin to connect the Cocktail maker with its app, and the Ultrasonic Library for HR-SC04 Ultrasonic Ranging Module to detect if there&#8217;s a glass placed into the machine.</p><p>Enjoy!</p><p>&nbsp;</p><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/kvzwjHyT5mw?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/">Drinkuino &#8211; An Arduino Cocktail Maker with Android remote control</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/drinkuino-arduino-cocktail-maker-android-remote-control/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Open source hack with biicode: Control lights with Arduino.</title><link>http://blog.biicode.com/control-lights-open-source-hack/</link> <comments>http://blog.biicode.com/control-lights-open-source-hack/#comments</comments> <pubDate>Tue, 29 Jul 2014 08:30:31 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[automation]]></category> <category><![CDATA[domotics]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source hack]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=930</guid> <description><![CDATA[<p>Try this open hardware and open source hack to turn on/off lights with just a touch. We present you Lighttech, an Arduino project to control light via InfraRed. Thanks to @icar0 and @Nero_88 for this great project. Hardware needed: IR Receiver IR Emitter Arduino Leonardo 2.3&#8243; LCD Module Protoboard Wires This project involves creating an [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/control-lights-open-source-hack/">Open source hack with biicode: Control lights with Arduino.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Try this open hardware and open source hack to turn on/off lights with just a touch.</p><p>We present you Lighttech, an Arduino project to control light via InfraRed. Thanks to <a
+title="icar0 twitter" href="https://twitter.com/icar0" target="_blank">@icar0</a> and <a
+class="twitter-atreply pretty-link" title="twitter nero_88" href="https://twitter.com/Nero_88" target="_blank">@Nero_88</a> for this great project.</p><h2 style="text-align: left;">Hardware needed:</h2><p
+style="text-align: right;"><img
+class="alignright wp-image-945" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/ArduinoLeonardoFront_2_450px.jpg" alt="Arduino Leonardo board used in the open source hack" width="400" height="317" /></p><ul><li><a
+title="IR receptor diode" href="http://www.micropik.com/PDF/tsop17xx.pdf" target="_blank">IR Receiver</a></li><li>IR Emitter</li><li><a
+title="Arduino Board Leonardo" href="http://arduino.cc/en/Main/arduinoBoardLeonardo" target="_blank">Arduino Leonardo</a></li><li><a
+title="Display screen Touch" href="http://imall.iteadstudio.com/im120417020.html" target="_blank">2.3&#8243; LCD Module</a></li><li>Protoboard</li><li>Wires</li></ul><p><span
+id="more-930"></span></p><p>This project involves creating an interface to control IR devices based on Free Software and Hardware. In this case the device is going to control a RGB bulb with IR technology, but it can be extrapolated to any IR device.</p><p>The project has almost all the necessary files to decode the most conventional control codes.</p><p>Connect the IR to the Arduino Leonardo like this to obtain the IR codes:</p><p><img
+class="aligncenter wp-image-954" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/circuito-lighttech-arduino.png" alt="sketch connection lighttech arduino" width="630" height="264" /></p><p>You can change the Arduino by taking this important facts into account:</p><ul><li>Big Flash Memory, enough to operate with the LCD graphics library.</li><li>Change the placement of the pins, you can know how by looking into the datasheet.</li><li>Enough space to place the LCD display above the Arduino.</li></ul><p>After that you can set your Arduino as an emitter by connecting an IR led to its digital output pin or LED 13.</p><p><img
+class="aligncenter wp-image-955" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/lightttech-emitter-arduino.png" alt="lightttech emitter arduino" width="400" height="365" /></p><p>&nbsp;</p><h2>Lighttech uses these libraries:</h2><table><tbody><tr><td
+colspan="2" width="581"> To control the display graphics:</td></tr><tr><td
+width="315"><ul><li><a
+title="biicode library utft" href="http://www.biicode.com/icar0/icar0/utft/master" target="_blank">#include &#8220;icar0/utft/utft.h&#8221;</a></li></ul></td><td
+width="315">   <a
+style="color: #f48123;" title="UTFT library" href="http://henningkarlsen.com/electronics/library.php?id=52" target="_blank">UTFT</a><span
+style="color: #666666;"> </span></td></tr><tr><td
+colspan="2" width="581">To control the display touch screen:</td></tr><tr><td
+width="315"><ul><li> <a
+title="biicode library utouch" href="http://www.biicode.com/icar0/icar0/utouch/master" target="_blank">#include &#8220;icar0/utouch/utouch.h&#8221;</a></li></ul></td><td
+width="315">  <span
+style="color: #666666;"> </span><a
+style="color: #f48123;" title="UTouch Library" href="http://www.henningkarlsen.com/electronics/library.php?id=55" target="_blank">UTouch</a></td></tr><tr><td
+colspan="2" width="581">To control the IR:</td></tr><tr><td
+width="315"><ul><li><a
+title="biicode library irremote" href="http://www.biicode.com/icar0/icar0/irsend/master" target="_blank">#include &#8220;icar0/irsend/irremote.h&#8221;</a></li></ul></td><td
+width="315">  <span
+style="color: #666666;"> </span><a
+style="color: #f48123;" title="IRRemote" href="http://www.pjrc.com/teensy/td_libs_IRremote.html" target="_blank">IRRemote</a></td></tr></tbody></table><h2>The code:</h2><p>You can find the <a
+title="Code Infra Red IR managing" href="http://www.biicode.com/icar0/icar0/lighttech/master" target="_blank">code used for maganing IR devices here</a>,  in biicode. To use it, just execute these commands:</p><pre class="crayon-plain-tag">~/$ bii init project
+~/$ cd project
+~/project$ bii new user/block
+~/project$ bii open icar/lighttech
+~/project$ bii arduino:upload</pre><p>And to check your serial port, write:</p><pre class="crayon-plain-tag">~/project$ bii arduino:monitor</pre><p></p><h3>Watch this tutorial for more details on this open source hack</h3><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/HiIvKOXKM6k?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p>Got any doubts? Just post a comment!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/control-lights-open-source-hack/">Open source hack with biicode: Control lights with Arduino.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/control-lights-open-source-hack/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Build a smiley mechatronic face today with biicode and arduino!</title><link>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/</link> <comments>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/#comments</comments> <pubDate>Thu, 17 Jul 2014 14:36:34 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=863</guid> <description><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control. This biiday project comes in by Julio Caso, one of our users! Follow this step by step recipe to successfully build this project. If any doubts come, just post [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control.</p><p>This biiday project comes in by Julio Caso, one of our users!</p><p><img
+class="alignnone wp-image-864" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/mechatronic-face-biicode.png" alt="mechatronic face biicode" width="600" height="398" /></p><p>Follow this step by step recipe to successfully build this project. If any doubts come, just post a comment!</p><h3><span
+id="more-863"></span>Mechatronic Face Main Ingredients:</h3><ul><li><a
+title="Arduino uno" href="http://arduino.cc/en/Main/arduinoBoardUno" target="_blank">Arduino Uno</a></li><li><a
+title="Makey Makey Board" href="http://www.thinkgeek.com/product/f082/" target="_blank">Makey Makey board</a></li><li><a
+href="http://www.dx.com/p/ir-receiver-module-wireless-remote-control-kit-for-arduino-1-x-cr2025-135520">IR Receiver Module, Wireless Remote Control Kit for Arduino</a></li><li><a
+title="wii nunchuck" href="http://www.dx.com/es/p/wired-nunchuk-controller-for-wii-u-white-80cm-cable-191948#.U8etXvl_ttZ" target="_blank">Wii Nunchuck</a></li><li>Servo Control</li><li>Arduino Sensor Shield 5</li><li>The usual electronic stuff: wires, leds, protoboard&#8230;</li><li>screws and a screwdriver</li></ul><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li> Led 1</li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+width="315"><ul><li> Led 2</li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+colspan="2" width="581"> The nunchuck:</td></tr><tr><td
+width="315"><ul><li> Power Pin</li></ul></td><td
+width="315">  Pin A3</td></tr><tr><td
+width="315"><ul><li>Trigger Pin</li></ul></td><td
+width="315">  Pin 5</td></tr><tr><td
+width="315"><ul><li>Servo Pin</li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li> GND Pin</li></ul></td><td
+width="315">  Pin A2</td></tr><tr><td
+colspan="2" width="581">And finally, build the face and screw the different parts.</td></tr></tbody></table><p>&nbsp;</p><p>All the coding, connections and 3-D plans are located in <a
+title="readme mechatronic face biicode" href="https://www.biicode.com/blown/blown/cabeza/master/1/readme.md" target="_blank">here</a>.</p><p>Want to try it?  Execute this commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open blown/cabeza
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Watch Julio&#8217;s demo:</p><p><iframe
+width="854" height="510" src="//www.youtube.com/embed/pUikbi9BqMk" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p><p>&nbsp;</p><p>Summer is a great time to be a maker, what are you making?</p><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Make your own simon says game with Arduino and biicode!</title><link>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/</link> <comments>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/#comments</comments> <pubDate>Wed, 09 Jul 2014 08:33:38 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[game]]></category> <category><![CDATA[project]]></category> <category><![CDATA[says]]></category> <category><![CDATA[simon]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=831</guid> <description><![CDATA[<p>We&#8217;re glad to introduce this biiday project, take everyone in the family into building it and then have fun playing! Even the little ones enjoy this! Main Ingredients: Arduino Uno 1 Speaker (8 Ohm) 8 HID leds 5 buttons 1 potentiometer (10kOhm) Resistors to leds Buttons The potentiometer is used to control the volume, every [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/">Make your own simon says game with Arduino and biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We&#8217;re glad to introduce this biiday project, take everyone in the family into building it and then have fun playing! Even the little ones enjoy this! <img
+class="alignnone wp-image-833" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/biicontest-winner.jpg" alt="simon says game arduino" width="630" height="632" /> <span
+id="more-831"></span></p><h3><strong>Main Ingredients:</strong></h3><ul><li>Arduino Uno</li><li>1 Speaker (8 Ohm)</li><li>8 HID leds</li><li>5 buttons</li><li>1 potentiometer (10kOhm)</li><li>Resistors to leds</li><li>Buttons</li></ul><p><span
+style="color: #000000;">The potentiometer is used to control the volume, every button is associated to two leds connected to one pin except the button that starts / selects the game.</span></p><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 1</span></li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> </span><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;">Led 2</span></li></ul></td><td
+width="315">  Pin 11</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 3</span></li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Led 4</span></li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+colspan="2" width="581"> Now, connect the buttons:</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 1</span></li></ul></td><td
+width="315">  Pin 19</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button</span><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> 2</span></li></ul></td><td
+width="315">  Pin 18</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 3</span></li></ul></td><td
+width="315">  Pin 17</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 4</span></li></ul></td><td
+width="315">  Pin 16</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Button 5</span></li></ul></td><td
+width="315">  Pin 14</td></tr><tr><td
+colspan="2" width="581">And finally, the speaker</td></tr><tr><td
+width="315"><ul><li><span
+style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px;"> Speaker</span></li></ul></td><td
+width="315">  Pin 6</td></tr></tbody></table><p>Connect the buttons to the anti-debounce system following this Arduino tutorial <span
+style="color: #444444;">→ <a
+title="Debounce Tutorial Arduino" href="http://arduino.cc/en/Tutorial/Debounce" target="_blank">How to debounce an input</a>, debounce basically means that it checks twice to make sure the button is pressed.</span> <img
+class="alignnone wp-image-836" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/anti-bounce-arduino.png" alt="anti bounce arduino" width="630" height="245" /></p><h3>The coding:</h3><p></p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open alopez/simon
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><h3>Just a few tips left</h3><p><span
+style="color: #444444;"> If you want to use debounce in a project, just write this line on the top of your main file, to reuse from the <a
+title="Alopez Debounce Lib Arduino" href="https://www.biicode.com/alopez/blocks/alopez/debounce/branches/master" target="_blank">alopez&#8217;s user debounce block </a></span></p><pre class="crayon-plain-tag">#include alopez/debounce/debounce.h</pre><p>To play music, reuse from the <a
+title="arduino tone library in biicode" href="https://www.biicode.com/alopez/blocks/alopez/tone/branches/master" target="_blank">Arduino tone Library in biicode</a> by writing into your code this:</p><pre class="crayon-plain-tag">#include alopez/tone/tone.h</pre><p>It also reuses from this <a
+title="random sequence library arduino" href="https://www.biicode.com/csanchezb/blocks/csanchezb/random_sequence/branches/master" target="_blank">library in biicode that creates a random secuence</a> by including:</p><pre class="crayon-plain-tag">#include csanchezb/random_sequence/random_sequence.h</pre><p><a
+title="Downloads biicode" href="http://www.biicode.com/downloads" target="_blank"> Download biicode</a> to start your own Simon Says game!</p><div
+style="width: 630px; " class="wp-video"><video
+class="wp-video-shortcode" id="video-831-2" width="630" height="354" preload="metadata" controls="controls"><source
+type="video/mp4" src="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4?_=2" /><a
+href="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4">https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4</a></video></div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/">Make your own simon says game with Arduino and biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/make-your-own-simon-says-game-with-arduino-and-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> <enclosure
+url="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4" length="31328315" type="video/mp4" /> </item> <item><title>Do you recognize the early signs of storm? Get help with an Arduino weather station!</title><link>http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/</link> <comments>http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/#comments</comments> <pubDate>Wed, 02 Jul 2014 08:00:07 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[project]]></category> <category><![CDATA[station]]></category> <category><![CDATA[weather]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=747</guid> <description><![CDATA[<p>You probably don&#8217;t. That&#8217;s when this summer project comes in handy, make your own Arduino Weather Station! This project was one of the winners at #biicontest2014, made by @SpainLabs team. You met them in our blog, didn&#8217;t you? Is it useful? For sure! Take a look at its features: Date (With Day of week) Diary Alarm [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/">Do you recognize the early signs of storm? Get help with an Arduino weather station!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>You probably don&#8217;t. That&#8217;s when this summer project comes in handy, make your own Arduino Weather Station!</p><p>This project was one of the winners at #biicontest2014, made by <a
+title="twitter spainlabs" href="https://twitter.com/SpainLabs" target="_blank">@SpainLabs</a> team.</p><p><a
+title="spainlabs project" href="http://blog.biicode.com/spainlabs-project-online/" target="_blank">You met them in our blog, didn&#8217;t you?</a></p><p><img
+class="aligncenter wp-image-749" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/weather-station.jpg" alt="weather station" width="630" height="472" /></p><p><span
+id="more-747"></span></p><p>Is it useful? For sure! Take a look at its features:</p><blockquote><p>Date (With Day of week)</p><p>Diary Alarm</p><p>Automatic turn off alarm after two minutes</p><p>Alarm ON and Alarm Sound icons</p><p>Temperature And Humidity</p><p>Outside Pressure (mBar)</p><p>Outside Luminosity (Lux)</p><p>Data record of Maximum and minimum values</p><p>Possibility to reset the values</p><p>Weather prediction</p><p>Automatic detection of sensors error</p><p>Programmable off backlight time (Min 1 minute, Max Always ON)</p><p>Turn Off the backlight when press encoder switch</p><p>Automatic exit for menus if not change in 5 seconds</p><p>Hour/Date easy adjust</p><p>Wireless communication</p><p>Only one interface with rotary encoder, simplify to use it</p></blockquote><p>Do you want to replicate it fully? No worries, it includes 3D plans!</p><p><img
+class="aligncenter wp-image-751" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/3d-plan.png" alt="3d plan" width="630" height="415" /></p><p><a
+title="info code weather station" href="https://www.biicode.com/triggerr/blocks/triggerr/weather_station_receiver" target="_blank">All information and code can be found in biicode.</a></p><p>To use the exact same code they used, just execute these commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open triggerr/weather_station_receiver
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Let&#8217;s take a look at its guts:</p><p><img
+class="alignleft wp-image-750" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/weather-station-inside-wiring.jpg" alt="weather station inside wiring!" width="400" height="300" /></p><p>&nbsp;</p><p>And that&#8217;s it!</p><p>You won&#8217;t pack wrong stuff ever again!</p><p>Enjoy summer and happy hacking!</p><p><iframe
+width="630" height="473" src="https://www.youtube.com/embed/pb4S7I9CzAY?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/">Do you recognize the early signs of storm? Get help with an Arduino weather station!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/do-you-recognize-the-early-signs-of-storm-get-help-with-an-arduino-weather-station/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> </channel> </rss>

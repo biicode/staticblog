@@ -1,0 +1,1434 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/dependency-management-boost-libraries/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:41:38 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>Boost libraries are now supported in biicode - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="Dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward to a complete support."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="Boost libraries are now supported in biicode - biicode Blog" /><meta
+property="og:description" content="Dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward to a complete support." /><meta
+property="og:url" content="http://blog.biicode.com/dependency-management-boost-libraries/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="biicode" /><meta
+property="article:tag" content="boost" /><meta
+property="article:tag" content="boost c++ libraries" /><meta
+property="article:tag" content="c++" /><meta
+property="article:section" content="Integrations" /><meta
+property="article:published_time" content="2015-02-20T09:29:13+00:00" /><meta
+property="article:modified_time" content="2015-05-08T13:21:45+00:00" /><meta
+property="og:updated_time" content="2015-05-08T13:21:45+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/Boost.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@Manu343726"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="Boost libraries are now supported in biicode - biicode Blog"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/Boost.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Boost libraries are now supported in biicode Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index8b9f.html?p=2086' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-2086 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/integrations/index.html" rel="v:url" property="v:title">Integrations</a> » <strong
+class="breadcrumb_last">Boost libraries are now supported in biicode</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-2086" class="post-2086 post type-post status-publish format-standard has-post-thumbnail hentry category-integrations category-news tag-biicode tag-boost tag-boost-c-libraries tag-c"> <header
+class="entry-header"><h1 class="entry-title">Boost libraries are now supported in biicode</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="09:29" rel="bookmark"><time
+class="entry-date" datetime="2015-02-20T09:29:13+00:00">February 20, 2015</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/manu343726/index.html" title="View all posts by Manu Sánchez" rel="author">Manu Sánchez</a></span></span></div> </header><div
+class="entry-content"><p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices.</p><p>However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular dependencies, and that&#8217;s only for header-only libraries (thankfully 80% of Boost is header-only). For non header-only libs, it&#8217;s a true pain. You should compile those and then link against, being careful about what you are doing.<br
+/> Even if setting up Boost manually could be a bit hard, when it works it&#8217;s a pleasure to develop with it.</p><p>At biicode we have been working hard to simplify the process, to make Boost available for any C++ programmer with just an include. But this is only the start, the project has been <a
+href="https://github.com/Manu343726/boost-biicode">released as open source</a> to allow everyone contribute and help.</p><p>I hope you like it.<br
+/> <img
+class=" wp-image-2094 size-full aligncenter" src="../wp-content/uploads/sites/2/2015/02/Boost.png" alt="Boost libraries are finally supported in biicode" width="277" height="86" /></p><h2></h2><p><span
+id="more-2086"></span></p><h2 id="working-with-boost">Working with Boost libraries</h2><p></p><div
+id="crayon-56886b7f7baed443493290" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ sudo apt-get install boost</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7baed443493290-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7baed443493290-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">sudo </span><span
+class="crayon-v">apt</span><span
+class="crayon-o">-</span><span
+class="crayon-r">get</span><span
+class="crayon-h"> </span><span
+class="crayon-e">install </span><span
+class="crayon-v">boost</span></div></div></td></tr></table></div></div><p>That&#8217;s what most of us do to work with Boost. There&#8217;s no easy way to change the Boost version though, or even have multiple coexistent Boost versions. In addition to the fact that the package-manager way doesn&#8217;t work on Windows.</p><p>The main purpose of biicode is to handle dependencies and improve the development workflow. That means one should take into account:</p><ul><li>A user may want to work <strong>with different versions of Boost</strong>. It should be <strong>easy to switch between Boost versions during development</strong>.</li><li>When dealing with Standard C++, that is, with true portable C++, one should care about multiple compilers and test his/her code with all of them. <strong>It should be easy to switch Boost to work with different compilers</strong>. In our case, that means GCC, Clang, MSVC, MinGW GCC, and the different versions of each one.</li></ul><p>That were the two main objectives I had when I started to work in Boost support for biicode. To <strong>make Boost setup portable across versions, compilers, and platforms</strong>, and at the same time make the <strong>process fully transparent to the user</strong>.</p><h2 id="our-approach">Our approach</h2><p>The biicode Boost setup is very simple: Install each Boost version on a dedicated folder inside the biicode environment, and then rely on Boost&#8217;s bjam to handle the different compilers.</p><p>The setup should also handle all the installation process, which means:</p><ol><li>Download the requested Boost version if it&#8217;s not currently in the biicode environment.</li><li>Bootstrap it.</li><li>Build the libraries.</li><li>Configure <code>FindBoost.cmake</code> to track the installation.</li></ol><p>But how should that look like in user code? I was thinking about it for a long time. Actually, the current interface is just the last of a very long process of testing different approaches.<br
+/> I finally ended up trying not to force the user to learn new commands. Instead, try to mimic the current Boost setup with CMake: Instead of calling <code>find_package(Boost COMPONENTS...)</code>, call <code>bii_find_boost(COMPONENTS...)</code>. <strong>The rest of the <code>CMakeLists.txt</code> is almost the same.</strong></p><p><code>bii_find_boost()</code> wraps the <code>find_package(Boost)</code> call by first setting up the required boost version (Steps 1 and 2 above), building the requested <code>COMPONENTS</code> on demand, finally calling <code>find_package(Boost COMPONENTS ...)</code>.</p><h2 id="a-boost-example-with-biicode">A Boost example with biicode</h2><p></p><div
+id="crayon-56886b7f7bb00329057619" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-2">2</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-4">4</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-6">6</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-8">8</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-10">10</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-12">12</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-14">14</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-16">16</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb00329057619-18">18</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb00329057619-19">19</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-1"><span
+class="crayon-p">#include &lt;boost/coroutine/all.hpp&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-2"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-3">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-4"><span
+class="crayon-e">using </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">boost</span><span
+class="crayon-o">::</span><span
+class="crayon-v">coroutines</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-6"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cooperative</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">coroutine</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">void</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-o">::</span><span
+class="crayon-v">push_type</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">sink</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-7"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Hello"</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-9"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">sink</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"world"</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-11"><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-12">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-13"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-14"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-15"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">coroutine</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-t">void</span><span
+class="crayon-o">&gt;</span><span
+class="crayon-o">::</span><span
+class="crayon-e">pull_type</span><span
+class="crayon-h"> </span><span
+class="crayon-e">source</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">cooperative</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">", "</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-17"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">source</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb00329057619-18"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">std</span><span
+class="crayon-o">::</span><span
+class="crayon-v">cout</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"!\n"</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb00329057619-19"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>That&#8217;s an example of the Boost.Coroutine library extracted from the Boost docs. It&#8217;s so simple, it just takes a coroutine to print the string &#8220;<em>Hello, world!&#8221;</em> in two steps to see how the coroutine <em>continues</em> its execution on consecutive calls.</p><p>This is the <code>CMakeLists.txt</code> file of the <a
+href="http://www.biicode.com/examples/boost-coroutine"><code>examples/boost-coroutine</code></a> block available in our cloud:</p><div
+id="crayon-56886b7f7bb0b684444166" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+    include(biicode/boost/setup)
+    INIT_BIICODE_BLOCK()
+    ADD_BIICODE_TARGETS()
+    set(Boost_USE_STATIC_LIBS ON)
+    bii_find_boost(COMPONENTS system coroutine context thread REQUIRED)
+    target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+    if(MSVC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    else()
+        target_compile_options(${BII_BLOCK_TARGET} INTERFACE -std=c++11)
+    endif()</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-2">2</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-4">4</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-6">6</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-8">8</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-10">10</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-12">12</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-14">14</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb0b684444166-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb0b684444166-16">16</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-1"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">include</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-v">setup</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-3"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">INIT_BIICODE_BLOCK</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">ADD_BIICODE_TARGETS</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-6"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">set</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">Boost_USE_STATIC_LIBS </span><span
+class="crayon-v">ON</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-7"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">bii_find_boost</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">COMPONENTS </span><span
+class="crayon-e">system </span><span
+class="crayon-e">coroutine </span><span
+class="crayon-e">context </span><span
+class="crayon-e">thread </span><span
+class="crayon-v">REQUIRED</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-8">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-9"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">target_include_directories</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_INCLUDE_DIRS</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">target_link_libraries</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_LIBRARIES</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-11">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-12"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">MSVC</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-13"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">set</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">CMAKE_EXE_LINKER</span><span
+class="crayon-sy">_</span>FLAGS<span
+class="crayon-h"> </span><span
+class="crayon-s">"${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO"</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-14"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">else</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb0b684444166-15"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">target_compile_options</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">std</span><span
+class="crayon-o">=</span><span
+class="crayon-v">c</span><span
+class="crayon-o">++</span><span
+class="crayon-cn">11</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb0b684444166-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">endif</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>Let&#8217;s open and run the example:</p><div
+id="crayon-56886b7f7bb15946794304" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Shell</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii init boost-examples
+$ bii open examples/boost-coroutine
+$ bii find
+$ bii cpp:configure
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 4.9.2
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+      examples/boost-corutine
+---------------------------------
+-- Setting up Biicode Boost...
+-- Downloading Boost 1.57.0...
+-- Bootstrapping Boost 1.57.0...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.2...
+-- Building system library...
+-- Building coroutine library...
+-- Building context library...
+-- Building thread library...
+-- Boost 1.57.0
+Found the following Boost libraries
+    system
+    coroutine
+    context
+    thread
+...
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-2">2</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-4">4</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-6">6</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-8">8</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-10">10</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-12">12</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-14">14</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-16">16</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-18">18</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-20">20</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-22">22</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-24">24</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-26">26</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-28">28</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-30">30</div><div
+class="crayon-num" data-line="crayon-56886b7f7bb15946794304-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7bb15946794304-32">32</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">init </span><span
+class="crayon-v">boost</span><span
+class="crayon-o">-</span><span
+class="crayon-i">examples</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-2"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">open </span><span
+class="crayon-v">examples</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">-</span><span
+class="crayon-i">coroutine</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-3"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">find</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-4"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">cpp</span><span
+class="crayon-o">:</span><span
+class="crayon-e">configure</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-5"><span
+class="crayon-v">Running</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-v">cmake</span><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-o">-</span><span
+class="crayon-i">G</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Unix Makefiles"</span><span
+class="crayon-h"> </span><span
+class="crayon-o">-</span><span
+class="crayon-v">Wno</span><span
+class="crayon-o">-</span><span
+class="crayon-i">dev</span><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cmake</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-6"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-i">The</span><span
+class="crayon-h"> </span><span
+class="crayon-i">C</span><span
+class="crayon-h"> </span><span
+class="crayon-e">compiler </span><span
+class="crayon-e">identification </span><span
+class="crayon-st">is</span><span
+class="crayon-h"> </span><span
+class="crayon-i">GNU</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">4.9.2</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-7"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">The </span><span
+class="crayon-e">CXX </span><span
+class="crayon-e">compiler </span><span
+class="crayon-e">identification </span><span
+class="crayon-st">is</span><span
+class="crayon-h"> </span><span
+class="crayon-i">GNU</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">4.9.2</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-8"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Check </span><span
+class="crayon-st">for</span><span
+class="crayon-h"> </span><span
+class="crayon-i">working</span><span
+class="crayon-h"> </span><span
+class="crayon-i">C</span><span
+class="crayon-h"> </span><span
+class="crayon-v">compiler</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-o">/</span><span
+class="crayon-v">usr</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cc</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-9"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Check </span><span
+class="crayon-st">for</span><span
+class="crayon-h"> </span><span
+class="crayon-i">working</span><span
+class="crayon-h"> </span><span
+class="crayon-i">C</span><span
+class="crayon-h"> </span><span
+class="crayon-v">compiler</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-o">/</span><span
+class="crayon-v">usr</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cc</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">works</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-10">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-11"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">examples</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">-</span><span
+class="crayon-v">corutine</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-12"><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">--</span><span
+class="crayon-o">-</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-13"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Setting </span><span
+class="crayon-e">up </span><span
+class="crayon-e">Biicode </span><span
+class="crayon-v">Boost</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-14"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Downloading </span><span
+class="crayon-i">Boost</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1.57.0...</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-15"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Bootstrapping </span><span
+class="crayon-i">Boost</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1.57.0...</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-16"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-i">Boost</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-h"> </span><span
+class="crayon-e">components </span><span
+class="crayon-e">with </span><span
+class="crayon-e">toolset </span><span
+class="crayon-v">gcc</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.9.2...</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-17"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-e">system </span><span
+class="crayon-v">library</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-18"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-e">coroutine </span><span
+class="crayon-v">library</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-19"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-e">context </span><span
+class="crayon-v">library</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-20"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-e">thread </span><span
+class="crayon-v">library</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-21"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-i">Boost</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1.57.0</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-22">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-23"><span
+class="crayon-e">Found </span><span
+class="crayon-e">the </span><span
+class="crayon-e">following </span><span
+class="crayon-e">Boost </span><span
+class="crayon-e">libraries</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-24"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">system</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-25"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">coroutine</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-26"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">context</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-27"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-i">thread</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-28"><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-29">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-30"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">cpp</span><span
+class="crayon-o">:</span><span
+class="crayon-i">build</span></div><div
+class="crayon-line" id="crayon-56886b7f7bb15946794304-31"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">examples_boost</span><span
+class="crayon-o">-</span><span
+class="crayon-e">coroutine_main</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7bb15946794304-32"><span
+class="crayon-v">Hello</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">world</span><span
+class="crayon-o">!</span></div></div></td></tr></table></div></div><p><strong>Issue with MinGW: </strong>To compile Boost.Context, MinGW depends on the Microsoft assembler. Be sure you have ml or ml64 (Depending on your platform) in your PATH. Those executables are usually shipped within Visual Studio, check the Visual Studio Directory/VC/bin/ folder.</p><p><strong>Issue with CMake configure: </strong>Seems that CMake has problems with long-running configures. In some cases, even if the libraries were built successfully, find_package() is not able to find the Boost components. Just rerun bii cpp:configure.</p><p><strong>Header only libraries: </strong>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost(). Try with a naked <code>bii_find_boost()</code> call.</p><p>We currently maintain a <code>biicode/boost</code> block with the scripts, which has four different tracks representing the four (three) different Boost versions we have tested: <code>master</code> (The latest version available, currently Boost 1.57.0), <code>1.57.0</code>, <code>1.56.0</code>, and <code>1.55.0</code>. Want to change the Boost version you want? Just go to the <code>biicode.conf</code> of your block and change the <code>biicode/boost</code> track in the <code>requirements</code> entry.</p><p>Refer to <a
+href="http://docs.biicode.com/c++/examples/boost.html">the docs</a> for more info.</p><h2 id="whats-next">What&#8217;s next?</h2><p>I want to see what people say about this. The main reason we released this as an open source project is to allow the community to improve it with us. This is a first working version, but I&#8217;m sure it could be improved a lot thanks to your feedback and thoughts. Check the <a
+href="https://github.com/Manu343726/boost-biicode#issues">README&#8217;s issues entry</a> and the project issues page.<br
+/> There are people who already were helping us. I specially thank <a
+href="http://thetoeb.de/">Tobias Becker</a> for his feedback on the last steps of the development. His <a
+href="http://www.biicode.com/toeb/cmakepp">cmakepp</a> library is a great tool and something I want to use in our Boost scripts in the near future. cmakepp is <em>batteries included</em> CMake!</p><p>I think dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward.<br
+/> Let&#8217;s continue working until a modern C++ development environment becomes reality.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers or comment below to tell us your enquiries.</p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../elecnor-deimos-premium-accounts/index.html" title="Elecnor Deimos incorporates biicode as code discovery and prototyping tool">Elecnor Deimos incorporates biicode as code discovery and prototyping tool</a></li><li><a
+href="../getting-started-with-openssl-git-and-github/index.html" title="biicode’s getting started with OpenSSL, Git and GitHub">biicode’s getting started with OpenSSL, Git and GitHub</a></li><li><a
+href="../clion-biicode-integration/index.html" title="When CLion met biicode">When CLion met biicode</a></li><li><a
+href="../raspberry-pi-2-in-depth-biicode/index.html" title="Raspberry Pi 2 in depth with biicode">Raspberry Pi 2 in depth with biicode</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/dependency-management-boost-libraries/' addthis:title='Boost libraries are now supported in biicode' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/integrations/index.html" rel="category tag">Integrations</a>, <a
+href="../category/news/index.html" rel="category tag">news</a> and tagged <a
+href="../tag/biicode/index.html" rel="tag">biicode</a>, <a
+href="../tag/boost/index.html" rel="tag">boost</a>, <a
+href="../tag/boost-c-libraries/index.html" rel="tag">boost c++ libraries</a>, <a
+href="../tag/c/index.html" rel="tag">c++</a>. Bookmark the <a
+href="index.html" title="Permalink to Boost libraries are now supported in biicode" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../raspberry-pi-cross-building-opengl-glfw-windows/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Raspberry PI cross building native (C/C++) graphical applications from Windows</a></div><div
+class="next"><a
+href="../maximum-clique-for-massive-sparse-graphs/index.html" rel="next">Maximum clique for massive sparse graphs <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="comment even thread-even depth-1" id="dsq-comment-195"><div
+id="dsq-comment-header-195" class="dsq-comment-header"><cite
+id="dsq-cite-195"> <span
+id="dsq-author-user-195">Sebastian Messmer</span></cite></div><div
+id="dsq-comment-body-195" class="dsq-comment-body"><div
+id="dsq-comment-message-195" class="dsq-comment-message"><p>That is awesome news :)</p><p>Just tried it and it works great.</p><p>One small bug: &#8220;bii find&#8221; still displays &#8220;WARN: Can&#8217;t find block candidate for: boost/filesystem&#8221; and &#8220;bii deps&#8221; also shows the boost headers as unresolved dependencies.<br
+/> But just ignoring these warnings works &#8211; it compiles even if boost is not locally installed.</p><p>Thanks for the great work :)</p></div></div><ul
+class="children"><li
+class="comment odd alt depth-2" id="dsq-comment-196"><div
+id="dsq-comment-header-196" class="dsq-comment-header"><cite
+id="dsq-cite-196"> <span
+id="dsq-author-user-196">Manu343726</span></cite></div><div
+id="dsq-comment-body-196" class="dsq-comment-body"><div
+id="dsq-comment-message-196" class="dsq-comment-message"><p>Thanks Sebastian, I&#8217;m glad you like it. About the deps issue, it&#8217;s something we are working on. Originally the biicode deps analyzer was designed to search for code in blocks only. Since the code of boost is hosted externally to any block (In a system folder) bii is unable to find the sources.</p><p>Remember you can post any issue you want on the repo. Actually this is one of the first points I want to mark as an issue.</p></div></div></li><li
+class="comment even depth-2" id="dsq-comment-207"><div
+id="dsq-comment-header-207" class="dsq-comment-header"><cite
+id="dsq-cite-207"> <span
+id="dsq-author-user-207">doomdayx</span></cite></div><div
+id="dsq-comment-body-207" class="dsq-comment-body"><div
+id="dsq-comment-message-207" class="dsq-comment-message"><p>I can reproduce the problem</p></div></div></li></ul></li><li
+class="comment odd alt thread-odd thread-alt depth-1" id="dsq-comment-208"><div
+id="dsq-comment-header-208" class="dsq-comment-header"><cite
+id="dsq-cite-208"> http://yacoder.net/ <span
+id="dsq-author-user-208">Max Galkin</span></cite></div><div
+id="dsq-comment-body-208" class="dsq-comment-body"><div
+id="dsq-comment-message-208" class="dsq-comment-message"><p>I&#8217;m trying to include Boost.Spirit libraries using your example, but I&#8217;m getting an error, how can I make it work?.. (on Windows)</p><p>This is the console output:</p><p></p><div
+id="crayon-56886b7f7d6c0868855216" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+-- Setting up biicode Boost configuration...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.1...
+-- Building spirit library...
+CMake Error at deps/boost/install/install.cmake:80 (message):
+  Failed running
+  C:/Users/Max/.biicode/boost/1.57.0/b2.exe;--includedir=C:/Users/Max/.biicode/boost/1.57.0;--toolset=gcc-4.9.1;-j1;--layout=versioned;--build-type=complete:
+  error: wrong library name 'spirit' in the --with- option.
+</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7d6c0868855216-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6c0868855216-2">2</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6c0868855216-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6c0868855216-4">4</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6c0868855216-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6c0868855216-6">6</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6c0868855216-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6c0868855216-8">8</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6c0868855216-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6c0868855216-10">10</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6c0868855216-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6c0868855216-12">12</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7d6c0868855216-1">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6c0868855216-2"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Setting </span><span
+class="crayon-e">up </span><span
+class="crayon-e">biicode </span><span
+class="crayon-e">Boost </span><span
+class="crayon-v">configuration</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886b7f7d6c0868855216-3"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-i">Boost</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-h"> </span><span
+class="crayon-e">components </span><span
+class="crayon-e">with </span><span
+class="crayon-e">toolset </span><span
+class="crayon-v">gcc</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.9.1...</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6c0868855216-4"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-e">spirit </span><span
+class="crayon-v">library</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886b7f7d6c0868855216-5"><span
+class="crayon-e">CMake </span><span
+class="crayon-e">Error </span><span
+class="crayon-e">at </span><span
+class="crayon-v">deps</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-v">install</span><span
+class="crayon-o">/</span><span
+class="crayon-v">install</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">:</span><span
+class="crayon-cn">80</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">message</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6c0868855216-6">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7d6c0868855216-7"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">Failed </span><span
+class="crayon-i">running</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6c0868855216-8">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7d6c0868855216-9"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">C</span><span
+class="crayon-o">:</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Users</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Max</span><span
+class="crayon-o">/</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-o">/</span><span
+class="crayon-v">b2</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">exe</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">includedir</span><span
+class="crayon-o">=</span><span
+class="crayon-v">C</span><span
+class="crayon-o">:</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Users</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Max</span><span
+class="crayon-o">/</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">toolset</span><span
+class="crayon-o">=</span><span
+class="crayon-v">gcc</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.9.1</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">-</span><span
+class="crayon-v">j1</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">layout</span><span
+class="crayon-o">=</span><span
+class="crayon-v">versioned</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">build</span><span
+class="crayon-o">-</span><span
+class="crayon-v">type</span><span
+class="crayon-o">=</span><span
+class="crayon-v">complete</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6c0868855216-10">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b7f7d6c0868855216-11"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">error</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">wrong </span><span
+class="crayon-e">library </span><span
+class="crayon-i">name</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'spirit'</span><span
+class="crayon-h"> </span><span
+class="crayon-st">in</span><span
+class="crayon-h"> </span><span
+class="crayon-v">the</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">with</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">option</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6c0868855216-12">&nbsp;</div></div></td></tr></table></div></div><p></p><p>This is what I have in the CMakeLists.txt</p><p></p><div
+id="crayon-56886b7f7d6cd264034706" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+include(biicode/boost/setup)
+set(Boost_USE_STATIC_LIBS ON)
+bii_find_boost(COMPONENTS spirit REQUIRED)
+target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7d6cd264034706-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6cd264034706-2">2</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6cd264034706-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6cd264034706-4">4</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6cd264034706-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6cd264034706-6">6</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6cd264034706-7">7</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7d6cd264034706-1">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6cd264034706-2"><span
+class="crayon-e">include</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-v">setup</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7d6cd264034706-3"><span
+class="crayon-e">set</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">Boost_USE_STATIC_LIBS </span><span
+class="crayon-v">ON</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6cd264034706-4"><span
+class="crayon-e">bii_find_boost</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">COMPONENTS </span><span
+class="crayon-e">spirit </span><span
+class="crayon-v">REQUIRED</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7d6cd264034706-5"><span
+class="crayon-e">target_include_directories</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_INCLUDE_DIRS</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6cd264034706-6"><span
+class="crayon-e">target_link_libraries</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_LIBRARIES</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b7f7d6cd264034706-7">&nbsp;</div></div></td></tr></table></div></div><p></p><p>My include in the cpp file looks like this:</p><p></p><div
+id="crayon-56886b7f7d6d7890514789" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;boost/spirit/include/qi.hpp&gt;
+</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b7f7d6d7890514789-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b7f7d6d7890514789-2">2</div><div
+class="crayon-num" data-line="crayon-56886b7f7d6d7890514789-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b7f7d6d7890514789-1">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b7f7d6d7890514789-2"><span
+class="crayon-p">#include &lt;boost/spirit/include/qi.hpp&gt;</span></div><div
+class="crayon-line" id="crayon-56886b7f7d6d7890514789-3">&nbsp;</div></div></td></tr></table></div></div><p></p></div></div><ul
+class="children"><li
+class="comment even depth-2" id="dsq-comment-209"><div
+id="dsq-comment-header-209" class="dsq-comment-header"><cite
+id="dsq-cite-209"> <span
+id="dsq-author-user-209">Manu343726</span></cite></div><div
+id="dsq-comment-body-209" class="dsq-comment-body"><div
+id="dsq-comment-message-209" class="dsq-comment-message"><p>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost().  Try with a naked <code>bii_find_boost()</code> call.</p></div></div><ul
+class="children"><li
+class="comment odd alt depth-3" id="dsq-comment-268"><div
+id="dsq-comment-header-268" class="dsq-comment-header"><cite
+id="dsq-cite-268"> <span
+id="dsq-author-user-268">Terry Eminhizer</span></cite></div><div
+id="dsq-comment-body-268" class="dsq-comment-body"><div
+id="dsq-comment-message-268" class="dsq-comment-message"><p>Thanks Manu, Max, et al., I had<br
+/> bii_find_boost(COMPONENT Spirit Required) and all heck broke loose (cmake would essentially hang, not sure if it was trying to do a full build or not, but cmake is al that was running).  Maybe this will help inform some future usability tweaks.  Thanks again, I&#8217;ve been on the verge of giving up on biicode multiple times now but keep finding these little nuggets of information out there to get unblocked.</p></div></div></li></ul></li></ul></li><li
+class="post pingback"><p>Pingback: <a
+href='http://www.sennin.pt/2015/03/29/biicode/' rel='external nofollow' class='url'>Sennin &raquo; Biicode</a>()</p></li></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '2086%20http_/blog.biicode.com/index8b9f.html?p=2086';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "Boost libraries are now supported in biicode";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index4ccd.html?cf_action=sync_comments&amp;post_id=2086';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/dependency-management-boost-libraries/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:41:38 GMT -->
+</html>

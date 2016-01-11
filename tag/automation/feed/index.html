@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; automation</title> <atom:link href="http://blog.biicode.com/tag/automation/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Open source hack with biicode: Control lights with Arduino.</title><link>http://blog.biicode.com/control-lights-open-source-hack/</link> <comments>http://blog.biicode.com/control-lights-open-source-hack/#comments</comments> <pubDate>Tue, 29 Jul 2014 08:30:31 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[automation]]></category> <category><![CDATA[domotics]]></category> <category><![CDATA[open hardware hack]]></category> <category><![CDATA[open source hack]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=930</guid> <description><![CDATA[<p>Try this open hardware and open source hack to turn on/off lights with just a touch. We present you Lighttech, an Arduino project to control light via InfraRed. Thanks to @icar0 and @Nero_88 for this great project. Hardware needed: IR Receiver IR Emitter Arduino Leonardo 2.3&#8243; LCD Module Protoboard Wires This project involves creating an [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/control-lights-open-source-hack/">Open source hack with biicode: Control lights with Arduino.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Try this open hardware and open source hack to turn on/off lights with just a touch.</p><p>We present you Lighttech, an Arduino project to control light via InfraRed. Thanks to <a
+title="icar0 twitter" href="https://twitter.com/icar0" target="_blank">@icar0</a> and <a
+class="twitter-atreply pretty-link" title="twitter nero_88" href="https://twitter.com/Nero_88" target="_blank">@Nero_88</a> for this great project.</p><h2 style="text-align: left;">Hardware needed:</h2><p
+style="text-align: right;"><img
+class="alignright wp-image-945" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/ArduinoLeonardoFront_2_450px.jpg" alt="Arduino Leonardo board used in the open source hack" width="400" height="317" /></p><ul><li><a
+title="IR receptor diode" href="http://www.micropik.com/PDF/tsop17xx.pdf" target="_blank">IR Receiver</a></li><li>IR Emitter</li><li><a
+title="Arduino Board Leonardo" href="http://arduino.cc/en/Main/arduinoBoardLeonardo" target="_blank">Arduino Leonardo</a></li><li><a
+title="Display screen Touch" href="http://imall.iteadstudio.com/im120417020.html" target="_blank">2.3&#8243; LCD Module</a></li><li>Protoboard</li><li>Wires</li></ul><p><span
+id="more-930"></span></p><p>This project involves creating an interface to control IR devices based on Free Software and Hardware. In this case the device is going to control a RGB bulb with IR technology, but it can be extrapolated to any IR device.</p><p>The project has almost all the necessary files to decode the most conventional control codes.</p><p>Connect the IR to the Arduino Leonardo like this to obtain the IR codes:</p><p><img
+class="aligncenter wp-image-954" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/circuito-lighttech-arduino.png" alt="sketch connection lighttech arduino" width="630" height="264" /></p><p>You can change the Arduino by taking this important facts into account:</p><ul><li>Big Flash Memory, enough to operate with the LCD graphics library.</li><li>Change the placement of the pins, you can know how by looking into the datasheet.</li><li>Enough space to place the LCD display above the Arduino.</li></ul><p>After that you can set your Arduino as an emitter by connecting an IR led to its digital output pin or LED 13.</p><p><img
+class="aligncenter wp-image-955" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/lightttech-emitter-arduino.png" alt="lightttech emitter arduino" width="400" height="365" /></p><p>&nbsp;</p><h2>Lighttech uses these libraries:</h2><table><tbody><tr><td
+colspan="2" width="581"> To control the display graphics:</td></tr><tr><td
+width="315"><ul><li><a
+title="biicode library utft" href="http://www.biicode.com/icar0/icar0/utft/master" target="_blank">#include &#8220;icar0/utft/utft.h&#8221;</a></li></ul></td><td
+width="315">   <a
+style="color: #f48123;" title="UTFT library" href="http://henningkarlsen.com/electronics/library.php?id=52" target="_blank">UTFT</a><span
+style="color: #666666;"> </span></td></tr><tr><td
+colspan="2" width="581">To control the display touch screen:</td></tr><tr><td
+width="315"><ul><li> <a
+title="biicode library utouch" href="http://www.biicode.com/icar0/icar0/utouch/master" target="_blank">#include &#8220;icar0/utouch/utouch.h&#8221;</a></li></ul></td><td
+width="315">  <span
+style="color: #666666;"> </span><a
+style="color: #f48123;" title="UTouch Library" href="http://www.henningkarlsen.com/electronics/library.php?id=55" target="_blank">UTouch</a></td></tr><tr><td
+colspan="2" width="581">To control the IR:</td></tr><tr><td
+width="315"><ul><li><a
+title="biicode library irremote" href="http://www.biicode.com/icar0/icar0/irsend/master" target="_blank">#include &#8220;icar0/irsend/irremote.h&#8221;</a></li></ul></td><td
+width="315">  <span
+style="color: #666666;"> </span><a
+style="color: #f48123;" title="IRRemote" href="http://www.pjrc.com/teensy/td_libs_IRremote.html" target="_blank">IRRemote</a></td></tr></tbody></table><h2>The code:</h2><p>You can find the <a
+title="Code Infra Red IR managing" href="http://www.biicode.com/icar0/icar0/lighttech/master" target="_blank">code used for maganing IR devices here</a>,  in biicode. To use it, just execute these commands:</p><pre class="crayon-plain-tag">~/$ bii init project
+~/$ cd project
+~/project$ bii new user/block
+~/project$ bii open icar/lighttech
+~/project$ bii arduino:upload</pre><p>And to check your serial port, write:</p><pre class="crayon-plain-tag">~/project$ bii arduino:monitor</pre><p></p><h3>Watch this tutorial for more details on this open source hack</h3><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/HiIvKOXKM6k?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p>Got any doubts? Just post a comment!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/control-lights-open-source-hack/">Open source hack with biicode: Control lights with Arduino.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/control-lights-open-source-hack/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

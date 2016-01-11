@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; try this out</title> <atom:link href="http://blog.biicode.com/category/try-this-out/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>biicode’s getting started with OpenSSL, Git and GitHub</title><link>http://blog.biicode.com/getting-started-with-openssl-git-and-github/</link> <comments>http://blog.biicode.com/getting-started-with-openssl-git-and-github/#comments</comments> <pubDate>Mon, 13 Apr 2015 11:10:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[OpenSSL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2178</guid> <description><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on OpenSSL v1.0.2 biicode block to generate MD5 (Message-Digest Algorithm 5) and SHA-1 (Secure Hash Algorithm) hashes in your Terminal. Before anything else (of course), you’ll need Git, CMake &#62; 3.0, biicode &#62; 2.6 and both accounts: GitHub and biicode. Make sure you have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on <a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">OpenSSL v1.0.2 biicode block</a> to generate <a
+title="MD5 hash" href="http://es.wikipedia.org/wiki/MD5" target="_blank">MD5 (Message-Digest Algorithm 5)</a> and <a
+title="sha1 hash" href="http://es.wikipedia.org/wiki/Secure_Hash_Algorithm" target="_blank">SHA-1 (Secure Hash Algorithm)</a> hashes in your Terminal.</p><p><img
+class="aligncenter wp-image-2182 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/postgithub.png" alt="Getting started with Git and GitHub in biicode" width="640" height="300" /></p><p><span
+id="more-2178"></span></p><p>Before anything else (of course), you’ll need <a
+title="git" href="http://git-scm.com/downloads" target="_blank">Git</a>, CMake &gt; 3.0, <a
+title="download biicode" href="https://www.biicode.com/downloads" target="_blank">biicode &gt; 2.6</a> and both accounts: <a
+href="https://github.com/login/" target="_blank">GitHub</a> and <a
+title="biicode log in" href="https://www.biicode.com/accounts/login" target="_blank">biicode</a>.</p><p>Make sure you have all them, run <code>--version </code>in your terminal:</p><pre class="crayon-plain-tag">git --version
+cmake --version
+bii --version
+#install c++ tools for biicode (optional)
+bii setup:cpp</pre><p></p><h2>Now, let’s begin with Git and Github!</h2><p>Create a GitHub repo on the web page and copy the repo’s URL:</p><p><img
+class="aligncenter wp-image-2179 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/create_new_github_repo-1024x541.png" alt="Create a new GitHub repo" width="630" height="333" /></p><p><img
+class="aligncenter wp-image-2180 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/cloneit.png" alt="Copy the recently created GitHub repo's URL" width="1003" height="242" /></p><p>Now, go back to your terminal. Clone the repo (this clones an empty git folder for your project to live in), navigate to that folder and run <code>bii init -L </code>:</p><pre class="crayon-plain-tag"># clone the repo
+clone https://github.com/MariadeAnton/bii-init.git
+# get into its folder
+cd your_repo
+# initialize
+bii init -L</pre><p></p><h3>Write the code</h3><p>Create three files: a <em>sha1.</em>cpp a <em>md5.cpp</em> to generate both hashes, SHA1 and MD5, and also a biicode.conf file.</p><pre class="crayon-plain-tag">echo "//sha1 code goes here" &gt;&gt; sha1.cpp
+echo "//md5 code goes here" &gt;&gt; md5.cpp
+echo "# biicode.conf file" &gt;&gt; biicode.conf</pre><p><strong>sha1.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p><strong>md5.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/md5.h"
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main()
+{
+    unsigned char digest[MD5_DIGEST_LENGTH];
+    char string[] = "hello biicode!";
+    MD5((unsigned char*)&amp;string, strlen(string), (unsigned char*)&amp;digest);
+    char mdString[33];
+    for(int i = 0; i &lt; 16; i++)
+         sprintf(&amp;mdString[i*2], "%02x", (unsigned int)digest[i]);
+    printf("md5 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h4>biicode.conf</h4><p>&#8211; biicode&#8217;s configuration file</p><p>Fill the biicode.conf file so bii gets the OpenSSL v1.0.2. dependencies your project needs via [requirements] and [includes] sections:</p><p><strong>biicode.conf</strong></p><pre class="crayon-plain-tag">[requirements]
+       lasote/openssl(v1.0.2): 3
+   [includes]
+       openssl/*: lasote/openssl/include</pre><p></p><h3><img
+class=" size-large wp-image-2185 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/open_ssl_sha1_biicode-1024x500.png" alt="open_ssl_sha1_biicode" width="630" height="308" /></h3><h3></h3><h3>running your project</h3><p><code>bii build</code> and you’re ready to run your project and check the generated MD5 and SHA-1 hashes.</p><pre class="crayon-plain-tag">bii build
+cd bin
+./#run SHA1 or MD5
+#see the hashes, md5 digest and sha1 digest.</pre><p></p><h3>What bii files/folders does your repo need?</h3><p>Your GitHub repo only needs <em>biicode.conf</em> file, a <em>CMakeLists.txt</em> and your code. You can safely ignore bii/ and bin/ folders as they’re auxiliary. bii/ holds subfolders like cmake/, build/ or deps/, and bin/ contains the output binaries, frequently ignored too.</p><p>Create a .gitignore file and write bii and bin to ignore both folders:</p><pre class="crayon-plain-tag">echo "bii" &gt;&gt; .gitignore
+echo "bin" &gt;&gt; .gitignore</pre><p>Add and commit your changes:</p><pre class="crayon-plain-tag"># add all files but the ones ignored
+git add --all
+# commit message
+git commit -m "my OpenSSL example biicode block"</pre><p></p><h3>Share your code</h3><p>It&#8217;s finally time to share your code. Now all is setup to push your project to GitHub and publish a biicode block referring to your GitHub repo:</p><pre class="crayon-plain-tag"># push to GitHub
+git push origin master
+# publish to biicode
+bii publish -r</pre><p>Want a repo with the files needed? <a
+title="bii-init repo" href="https://github.com/MariadeAnton/bii-init" target="_blank">Just fork mine </a> and go!</p><pre class="crayon-plain-tag">clone https://github.com/your_github_username/bii-init.git
+cd bii-init
+bii init -L</pre><p>There are many options available to automatically publish (to biicode) from GitHub. We usually use Travis-ci and Appveyor to achieve so:</p><ul><li><a
+title="travis-ci and biicode" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Automaticall build and publish via Travis CI and GitHub</a></li><li><a
+title="biicode and appveyor" href="http://blog.biicode.com/appveyor-ci-windows-biicode/" target="_blank">Using Appveyor CI and Deploy for Windows</a></li></ul><p>For those who enjoy<a
+title="open multiple blocks biicode" href="http://docs.biicode.com/c++/advanced/open_blocks.html#working-with-any-published-block" target="_blank"> using multiple blocks at the same time</a>, we recommend using a git repo for each biicode block.</p><p>Don’t forget that all layouts are fully customizable via layout.bii file, check all the options available in the docs section: <a
+title="custom biicode layout" href="http://docs.biicode.com/c++/advanced/project.html" target="_blank">Customizing your layout</a>.</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/getting-started-with-openssl-git-and-github/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Raspberry PI cross building native (C/C++) graphical applications from Windows</title><link>http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/</link> <comments>http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/#comments</comments> <pubDate>Tue, 17 Feb 2015 15:30:27 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[try this out]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2077</guid> <description><![CDATA[<p>Developing and testing C and C++ applications for the Raspberry can be inconvenient because of slow builds, so it is usually far more interesting to be able to develop in your own box, then just do the final checks in the target platform, in this case the Raspberry PI. This article shows how to develop [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/">Raspberry PI cross building native (C/C++) graphical applications from Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Developing and testing C and C++ applications for the Raspberry can be inconvenient because of slow builds, so it is usually far more interesting to be able to develop in your own box, then just do the final checks in the target platform, in this case the Raspberry PI.</p><p><img
+class="aligncenter size-full wp-image-2083" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/postdiego.png" alt="raspberry pi ++" width="640" height="300" /></p><p>This article shows how to develop an OpenGL based application (using the GLFW library), that will be first built and run in the desktop, then cross-built to the RaspberryPI, using biicode hooks and toolchains features to easily automate the process.</p><p><span
+id="more-2077"></span></p><p>All you need to run this example is to get biicode installed with its C/C++ dev tools (bii setup:cpp). No need to install or configure any other tool, as it will manage to download and install them when required.</p><p>We will build the basic GLFW examples:</p><pre class="crayon-plain-tag">$ bii init glapp
+$ bii open examples/glfw
+$ bii build
+$ .\bin\examples_glfw_particles</pre><p><img
+class="aligncenter size-full wp-image-2079" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/particles.png" alt="particles" width="440" height="341" />Note that biicode has retrieved the GLFW source code, it is not in the examples, but as an external dependency defined in the biicode.conf file.</p><p>Biicode uses CMake as build system and thanks to the possibility of defining custom toolchains, it is quite simple to define a new one. Sysprogs (<a
+href="http://sysprogs.com/">http://sysprogs.com/</a>) has created an excellent cross build suite, including R-PI one with gcc4.9 support as well as a complete sysroot. Next commands will download and setup everything we need:</p><pre class="crayon-plain-tag">$ bii open diego/rpiwin
+$ bii build</pre><p>When the GNU Toolchain for Raspberry launches, accept the defaults and the license agreement:<img
+class="aligncenter size-full wp-image-2081" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/toolchain.png" alt="toolchain" width="543" height="301" /></p><p>It will also download and unzip the SmartTTY application that is useful to upload the final binaries to the R-PI.</p><p>Once this is done, the cpp:build is still building the Windows desktop version. We can change to the new toolchain that has been created (in bii/rpi_toolchain.cmake) with the following commands:</p><pre class="crayon-plain-tag">$ bii configure –t=rpi
+$ bii build</pre><p>That will build the same examples, but for the RPI. It is time to upload them to the R-PI, to check if they work. We use here the previously installed SmartTTY:</p><pre class="crayon-plain-tag">$ C:\SysGCC\PortableSmartty\SmarTTY.exe</pre><p><img
+class="aligncenter size-full wp-image-2080" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/ssh.png" alt="ssh" width="488" height="331" /> Go to Menu -&gt; SCP -&gt; Upload a directory. Then select your project “glapp/bin” folder and upload it to the folder you want in the R-PI (eg. /home/pi/glfwexamples)</p><p>Then go to the R-PI (you need a connected monitor and keyboard, we are developing a graphical application), launch X if you haven’t, and run the app:</p><pre class="crayon-plain-tag">$ cd glfwexamples
+$ ./examples_glfw_splitview</pre><p><img
+class="aligncenter size-full wp-image-2082" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/torus.png" alt="torus" width="420" height="444" />You can switch back and forth between desktop and cross build, very easily:</p><pre class="crayon-plain-tag">$ bii configure –t</pre><p>Note that the block diego/rpiwin, once it installed things, it is no longer necessary in your project, you can safely close it (or delete it)</p><pre class="crayon-plain-tag">$ bii close diego/rpiwin</pre><p>There is however a problem with these apps, they run on the Raspberry, but they are too slow. This is because we are using the default OpenGL renderer, which uses the CPU instead of the R-PI GPU and thus is very slow. To take advantage of the HW accelerated support of the Raspberry, we should use EGL (GLES v2) instead, but this is the subject of a different post. Please leave a comment if you are interested in it or if you experience any problem while trying these examples. Remember there is a <a
+href="http://forum.biicode.com" target="_blank">Forum</a> and you can also use the tag &#8220;biicode&#8221; in <a
+href="http://www.stackoverflow.com" target="_blank">StackOverflow</a></p><p><strong> Enjoy!</strong></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/">Raspberry PI cross building native (C/C++) graphical applications from Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Using AppVeyor CI and Deploy for Windows</title><link>http://blog.biicode.com/appveyor-ci-windows-biicode/</link> <comments>http://blog.biicode.com/appveyor-ci-windows-biicode/#comments</comments> <pubDate>Mon, 09 Feb 2015 16:35:08 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[continuous integration]]></category> <category><![CDATA[deploy]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2029</guid> <description><![CDATA[<p>Let&#8217;s use AppVeyor CI for Windows to automatically build and publish our new commits and releases to biicode. GitHub or Bitbucket enable creating remote repositories to develop them collaboratively. First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Let&#8217;s use <a
+href="https://ci.appveyor.com/">AppVeyor</a> CI for Windows to automatically build and publish our new commits and releases to biicode.</p><p><img
+class="aligncenter wp-image-2030 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_logo.png" alt="AppVeyor CI service now integrated with biicode to make it work in Windows." width="162" height="29" /></p><p>GitHub or Bitbucket enable creating remote repositories to develop them collaboratively.</p><p><span
+id="more-2029"></span></p><p>First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL here:</p><p><img
+class="aligncenter wp-image-2031 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/2_clone-1024x786.png" alt="Clone a Github repo as the first step in our AppVeyor CI tutorial" width="630" height="484" /></p><p>Create a new biicode project, and paste the URL to clone the repository into your block:</p><pre class="crayon-plain-tag">bii init myproject
+cd myproject
+bii new amalulla/cpp-expresion-parser
+cd blocks\amalulla\cpp-expresion-parser
+git clone https://github.com/MariadeAnton/cpp-expression-parser.git .</pre><p>Don’t miss the dot at the end, this copies your repo’s files and folders into your block’s main folder.</p><h2>Automatically build and publish via AppVeyor CI</h2><p>Login at <a
+href="https://ci.appveyor.com/" target="_blank">AppVeyor</a> with your favourite developer account and once logged-in clic on <em>“+ new project”</em></p><p><img
+class="aligncenter wp-image-2032 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/new_appveyor_project.png" alt="Open a new AppVeyor CI project" width="1006" height="214" /></p><p>Choose the repo you want to deploy with AppVeyor:</p><p><img
+class="aligncenter wp-image-2033 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/add_appveyor_project2-1024x466.png" alt="Choose and AppVeyor CI project" width="630" height="287" /></p><p>Once enabled, let&#8217;s get back to our local project and create an <code>appveyor.yml</code> file into your block&#8217;s folder. This file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, but you can configure it to fit your needs:</p><pre class="crayon-plain-tag">version: 1.0.{build}
+install:
+  - ps: wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-win32-x86.zip -OutFile cmake.zip
+  - cmd: echo "Unzipping cmake..."
+  - cmd: 7z x cmake.zip -o"C:\Program Files (x86)\" -y &gt; nul
+  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\Program Files (x86)\cmake-3.0.2-win32-x86\bin
+  - cmd: cmake --version
+  - cmd: echo "Downloading biicode..."
+  - ps: wget http://www.biicode.com/downloads/latest/win -OutFile bii-win.exe
+  - cmd: bii-win.exe /VERYSILENT
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii
+  - cmd: bii -v
+  - cmd: del bii-win.exe
+  - cmd: del cmake.zip
+before_build:
+  - cmd: bii init -L
+    # copy files and folders
+  - cmd: xcopy "%APPVEYOR_BUILD_FOLDER%" blocks\%block_user%\%block_name%\ /e
+  - cmd: bii configure -G "Visual Studio 12"
+build_script:
+  - cmd: bii build
+test_script:
+  - cmd: cd bin
+  - cmd: amalulla_cpp-expression-parser_test-shunting-yard.exe
+# to run your custom scripts instead of provider deployments
+deploy_script:
+  - cmd: bii user %block_user% -p %secured_passwd%
+  - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME%
+  - if defined APPVEYOR_REPO_TAG_NAME bii publish -r --tag=%tag% --versiontag=%VERSION%
+  - if not defined APPVEYOR_REPO_TAG_NAME bii publish -r
+on_success:
+  - ps: |
+        git checkout "$env:APPVEYOR_REPO_BRANCH"
+        git config --global core.autocrlf true
+        git config --global credential.helper store
+        Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+        git remote add neworigin "$env:github_repo"
+        git config --global user.email "$env:github_email"
+        git config --global user.name "$env:github_user"
+        git add .
+        git commit -m "Updated biicode parents [skip ci]"
+        git push neworigin "$env:APPVEYOR_REPO_BRANCH"
+environment:
+  block_user:
+    "amalulla"
+  block_name:
+    "cpp-expression-parser"
+  secured_passwd:
+    secure: ZMvgETfLAUo7kISnvrinBA==
+  access_token:
+    secure: GdIDIRkmsM9blqS143lQErkxguMYgJBs74GzWw+lgzjvl/NoLs4ErcOZ2JBAEmkr
+  tag:
+    "STABLE"
+  github_user:
+    "MariadeAnton"
+  github_email:
+    "maria.deanton@biicode.com"
+  github_repo:
+    "git@github.com:MariadeAnton/cpp-expression-parser.git"</pre><p>Let&#8217;s take a deeper look into this file to adapt it to your build config, changes are only needed in <strong>test_script</strong><em> and <strong>enviroment</strong></em> values, other changes may depend on what you will use Appveyor for:</p><ul><li>install: Just copy this part, it installs all tools required to deploy your biicode projects in AppVeyor.</li><li>before_build: Copy your project&#8217;s files into the biicode project and configure it to use Visual Studio 12 via <code> bii cpp:configure</code>.  Check <a
+href="http://docs.biicode.com/c++/ides.html" target="_blank">biicode docs</a> and  your project&#8217;s settings in <a
+title="appveyor" href="http://www.appveyor.com/" target="_blank">Appveyor </a> to use other build configurations. *Also note that there&#8217;s a commented line here you should also write if your project contains folders.</li><li>build_script: builds the project via <code> bii cpp:build. </code></li><li>test_script: cd bin and execute your project. Ensure about your project&#8217;s executable, build and execute it locally via  <code>bii cpp:build</code>.</li><li>deploy_script: This script publishes your block to biicode, as stable including your version tag only when it&#8217;s tagged, otherwise your block is published as dev.</li><li>on_success: If your biicode.conf file is updated commit its changes to github without launching a new build. Else do nothing.</li><li><em>environment:</em> Replace all  the environment variables with your own values: project_name, tag, default version tag value&#8230;</li></ul><h2 id="building-appveyor-specifics">Specifics:</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Here&#8217;s an <a
+title="git push from appveyor build" href="http://http://www.appveyor.com/docs/how-to/git-push" target="_blank">appveyor guide about how to git push from build</a>. Following this Appveyor Guide we&#8217;re using it as credentials with Git commands. Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="configuring-build-secure-variable-with-access-token">Configuring build secure variable</h3><p>Encrypt your biicode password and your access token using <a
+href="https://ci.appveyor.com/tools/encrypt" target="_blank">Encrypt Data tool</a> and then put it as secure variable into your <code>appveyor.yml</code>, for example, to generate an encrypted password with Appveyor go to your profile and choose <em>Encrypt data:</em></p><p><img
+class="aligncenter wp-image-2034 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypt_data-1024x563.png" alt="Encrypt the data of your AppVeyor CI project" width="630" height="346" />Once there, encrypt your password and copy the value generated to put it in your  environment &#8220;<em>secured_password: secure:&#8221;</em></p><p><img
+class="aligncenter wp-image-2035 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypted_appveyor_data-300x144.png" alt="AppVeyor CI encryption config" width="300" height="144" /></p><p>When it comes to specifying your project settings, it&#8217;s useful to check them online. For example, you can skip branches without an <code>appveyor.yml</code> file just saying it your <code>appveyor.yml</code> or into their web interface. Also, <a
+href="http://www.appveyor.com/docs/build-configuration">AppVeyor docs explain in detail build configuration.</a></p><h2>The icing</h2><p>Put a nice AppVeyor badge to show your project builds in Windows.</p><p>Go to your projects settings&gt;Badges, copy your repo&#8217;s badge and paste it in your README file:</p><p><img
+class="aligncenter wp-image-2036 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_project_settings-1024x809.png" alt="AppVeyor CI project settings" width="630" height="498" /></p><h2>Update and push to GitHub!</h2><p>Add, commit and push your changes to GitHub</p><pre class="crayon-plain-tag">$ git add --all
+$ git commit -m "commit message"
+$ git push origin master</pre><p></p><h3>Working with tags</h3><p>Using the <code>appveyor.yml</code> file described before, you can tag a version with git, push it to github and it will be automatically tagged in biicode too:</p><pre class="crayon-plain-tag">git tag -a v0.1 -m 'my version 0.1'
+ git push origin v0.1</pre><p>Here&#8217;s <a
+title="git taggin basics" href="http://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank">Git basics about Tagging</a>.</p><p>Unless you specify it otherwise, each time you push to AppVeyor CI System, a build launches to check everything is still working.</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Fork Cpp-expression-parser" href="https://github.com/MariadeAnton/cpp-expression-parser" target="_blank">Forked cpp-expresion-parser repo in GitHub</a>  from the <a
+href="https://github.com/bamos/cpp-expression-parser" target="_blank">Original repo by Brandon Amos</a></li><li><a
+title="appveyor build cpp-expression-parser" href="https://ci.appveyor.com/project/MariadeAnton/cpp-expression-parser" target="_blank">cpp-expression-parser builds in AppVeyor</a> CI and Deployment</li><li><a
+href="http://www.biicode.com/amalulla/cpp-expression-parser" target="_blank">cpp-expression parser biicode block</a> and with its automatically published releases</li></ul><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our<span
+class="Apple-converted-space"> </span><a
+href="http://docs.biicode.com/">docs</a>,<span
+class="Apple-converted-space"> </span><a
+href="http://forum.biicode.com/">forum</a><span
+class="Apple-converted-space"> </span>and/or<span
+class="Apple-converted-space"> </span><a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a><span
+class="Apple-converted-space"> </span>for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/appveyor-ci-windows-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>OpenSSL is now available in biicode!</title><link>http://blog.biicode.com/openssl-available-biicode/</link> <comments>http://blog.biicode.com/openssl-available-biicode/#comments</comments> <pubDate>Wed, 28 Jan 2015 11:52:00 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[Heartbleed]]></category> <category><![CDATA[Secure Connections]]></category> <category><![CDATA[SSL]]></category> <category><![CDATA[TLS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2028</guid> <description><![CDATA[<p>The OpenSSL Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support. It was born in 1998 and today about 66% of internet servers are using OpenSSL. &#160; UPDATE! [10-Feb-2015] OpenSSL last version 1.0.2 is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openssl-available-biicode/">OpenSSL is now available in biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The <a
+title="OpenSSL website" href="https://www.openssl.org/"><strong>OpenSSL</strong></a> Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support.<br
+/> It was born in 1998 and today about 66% of internet servers are using OpenSSL.</p><p><img
+class="aligncenter wp-image-2038 size-full" title="OpenSSL is now supported in biicode" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/openSSL.jpeg" alt="Secure connections can now be used from C/C++ source code with biicode and OpenSSL" width="431" height="117" /></p><p>&nbsp;</p><p><strong>UPDATE!</strong> [10-Feb-2015] OpenSSL <a
+title="OpenSSL 1.0.2 " href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">last version 1.0.2 is ready on biicode! </a> We created a <a
+title="block tracks help" href="http://docs.biicode.com/c++/dependencies.html?highlight=track#depending-on-a-block-track" target="_blank">block track</a> lasote/openssl(v1.0.2).<br
+/> Remeber, you can switch between v1.0.1 and v1.0.2 just changing the requirements line in biicode.conf file.</p><p><span
+id="more-2028"></span></p><h2>Benefits</h2><p>→ Keeping your dependencies updated is really important, specially with this kind of projects. <a
+title="Heart bleed bug" href="http://heartbleed.com/">Heartbleed</a> bug affected half a million widely trusted websites. It&#8217;s proven, it is essential to keep OpenSSL updated. With <strong>biicode</strong> updating versions is easy. Just change the requirements version in <strong>biicode.conf</strong> file.</p><p>→ Code in <a
+title="lasote/openssl github" href="https://github.com/lasote/openssl/tree/OpenSSL_1_0_1l_biicode" target="_blank">github</a>: You can check <a
+title="diff code" href="https://github.com/lasote/openssl/compare/openssl:OpenSSL_1_0_1l...OpenSSL_1_0_1l_biicode" target="_blank">the diff</a> between original source code and source code used in biicode. There are only few changes to be build the library with CMake and biicode.</p><p>→ Tested on <strong>Windows</strong> with <strong>MinGW</strong> and <strong>Visual Studio</strong>, <strong>Linux</strong> with <strong>gcc</strong> and <strong>OSx</strong> with <strong>Clang</strong>.</p><h2>You can use OpenSSL in your C/C++ projects following these steps:</h2><h3>1. Create a new biicode project and a new block</h3><p></p><pre class="crayon-plain-tag">bii init myproject
+ cd myproject
+ bii new myuser/myblock</pre><p></p><h3>2. Create a main.cpp and paste this example code in it</h3><p><b> myproject/blocks/myuser/myblock/main.cpp </b></p><pre class="crayon-plain-tag">#include "lasote/openssl/include/openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h3>3. Download your dependencies and build your project</h3><p></p><pre class="crayon-plain-tag">bii find # This will find 1.0.1 track, if you want 1.0.2 edit biicode.conf file.
+ bii build</pre><p>If you want to keep your #includes the traditional way &#8220;openssl/sha.h&#8221; you can do it editing <b>biicode.conf</b> file and using <a
+title="Include paths" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html#includes" target="_blank">&#8220;include paths&#8221;</a> feature. If you want OpenSSL v1.0.2 version there is a v1.0.2 track available in biicode, just specify (v1.0.2):</p><pre class="crayon-plain-tag"># Biicode configuration file
+[requirements]
+     lasote/openssl(v1.0.2): 0 # Version of lasote/openssl to require
+[paths]
+[dependencies]
+[mains]
+[hooks]
+[includes]
+    # This will append **lasote/openssl/include** when find a openssl/*.h include
+    openssl/*.h: lasote/openssl/include
+[data]</pre><p>Build again:</p><pre class="crayon-plain-tag">bii build</pre><p>As you can see, the number of libraries uploaded to biicode is growing fast. Building professional software with a dependency manager involves lots of benefits, and it is now possible with C and C++ with biicode.</p><p>OpenSSL has a <a
+href="https://www.openssl.org/support/" target="_blank">support section</a> in their site to join, donate to, fund and/or hire members of this fantastic project. We encourage you to collaborate with them.</p><p>Hope you enjoy OpenSSL and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openssl-available-biicode/">OpenSSL is now available in biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/openssl-available-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Arduino Yun now supported</title><link>http://blog.biicode.com/arduino-yun/</link> <comments>http://blog.biicode.com/arduino-yun/#comments</comments> <pubDate>Wed, 07 Jan 2015 12:00:23 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[Arduino Yun]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1944</guid> <description><![CDATA[<p>Arduino Yun is the first member of a new groundbreaking line of WiFi products combining the power of Linux with Arduino&#8217;s simplicity. The first Arduino Yun is the combination of an Arduino Leonardo with a WiFi system-ona-chip running Linino (GNU/Linux based on OpenWRT). The board has built-in Ethernet and WiFi support, a USB-A port, micro-SD card slot, 20 [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the first member of a new groundbreaking line of <strong>WiFi</strong> products combining the power of <strong>Linux</strong> with Arduino&#8217;s simplicity. The first <strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the combination of an <a
+href="http://arduino.cc/en/Main/ArduinoBoardLeonardo" target="_blank">Arduino Leonardo</a> with a <strong>WiFi system-ona-chip running <a
+href="https://openwrt.org/" target="_blank">Linino (GNU/Linux based on OpenWRT)</a></strong>.</p><p><img
+class="aligncenter" src="http://tavendo.com/static/img/blog/arduino-yun-getting-started-part-1/arduino-yun.jpg" alt="Arduino Yun board is supported by biicode" width="649" height="431" /></p><p><span
+id="more-1944"></span></p><p>The board has built-in Ethernet and <strong><span
+class="wikiword">WiFi</span> support</strong>, a <strong>USB-A port</strong>, <strong>micro-SD card slot</strong>, <strong>20 digital input/output</strong> pins (of which 7 can be used as PWM outputs and 12 as analog inputs), a <strong>16 <span
+class="wikiword">MHz</span></strong> crystal oscillator, a <strong>micro USB</strong> connection, an<strong> ICSP header</strong> and a <strong>3 reset buttons</strong>.</p><p><strong>It can communicate with the Linux</strong> distribution onboard, offering a powerful networked computer with the ease of Arduino. In addition to Linux commands like cURL, <strong>you can write your own shell scripts for robust interactions</strong>.</p><p>&nbsp;</p><p><img
+class="aligncenter" src="http://arduino.cc/en/uploads/Main/BridgeInShort.png" alt="How the Arduino Yun enviroment connects to the Linux enviroment." width="650" height="361" /></p><p>The Bridge library facilitates communication between the two processors, giving Arduino sketches the ability to run shell scripts, communicate with network interfaces, and receive information from the <span
+class="wikiword">AR9331</span> processor. The USB host, network interfaces and SD card are not connected to the 32U4, but the <span
+class="wikiword">AR9331</span>, and the Bridge library also enables the Arduino to interface with those peripherals.</p><p>Arduino gives us a lot of references about this board in a great <a
+href="http://arduino.cc/en/Guide/ArduinoYun" target="_blank">gide to the Arduino Yun</a> and a sumary of the <a
+href="http://arduino.cc/en/Reference/YunBridgeLibrary" target="_blank">bridge Yun library</a>, a library to enable all the power the Yun can provide.</p><h2>How to use the Arduino Yun with biicode</h2><p>Just specify the Arduino SDK path of the 1.5.8 or higher. If you don&#8217;t have it yet, you can <a
+title="Arduino Download" href="http://arduino.cc/en/Main/Software" target="_blank">download it from the Arduino download page</a> and unzip it into <em>biicode_env</em> folder.</p><pre class="crayon-plain-tag">bii arduino:settings
+Enter SDK path (C:/biicode_env/arduino-1.0.6):C:/biicode_env/arduino-1.5.8
+Enter board (/o list supported options):yun
+Using arduino port: COM12</pre><p>If you want to upload your firmaware by ssh to 192.168.240.1:</p><pre class="crayon-plain-tag">bii arduino:upload --ssh</pre><p>Or specify a different IP.</p><pre class="crayon-plain-tag">bii arduino:upload --ssh 192.168.2.1</pre><p>Now, hacking something via wifi is easier!</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-yun/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Unleash your Arduino projects</title><link>http://blog.biicode.com/unleash-arduino-projects/</link> <comments>http://blog.biicode.com/unleash-arduino-projects/#comments</comments> <pubDate>Tue, 02 Dec 2014 12:38:08 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[advanced programming]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[projects]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1933</guid> <description><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino. So let&#8217;s get started, Biicode is a [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino.</p><p>So let&#8217;s get started, Biicode is a client interface aplication (CLI)  and to use it open the Terminal of your computer.</p><p><img
+class="aligncenter" src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/720px-Arduino_Logo.svg.png" alt="Arduino projects easily setup in biicode" width="240" height="163" /></p><p>biicode technology gives you several advantages to richen your Arduino experience:</p><div><ul><li><strong>Save your project in different folders</strong> for a better organization.</li><li><strong>Reuse yours and other user´s code</strong>. Reuse made easy: just <tt
+class="docutils literal"><span
+class="pre">#include</span></tt> the file you need and you get it. No more copy and paste files from project to project or dowloading zip files from tutorials.</li><li>This is a <strong>simple</strong> and <strong>fast</strong> way to <strong>compile and upload</strong> your code to your Arduino.</li><li>Use your favorite IDE or text editor, we also provide <strong>Eclipse integration</strong>.</li><li>We are hosting <a
+class="reference external" href="https://www.biicode.com/adafruit">adafruit</a>, <a
+class="reference external" href="https://www.biicode.com/sparkfun">sparkfun</a> and many other libraries, <strong>you won’t need to download and install libraries in your SDK anymore</strong>.</li></ul></div><p><span
+id="more-1933"></span></p><h1>1. How to program your arduino with biicode</h1><h2>Installing biicode and Arduino tools</h2><div
+id="installing-biicode-and-arduino-tools" class="section"><p><a
+href="https://www.biicode.com/downloads" target="_blank">Download</a> and install biicode, then make sure it is installed:</p><div
+id="installing-biicode-and-arduino-tools" class="section"><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii --version</pre></div></div></div><div
+id="create-your-project" class="section"></div><p>Then, install a group of tools with the following command. Open you terminal write:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii setup:arduino</pre></div></div></div><div
+id="create-your-project" class="section"><h2>Create Arduino projects</h2><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init myproject</pre></div></div><p>Then we can use the <tt
+class="docutils literal"><span
+class="pre">new</span></tt> command to create some folders and a “Simple Blink” Arduino main file. You can do it manually too.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ cd myproject
+~/myproject$ bii new myuser/myblock --hello=arduino</pre></div></div><div
+class="infonote container">You can directly type <tt
+class="docutils literal"><span
+class="pre">myuser</span></tt> or your real username.  This is the resulting layout:</div><div
+class="highlight-text"><div
+class="highlight"><pre class="crayon-plain-tag">+-- myproject
+|    +-- bii
+|    +-- blocks
+|    |    +-- myuser
+|    |    |    +-- myblock
+|    |    |    |    +-- main.cpp
+|    +-- deps</pre></div></div></div><div
+id="define-your-board" class="section"><h2>Define your board</h2><p>Define your Arduino board using <tt
+class="docutils literal"><span
+class="pre">arduino:settings</span></tt> command. We are using an Arduino Uno but use the /o option to show a list of the default boards, even though any board is welcomed!</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">Enter SDK path (/../biicode_env/arduino-1.0.6): [ENTER]
+Enter board (/o list supported options):uno
+Using arduino port: COM4</pre></div></div></div><div
+id="build-and-upload-your-program" class="section"><h2>Upload your program to the Arduino</h2><p>Now, build and upload the blink to your Arduino.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/myproject$ bii arduino:build
+...
+[100%] Built target myuser_myblock_main
+~/myproject$ bii arduino:upload
+...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div></div><div
+id="depending-on-fenix-blink" class="section"><h2><img
+class="aligncenter wp-image-1935 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/pin13-200x300.png" alt="pin13" width="200" height="300" /></h2><h1>2. Difference between .ino and .cpp blink</h1><p>First, compare both main files. There are only two differences, the first include and the extension of the files. As you will see, this pair of differences will bring you lots of advantages.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p><strong> main.ino</strong></p><pre class="crayon-plain-tag">int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p></p><div><h1>3. How to use the code on biicode?</h1><p>Usual &#8220;blink&#8221; project blocks your Arduino, so it&#8217;s obstructed to do anything else but blinking. We are #including here a “blink” utility class that<strong> blinks without delays or blocking your Arduino</strong>. Reuse from<a
+href="https://www.biicode.com/fenix/fenix/blink/master" target="_blank"> fenix&#8217;s blink library</a>, copy the following code containing the new blink into the <em>main.cpp</em> file.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "fenix/blink/blink.h"
+Blink my_blink;
+void setup() {
+  //pin = 13, interval = 1000 ms
+  my_blink.setup(13, 1000);
+}
+void loop() {
+  my_blink.loop();
+}</pre><p>Execute the command below to find unresolved dependencies and retrieve necessary files from servers:</p><pre class="crayon-plain-tag">~/myproject$ bii find</pre><p>Now can now build your firmware and upload it to your Arduino:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/arduino_hello_project$ bii arduino:upload
+      ...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div><p>That’s it, if you see that output fenix’s blink.h was downloaded and uploaded in your project! You can check the deps folder, the blink.h code is there.</p><h1>4. Next steps</h1><p>Many tutorials are available on this blog&#8217;s<a
+href="http://blog.biicode.com/tag/arduino-2/" target="_blank"> Arduino projects with biicode</a>.</p><p>Hope you enjoy this basic unleash your Arduino Projects Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p></div></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/unleash-arduino-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>CMake Tutorial to build better biicode projects</title><link>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/</link> <comments>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/#comments</comments> <pubDate>Thu, 27 Nov 2014 14:34:28 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[linux]]></category> <category><![CDATA[mac]]></category> <category><![CDATA[OSX]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[Visual]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1929</guid> <description><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses CMake to configure and build your projects. Hope there are no surprises here! This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt. Develop as usual To [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses <a
+title="CMake" href="http://www.cmake.org/" target="_blank">CMake</a> to configure and build your projects. Hope there are no surprises here!</p><p>This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt.</p><p><img
+class="aligncenter size-full wp-image-1848" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/cmakebanner1.jpg" alt="Custom CMake toolchain is now a feature in biicode" width="280" height="77" /></p><p><span
+id="more-1929"></span></p><h2>Develop as usual</h2><p>To start, let’s configure a biicode project to work with your usual editor, compiler and IDE.<br
+/> Execute:</p><pre class="crayon-plain-tag">$ cmake --help</pre><p>to show a list of CMake generators available in your system, these might be “<code>Eclipse CDT4 - Ninja</code>”, “<code>Unix Makefiles</code>”, “<code>Visual Studio 10</code>”, “<code>Sublime Text 2</code>” or others. Choose yours and tell bii to configure:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G “Visual Studio 10”</pre><p>Is it an arduino project? Write <code>bii arduino:configure -G “Eclipse CDT4 - Unix Makefiles”</code></p><p>Want to debug? <code>$ bii cpp:configure -D CMAKE_BUILD_TYPE=DEBUG</code></p><p>Use them all together:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 9 2008" -D CMAKE_BUILD_TYPE=DEBUG”</pre><p>Note that <code>bii cpp:configure </code>admits any CMake directives</p><p><code>bii clean</code> to restore default project settings, those are MinGW Makefiles (Windows) or UNIX Makefiles (MacOS and Linux) and no IDE.</p><h2>Advanced CMake configuration through CMakeLists.txt</h2><p>It’s usual to have a previous build config in which some parts are shared with biicode and others are specific for the old way out of dependency hell. We’ve developed a way to maintain both ways on your CMakeLists.txt:</p><pre class="crayon-plain-tag">#shared configuration here
+IF(BIICODE)
+   include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+   INIT_BIICODE_BLOCK()
+   ADD_BIICODE_TARGETS()
+ELSE()
+      # Your old project configuration here
+ENDIF()</pre><p>And that’s it, as you can see in previous posts , this process is more or less straight forward depending on the library’s complexity: Json11 by Dropbox, Box2D by Erin Catto, Little CMS by Marti Maria or Oscpack by Ross Bencina.</p><h4>INIT_BIICODE_BLOCK()</h4><p>This function defines these variables:</p><ul><li><code>${BII_BLOCK_NAME} </code>The name of the current block (e.g. &#8220;box2d&#8221;)</li><li><code>${BII_BLOCK_USER} </code>The user&#8217;s name (e.g. &#8220;phil&#8221;)</li><li><code>${BII_BLOCK_PREFIX} </code>The directory where the block is located (&#8220;blocks&#8221; or &#8220;deps&#8221;)</li></ul><p>It also loads variables and  you can use or modify them. Check the default CMakeLists.txt comments to learn more.</p><h4>ADD_BIICODE_TARGETS()</h4><p>A CMake <code>TARGET</code> represents each one of the executables or libraries CMake compiles. This function defines these variables:</p><ul><li><code>${BII_BLOCK_TARGETS} </code>List of targets defined in this block</li><li><code>${BII_LIB_TARGET} </code> This is the library biicode builds for each one of the blocks within your project. Just the target library name, usually in the form &#8220;user_block&#8221;</li><li> You can also use directly the name of the executable target (e.g. user_block_main)</li></ul><h2>10 CMake Tips</h2><h3>#1 Variable declaration</h3><p>STRING is a basic CMake variable. It can be used as part of any other identificator.<br
+/> Like the preprocessor, if the var name is enclosed between {} and preceded by $, that expression is equal to the contents of the variable:</p><pre class="crayon-plain-tag">set(MYVAR /var/run/bootstamp)
+# is equivalent to:
+set(MYVAR “/var/run/bootstamp”)
+# list and text substitution examples:
+set(MYVAR “element1” )
+set(${MYVAR}_name “hello”)
+set(MYVAR2 element1 “${MYVAR}_name” element3 ${${MY_VAR}_name}})</pre><p>As CMake stores the sets as a string where elements are separated by &#8220;;&#8221;-&gt; MYVAR2 contains the string <code>“element1;element1_name;element3;hello”</code></p><h3>#2 Logging to Screen</h3><p>Fatal error messages interrupt the CMake execution:</p><pre class="crayon-plain-tag">message("hello world MYVAR=${MYVAR}")
+message(SEND_ERROR "Should not have got here")
+message(FATAL_ERROR "Something bad happened")</pre><p></p><h3>#3 Relevant CMake vars</h3><h4>DIRECTORIES</h4><ul><li><b><code>CMAKE_CURRENT_SOURCE_DIR</code></b>: source directory currently being processed</li><li><b><code>CMAKE_CURRENT_BINARY_DIR</code></b>: binary directory currently being processed</li><li><b><code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code></b>: directory being used as IDE run</li></ul><h4>SYSTEM DESCRIPTION</h4><ul><li><b><code>APPLE</code></b>: True if running on Mac OS X</li><li><b><code>UNIX</code></b>: True for UNIX and UNIX like operating systems (i.e.: APPLE and CYGWIN)</li><li><b><code>MSVC:</code></b> True when using Microsoft Visual C</li><li><b><code>WIN32</code></b>: True on windows systems, including win64</li><li><b><code>MINGW</code></b>: True when generating MinGW Makefiles</li><li><b><code>CMAKE_SYSTEM_NAME</code></b>: Name of system cmake is being run on</li></ul><p><a
+title="SDL CMakeLists.txt" href="http://www.biicode.com/miguel/miguel/sdl2/master/1/CMakeLists.txt" target="_blank">SDL CMakeLists.txt </a> is a clarifying example of use, take a look at from line 193 and on to see CMake vars in use.</p><h3>#4 Conditionals</h3><p>CMake Control Statements have an opening and a closing keyword that must be placed in exclusive lines. Also, CMake commands always have to include “()”</p><pre class="crayon-plain-tag">if(expression)
+  	...
+elseif(expression)
+  	...
+else()
+  	...
+endif()</pre><p></p><h4>Here&#8217;s some common if expressions:</h4><ul><li><b><code>if(MSVC)</code></b><b>  </b>True if the compiler is visual studio</li><li><b><code>if(NOT APPLE)</code></b> True if Linux, Windows, &#8230;</li><li><b><code>if(WIN32 AND NOT MSVC)</code></b> True  on MinGW compiler env</li><li><b><code>if(TARGET target-name) </code></b> True if the given name is an existing target.</li><li><b><code>if(CMAKE_SYSTEM_NAME MATCHES “.*Linux”)</code></b> true for linux systems</li><li><b><code>if(MINGW</code>)</b> useful for MinGW detection</li><li><b><code>if(UNIX AND NOT APPLE)</code></b><br
+/> <b>   <code>set(UNIX_SYS ON)</code></b><br
+/> <b><code>else()</code></b><br
+/> <b>   <code>set(UNIX_SYS OFF)</code></b><br
+/> <b><code>endif() </code>  </b>Simple way to differentiate between Apple and UNIX</li><li><code><b>if(MSVC_VERSION GREATER 1600)</b> </code>True for MSVC 12 and more recent versions</li></ul><h3>#5 Operations with lists</h3><h4>Removing elements from a &#8220;;&#8221; list:</h4><p></p><pre class="crayon-plain-tag">SET(MYLIST "elem1;elem2;elem3;elem4")
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p>Or (removing elements from a list)</p><pre class="crayon-plain-tag">SET(MYLIST  elem1 elem2 elem3 elem4)
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p></p><h4>Remove “UDPwin32.cpp” source file on compilation time:</h4><p></p><pre class="crayon-plain-tag">list(REMOVE_ITEM BII_LIB_SRC “src/nat/UDPwin32.cpp”)</pre><p>This one is pretty useful when you don&#8217;t want to consider or not a file depending on the OS compiling.</p><h4>Adding elements to a list</h4><p></p><pre class="crayon-plain-tag">list(APPEND MYLIST elem5 elem6)</pre><p></p><h4>Check if a list contains a value</h4><p></p><pre class="crayon-plain-tag">list(FIND MYLIST_VAR "src/google.cpp" HasGoogleFile)
+IF(HasGoogleFile EQUAL -1)
+	message(FATAL_ERROR "I could not find google.cpp")
+ENDIF()</pre><p></p><h3>#6 Setting the directories used by the compiler</h3><h4>Adding an include path to the compiler for the current project.</h4><p>This syntax is better for directories needed only in compilation phase, not to be reused.</p><pre class="crayon-plain-tag">INCLUDE_DIRECTORIES(/some/directory)
+INCLUDE_DIRECTORIES(/some/onedirectory /other/directory)</pre><p></p><h4>View the directories that are set in the path</h4><p></p><pre class="crayon-plain-tag">get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+message("inc_dirs = ${inc_dirs}")</pre><p></p><h4>Per-target public include directories.</h4><p>Include the PUBLIC keyword to transitively transmit the directories property to all the targets using the lib. Use it to transmit a public header path.</p><pre class="crayon-plain-tag">TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CURRENT_SOURCE_DIR}/include )</pre><p></p><h3>#7 Set the compile flags used by the compiler</h3><h4>Add a preprocessor definition for the current project</h4><p></p><pre class="crayon-plain-tag">ADD_DEFINITIONS(MY_OPTION)</pre><p></p><h4>Per-target public/private definitions</h4><p>On the 3rd point of tip #6, PUBLIC modifier is used to transmit a “include directory” to dependent targets. Here we use the PRIVATE modifier instead with target_compile_definitions so the DO_GNU_TESTS is only used for the specific target compilation, and it is not transmitted to its dependent targets .</p><pre class="crayon-plain-tag">target_compile_definitions(target_name PRIVATE DO_GNU_TESTS)</pre><p></p><h4>Per-target public/private compile flags</h4><p>Several flags are compiler specific, and are not preprocessor definitions. Use this command for non-standard flags:</p><pre class="crayon-plain-tag">target_compile_options(target_name PUBLIC "-Wall")</pre><p></p><h3>#8 Set linker Flags</h3><h4>Setting Windows application linker option</h4><p></p><pre class="crayon-plain-tag">if(MSVC)
+   set_target_properties(exe_target PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h4>Per-target public/private linker flags and libs</h4><p></p><pre class="crayon-plain-tag">TARGET_LINK_LIBRARIES(${TARGET_NAME} LINK_PUBLIC ${SOME_LIBRARY})
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC jpeg)
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC tiff X11)
+  	SET(PLATFORM_LIBS odbc32.lib odbccp32.lib shlwapi.lib)
+  	target_link_libraries(${BII_LIB_TARGET} PUBLIC ${PLATFORM_LIBS} ${PLATFORM_LDFLAGS})</pre><p></p><h3>#9 Finding and using external libs</h3><h4>OpenGL example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE(OpenGL QUIET)
+IF(OPENGL_FOUND)</pre><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})
+ADD_DEFINITIONS(-DHAVE_OPENGL)
+TARGET_INCLUDE_DIRECTORIES(${TARGET_NAME} PUBLIC
+${OPENGL_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${TARGET_NAME} PUBLIC
+${OPENGL_LIBRARIES})
+ENDIF()</pre><p></p><h4>Boost components example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE (Boost COMPONENTS system filesystem REQUIRED) INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
+TARGET_LINK_LIBRARIES(${BII_main_TARGET} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES( ${BII_LIB_TARGET} PUBLIC ${Boost_LIBRARIES} )</pre><p></p><h3>#10 Copying files</h3><h4>Copying files of some type to the binary and runtime directories</h4><p></p><pre class="crayon-plain-tag">file(GLOB pngFiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+            	${CMAKE_CURRENT_SOURCE_DIR}/*.png *.ttf)
+foreach(imgFile ${imgFiles})
+   message(STATUS "Copying file ${imgFile}")
+   file(COPY ${imgFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+   file(COPY ${imgFile} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endforeach(imgFile)</pre><p></p><h4>Copying a directory to the binary dir</h4><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})</pre><p>Hope you enjoy this CMake Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 4: Oscpack by Ross Bencina</title><link>http://blog.biicode.com/upload-to-biicode-oscpack/</link> <comments>http://blog.biicode.com/upload-to-biicode-oscpack/#comments</comments> <pubDate>Mon, 17 Nov 2014 16:08:32 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[OScpack]]></category> <category><![CDATA[Ross Bencina]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1886</guid> <description><![CDATA[<p>Updated for biicode 2.0! As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series: Example 1: Json11 by Dropbox Example [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li></ul><h2></h2><p><span
+id="more-1886"></span></p><h2>Upload to biicode Oscpack</h2><p>Oscpack is a set of C++ classes for packing and unpacking Open Sound Control (OSC) packets. Developed by Ross Bencina, Oscpack proved to be an essential library requested in our forum. As Ross Bencina explains, <a
+title="Oscpack library" href="http://www.rossbencina.com/code/oscpack" target="_blank">Oscpack</a> includes a minimal set of UDP networking classes for Windows and POSIX. It enables an easy way to construct, send, receive and parse OSC packets.</p><h3>Basics</h3><p><a
+title="download biicode" href="http://www.biicode.com/downloads" target="_blank">Install biicode </a>and make sure you&#8217;ve got the latest version of the library you want to use. To keep the biicode version updated, fork or clone the library on a public git repository (as Bitbucket or Github). <a
+href="https://code.google.com/p/oscpack/" target="_blank">Oscpack 1.1.0 is available on google code hosting</a>. This guide uses Bitbucket, but the same steps apply to <a
+title="Github Travis Continous Integration" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Github and Travis CI fans</a>.</p><p>Create a new BIICODE project:</p><pre class="crayon-plain-tag">~$ bii init osc
+~$ cd osc
+~$ bii new mariadeanton/oscpack
+~$ cd blocks/mariadeanton/oscpack</pre><p>Put the content of the latest version of Oscpack into <code>blocks/mariadeanton/oscpack </code> folder. Adapt the readme file to notify users the specifics of the lib and its biicode adaptation.</p><p>Create a new Bitbucket repository:</p><p><img
+class="size-large wp-image-1887 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/bitbucket1-1024x174.png" alt="bitbucket repository" width="630" height="107" /></p><p>Copy the HTTPS or SSH address as marked in red on the image. You will need this on the steps below to establish a &#8220;remote origin&#8221;:</p><pre class="crayon-plain-tag">git init
+git add .
+git commit -m "first commit"
+git remote add origin git@bitbucket.org:mariadeanton/oscpack-biicode.git
+git push -u origin master</pre><p>Once first commit is pushed the original library is ready to be adapted.</p><h3>Specifics</h3><h4>A. Check if biicode finds the links between sources</h4><p>Execute <code>bii deps </code> to get all information related to biicode&#8217;s dependency scanning:</p><pre class="crayon-plain-tag">bii deps</pre><p><img
+class="size-full wp-image-1890 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/biideps1.png" alt="biideps1" width="348" height="537" /></p><p>Seems we&#8217;ve got to include the current working directory into dependency search and build.</p><p>If you execute:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>It won&#8217;t compile.</p><h5>A.1. Create a <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a>  file into blocks/username/blockname/ folder</h5><p>and write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/</pre><p>&nbsp;</p><h4></h4><p><img
+class="aligncenter size-large wp-image-1991" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-paths-1024x328.png" alt="osc-paths" width="630" height="201" /></p><h4>B. Build and compile</h4><h5>B.1. Ensure original code logic remains</h5><p>Just with these updates, both biicode and compiler know they should include current source directory, but <code>bii cpp:build</code> can&#8217;t compile properly, why is this happening?</p><p>Check out the previous <code>CMakeLists.txt</code>, it separates the versions of <code>NetworkingUtils.cpp</code> depending on whether the OS is Win32 or POSIX based. It also includes <code>winmm</code> library when using Win32 . As Ross Bencina himself explains &#8220;the IpSystemTypePath selects the correct ones based on the current platform&#8221;.</p><p>Update your <code>CMakeLists.txt</code> to ignore posix folder content while on Win32 and vice versa. It also adds a line after <code>ADD_BIICODE_TARGETS </code>to link <code>winmm</code> lib on Win32:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Discard Posix Folder while on Win32 and vice versa
+  IF(WIN32)
+  list(REMOVE_ITEM  BII_LIB_SRC ip/posix/NetworkingUtils.cpp ip/posix/UdpSocket.cpp)
+  ELSE()
+  list(REMOVE_ITEM  BII_LIB_SRC ip/win32/NetworkingUtils.cpp ip/win32/UdpSocket.cpp)
+  ENDIF()
+  ADD_BIICODE_TARGETS()
+  # Link winmm lib while on Win32
+  IF(WIN32)
+  TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC winmm)
+  ENDIF()
+  # Include base block directory
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+ELSE()
+  # Previous CMakeLists.txt goes here</pre><p></p><h5>B.2. See for yourself what&#8217;s going on</h5><p>Execute:</p><pre class="crayon-plain-tag">~$ bii cpp:build</pre><p><em>(A successful build happens on POSIX OS but not on Win32)</em><br
+/> Let&#8217;s check the <code>bii_username_blockname_vars.cmake</code> file located into the <code>cmake</code> folder on your project. You can see all source code files linked here.<br
+/> <img
+class="aligncenter size-full wp-image-1892" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/cmake.png" alt="cmake" width="953" height="606" /></p><p>There it is! <code>ip/win32/UdpSocket.cpp</code> is missing.</p><h5>B.3. Manually specify dependencies</h5><p>Establish a dependency between <code>ip/UdpSocket.h</code> and <code>ip/win32/UdpSocket.cpp</code> just writing in the <em>[dependencies]</em> section of your <a
+title="biicode conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> file:</p><pre class="crayon-plain-tag">ip/UdpSocket.h + ip/win32/UdpSocket.cpp</pre><p>&nbsp;</p><p><img
+class="aligncenter size-large wp-image-1990" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-dependencies-1024x227.png" alt="osc-dependencies" width="630" height="139" /></p><p>Save all changes and you&#8217;re ready to go!</p><h4>C. Publish</h4><p>Push your changes to Bitbucket and publish to biicode, Oscpack library is ready to be reused!</p><pre class="crayon-plain-tag">bii publish</pre><p>Once you&#8217;ve tested Oscpack library on the different OS you can publish it as stable:</p><pre class="crayon-plain-tag">bii publish --tag=STABLE</pre><p></p><h4>D. Enjoy!</h4><p>Use <a
+href="http://www.biicode.com/Maria/oscpack" target="_blank">Oscpack library on biicode.</a> For example, you can include:</p><pre class="crayon-plain-tag">#include "Maria/oscpack/osc/OscPrintReceivedElements.h"
+//or
+#include "Maria/oscpack/ip/UdpSocket.h"</pre><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-oscpack/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Automatically build and publish via Travis CI and Github</title><link>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/</link> <comments>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/#comments</comments> <pubDate>Thu, 06 Nov 2014 10:22:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[Integration]]></category> <category><![CDATA[Testing]]></category> <category><![CDATA[Travis.CI]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1877</guid> <description><![CDATA[<p>This is a simple guide about how to automatically build and publish via Travis CI and Github. biicode, Travis CI and Github: a C/C++ dev environment GitHub allows us to create a remote repository to develop collaboratively. Travis CI provides continuous integration inside our projects. Import from GitHub! First of all make sure you&#8217;ve installed [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/">Automatically build and publish via Travis CI and Github</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<div
+class="article-wrap"><p>This is a simple guide about how to automatically build and publish via Travis CI and Github.</p><h2><strong>biicode, Travis CI and Github: a C/C++ dev environment</strong></h2><p>GitHub allows us to create a remote repository to develop collaboratively.<br
+/> Travis CI provides continuous integration inside our projects.</p><p><img
+class="aligncenter wp-image-1884 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/logotravis.png" alt="logotravis" width="300" height="295" /></p><p><span
+id="more-1877"></span></p><h3><strong>Import from GitHub!</strong></h3><p>First of all make sure you&#8217;ve installed <strong>biicod</strong>e and <strong>Git</strong>.<br
+/> Once both you got both of them, you can clone the <a
+title="github" href="https://github.com/" target="_blank">github</a> repository you want to make a new biicode block.</p><p><img
+class="aligncenter wp-image-2104 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/clone-1024x683.png" alt="clone" width="630" height="420" /></p><p>Create the new BIICODE project (as usual) and create q working local copy in your biicode block:</p><pre class="crayon-plain-tag">$ bii init myproject
+$ cd myproject/blocks
+$ git clone https://github.com/lasote/docker_client.git
+$ cd docker_client</pre><p>Now we&#8217;ve got everything we need to start working locally.</p><h3><strong>Automatically build your projects via Travis CI</strong></h3><p>Travis CI provides continuous integration inside your project, to use it, just create a file named &#8220;.travis.yml&#8221; inside your project folder.</p><p>Write on your &#8220;.travis.yml&#8221; file, the commands to build your project, and if it successes publish it automatically to BIICODE.</p><p>First of all sign up in <a
+title="travis" href="https://travis-ci.org/" target="_blank">Travis CI</a> with your <a
+title="Github" href="https://github.com/" target="_blank">GitHub </a>account and once there, go to your profile, sync your repos and enable Travis CI building:<img
+class="aligncenter size-large wp-image-2027" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/travis-ci-1024x461.png" alt="travis-ci" width="630" height="284" /></p><p>To use Travis CI in your project you&#8217;ve got to be using a Linux machine (you can use: Koding, Cloud9IDE or just a virtual machine on your computer). Once in your linux machine check if ruby is installed:</p><pre class="crayon-plain-tag">$ which ruby</pre><p>if you see a path such as <em>/usr/bin/ruby</em>, Ruby is installed.</p><p>If ruby is not installed:</p><pre class="crayon-plain-tag">$ sudo apt-get install ruby</pre><p>When ruby is installed:</p><pre class="crayon-plain-tag">$ sudo gem install travis</pre><p>Please check <a
+href="http://docs.travis-ci.com/user/languages/cpp/">Travis docs</a> or <a
+title="stackoverflow ruby-gems travis" href="http://stackoverflow.com/questions/18354959/building-native-extensions-error-in-installing-ruby-gems" target="_blank">stackoverflow related issues </a>if your having any troubles installing travis gem.</p><p>Now, create your &#8220;.travis.yml&#8221; file like the example below on your block folder, this file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, don&#8217;t forget to adjust the config and <em><strong>&#8220;the env&#8221;</strong></em> it to your needs:</p><p>&#8220;.travis.yml&#8221;</p><pre class="crayon-plain-tag">language: cpp
+compiler:
+- gcc
+before_install:
+- export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
+- if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
+- if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+  fi
+- sudo apt-get update -qq
+- git config --global user.email "$USER_EMAIL"
+- git config --global user.name "$USER_NAME"
+- git config --global push.default simple
+- git checkout $TRAVIS_BRANCH
+install:
+- if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++
+  /usr/bin/g++-4.8 50; fi
+- wget http://www.biicode.com/downloads/latest/ubuntu64
+- mv ubuntu64 bii-ubuntu64.deb
+- sudo dpkg -i bii-ubuntu64.deb &amp;&amp; sudo apt-get -f install
+- rm bii-ubuntu64.deb
+- wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+- tar -xzf cmake-3.0.2-Linux-64.tar.gz
+- sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+- rm -rf cmake-3.0.2-Linux-64
+- rm cmake-3.0.2-Linux-64.tar.gz
+- export TRAVIS_CXX=$CXX
+script:
+- cd /tmp
+- bii init -L
+- shopt -s dotglob &amp;&amp; mv $TRAVIS_BUILD_DIR/* ./
+- if [ "$CXX" == "clang++" ]; then export CXX="clang++" &amp;&amp; bii build; fi
+- if [ "$CXX" == "g++" ];     then export CXX="g++"     &amp;&amp; bii build; fi
+##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################
+- ls ./bin/lasote_docker_client_example_main
+#########################################################################################
+after_success:
+- bii user $USER -p $BII_PASSWORD
+- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
+  || echo "Ignored publish output..."; fi
+- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output...";
+  fi
+# If there are changes, commit them
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" &gt; .git/credentials
+- git add -A .
+- git commit -m "$COMMIT_IGNORE_BUILD"
+- git remote -v
+- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git
+- git push
+env:
+  global:
+  - USER_EMAIL=lasote@gmail.com
+  - USER_NAME="Luis Martinez de Bartolome"
+  - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
+  - BLOCK_NAME=docker_client
+  - USER=lasote
+  # BII_PASSWORD: Biicode USER's password. &gt; travis encrypt BII_PASSWORD=XXXXXX --add
+  - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
+  # GH_TOKEN: Github token &gt; travis encrypt GH_TOKEN=XXXXXX --add
+  - secure: gNKs9E4Fh2agwqaGFTl1uzLvT+PrhykIi57eo9IkAlBuae/jOjAqxGua7NM7Rg+FxjLYh+wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm+wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk=</pre><p>Let&#8217;s take a deeper look this file, as you can see there are 6 different parts in the <a
+title="build lifecycle travis ci" href="http://docs.travis-ci.com/user/build-configuration/#Build-Lifecycle" target="_blank">Build Lifecycle as explained in Travis CI docs</a> (language, compiler, before_install, install, script, after_success):</p><ul><li><em>Language</em> and <em>compiler</em> are totally clear (this is where you choose the language and compiler that Travis CI will use).</li><li><em>Before_installing</em>, stablishes our automatic commit must be ignored and configures git to push later, on the after_success part.</li><li><em>Install</em> provides the tools necessary to test our code with BIICODE.</li><li><em>Script</em> part creates, builds and runs the project and checks if the project successes.</li><li><em>After_success</em> part is to publish your project to biicode as STABLE with VERSION_TAG if tagged in github, otherwise it publishes as DEV. Also, if your biicode.conf file is updated, this commits its changes to github without launching a new build.</li><li><em>env: </em>replace all environment values with your own ones. Don&#8217;t delete the <em>***travis***</em>  text, as it is the one needed to specify that commit should skip build, avoiding entering an endless build loop.</li></ul><h2 id="building-appveyor-specifics">Encrypting</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="creating-github-personal-access-token">Encode your password</h3><p>And now, encode your github token and biicode password (to archive this you&#8217;ve got to <strong>locate in your block&#8217;s folder</strong>). This command automatically writes the value returned to your &#8220;.travis.yml&#8221; file:</p><pre class="crayon-plain-tag">$ travis encrypt GH_TOKEN=XXXXXXX --add</pre><p></p><pre class="crayon-plain-tag">$ travis encrypt BII_PASSWORD=XXXXXXXXXXX --add</pre><p>The lines added should look like this one:</p><pre class="crayon-plain-tag">env:
+   global:
+      secure:
+M+/Hjhv5M0+MyXhTCLYUWJje4r6I8rYohUhpgjH9nODJUuC10rAokWg6L8f3Z8haaNyfFoNVYLeA1kAKtemlBJK4Mqf7Z9W92URLfL/U8xwoWzwudH2EvjUQPX8Um7Xgu5e4arHjsuQ1mzL9ghg8O6SENS4YrGZX3QfKptVEAuw=</pre><p>To more information about this, you can take a look at <a
+title="Travis-ci docs" href="http://docs.travis-ci.com/user/encryption-keys/" target="_blank">Travis CI docs</a>.</p><p>It&#8217;s a good practice to add to your readme the build status image Travis CI gives you here:</p><p>&nbsp;</p><p><img
+class="alignright size-large wp-image-2106" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/badge_travis1-1024x365.png" alt="badge_travis" width="630" height="225" /></p><h3><strong>Update your GitHub!</strong></h3><p>Once you&#8217;ve updated your repo locally, add all files and updates via git:</p><pre class="crayon-plain-tag">$ git add .</pre><p>and commit your updates:</p><pre class="crayon-plain-tag">$ git commit -m "commit message"</pre><p>Now, send those updates to your remote repository:</p><pre class="crayon-plain-tag">$ git push origin master</pre><p></p><h3><strong>Build each commit</strong></h3><p>So whenever you want to check your build, just press the build status image and it will directly get into the Travis CI build.</p><p><img
+class="aligncenter wp-image-1881 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/travis2-1024x502.png" alt="travis2" width="630" height="308" /></p><p>So this is it, enjoy!</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Docker C++ Client" href="https://github.com/lasote/docker_client" target="_blank">GitHub Docker-Client Repo</a>.</li><li><a
+title="travis ci build docker c++ client" href="https://travis-ci.org/lasote/docker_client" target="_blank">Docker-Client builds in Travis</a> CI and Deployment</li><li><a
+title="Docker Client Block biicode" href="https://www.biicode.com/lasote/docker_client" target="_blank">Docker-client biicode block</a> and with its automatically published releases</li></ul><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/">Automatically build and publish via Travis CI and Github</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/feed/</wfw:commentRss> <slash:comments>12</slash:comments> </item> <item><title>Multiplatform Arcade Game in 6 steps with SDL and OpenGL</title><link>http://blog.biicode.com/multiplatform-arcade-sdl/</link> <comments>http://blog.biicode.com/multiplatform-arcade-sdl/#comments</comments> <pubDate>Thu, 23 Oct 2014 13:28:28 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[2D]]></category> <category><![CDATA[arcade game]]></category> <category><![CDATA[freeglut]]></category> <category><![CDATA[GLUI]]></category> <category><![CDATA[OpenGL]]></category> <category><![CDATA[SDL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1850</guid> <description><![CDATA[<p>Biicode already has the first adaptations of libraries like SDL, glui or freeglut, which standardize the access to the windows system. With a little bit of design, and aiming to simplify the life of the programmer, I designed some classes that can be very useful for simple 2D games. The following images are screenshots of two [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/multiplatform-arcade-sdl/">Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode already has the first adaptations of libraries like SDL, glui or freeglut, which standardize the access to the windows system. With a little bit of design, and aiming to simplify the life of the programmer, I designed some classes that can be very useful for simple 2D games. The following images are screenshots of two examples included in examples/game_utils. The second one corresponds to the <a
+title="shooting game c++" href="http://www.biicode.com/examples/post_game" target="_blank">shooting game application</a> we&#8217;ll develop in this mini-tutorial:</p><p><img
+class="aligncenter wp-image-1854" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/game_test.png" alt="game_test_SDL" width="630" height="498" /></p><p><span
+id="more-1850"></span></p><h2>sdl and opengl with biicode</h2><p>Most of the &#8220;Arcade&#8221; games contain the same types of elements: scroll-able backgrounds, sprites (static or animated), text info  and sound. With those elements, each game determines the specific logic, with its stages, levels, and interactions. It is also necessary to interact with the game via the keyboard, mouse, joystick etc.</p><p>In <a
+title="Arcade Game classes " href="http://www.biicode.com/miguel/game_utils" target="_blank">miguel/game_utils</a> the class <b>OpenglGame </b>is provided to easily design a 2D game simplifying the basic use of SDL and OpenGL libs.</p><p>Check the <a
+href="http://www.biicode.com/examples/post_game" target="_blank">post&#8217;s example game </a>immediately by executing:</p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii open examples/post_game
+~$ bii cpp:build
+~$ cd bin
+~$ #execute the game!</pre><p>Let&#8217;s take a step by step look into our game:</p><h3>1. <strong>Create a project and a block to hold your code.</strong></h3><p></p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii new username/simple</pre><p>Create the file game.cpp into blocks/examples/simple directory and put into it the code below to create a simple window:</p><pre class="crayon-plain-tag">#include "miguel/game_utils/OpenglGame.h"
+class MiGame : public OpenglGame
+{
+; //nothing to do
+} mainGame;
+int main(int argc, char** argv) //SDL requires this kind of main
+{
+mainGame.execute();
+return 0;
+}</pre><p>Let’s retrieve the dependencies to the OpenglGame:</p><pre class="crayon-plain-tag">bii find</pre><p>Biicode uses by default with MinGW, so if you want to build with Visual Studio execute:</p><pre class="crayon-plain-tag">bii cpp:configure -G “Visual Studio 10”</pre><p>Build the example:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>If everything worked out properly, a binary file was created into your bin folder: “examples_simple_game” .</p><p>Execute and check what happens: a simple window should appear.</p><p>If you compiled using Visual Studio, in addition to it, the system console also popups. To remove this unwanted additional window, we have to set the &#8220;SUBSYSTEM&#8221;  property in Visual Studio for the exe target. We do this by adding the following lines to CMakeLists.txt after the ADD_BIICODE_TARGETS() line:</p><pre class="crayon-plain-tag">if(MSVC)
+    set_target_properties(${BII_game_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h3>2. <b>Using the keyboard</b></h3><p>Re-act according to keystrokes is quite simple, you only have to overwrite the onKeyboardDown virtual method. The following lines allow to end the application when the ESC key is pressed.</p><pre class="crayon-plain-tag">void onKeyboardDown(SDL_KeyboardEvent k){
+        if(k.keysym.sym==SDLK_ESCAPE)this-&gt;exit();
+}</pre><p></p><h3>3. <b>Drawing a background  </b></h3><p>Managing images and textures has always been a relatively tedious and repetitive  task in OpenGL.</p><p><b>OpenglGame </b>includes a png file reader and the Slide class to create backgrounds easily. The loading of textures, thus the creation of backgrounds and Sprites, must take place within a drawing context. In <b>OpenglGame </b>we do this redefining the setup() method.</p><p>Although it is possible to create sophisticated backgrounds, we will make use of the simplicity provided by the OpenglGame class for a basic background:</p><pre class="crayon-plain-tag">bool setup(){
+setBackground(new Slide(getTexture("data/background.png")));
+return true;
+}</pre><p>Download our <a
+title="data folder.zip" href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/data_folder.zip" target="_blank">data folder utils .zip</a> here and place the folder into <em>blocks/username/simple</em>, we&#8217;re using three different images and a font in this tutorial. For example this is our background:</p><p><img
+class="aligncenter wp-image-1852 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/background-1024x524.png" alt="Game background using SDL and OpenGL" width="630" height="322" /></p><p>Although everything compiles correctly, to run the program, it is necessary to maintain the relative path between the executable and the data. Add the following lines to your CMakeLists.txt right after INIT_BIICODE_BLOCK(). With this lines, the files in the data directory will be copied to the binary dir and to the IDE runtime directory:</p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})</pre><p>Also update your dependencies.bii file, located into game/blocks/username/post_game, this tells biicode to also retrieve the local .png and .ttf files on our data folder:</p><pre class="crayon-plain-tag">game.cpp + data/*.png data/*.ttf</pre><p>If you compile again, you&#8217;d see a window that has our image as background. In this case it has not established any special behavior on the background dimensions, so a default scale of 1:1 in pixels is applied, and the image will stick to the bottom left edges of the window.  OpenglGame class defines its own coordinate system, placing the origin  0,0 at the lower left corner of the window. You have to be careful because events like mouse clicks and images are normalized to this unique coordinate system.</p><h3>4. <b>Loading, drawing and moving our first sprite:</b></h3><p>Let´s include a simple sprite loading a png image.  We add the crosshair variable to MiGame class to allows us to access the sprite attributes later:</p><pre class="crayon-plain-tag">Sprite *crosshair;</pre><p>In the setup we include the creation of the Sprite, and we add it to the list of Sprites managed by MiGame.</p><pre class="crayon-plain-tag">crosshair=new Sprite(getTexture("data/crossair.png"));
+addSprite(crosshair);</pre><p>Once created the crosshair, we&#8217;ve got to follow the mouse movement over the window. Just define the method onMouseMotion()  and make the position of the sprite to match the mouse position:</p><pre class="crayon-plain-tag">void onMouseMotion(SDL_MouseMotionEvent mmevent){
+    crosshair-&gt;pos=Vector2D(mmevent.x,mmevent.y);
+}</pre><p>If we compile and run the example, we’ll  see that it works, but is little aesthetic that we continue seeing the mouse cursor when moving the crosshair. Therefore, in the setup, we will tell SDL to hide the mouse cursor:</p><pre class="crayon-plain-tag">SDL_ShowCursor(SDL_DISABLE);</pre><p></p><h4>4.1. <strong>Adding an animated sprite:</strong></h4><p>Although there are many ways to define a sequence of images that give the impression of movement in a sprite, one of the most common is to have a matrix of drawings with the consecutive frames of the animation.</p><p>To work comfortably with it, we&#8217;ve developed the SpriteSequence class as an specialization of the class Sprite. To use it you have to include the header file:<strong><strong><br
+/> </strong></strong></p><pre class="crayon-plain-tag">#include "miguel/game_utils/SpriteSequence.h"</pre><p>In this case we will add a butterfly, which I have obtained from google searching “butterfly sprite sequence” :</p><p><img
+class="aligncenter wp-image-1851 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/butterfly.png" alt="butterfly sprite" width="700" height="94" /></p><p>The animation is defined by a 1&#215;7 matrix, something that we have to specify when creating the SpriteSequence:</p><pre class="crayon-plain-tag">butterfly= new SpriteSequence(getTexture("data/butterfly.png"),7,1,100,true,200,200);
+addSprite(butterfly);</pre><p></p><h3>5. <strong>Moving the sprite:</strong></h3><p>As in most games, there is a cyclic method responsible of the game logic that we usually redefine: <strong>gameLoop ()</strong>. Since this method is implented in the base class to manage the sprite animations, when redefined, we&#8217;ll include a call to the base class function. We add a very primitive intelligence to the butterfly based on Dice, a game_utils class which allows us to obtain random numbers in a simple way.</p><h3>6. <strong>Printing Scores:</strong></h3><p>Finally, we will set a score, based on the number of shots and the number of hits. So we declare two integer variables that record these values​​, write the logic of shooting and we printing the result as overlay info of the game. Making use of the supplied font loading class on the method <strong>drawGame()</strong>.</p><h3><strong>Results:</strong></h3><p>So your game.cpp file should look like this one:</p><pre class="crayon-plain-tag">#include "miguel/game_utils/OpenglGame.h"
+#include "miguel/game_utils/SpriteSequence.h"
+#include "miguel/game_utils/Dice.h"
+#include "stdio.h"
+class MiGame : public OpenglGame
+{
+	Sprite *crosshair;
+	Sprite *butterfly;
+	Sprite *squirrel;
+	int hits, shots;
+    void onKeyboardDown(SDL_KeyboardEvent k){
+        if(k.keysym.sym==SDLK_ESCAPE)this-&gt;exit();
+	}
+     bool setup(){
+		 SDL_ShowCursor(SDL_DISABLE);
+		 setBackground(new Slide(getTexture("data/background.png")));
+		 crosshair=new Sprite(getTexture("data/crossair.png"), 100,100);
+		 butterfly= new SpriteSequence(getTexture("data/butterfly.png"),7,1,100,true,200,400);
+		 addSprite(butterfly);
+		 addSprite(crosshair);
+		 hits=0;shots=0;
+		return true;
+	 }
+   void onMouseMotion(SDL_MouseMotionEvent mmevent){
+	   crosshair-&gt;pos=Vector2D(mmevent.x,mmevent.y);
+   }
+   void gameLoop()
+   {
+	   OpenglGame::gameLoop();
+	   if(Dice::Int(100)==1)
+		   butterfly-&gt;vel=Vector2D(Dice::Double(250,-250),Dice::Double(30,-30));
+	   if((butterfly-&gt;pos.x&lt;100)&amp;&amp;(butterfly-&gt;vel.x&lt;0))butterfly-&gt;vel.x=-butterfly-&gt;vel.x;
+	   if((butterfly-&gt;pos.x&gt;getWidth())&amp;&amp;(butterfly-&gt;vel.x&gt;0))butterfly-&gt;vel.x=-butterfly-&gt;vel.x;
+	   if((butterfly-&gt;pos.y&lt;100)&amp;&amp;(butterfly-&gt;vel.y&lt;0))butterfly-&gt;vel.y=-butterfly-&gt;vel.y;
+	   if((butterfly-&gt;pos.y&gt;getHeight())&amp;&amp;(butterfly-&gt;vel.y&gt;0))butterfly-&gt;vel.y=-butterfly-&gt;vel.y;
+	   butterfly-&gt;horizontal_flip=butterfly-&gt;vel.x&gt;0;
+   }
+   void onMouseButtonDown(SDL_MouseButtonEvent mb){
+	   if(mb.button==SDL_BUTTON_LEFT){
+		   shots++;
+		   if((butterfly-&gt;pos-Vector2D(mb.x,mb.y)).module()&lt;20){
+			   hits++;
+			   butterfly-&gt;pos=Vector2D(Dice::Double(getWidth(),100),Dice::Double(getHeight(),100));
+		   }
+	   }
+   }
+	void drawGame(){
+		char text[100];
+		OpenglGame::drawGame();
+		sprintf(text,"Hits/Shots %d/%d",hits,shots);
+		drawText("data/Bitwise.ttf",20,text,50,getHeight()-50,255,255,150,true);
+	}
+} mainGame;
+int main(int argc, char** argv)
+{
+mainGame.execute();
+return 0;
+}</pre><p>And this is the CMakeLists.txt:</p><pre class="crayon-plain-tag"># This CMakeLists.txt file helps defining your block building and compiling
+# Include the main biicode macros and functions
+# To learn more about the CMake use with biicode, visit http://docs.biicode.com/c++/building.html
+# Or check the examples below
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+ADD_BIICODE_TARGETS()
+if(MSVC)
+    set_target_properties(${BII_game_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p>You&#8217;re ready to go,  wanna try other examples available?</p><p><img
+class="aligncenter wp-image-1855 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/space_game.png" alt="Space game developed with SDL and OpenGL" width="652" height="515" /></p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii open examples/game_utils
+~$ bii cpp:build
+~$ cd bin
+~$ #execute the games!</pre><p></p><h3>Enjoy SDL and Open GL in biicode!</h3><p><a
+href="http://www.opengl.org/"><img
+class=" wp-image-2046 size-medium aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/OpenGL_in_biicode-300x125.png" alt="Open GL working fine in biicode" width="300" height="125" /></a></p><p>&nbsp;</p><p><a
+href="https://www.libsdl.org"><img
+class=" wp-image-1856 size-medium aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/preview-300x174.png" alt="SDL lib" width="300" height="174" /></a></p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/multiplatform-arcade-sdl/">Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/multiplatform-arcade-sdl/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> </channel> </rss>

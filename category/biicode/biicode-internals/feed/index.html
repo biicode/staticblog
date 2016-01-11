@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; biicode-internals</title> <atom:link href="http://blog.biicode.com/category/biicode/biicode-internals/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Compiling with biicode: CMake, build process, IDEs and more</title><link>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/</link> <comments>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/#comments</comments> <pubDate>Thu, 30 Apr 2015 13:44:43 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[Build system]]></category> <category><![CDATA[CLion]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[compile]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[Visual Studio]]></category> <category><![CDATA[VS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2234</guid> <description><![CDATA[<p>biicode knows how source code files connect to each other. With this information, it creates a boilerplate CMake layout to build your project automatically. biicode then detects how sources connect and builds a dependency graph following #includes and implementations generating, for each block, a CMakeLists.txt defining variables to the dependency graph detected. This translates into a CMakeLists.txt [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/">Compiling with biicode: CMake, build process, IDEs and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>biicode knows how source code files connect to each other. With this information, it creates a boilerplate <b>CMake</b> layout to build your project automatically. biicode then detects how sources connect and builds a dependency graph following #includes and implementations generating, for each block, a <em>CMakeLists.txt</em> defining variables to the dependency graph detected.</p><p>This translates into a <em>CMakeLists.txt</em> file with just one line by default:</p><pre class="crayon-plain-tag">ADD_BII_TARGETS()</pre><p>Even though the boilerplate might be enough for some projects, <a
+href="http://docs.biicode.com/c++/building.html" target="_blank">here’s a guide to fully control the building process</a>.</p><p>Today, we explain the different options available in biicode once you’ve got your <em>CMakeLists.txt</em> ready.</p><p><img
+class="aligncenter wp-image-2235 size-full" title="biicode works just fine with these popular IDEs" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/compiling-ide-biicode.jpg" alt="Compiling with biicode" width="640" height="350" /></p><p><span
+id="more-2234"></span></p><h2>Compiling with biicode</h2><p><b>bii configure</b> or <b>bii build</b> commands generate a <i>CMakeLists.txt</i> file in each block. Both commands accept CMake directives. For example, you can switch between building with gcc or clang just by running:</p><pre class="crayon-plain-tag">bii configure -DCMAKE_CXX_COMPILER=g++</pre><p>or</p><pre class="crayon-plain-tag">bii configure -DCMAKE_CXX_COMPILER=$(which clang++)</pre><p>You can also choose the build type:</p><pre class="crayon-plain-tag">bii configure -DCMAKE_BUILD_TYPE=DEBUG</pre><p>Possible values are: <b>DEBUG</b>, <b>RELEASE</b>, <b>RELWITHDEBINFO </b>and <b>MINSIZEREL.</b></p><p>You can build your projects with the parameters CMake offers depending on your OS.</p><h2>IDEs</h2><p>By default, biicode configures projects with no IDE. Using MinGW in Windows UNIX Makefiles in MacOS and Linux. But you can use CMake generators to <b>create biicode projects for different IDEs and platforms.</b></p><blockquote><p>A <i>CMake Generator</i> is responsible for writing the input files for a native build system. Exactly one of the <a
+href="http://www.cmake.org/cmake/help/v3.0/manual/cmake-generators.7.html#cmake-generators">CMake Generators</a> must be selected for a build tree to determine what native build system is to be used. CMake Generators are platform-specific so each may be available only on certain platforms.</p></blockquote><p>Execute <code>cmake --help</code> to see the full list of CMake generators available in your system:</p><pre class="crayon-plain-tag">cmake --help</pre><p>Let&#8217;s get into specifics using generators available for common IDEs:</p><h3>Eclipse CDT</h3><p>Linux/Mac OSX users:</p><pre class="crayon-plain-tag">bii configure -G "Eclipse CDT4 - Unix Makefiles"</pre><p>If you are using Eclipse with <b>Mac OS X</b>, you may need some additional setup to execute your binaries within this IDE. <a
+href="http://docs.biicode.com/c++/troubleshooting.html#eclipse-osx-binaries"><i>Read this troubleshooting section for more information</i></a>.</p><p>Windows users:</p><pre class="crayon-plain-tag">bii configure -G "Eclipse CDT4 - MinGW Makefiles"</pre><p>And once done, you can  import your project into Eclipse:</p><ol><li>Choose: <i>File &gt; import&#8230;</i></li><li>Now, <i>general &gt; Existing Projects into Workspace &gt; n</i>ext.</li><li>Select the root directory as the <b>root folder of your project</b>.</li><li>You should see a project already selected in the <i>projects</i> box. Click <i>finish</i>.</li></ol><h3>Visual Studio</h3><p>Generate a Microsoft Visual Studio 12 (2013) project:</p><pre class="crayon-plain-tag">bii configure -G "Visual Studio 12"</pre><p>Open your project with Visual Studio. Just double-click on the .sln file inside the build folder of your project and a VS project opens.</p><h3>CLion</h3><p>CLion&#8217;s compatibility is way easier, just get into your project’s folder and execute:</p><pre class="crayon-plain-tag">bii init  -L=clion</pre><p>Configure your project to set the changes:</p><pre class="crayon-plain-tag">bii configure</pre><p>Open the biicode project with CLion <i>(File -&gt; Open)</i>.</p><p>And use biicode’s commands from the embedded Terminal in CLion, open it with: <b>Alt+F12</b> or <i>View -&gt; Tool Windows -&gt; Terminal</i>.</p><h2>Your turn</h2><p>There are many options available, even some we haven&#8217;t tried yet, give it a try and tell us how you use biicode, we&#8217;re waiting forward to hear from you!</p><p>Some biicoders are hacking around already:</p><blockquote
+class="twitter-tweet" lang="en"><p
+dir="ltr" lang="en">Pumped that <a
+href="https://twitter.com/biicode">@biicode</a> now works with KDevelop using the clion layout.</p><p>— Zachary Grafton (@zackgrafton) <a
+href="https://twitter.com/zackgrafton/status/576761064131559424">March 14, 2015</a></p></blockquote><p><script src="//platform.twitter.com/widgets.js" async="" charset="utf-8"></script></p><p>&nbsp;</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/">Compiling with biicode: CMake, build process, IDEs and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/compiling-with-biicode-cmake-build-process-ides-and-more/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>New Terms of Service</title><link>http://blog.biicode.com/new-terms-of-service/</link> <comments>http://blog.biicode.com/new-terms-of-service/#comments</comments> <pubDate>Thu, 16 Apr 2015 15:09:57 +0000</pubDate> <dc:creator><![CDATA[jordi]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[Code licencing]]></category> <category><![CDATA[free and premium accounts]]></category> <category><![CDATA[open source]]></category> <category><![CDATA[ToS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2191</guid> <description><![CDATA[<p>We talked about our old Terms of Service in a previous post and we explained then why we hadn&#8217;t paid enough attention to them while the developing the tool. The latter has evolved and added such degrees of complexity that the legal support for the users and the company needed a rethink and a rephrasing to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-terms-of-service/">New Terms of Service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We talked about our old Terms of Service in a <a
+href="http://blog.biicode.com/tos-dont-like-well-others/">previous post</a> and we explained then why we hadn&#8217;t paid enough attention to them while the developing the tool. The latter has evolved and added such degrees of complexity that the legal support for the users and the company needed a rethink and a rephrasing to say the least. And that&#8217;s exactly what we did: after consulting with our legal counselors and talking to companies that provide similar services, we have revamped the ToS, check the new ones <a
+href="http://web.biicode.com/legal/terms-and-conditions/">here</a>.</p><p><img
+class=" wp-image-1597 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/terms-of-service.jpg" alt="biicode's new Terms of service" width="800" height="197" /></p><h2></h2><p><span
+id="more-2191"></span></p><h2>A few things about the new Terms of Service</h2><p>The aforementioned degrees of complexity can be listed as follows:</p><ul><li>Going open source</li><li>User code licensing</li><li>Deletion of accounts</li><li>Free and Premium accounts</li></ul><h3>Open Source</h3><p>biicode just announced the release of its code (read more <a
+href="http://blog.biicode.com/biicode-open-source-client/">here</a>), thus the new ToS take this new reality into consideration. In fact, alongside the <a
+href="http://web.biicode.com/legal/community-guidelines">Community Guidelines</a>, <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> and the licence under which the user&#8217;s code is, these ToS guide the usage of the tools. Therefor their importance is capital and, as you can see we do not modify them carelessly or unadvisedly; on the contrary we welcome your input and we try as much as possible to be developer friendly. We support as much as we can the C and C++ communities.</p><h3>Licence</h3><p>We have released both the <a
+href="https://github.com/biicode/client/blob/develop/LICENSE">client</a> and the <a
+href="https://github.com/biicode/common/blob/develop/LICENSE">common services</a> of biicode under <a
+href="http://opensource.org/licenses/MIT">MIT licence</a>. We believe this license gives free space for anyone to fork, modify, merge etc. biicode&#8217;s code and thus experiment or even create with it new products. Again, we&#8217;d love to see the C and C++ community blossom with tools that conform a modern programming environment.</p><p>Another aspect of the licensing of code affects the code supported (uploaded to) biicode&#8217;s cloud. We have also modified this application of the ToS in favour of easily licensing user. If no licence is indicated, full copyright protection is granted to the user that uploaded the code except for biicode&#8217;s Minimum Required Licence required to provide the services of access and query to other user&#8217;s of the code uploaded to free accounts, i.e. to show it in the our site.</p><p>All of biicode&#8217;s users will be informed of these changes in an email to come in the next few days.</p><p>Anyway, please take a look at the <a
+href="http://web.biicode.com/legal/terms-and-conditions/">new ToS</a> and tell us what you think. We welcome your feedback and input.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-terms-of-service/">New Terms of Service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/new-terms-of-service/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>biicode’s new basics &#8211; git remote linking, collaborators and more</title><link>http://blog.biicode.com/git-remote-collaborators/</link> <comments>http://blog.biicode.com/git-remote-collaborators/#comments</comments> <pubDate>Tue, 10 Mar 2015 15:02:26 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[collaborator]]></category> <category><![CDATA[feature]]></category> <category><![CDATA[git]]></category> <category><![CDATA[git remote]]></category> <category><![CDATA[Github]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2134</guid> <description><![CDATA[<p>We have decided to move out of beta some of our coolest features and allow any user enjoy them. Today we are featuring git remote linking and block collaborators management but we release every two to three weeks so expect new features like these coming every fortnight or so. These functionalities are now available to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-remote-collaborators/">biicode’s new basics &#8211; git remote linking, collaborators and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have decided to move out of beta some of our coolest features and allow any user enjoy them. Today we are featuring git remote linking and block collaborators management but we release every two to three weeks so expect new features like these coming every fortnight or so. These functionalities are now available to all biicode users. Enjoy! you can always suggest or upvote the existing features that are ahead in our roadmap <a
+href="http://web.biicode.com/community/roadmap/">here</a>.</p><p><span
+id="more-2134"></span></p><h2><b>Block collaborators management</b></h2><p>When we released collaborative blocks about half a year ago, we enabled this feature only for beta-premium accounts.<br
+/> There was &#8212; and there is &#8212; a lot to improve, but it makes sense you also get unlimited collaborators or admin for your unlimited free blocks.<br
+/> You can assign permissions to other users: assign them permissions over some of your blocks or give them full access to all your blocks. It’s up to you and the workflow you decide to set up.</p><p>To enable this just for one block, get into your block’s settings and assign permissions:</p><p><img
+class="aligncenter wp-image-2136 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/block-settings-1024x639.png" alt="Block settings include now collaborators" width="630" height="393" /></p><p>Want to enable full control of your account? Add administrators from your biicode web profile in the “Access management” section:</p><p><img
+class="aligncenter wp-image-2138 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/access-management-1024x503.png" alt="Access management section where you can tweak the collaborators permissions" width="630" height="309" /></p><p>That’s it &#8211; notifications and many other improvements are yet to come.</p><h2><b>Publishing git remote info<br
+/> </b></h2><p><img
+class="aligncenter wp-image-1148 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/git-hooks.jpg" alt="Integrate biicode using git hooks. Use git remote too." width="940" height="200" /></p><p>As you may recall, <a
+href="http://docs.biicode.com/c++/reference/commands/publish.html#bii-publish-command"><i>bii publish</i></a> command publishes your code to biicode.</p><p><code>bii publish -r </code> or <code>bii publish --remote</code> uses the git info within your block to publish it along with your block. This way everyone knows “who is” the git repo maintaining the biicode block and the specific commit creating each block version.</p><p>Just cd into your block and:</p><pre class="crayon-plain-tag">$ bii publish  -r</pre><p>This is how publishing with <code>bii publish --remote</code> looks like:</p><p><img
+class="aligncenter wp-image-2137 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/bii_publish_remote-1024x497.png" alt="Git remote publish is now available in biicode" width="630" height="306" /></p><p>You can mix bii publish parameters, for example:</p><pre class="crayon-plain-tag">bii publish -r --tag STABLE --versiontag v1.0.2</pre><p><a
+title="publishing biicode" href="http://docs.biicode.com/c++/publishing.html" target="_blank">Here&#8217;s more on publishing to biicode.</a></p><h2>The Future</h2><p>Biicode’s basic features<a
+href="http://docs.biicode.com/c++/release_notes.html"> keep getting better</a>, so there’s still more to come. Some things will work and others might need improvements, but it’s always fun to perfect our recipes with your feature requests and bug reports.</p><p>As you know, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-remote-collaborators/">biicode’s new basics &#8211; git remote linking, collaborators and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/git-remote-collaborators/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Lessons learnt adapting CppMicroServices to biicode</title><link>http://blog.biicode.com/cppmicroservices-biicode/</link> <comments>http://blog.biicode.com/cppmicroservices-biicode/#comments</comments> <pubDate>Wed, 11 Feb 2015 15:41:31 +0000</pubDate> <dc:creator><![CDATA[azriel]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[biicoders]]></category> <category><![CDATA[CppMicroServices]]></category> <category><![CDATA[upload libraries to biicode]]></category> <category><![CDATA[upload to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2058</guid> <description><![CDATA[<p>This post summarizes the lessons learnt from adapting the CppMicroServices framework to a biicode compatible format. It does not go into detail about the actual modifications, but focuses on the lessons learnt adapting the framework. Background CppMicroServices is an implementation of the OSGi framework, which enables runtime dependency injection. Modules of code (bundles) can be [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cppmicroservices-biicode/">Lessons learnt adapting CppMicroServices to biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>This post summarizes the lessons learnt from adapting the <a
+href="http://cppmicroservices.org/" target="_blank">CppMicroServices</a> framework to a biicode compatible format. It does not go into detail about the actual modifications, but focuses on the lessons learnt adapting the framework.</p><h2><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#background" rel="noreferrer" name="user-content-tools"></a>Background</h2><p>CppMicroServices is an implementation of the OSGi framework, which enables runtime dependency injection. Modules of code (bundles) can be loaded and unloaded at runtime. In the case of CppMicroServices, bundles are either shipped in the form of shared libraries, or statically linked into the executable.</p><p><img
+class="aligncenter wp-image-2067 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/cppmicroservices-300x60.png" alt="cppmicroservices" width="300" height="60" /></p><p>Based on <a
+href="http://en.wikipedia.org/wiki/Package_principles" rel="noreferrer">packaging principles</a>, bundles should be packaged and released separately &#8211; so that they can be depended on individually. biicode&#8217;s dependency management through blocks is suitable as a <a
+href="http://blog.biicode.com/file-based-cpp-dependency-manager/" target="_blank">dependency management tool</a> that supports this flow.</p><p><span
+id="more-2058"></span></p><h2><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#lessons-learnt-while-adapting-the-cppmicroservices-framework" rel="noreferrer" name="user-content-lessons-learnt-while-adapting-the-cppmicroservices-framework"></a>Lessons Learnt While Adapting the CppMicroServices Framework</h2><p>Never learn two things at once. This is one of the most important rules to obey when attempting a migration / modification. Another rule is to understand the specifics of each entity involved in the task &#8211; not just the concepts, but the concrete behaviour.</p><p>In my case, I understood the concepts of build and dependency management tools, but I was not familiar with biicode, CMake, and how CppMicroServices used CMake.</p><h3><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#tools" rel="noreferrer" name="user-content-tools"></a>Tools</h3><p>There are multiple layers of tools involved in a biicode build. biicode, CMake, Make, and the compiler (g++, clang, cl) and linker. When something fails, understand why it fails. It&#8217;s not always the lowest layer&#8217;s fault. Perhaps some CMake configuration wasn&#8217;t written to tell <code>ld</code> that a particular library needs to be linked.</p><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#biicode" rel="noreferrer" name="user-content-biicode"></a>biicode</h4><p>Of all of the components in play, biicode probably has the shallowest learning curve &#8211; for the most part. biicode&#8217;s documentation makes it easy to see how it works for freshly created blocks. The hard part is determining if it can do <em>some complex thing that isn&#8217;t documented</em>. The short answer is no, <a
+href="http://docs.biicode.com/c++/building.html#init-biicode-block" rel="noreferrer">what is documented</a> is what you get &#8211; but I found that this is enough. The trickiest part is populating the variables that biicode will read.</p><p>The <a
+href="http://forum.biicode.com/" rel="noreferrer">forum</a> is also a very helpful place to get your questions answered.</p><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#cmake" rel="noreferrer" name="user-content-cmake"></a>CMake</h4><p>CMake reads like a bash script &#8211; short sections are relatively easily understood, but once it gets big, navigating and understanding the code is a hassle. A few gotchas that mask obscure errors when CMake builds fail are:</p><ul
+class="task-list"><li><code>function_call(${param1} ${param2} ${param3})</code> is effectively <code>function_call(${param1} ${param3})</code> if <code>${param2}</code> is empty</li><li>if a subdirectory is added as part of a CMake build using add_subdirectory(<em>dirname</em>), it is in a scope where it is able to access variables set in the parent directory scope, but any variables set in this scope will not be accessible to the parent directory unless <code>PARENT_SCOPE</code> is passed to the function</li></ul><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#mixing-biicode-and-cmake" rel="noreferrer" name="user-content-mixing-biicode-and-cmake"></a>Mixing biicode and CMake</h4><p>If the project to be converted produces multiple artifacts, biicode needs the source files for its targets to be declared in the relevant BII_artifactname_SRC variables. This must be done before the <code>ADD_BIICODE_TARGETS()</code> function is called.</p><p>If a target&#8217;s source includes generated files, then the path to those generated files must be known before the target is added (i.e. prior to the <code>ADD_BIICODE_TARGETS()</code> call). If there is special processing required for a biicode target in a subdirectory, but that subdirectory is added before <code>ADD_BIICODE_TARGETS()</code> is called, then this cannot be done. Either:</p><ul
+class="task-list"><li>create a different static library target in the subdirectory, and link this to the biicode target instead, OR</li><li>perform that special processing in the parent directory&#8217;s CMake configuration after the biicode targets are added (may result in duplicated code)</li></ul><h3><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#building-and-testing" rel="noreferrer" name="user-content-building-and-testing"></a>Building and Testing</h3><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#build-each-combination" rel="noreferrer" name="user-content-build-each-combination"></a>Build each combination</h4><p>After making changes to the project, it is important to make sure it builds on the following combinations:</p><ul
+class="task-list"><li>The non-biicode build</li><li>From the repository checkout (e.g. git clone)</li><li>From bii open user/block &#8211; in case required files are not published</li><li>From a block that depends on it &#8211; to discover implicit source dependencies that cannot be discovered by biicode</li></ul><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#build-on-each-operating-system" rel="noreferrer" name="user-content-build-on-each-operating-system"></a>Build on each operating system</h4><p>If your block should support different operating systems, you should build it on each to ensure it works. This also lets you discover how the block must be built. For example, CMake may default to the MINGW compiler on Windows,but your block may only support the MSVC compiler. This means you need to add an argument to the build command, e.g. <code>bii cpp:configure -G "Visual Studio 12 2013 Win64""</code>.</p><p><strong>Tip:</strong> CMake does not detect your MSVC compiler if <em>&#8220;Express 2013 for Windows&#8221;</em> is installed, but it does if <em>&#8220;Express 2013 for Windows Desktop&#8221;</em> is installed.</p><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#clean-your-working-directory" rel="noreferrer" name="user-content-clean-your-working-directory"></a>Clean your working directory</h4><p>Before you build with biicode, make sure you clean out any output from a non-biicode build (e.g. CMakeCache.txt, generated files).</p><pre class="crayon-plain-tag">git clean -fd # warning: this removes all untracked files, so commit / stage them before running this command</pre><p><strong>Tip:</strong> you can use <code>cmake -Bbuild -H.</code> to have an &#8220;out of source&#8221; build. After, run <code>cd build &amp;&amp; make all &amp;&amp; cd ..</code> to compile your code. Just delete the <code>build</code> directory to clean up your working directory.</p><h3><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#post-publishing-actions" rel="noreferrer" name="user-content-post-publishing-actions"></a>Post Publishing Actions</h3><p>After publishing a block as stable, the next time you publish, your ancestor version for your block is bumped. Remember to commit this change shortly after.</p><h3>Author Bio</h3><p>Azriel is a software developer at Orion Health in New Zealand. His interest in C/C++ development is primarily driven by the control available in the language, and the opportunity to demonstrate that C/C++ code can be clean. To Azriel, biicode is a major improvement to dependency management in C/C++ projects, and compares the improvement in dependency management support from CMake to biicode akin to Apache Ivy to Apache Maven.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cppmicroservices-biicode/">Lessons learnt adapting CppMicroServices to biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cppmicroservices-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>New feature: Version Tags</title><link>http://blog.biicode.com/new-feature-version-tags/</link> <comments>http://blog.biicode.com/new-feature-version-tags/#comments</comments> <pubDate>Fri, 26 Dec 2014 10:20:03 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[features]]></category> <category><![CDATA[semantic versioning]]></category> <category><![CDATA[tags]]></category> <category><![CDATA[VCS]]></category> <category><![CDATA[version control]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1948</guid> <description><![CDATA[<p>Biicode is not a Version Control System, neither a Source Code Management System. As a dependency manager, biicode makes &#8220;some kind&#8221; of internal version control to establish dependencies against a specific version of the block. Our versions are incremental integers starting on 0. Until now,  to know that biicode&#8217;s version corresponds to any official version you [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-version-tags/">New feature: Version Tags</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is not a Version Control System, neither a Source Code Management System. As a dependency manager, biicode makes &#8220;some kind&#8221; of internal version control to establish dependencies against a specific version of the block.</p><p>Our versions are incremental integers starting on 0. Until now,  to know that biicode&#8217;s version corresponds to any official version you had to look for it on the block&#8217;s description or readme.</p><p>Now you can <a
+title="publishing" href="http://docs.biicode.com/c++/publishing.html" target="_blank">tag a version while publishing</a>. For example, <a
+title="qiangwu/atlsl" href="http://www.biicode.com/qiangwu/atlstl" target="_blank">qiangwu/atlstl </a>corresponds to the official &#8220;1.9.98&#8221; version:</p><p><img
+class="aligncenter wp-image-1959 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/versiontags.png" alt="Version tags now available in biicode 2.0" width="986" height="107" /></p><p><span
+id="more-1948"></span></p><h2>Using Version Tags</h2><p>Let&#8217;s say you&#8217;re publishing a new version into biicode and you&#8217;re looking for a way to relate this version number to your SCM versions or your library&#8217;s official version release. Today, I&#8217;m tagging OSCPack library version 3 to the official release version 1.1.0:</p><pre class="crayon-plain-tag">~/myproject$ bii publish  --tag STABLE --versiontag=v1.1.0
+INFO: Publishing block: Maria/oscpack
+INFO: *****************************
+INFO: ***** Publishing public ****
+INFO: *****************************
+INFO: Successfully published Maria/oscpack: 3 @v1.1.0</pre><p><img
+class="aligncenter wp-image-1958 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/oscpack-versiontags-1024x190.png" alt="OSCPack example of a version tag" width="630" height="116" /></p><p>That&#8217;s the basics.</p><h2>Version Tags Utilities</h2><h3>Publish a new version with its tag:</h3><p></p><pre class="crayon-plain-tag">~/myproject$ bii publish --tag STABLE --versiontag 1.2.0
+INFO: *****************************
+INFO: ***** Publishing public ****
+INFO: *****************************
+INFO: Downloading files from: amalulla/hi
+INFO: Successfully published amalulla/hi: 2 @1.2.0</pre><p><img
+class="aligncenter wp-image-1961 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/version-tag2.png" alt="Version tags, as seen in this other example, can now be implemented in biicode" width="768" height="132" /></p><h3>Semantic Versioning</h3><p>A versioning policy is just some simple rules specifying how to use version numbers. It can be very simple like the one biicode makes by default or more complex.</p><p>We encourage you developers to follow the <a
+href="http://semver.org/">Semantic Versioning</a> standard for your block&#8217;s versions. Be mindful that  using a &#8220;non-rational&#8221; policy will be a disservice for those using your blocks.</p><h3>Depending with Version Tags</h3><p>To use a version based on a tag instead of biicode internal version number, write in <strong>[requirements]</strong> section in your <strong>biicode.conf</strong>:</p><pre class="crayon-plain-tag">amalulla/hi @1.2.0</pre><p>And whenever you build your project, biicode will discover biicode version and update your<strong> [requirements]</strong> section in your <strong>biicode.conf</strong>:</p><pre class="crayon-plain-tag">amalulla/hi: 2 @1.2.0</pre><p></p><h2>Not to confuse them with Tags</h2><p>Add tags and a description to your block, this is useful for other users and will be indexed better for our <a
+title="Search Engine" href="http://blog.biicode.com/improved-search-engine-elastic-search/" target="_blank">Search Engine</a>.</p><p><img
+class="aligncenter wp-image-1952 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/tags-las-normales-1024x518.png" alt="Do not confuse version tags with tags" width="630" height="318" /></p><p>Just select settings and start writing and adding tags!</p><p>Hope you enjoy this post, and as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-version-tags/">New feature: Version Tags</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/new-feature-version-tags/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 1: JSON11 by Dropbox</title><link>http://blog.biicode.com/upload-to-biicode-i/</link> <comments>http://blog.biicode.com/upload-to-biicode-i/#comments</comments> <pubDate>Tue, 30 Sep 2014 12:03:01 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[dropbox]]></category> <category><![CDATA[how to]]></category> <category><![CDATA[json11]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1754</guid> <description><![CDATA[<p>A few days ago, we came across this fantastic library from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use. Also, this library is an ideal example to show how to upload to biicode your library like I did. Why would you want to upload to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A few days ago, we came across <a
+title="Json11" href="https://github.com/dropbox/json11" target="_blank">this fantastic library</a> from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use.<br
+/> Also, this library is an ideal example to show how to upload <a
+title="lasote/json11" href="http://www.biicode.com/lasote/json11" target="_blank">to biicode</a> your library like I did.</p><h2>Why would you want to upload to biicode your library ?</h2><p>Once it&#8217;s uploaded to biicode, everyone (including yourself) can reuse it easily and without any complex configuration.<br
+/> This is key: If you make a good job configuring and uploading the library to biicode, nobody will EVER do this job again. The library will work for anyone just by typing <em>#include &#8220;lasote/json11/json11.hpp&#8221;</em>.</p><div
+id="attachment_1761" style="width: 160px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1761" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/DBTWCard.jpg" alt="Upload to biicode " width="150" height="155" /><p
+class="wp-caption-text">JSON11 by DROPBOX</p></div><h2></h2><p><span
+id="more-1754"></span></p><h2>Ok, it sounds convincing, show me how to do it!</h2><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to <a
+title="dropbox/json11" href="https://github.com/dropbox/json11" target="_blank">original repository</a> and click on fork:<br
+/> <img
+class="alignnone wp-image-1757 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/fork1.jpg" alt="JSON11 fork ready to upload to biicode" width="1016" height="162" /></p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init json
+$ cd json
+$ bii new lasote/json11</pre><p>If you already have a biicode user you can replace &#8220;lasote&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/lasote/json</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\lasote\json11
+$ git clone git@github.com:lasote/json11.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command &#8220;<strong>bii deps</strong>&#8221; give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class=" wp-image-1758 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/deps.jpg" alt="manage your dependencies with biicode" width="283" height="365" /></p><p>If biicode doesn&#8217;t find an #include it is shown under the &#8220;unresolved&#8221; section. As you can see in this case, everything is OK!<br
+/> In future posts we will explain how to proceed in case of unresolved files.</p><h4>5. Build our library</h4><p></p><pre class="crayon-plain-tag">$ bii build</pre><p>Wow! It fails a lot! What happened?</p><p>If we analyze the trace of the compilation we see this:</p><pre class="crayon-plain-tag">c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard.
+This support is currently experimental, and must be enabled with the -std=c++11 or -std=gnu++11 compiler options.</pre><p>It&#8217;s asking us to activate c++11. Expected&#8230; the original library needs c++11.</p><h4>How can we activate C++11?</h4><p>Biicode uses CMake for C/C++ project compilation. It creates a CMakeList.txt file where we can specify compilation flags etc.<br
+/> If we edit the file we can see a lot of commented code with sample cases. In there, you can find how to activate C++11.</p><p>In this case, we want our library to be multi-platform and reusable so I will include these lines after <em>ADD_BIICODE_TARGETS()</em></p><pre class="crayon-plain-tag"># If exist BII_LIB_TARGET activate c++11 for target with PUBLIC flag. This way, all blocks that include this one will
+# have activated c++11 automatically
+IF(BII_LIB_TARGET)
+  IF(APPLE)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11")
+  ENDIF(APPLE)
+# If not exist, simply add CXX_FLAGS to compilation
+ELSE()
+  IF(APPLE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ENDIF(APPLE)
+ENDIF()</pre><p>Hereinafter, when someone #include (s)  our library, he doesn&#8217;t need to activate C++11. Its ready!</p><p><strong>NOTE</strong>: Maybe it seems too difficult, don&#8217;t you think? <del>We are working on a feature to share or include CMakes recipes like this. Meanwhile you can just copy and paste this code to enable C++11 in your project.</del></p><p><strong>UPDATE:</strong> With biicode you can reuse CMake recipes, so<strong> to activate C++11 you can include &#8220;biicode/cmake&#8221; block</strong> to search for &#8216;tools.cmake&#8217; where this code is already implemented. Open <em>CMakelists.txt</em> in your project, include &#8216;<em>tools</em>&#8216; and activate C++11 like this:</p><pre class="crayon-plain-tag">INCLUDE(biicode/cmake/tools) #Here you include "biicode/cmake/tools" file
+ADD_BIICODE_TARGETS()
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET}) #Here you activate c++11</pre><p>If we run build again:</p><pre class="crayon-plain-tag">$ bii build</pre><p>It fails again, why? Let&#8217;s check the trace.</p><pre class="crayon-plain-tag">In function 'int main(int, char**)':
+ test.cpp:92:66: error: 'memcmp' was not declared in this scope
+     assert(memcmp(uni[0].string_value().data(), utf8, sizeof utf8) == 0);</pre><p>It seems it cannot find <em>memcmp</em>, we <em>#include &#8220;string.h&#8221;</em> in test.cpp and if we build again:</p><pre class="crayon-plain-tag">Building: cmake --build .
+BLOCK: lasote/json11
+-----------------------------------------------------------
++ EXE: lasote_json11_test
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/json11/build
+[ 50%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/test.cpp.o
+[100%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/json11.cpp.o
+Linking CXX executable /tmp/json11/bin/lasote_json11_test
+[100%] Built target lasote_json11_test</pre><p>Now the library has been compiled! Go to &#8220;bin&#8221; folder and execute the main example:</p><pre class="crayon-plain-tag">$ cd json11/bin
+$ ./lasote_json11_test</pre><p></p><pre class="crayon-plain-tag">k1: v1b
+k3: ["a", 123, true, false, null]
+- "a"
+- 123
+- true
+- false
+- null
+obj: {"k1": "v1", "k2": 42, "k3": ["a", 123, true, false, null]}
+{"key1": "value1", "key2": false, "key3": [1, 2, 3]}
+[[1, 2], [10, 20], [100, 200]]</pre><p></p><h4>6. Upload to biicode: Publish the library</h4><p></p><pre class="crayon-plain-tag">$ bii publish</pre><p>Congrats! Now your library is on biicode&#8217;s cloud! :D</p><p><strong>NOTE</strong>: Don&#8217;t forget to commit and push the changes to github if you forked the repository!</p><h4>7. Check if anybody can reuse the library</h4><p>After you upload to biicode the first version, its a good practice to create another biicode project and reuse from (include) the library to check if everything is working fine. This way we&#8217;ll simulate a third person reusing our code.</p><p>Exit previous biicode project folder and create another one:</p><pre class="crayon-plain-tag">$ bii init example_json11</pre><p></p><pre class="crayon-plain-tag">$ cd example_json11
+$ bii new lasote/example</pre><p>Write an example in a file &#8220;main.cpp&#8221; in blocks/lasote/example directory that #include our lasote/json11 library:</p><pre class="crayon-plain-tag">#include "string.h"
+#include "lasote/json11/json11.hpp"
+#include &lt;iostream&gt;
+using namespace json11;
+using std::string;
+int main(int argc, char **argv) {
+    // STRING TO JSON
+    const string simple_test = R"({"k1":"v1", "k2":42, "k3":["a",123,true,false,null]})";
+    string err;
+    auto json = Json::parse(simple_test, err);
+    std::cout &lt;&lt; "k1: " &lt;&lt; json["k1"].string_value() &lt;&lt; "\n";
+    std::cout &lt;&lt; "k3: " &lt;&lt; json["k3"].dump() &lt;&lt; "\n";
+}</pre><p>Build the example and run the example!</p><pre class="crayon-plain-tag">$ bii build</pre><p></p><pre class="crayon-plain-tag">$ example_json11/bin/lasote_example_json11_main</pre><p></p><pre class="crayon-plain-tag">k1: v1
+k3: ["a", 123, true, false, null]</pre><p>Yeeeeha!</p><p>We need your feedback! What do you think? Is it easy enough to upload to biicode? Do you think that we should share CMake recipes? What would you like?<br
+/> If you want to upload to biicode your library  we will be pleased to help if you need. Write us in the <a
+title="Biicode forum" href="http://forum.biicode.com" target="_blank">biicode forum</a> and we will give you support!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-i/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Why a FILE BASED dependency manager rocks for C/C++</title><link>http://blog.biicode.com/file-based-cpp-dependency-manager/</link> <comments>http://blog.biicode.com/file-based-cpp-dependency-manager/#comments</comments> <pubDate>Fri, 26 Sep 2014 15:56:32 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/c++ dependencies manager]]></category> <category><![CDATA[c/c++ dependency manager]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[deps manager]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1729</guid> <description><![CDATA[<p>We have a big problem. We have miserably failed to explain the core value proposition of biicode: a file-based dependency manager. We have tried to communicate it in the homepage, in features landing pages, videos, etc. While we certainly are growing, it is also true that not as fast as we would like. There are [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/file-based-cpp-dependency-manager/">Why a FILE BASED dependency manager rocks for C/C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have a big problem. We have miserably failed to explain the core value proposition of biicode: a file-based dependency manager. We have tried to communicate it in the homepage, in <a
+href="http://web.biicode.com/features/cpp">features landing pages</a>, <a
+href="https://www.youtube.com/biicode">videos</a>, etc. While we certainly are growing, it is also true that not as fast as we would like.</p><p>There are many reasons that explain this: People understand that we are a dependency manager for C/C++, but also realize that we still don&#8217;t have premium accounts (for private code), in-house deployment or that we’re not open-source. This is all true, we are working in <strong>all these features</strong>, including going open-source regarding which we will soon announce something relevant. But we think these are not reasons (stoppers) enough to not engage with the platform now, try it, check how it works, give feedback to help define the tool to your needs.</p><p>We believe that the main problem is that we didn’t explain properly what makes biicode so special, and we failed because we have used the wrong channels. Here, I will explain it with the language we, developers, all love: <strong>source code</strong>.</p><p><img
+class="size-full wp-image-1208 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/03/biicode.jpg" alt="C/C++ dependency manager" width="320" height="320" /></p><p><span
+id="more-1729"></span></p><h2>Hands into the file-based dependency manager</h2><p>I have recently written about how to use <a
+href="http://docs.biicode.com/c++/examples/zmq_protobuf.html">ZMQ and protocol buffers with biicode</a>. Here I will develop a client-server application which components can be very easily reused individually in new projects, without having to write a single line of configuration or having to worry about packaging or installing. [If you want to try it on the go just download biicode <a
+href="https://www.biicode.com/downloads">HERE</a>]</p><blockquote><p>Stop talking, show me the code!</p></blockquote><p><strong>client.h</strong></p><pre class="crayon-plain-tag">#pragma once
+#include "diego/zmqcpp/zmq.hpp"
+#include "person.pb.h"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+class Client{
+public:
+	Client(const char* address);
+	void send(const Person&amp; person);
+private:
+	zmq::context_t context;
+	zmq::socket_t socket;
+};</pre><p><strong>client.cpp</strong></p><pre class="crayon-plain-tag">#include "client.h"
+Client::Client(const char* address) : context(1), socket(context, ZMQ_PAIR){
+	socket.connect(address);
+}
+void Client::send(const Person&amp; person){
+	std::string msg_str;
+	person.SerializeToString(&amp;msg_str);
+	// create a zmq message from the serialized string
+	zmq::message_t request(msg_str.size());
+	memcpy((void *)request.data(), msg_str.c_str(), msg_str.size());
+	socket.send(request);
+}</pre><p>The <code>person.pb.h</code> and <code>person.pb.cc</code> files are generated with the “protoc” binary from the <code>person.proto</code>, as explained in our docs.</p><p><strong>person.proto</strong></p><pre class="crayon-plain-tag">message Person {
+  required string name = 1;
+  optional string phone = 2;
+  optional string email = 3;
+}</pre><p>We will create a simple client application that just creates a Person object, serialize and send it to the server.</p><p><strong>clientapp.cpp</strong></p><pre class="crayon-plain-tag">#include "client.h"
+int main ()
+{
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    Person person; //fill a person data
+    person.set_name("john");
+    person.set_email("john@mycompany.com");
+    person.set_phone("1234567");
+    Client client("tcp://localhost:5555");
+    client.send(person);
+    // Optional:  Delete all global objects allocated by libprotobuf.
+    google::protobuf::ShutdownProtobufLibrary();
+    return 0;
+}</pre><p>&nbsp;</p><p>The server application will continuously receive Person data from clients and send them to a SQLite database.</p><p><strong>severapp.cpp</strong></p><pre class="crayon-plain-tag">#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include "person.pb.h"
+#include &lt;google/protobuf/text_format.h&gt;
+#include "server.h"
+#include &lt;sqlite/sqlite/include/SQLiteCpp/SQLiteCpp.h&gt;
+int main() {
+	SQLite::Database    db("server.db", SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+	std::cout &lt;&lt; "SQLite database file '" &lt;&lt; db.getFilename().c_str() &lt;&lt; "' opened successfully\n";
+	// Create a new table with an explicit "id" column aliasing the underlying rowid
+	db.exec("DROP TABLE IF EXISTS test");
+	db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT, email TEXT, phone TEXT)");
+	//  Prepare our context and socket
+	Server server("tcp://*:5555");
+	while (true) {
+		Person person = server.receive();
+		std::string text_str;
+		SQLite::Statement   query(db, "INSERT INTO test VALUES (NULL, ?, ?, ?)");
+		query.bind(1, person.name());
+		query.bind(2, person.email());
+		query.bind(3,  person.phone());
+		int nb = query.exec();
+		google::protobuf::TextFormat::PrintToString(person, &amp;text_str);
+		std::cout &lt;&lt; text_str &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre><p>with the server being:</p><p><b>server.h</b></p><pre class="crayon-plain-tag">#pragma once
+#include "diego/zmqcpp/zmq.hpp"
+#include "person.pb.h"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+class Server{
+public:
+	Server(const char* address);
+	Person receive();
+private:
+	zmq::context_t context;
+	zmq::socket_t socket;
+};</pre><p><strong><b>server.cpp</b></strong></p><pre class="crayon-plain-tag">#include "server.h"
+Server::Server(const char* address) : context(1), socket(context, ZMQ_PAIR){
+	socket.bind(address);
+}
+Person Server::receive(){
+	zmq::message_t request;
+	//  Wait for next request from client
+	socket.recv(&amp;request);
+	Person person;
+	std::string msg_str(static_cast&lt;char*&gt;(request.data()), request.size());
+	person.ParseFromString(msg_str);
+	return person;
+}</pre><p>Building all this code is pretty simple and can be done with biicode without any configuration, remember to generate the <code>person.pb</code> files with “protoc”, check the documentation <a
+href="http://docs.biicode.com/c++/examples/zmq_protobuf.html">here</a>.</p><pre class="crayon-plain-tag">$ bii init zmqapp
+$ cd zmqapp
+$ bii new diego/clientserver //you can use your username instead of diego
+//copy the above files into the zmqapp/blocks/diego/clientserver folder
+$ bii find // to find and retrieve missing dependencies.
+$ bii cpp:configure -G “Visual Studio 12” //only if in windows
+$ bii cpp:build
+//launch server, then client in another console</pre><p>So far, biicode is a “smart” dependency manager, that figures out which dependencies it needs from #include directives (of course, you can also define them in requirements.bii file). In this case, <strong>ZeroMQ</strong>, <strong>protobufs</strong> and <strong>SQLite</strong>.</p><p>But the key point is not that. It is how easy you can <strong>reuse individual components from this project</strong> into new projects, how simple you can share it with the world without having to worry about packaging or installers. The first step is to upload to biicode:</p><pre class="crayon-plain-tag">$ bii publish</pre><p>This command will create a DEV version (which means that it is not frozen, you can overwrite it; there are other BETA, STABLE tags that freezes a version) in biicode, you can go to <strong>www.biicode.com/yourusername</strong> and check it.</p><p>Imagine that the server side is developed to run only in X systems, but it will not build in Windows, due to some non portable code. In this example we have used SQLite which is portable. In any case, it is clear that if we want to develop a new client application we do not need to build the server or depend on SQLite at all. Lets build such a client:</p><pre class="crayon-plain-tag">$ cd ..
+$ bii init zmqnewclient
+$ cd zmqnewclient
+$ bii new yourusername/newclient</pre><p>Copy the following code inside the “blocks/yourusername/newclient” folder:</p><p><strong>yourClientapp.cpp</strong></p><pre class="crayon-plain-tag">#include "yourusername/clientserver/client.h"
+int main ()
+{
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    Person person; //fill a person data
+    person.set_name("john");
+    person.set_email("john@mycompany.com");
+    person.set_phone("1234567");
+    Client client("tcp://localhost:5555");
+    client.send(person);
+    // Optional:  Delete all global objects allocated by libprotobuf.
+    google::protobuf::ShutdownProtobufLibrary();
+    return 0;
+}</pre><p>And execute:</p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:configure -G “Visual Studio 12” //only if in windows, skip otherwise
+$ bii cpp:build
+//launch server from the other project in another console, then this client</pre><p></p><h2>Let&#8217;s explain what a file-based dependency manager is</h2><p><strong>Now the key point!</strong> Go to the project <em>“deps”</em> folder, and check what is there: There is no server code, and there is no SQLite code!! And we have done it without a single line of configuration. How is this done<img
+class=" wp-image-1732 alignright" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/biicode-package-free.jpg" alt="C/C++ file-based dependency manager " width="426" height="292" />?</p><p>Biicode is a FILE BASED dependency manager. That lets amazing things to happen, such as allowing to reuse individual files from previous projects without having to worry about packaging, setup or installs. <strong>Biicode tracks which files depends on which files</strong>, and use it to automatically define build targets, or <strong>manage dependencies accordingly</strong>. For example, you could just reuse the “Person” object from the previous example in another project, and you will not depend on ZMQ or SQLite at all, as those files do not depend on them. And this is only the beginning, with this file based approach you can also do many other amazing things, stay tuned for next posts.</p><p>We believe this is indeed a new paradigm for dependency management. We are still in beta, releasing based on our users feedback almost every week, towards such a system that could rock for all of us as developers. That means that we are not perfect, as I told you we are working hard and defining the best possible roadmap for our community, including open-sourcing the code and building all the necessary tools for production environments.</p><p
+class="widgettitleFeatures" align="center"><strong>Help us improve, try it out</strong></p><p><a
+href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank"><img
+class="aligncenter" src="/wp-content/uploads/sites/3/2014/05/bt-get-started-features-on.jpg" alt="Get started Now" width="265" height="57" /></a></p><p>If you feel that this makes sense, give feedback, spread the word as much as possible.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/file-based-cpp-dependency-manager/">Why a FILE BASED dependency manager rocks for C/C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/file-based-cpp-dependency-manager/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Our first DDoS attack!!</title><link>http://blog.biicode.com/first-ddos-attack/</link> <comments>http://blog.biicode.com/first-ddos-attack/#comments</comments> <pubDate>Tue, 12 Aug 2014 09:26:45 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode Team]]></category> <category><![CDATA[BOFHers]]></category> <category><![CDATA[DDoS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1060</guid> <description><![CDATA[<p>Yesterday biicode suffered a DDoS attack on this wordpress blog. DDoS attack (Distributed Denial of Service) tries to make a resource (this blog) unavailable using servers distributed all over the world. In this case, sources came from Korea, USA, Europe&#8230; More than a hundred simultaneous connections brought down our blog. &#160; What happened? We received [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-ddos-attack/">Our first DDoS attack!!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Yesterday biicode suffered a DDoS attack on this wordpress blog.</p><p><a
+title="DDoS attack" href="http://en.wikipedia.org/wiki/Denial-of-service_attack" target="_blank">DDoS attack</a> (Distributed Denial of Service) tries to make a resource (this blog) unavailable using servers distributed all over the world.<br
+/> In this case, sources came from Korea, USA, Europe&#8230; More than a hundred simultaneous connections brought down our blog.</p><p>&nbsp;</p><div
+style="width: 1144px" class="wp-caption aligncenter"><img
+src="http://www.datasoft.ws/images/ddos-attacks1.png" alt="DDoS attack can seriously damage your system." width="1134" height="768" /><p
+class="wp-caption-text">DDoS attack</p></div><p><span
+id="more-1060"></span></p><h2>What happened?</h2><p>We received an alert about our blog not responding right. We connected inmediatly to the server and started looking into the server logs.</p><h2>Why did the blog go down?</h2><p>Well, the first sign that something was going wrong was a message telling us the server couldn&#8217;t connect to the database.<br
+/> At that moment we connected to the server and tried to restart mysql service&#8230; but the service went down almost inmediatly.<br
+/> We looked at the mysql error log and we found it was a memory issue.<br
+/> After looking up in google the error code we decided to increase the server memory (easy to do with a virtualized instance) but it didn&#8217;t work, memory wasn&#8217;t being used and the problem persisted.<br
+/> We even tried to increase the swap partition&#8230; but our disk got full.</p><h2>What the f*** is going on!!!??</h2><p>That was our reaction before all we tried failed.<br
+/> We started to think that maybe we were under some kind of attack.<br
+/> We executed netstat command to look at port 80. More than a hundred connections were stablished.</p><pre class="crayon-plain-tag">netstat -plan|grep :80 | wc -l</pre><p>With these command options I could check the connected IPs:</p><pre class="crayon-plain-tag">netstat -plan|grep :80|awk {'print $5'}|cut -d: -f 1|sort|uniq -c|sort -nk 1</pre><p></p><h2>Well&#8230; we definitely are under a DDoS attack&#8230;now what?</h2><p>Repealing a DDoS attack may be very complex. The most important thing is to understand the attack and think of a way to stop it.<br
+/> We looked in the Apache access log and we saw hundreds of access to the same resource: &#8220;xmlrpc.php&#8221;</p><p>Xmlrpc.php is an API to remote publish contents to wordpress. Attackers are POSTing big files to this resource. Files were not getting published though, because the attacker didn&#8217;t have the right credentials, however, WordPress was receiving a laaaaaaarge amount of data and loading it into server memory which eventually was full.</p><p>The solution was simple&#8230; We moved that php file to a non accessible location. The server started to respond 404 for all these requeste and all the system went to normal. We don&#8217;t need xmlrpc and after what happened&#8230; We prefer never to use it again.</p><h2>Conclusion</h2><p>Despite this, we are happy with the results of this DDoS attack. We are in beta, we are not perfect, our systems are not configured perfectly, but we are learning a lot and we are greatful to be able to fix any problem that affects our fantastic users!. Also we know that we are gaining interest and an attack like this confirms that!</p><p>Happy summer!!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-ddos-attack/">Our first DDoS attack!!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/first-ddos-attack/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

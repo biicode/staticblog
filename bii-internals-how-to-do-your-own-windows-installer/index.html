@@ -1,0 +1,1091 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:37:56 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>bii internals: How to do your own Windows Installer - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="How to write a script to generate an autoinstaller for windows with InnoSetup"/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="bii internals: How to do your own Windows Installer - biicode Blog" /><meta
+property="og:description" content="How to write a script to generate an autoinstaller for windows with InnoSetup" /><meta
+property="og:url" content="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="bii-internals" /><meta
+property="article:tag" content="biicode" /><meta
+property="article:tag" content="Innosetup" /><meta
+property="article:tag" content="python" /><meta
+property="article:tag" content="register" /><meta
+property="article:tag" content="windows installer" /><meta
+property="article:section" content="biicode" /><meta
+property="article:published_time" content="2014-06-13T10:00:04+00:00" /><meta
+property="article:modified_time" content="2014-09-02T15:39:06+00:00" /><meta
+property="og:updated_time" content="2014-09-02T15:39:06+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura.gif" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="bii internals: How to do your own Windows Installer"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; bii internals: How to do your own Windows Installer Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../indexf8fc.html?p=632' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-632 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/biicode/index.html" rel="v:url" property="v:title">biicode</a> » <strong
+class="breadcrumb_last">bii internals: How to do your own Windows Installer</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-632" class="post-632 post type-post status-publish format-standard hentry category-biicode tag-bii-internals tag-biicode tag-innosetup tag-python tag-register tag-windows-installer"> <header
+class="entry-header"><h1 class="entry-title">bii internals: How to do your own Windows Installer</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="10:00" rel="bookmark"><time
+class="entry-date" datetime="2014-06-13T10:00:04+00:00">June 13, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/miguel/index.html" title="View all posts by miguel" rel="author">miguel</a></span></span></div> </header><div
+class="entry-content"><p>As a continuation of the <a
+href="../bii-internals-automating-macos-pkg-generation/index.html">previous post</a>, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows.<br
+/> The main tool used for packaging and installing the client binaries for Windows is the popular <a
+title="Inno Setup Home Page" href="http://www.jrsoftware.org/isinfo.php" target="_blank">Inno Setup </a>program. This tool is completely free of charge and supports almost every windows release since 2000.</p><p><span
+id="more-632"></span></p><p>Installators are created by means of scripts, which are ASCII text files with an &#8220;.iss&#8221; extension. The concept is quite similar to the distribution definition file described for MacOS.<br
+/> The <em>script file</em> controls every aspect of the installation.  It specifies which files have to be installed and where, what short-cuts have to be created and what are they in order to be named, and so on. It &#8216;s arranged into sections and each section controls a different part of the installation.<br
+/> A quite simple and small script could be the next one:</p><div
+id="crayon-56886b0c35b23011094228" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title">Distribution.xml</span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+&lt;
+; -- Example1.iss --
+; Demonstrates copying 3 files and creating an icon.
+; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
+[Setup]
+AppName=My Program
+AppVersion=1.5
+DefaultDirName={pf}\My Program
+DefaultGroupName=My Program
+UninstallDisplayIcon={app}\MyProg.exe
+Compression=lzma2
+SolidCompression=yes
+OutputDir=userdocs:Inno Setup Examples Output
+[Files]
+Source: "MyProg.exe"; DestDir: "{app}"
+Source: "MyProg.chm"; DestDir: "{app}"
+Source: "Readme.txt"; DestDir: "{app}"; Flags: isreadme
+[Icons]
+Name: "{group}\My Program"; Filename: "{app}\MyProg.exe"
+;</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-2">2</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-4">4</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-6">6</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-8">8</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-10">10</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-12">12</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-14">14</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-16">16</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-18">18</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-20">20</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-22">22</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b23011094228-24">24</div><div
+class="crayon-num" data-line="crayon-56886b0c35b23011094228-25">25</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-1"><span
+class="crayon-o">&lt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-2"><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Example1</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">iss</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-3"><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Demonstrates </span><span
+class="crayon-i">copying</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">3</span><span
+class="crayon-h"> </span><span
+class="crayon-e">files </span><span
+class="crayon-st">and</span><span
+class="crayon-h"> </span><span
+class="crayon-e">creating </span><span
+class="crayon-e">an </span><span
+class="crayon-v">icon</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-4">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-5"><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-e">SEE </span><span
+class="crayon-e">THE </span><span
+class="crayon-e">DOCUMENTATION </span><span
+class="crayon-st">FOR</span><span
+class="crayon-h"> </span><span
+class="crayon-e">DETAILS </span><span
+class="crayon-e">ON </span><span
+class="crayon-i">CREATING</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-e">ISS </span><span
+class="crayon-e">SCRIPT </span><span
+class="crayon-v">FILES</span><span
+class="crayon-o">!</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-6">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-7"><span
+class="crayon-sy">[</span><span
+class="crayon-v">Setup</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-8"><span
+class="crayon-v">AppName</span><span
+class="crayon-o">=</span><span
+class="crayon-e">My </span><span
+class="crayon-e">Program</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-9"><span
+class="crayon-v">AppVersion</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">1.5</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-10"><span
+class="crayon-v">DefaultDirName</span><span
+class="crayon-o">=</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">pf</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">\</span><span
+class="crayon-e">My </span><span
+class="crayon-e">Program</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-11"><span
+class="crayon-v">DefaultGroupName</span><span
+class="crayon-o">=</span><span
+class="crayon-e">My </span><span
+class="crayon-e">Program</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-12"><span
+class="crayon-v">UninstallDisplayIcon</span><span
+class="crayon-o">=</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">app</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">\</span><span
+class="crayon-v">MyProg</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">exe</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-13"><span
+class="crayon-v">Compression</span><span
+class="crayon-o">=</span><span
+class="crayon-e">lzma2</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-14"><span
+class="crayon-v">SolidCompression</span><span
+class="crayon-o">=</span><span
+class="crayon-e">yes</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-15"><span
+class="crayon-v">OutputDir</span><span
+class="crayon-o">=</span><span
+class="crayon-v">userdocs</span><span
+class="crayon-o">:</span><span
+class="crayon-e">Inno </span><span
+class="crayon-e">Setup </span><span
+class="crayon-e">Examples </span><span
+class="crayon-i">Output</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-16">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-17"><span
+class="crayon-sy">[</span><span
+class="crayon-v">Files</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-18"><span
+class="crayon-v">Source</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"MyProg.exe"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">DestDir</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"{app}"</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-19"><span
+class="crayon-v">Source</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"MyProg.chm"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">DestDir</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"{app}"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-20"><span
+class="crayon-v">Source</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"Readme.txt"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">DestDir</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"{app}"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Flags</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-i">isreadme</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-21">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-22"><span
+class="crayon-sy">[</span><span
+class="crayon-v">Icons</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-23"><span
+class="crayon-v">Name</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"{group}\My Program"</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Filename</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"{app}\MyProg.exe"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b23011094228-24">&nbsp;</div><div
+class="crayon-line" id="crayon-56886b0c35b23011094228-25"><span
+class="crayon-sy">;</span></div></div></td></tr></table></div></div><p>The <em>script</em> could have a lot of different sections that allow almost all the operations required for a correct installation and uninstallation in windows systems. It includes a integrated <a
+title="JRSowtware Scripting" href="http://www.jrsoftware.org/ishelp/topic_scriptintro.htm" target="_blank">Pascal scripting</a> engine for advanced run-time customization. For example, we use that section to make a nice uninstalling and to modify the register in an intelligent way, avoiding unnecessary register operations.</p><p>As it&#8217;s done in MacOS installers, in our automation repo we have prepared  a resource file that contains all the files used by the script (images, icons, text files, and the script itself) :</p><div
+id="crayon-56886b0c35b38071100685" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+resources
+├── windows
+   ├── Docs
+   │   └── readme.txt
+   ├── Images
+   │   ├── biiconsole.ico
+   │   ├── installlerimage.bmp
+   │   └── logobii.bmp
+   ├── license.txt
+   └── biicodeinstaller.iss</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b0c35b38071100685-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b38071100685-2">2</div><div
+class="crayon-num" data-line="crayon-56886b0c35b38071100685-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b38071100685-4">4</div><div
+class="crayon-num" data-line="crayon-56886b0c35b38071100685-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b38071100685-6">6</div><div
+class="crayon-num" data-line="crayon-56886b0c35b38071100685-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b38071100685-8">8</div><div
+class="crayon-num" data-line="crayon-56886b0c35b38071100685-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b38071100685-10">10</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b0c35b38071100685-1"><span
+class="crayon-i">resources</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b38071100685-2">├──<span
+class="crayon-h"> </span><span
+class="crayon-i">windows</span></div><div
+class="crayon-line" id="crayon-56886b0c35b38071100685-3"><span
+class="crayon-h">&nbsp;&nbsp; </span>├──<span
+class="crayon-h"> </span><span
+class="crayon-i">Docs</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b38071100685-4"><span
+class="crayon-h">&nbsp;&nbsp; </span>│<span
+class="crayon-h">&nbsp;&nbsp; </span>└──<span
+class="crayon-h"> </span><span
+class="crayon-v">readme</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">txt</span></div><div
+class="crayon-line" id="crayon-56886b0c35b38071100685-5"><span
+class="crayon-h">&nbsp;&nbsp; </span>├──<span
+class="crayon-h"> </span><span
+class="crayon-i">Images</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b38071100685-6"><span
+class="crayon-h">&nbsp;&nbsp; </span>│<span
+class="crayon-h">&nbsp;&nbsp; </span>├──<span
+class="crayon-h"> </span><span
+class="crayon-v">biiconsole</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">ico</span></div><div
+class="crayon-line" id="crayon-56886b0c35b38071100685-7"><span
+class="crayon-h">&nbsp;&nbsp; </span>│<span
+class="crayon-h">&nbsp;&nbsp; </span>├──<span
+class="crayon-h"> </span><span
+class="crayon-v">installlerimage</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">bmp</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b38071100685-8"><span
+class="crayon-h">&nbsp;&nbsp; </span>│<span
+class="crayon-h">&nbsp;&nbsp; </span>└──<span
+class="crayon-h"> </span><span
+class="crayon-v">logobii</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">bmp</span></div><div
+class="crayon-line" id="crayon-56886b0c35b38071100685-9"><span
+class="crayon-h">&nbsp;&nbsp; </span>├──<span
+class="crayon-h"> </span><span
+class="crayon-v">license</span><span
+class="crayon-sy">.</span><span
+class="crayon-i">txt</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b38071100685-10"><span
+class="crayon-h">&nbsp;&nbsp; </span>└──<span
+class="crayon-h"> </span><span
+class="crayon-v">biicodeinstaller</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">iss</span></div></div></td></tr></table></div></div><p>Before calling the external tool (InnoSetup) all the required files (installer resources and biicode binaries) are copied into a temporal folder. The main python script that automates the process is executed in a windows virtual machine in which InnoSetup is installed. In order to avoid the hard-coding of the external command  we are retreiving that info through a registry request for both, win32 and win64:</p><p>&nbsp;</p><div
+id="crayon-56886b0c35b42503207581" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Python</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+if platform.system() == 'Windows':
+    import _winreg
+def innoexepath():
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion'
+            '\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows'
+            '\\CurrentVersion\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        return 'ISCC.exe' </textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-2">2</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-4">4</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-6">6</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-8">8</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-10">10</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-12">12</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-14">14</div><div
+class="crayon-num" data-line="crayon-56886b0c35b42503207581-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b42503207581-16">16</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-1"><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-k ">platform</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">system</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'Windows'</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-2"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-r">import</span><span
+class="crayon-h"> </span><span
+class="crayon-k ">_winreg</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-3"><span
+class="crayon-r">def</span><span
+class="crayon-h"> </span><span
+class="crayon-e">innoexepath</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-4"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">result</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">getregvalue</span><span
+class="crayon-sy">(</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-5"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-s">'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion'</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-6"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-s">'\\Uninstall\\Inno Setup 5_is1\\InstallLocation'</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-7"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-v">result</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-k ">os.path</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">join</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">result</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'ISCC.exe'</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-9">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">result</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">getregvalue</span><span
+class="crayon-sy">(</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-11"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-s">'HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows'</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-12"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-s">'\\CurrentVersion\\Uninstall\\Inno Setup 5_is1\\InstallLocation'</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-13"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-v">result</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-14"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-k ">os.path</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">join</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">result</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'ISCC.exe'</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b0c35b42503207581-15">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b42503207581-16"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">return</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'ISCC.exe'</span><span
+class="crayon-h"> </span></div></div></td></tr></table></div></div><p>Finally, an important but simple pre-build step: we update the version info through a simple but effective search and replace text operation, looking for a key string included into the script and the text documents.</p><div
+id="crayon-56886b0c35b4c003964716" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div><span
+class="crayon-language">Python</span></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+from biicode.utils.pack import create_client_binary
+from biicode.client.command.process_executor import execute
+from biicode.common.utils.file_utils import search_and_replace
+from biicode.common import __version__ as version
+    search_and_replace(iss_path, '%VERSION%', version)
+    command = []
+    command.append(innoexepath())
+    command.append(os.path.join(folder_tmp, 'installdata', 'biicodeinstaller.iss'))
+    execute(command)
+    shutil.copy(os.path.join(folder_tmp, 'setup.exe'), 'C:/bii-setup.exe')</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886b0c35b4c003964716-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b4c003964716-2">2</div><div
+class="crayon-num" data-line="crayon-56886b0c35b4c003964716-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b4c003964716-4">4</div><div
+class="crayon-num" data-line="crayon-56886b0c35b4c003964716-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b4c003964716-6">6</div><div
+class="crayon-num" data-line="crayon-56886b0c35b4c003964716-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b4c003964716-8">8</div><div
+class="crayon-num" data-line="crayon-56886b0c35b4c003964716-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b4c003964716-10">10</div><div
+class="crayon-num" data-line="crayon-56886b0c35b4c003964716-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886b0c35b4c003964716-12">12</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886b0c35b4c003964716-1"><span
+class="crayon-st">from</span><span
+class="crayon-h"> </span><span
+class="crayon-v">biicode</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">utils</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">pack </span><span
+class="crayon-r">import</span><span
+class="crayon-h"> </span><span
+class="crayon-e">create_client_binary</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b4c003964716-2"><span
+class="crayon-st">from</span><span
+class="crayon-h"> </span><span
+class="crayon-v">biicode</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">client</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">command</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">process_executor </span><span
+class="crayon-r">import</span><span
+class="crayon-h"> </span><span
+class="crayon-e">execute</span></div><div
+class="crayon-line" id="crayon-56886b0c35b4c003964716-3"><span
+class="crayon-st">from</span><span
+class="crayon-h"> </span><span
+class="crayon-v">biicode</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">common</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">utils</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">file_utils </span><span
+class="crayon-r">import</span><span
+class="crayon-h"> </span><span
+class="crayon-e">search_and_replace</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b4c003964716-4"><span
+class="crayon-st">from</span><span
+class="crayon-h"> </span><span
+class="crayon-v">biicode</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">common </span><span
+class="crayon-r">import</span><span
+class="crayon-h"> </span><span
+class="crayon-e">__version__ </span><span
+class="crayon-st">as</span><span
+class="crayon-h"> </span><span
+class="crayon-e">version</span></div><div
+class="crayon-line" id="crayon-56886b0c35b4c003964716-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b4c003964716-6"><span
+class="crayon-e">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">search_and_replace</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">iss_path</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'%VERSION%'</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">version</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b0c35b4c003964716-7">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b4c003964716-8"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">command</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-sy">]</span></div><div
+class="crayon-line" id="crayon-56886b0c35b4c003964716-9"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">command</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">append</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">innoexepath</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b4c003964716-10"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">command</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">append</span><span
+class="crayon-sy">(</span><span
+class="crayon-k ">os.path</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">join</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">folder_tmp</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'installdata'</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'biicodeinstaller.iss'</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886b0c35b4c003964716-11"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">execute</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">command</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886b0c35b4c003964716-12"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-k ">shutil</span><span
+class="crayon-sy">.</span><span
+class="crayon-k ">copy</span><span
+class="crayon-sy">(</span><span
+class="crayon-k ">os.path</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">join</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">folder_tmp</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'setup.exe'</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'C:/bii-setup.exe'</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>As you can see, a product executable has been created and renamed as &#8220;bii-setup&#8221; and placed in a convenient directory for publishing.<br
+/> The InnoSetup tool creates a wonderful installer with a brief and simple script file:</p><p><img
+class="alignnone wp-image-640" src="../wp-content/uploads/sites/2/2014/06/Captura.gif" alt="Biicode Wizard Windows" width="630" height="486" /></p><p>Hope you enjoy installing!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../bii-internals-c-vs-python/index.html" title="bii internals: C vs Python efficiency">bii internals: C vs Python efficiency</a></li><li><a
+href="../bii-internals-compiling-your-python-application-with-cython/index.html" title="bii internals: Compiling your python application with Cython">bii internals: Compiling your python application with Cython</a></li><li><a
+href="../bii-internals-automating-deb-pkg-generation/index.html" title="bii internals: Automating DEB pkg generation">bii internals: Automating DEB pkg generation</a></li><li><a
+href="../bii-internals-automating-macos-pkg-generation/index.html" title="bii internals: Automating MacOS pkg generation">bii internals: Automating MacOS pkg generation</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/' addthis:title='bii internals: How to do your own Windows Installer' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/biicode/index.html" rel="category tag">biicode</a> and tagged <a
+href="../tag/bii-internals/index.html" rel="tag">bii-internals</a>, <a
+href="../tag/biicode/index.html" rel="tag">biicode</a>, <a
+href="../tag/innosetup/index.html" rel="tag">Innosetup</a>, <a
+href="../tag/python/index.html" rel="tag">python</a>, <a
+href="../tag/register/index.html" rel="tag">register</a>. Bookmark the <a
+href="index.html" title="Permalink to bii internals: How to do your own Windows Installer" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a></div><div
+class="next"><a
+href="../meet-the-team-weve-got-a-new-biicoder-jorge-combalia/index.html" rel="next">Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia! <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"><div
+id="dsq-content"><ul
+id="dsq-comments"><li
+class="post pingback"><p>Pingback: <a
+href='../bii-internals-automating-deb-pkg-generation/index.html' rel='external nofollow' class='url'>bii internals: Automating DEB pkg generation | Biicode Blog</a>()</p></li></li></ul></div></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '632%20http_/blog.biicode.com/indexf8fc.html?p=632';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "bii internals: How to do your own Windows Installer";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index0328.html?cf_action=sync_comments&amp;post_id=632';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:37:58 GMT -->
+</html>

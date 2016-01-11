@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+> <channel><title>Comments on: Boost libraries are now supported in biicode</title> <atom:link href="http://blog.biicode.com/dependency-management-boost-libraries/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com/dependency-management-boost-libraries/</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Wed, 16 Sep 2015 03:33:00 +0000</lastBuildDate> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>By: Terry Eminhizer</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-268</link> <dc:creator><![CDATA[Terry Eminhizer]]></dc:creator> <pubDate>Sun, 09 Aug 2015 23:32:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-268</guid> <description><![CDATA[Thanks Manu, Max, et al., I had
+bii_find_boost(COMPONENT Spirit Required) and all heck broke loose (cmake would essentially hang, not sure if it was trying to do a full build or not, but cmake is al that was running).  Maybe this will help inform some future usability tweaks.  Thanks again, I&#039;ve been on the verge of giving up on biicode multiple times now but keep finding these little nuggets of information out there to get unblocked.]]></description> <content:encoded><![CDATA[<p>Thanks Manu, Max, et al., I had<br
+/> bii_find_boost(COMPONENT Spirit Required) and all heck broke loose (cmake would essentially hang, not sure if it was trying to do a full build or not, but cmake is al that was running).  Maybe this will help inform some future usability tweaks.  Thanks again, I&#8217;ve been on the verge of giving up on biicode multiple times now but keep finding these little nuggets of information out there to get unblocked.</p> ]]></content:encoded> </item> <item><title>By: Sennin &#187; Biicode</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-226</link> <dc:creator><![CDATA[Sennin &#187; Biicode]]></dc:creator> <pubDate>Sun, 29 Mar 2015 23:30:18 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-226</guid> <description><![CDATA[[&#8230;] I am using boost I have followed their instructions for using boost with biicode, and I have to say I am [&#8230;]]]></description> <content:encoded><![CDATA[<p>[&#8230;] I am using boost I have followed their instructions for using boost with biicode, and I have to say I am [&#8230;]</p> ]]></content:encoded> </item> <item><title>By: Manu343726</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-209</link> <dc:creator><![CDATA[Manu343726]]></dc:creator> <pubDate>Tue, 24 Mar 2015 12:46:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-209</guid> <description><![CDATA[Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost().  Try with a naked `bii_find_boost()` call.]]></description> <content:encoded><![CDATA[<p>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost().  Try with a naked <code>bii_find_boost()</code> call.</p> ]]></content:encoded> </item> <item><title>By: Max Galkin</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-208</link> <dc:creator><![CDATA[Max Galkin]]></dc:creator> <pubDate>Tue, 24 Mar 2015 05:45:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-208</guid> <description><![CDATA[I&#039;m trying to include Boost.Spirit libraries using your example, but I&#039;m getting an error, how can I make it work?.. (on Windows)
+This is the console output:
+&lt;pre&gt;&lt;code&gt;
+-- Setting up biicode Boost configuration...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.1...
+-- Building spirit library...
+CMake Error at deps/boost/install/install.cmake:80 (message):
+Failed running
+C:/Users/Max/.biicode/boost/1.57.0/b2.exe;--includedir=C:/Users/Max/.biicode/boost/1.57.0;--toolset=gcc-4.9.1;-j1;--layout=versioned;--build-type=complete:
+error: wrong library name &#039;spirit&#039; in the --with- option.
+&lt;/code&gt;&lt;/pre&gt;
+This is what I have in the CMakeLists.txt
+&lt;pre&gt;&lt;code&gt;
+include(biicode/boost/setup)
+set(Boost_USE_STATIC_LIBS ON)
+bii_find_boost(COMPONENTS spirit REQUIRED)
+target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+&lt;/code&gt;&lt;/pre&gt;
+My include in the cpp file looks like this:
+&lt;pre&gt;&lt;code&gt;
+#include &lt;boost/spirit/include/qi.hpp&gt;
+&lt;/code&gt;&lt;/pre&gt;]]></description> <content:encoded><![CDATA[<p>I&#8217;m trying to include Boost.Spirit libraries using your example, but I&#8217;m getting an error, how can I make it work?.. (on Windows)</p><p>This is the console output:</p><p></p><div
+id="crayon-56886ea092235818563179" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+-- Setting up biicode Boost configuration...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.1...
+-- Building spirit library...
+CMake Error at deps/boost/install/install.cmake:80 (message):
+  Failed running
+  C:/Users/Max/.biicode/boost/1.57.0/b2.exe;--includedir=C:/Users/Max/.biicode/boost/1.57.0;--toolset=gcc-4.9.1;-j1;--layout=versioned;--build-type=complete:
+  error: wrong library name 'spirit' in the --with- option.
+</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886ea092235818563179-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092235818563179-2">2</div><div
+class="crayon-num" data-line="crayon-56886ea092235818563179-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092235818563179-4">4</div><div
+class="crayon-num" data-line="crayon-56886ea092235818563179-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092235818563179-6">6</div><div
+class="crayon-num" data-line="crayon-56886ea092235818563179-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092235818563179-8">8</div><div
+class="crayon-num" data-line="crayon-56886ea092235818563179-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092235818563179-10">10</div><div
+class="crayon-num" data-line="crayon-56886ea092235818563179-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092235818563179-12">12</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886ea092235818563179-1">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092235818563179-2"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Setting </span><span
+class="crayon-e">up </span><span
+class="crayon-e">biicode </span><span
+class="crayon-e">Boost </span><span
+class="crayon-v">configuration</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886ea092235818563179-3"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-i">Boost</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-h"> </span><span
+class="crayon-e">components </span><span
+class="crayon-e">with </span><span
+class="crayon-e">toolset </span><span
+class="crayon-v">gcc</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.9.1...</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092235818563179-4"><span
+class="crayon-o">--</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Building </span><span
+class="crayon-e">spirit </span><span
+class="crayon-v">library</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line" id="crayon-56886ea092235818563179-5"><span
+class="crayon-e">CMake </span><span
+class="crayon-e">Error </span><span
+class="crayon-e">at </span><span
+class="crayon-v">deps</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-v">install</span><span
+class="crayon-o">/</span><span
+class="crayon-v">install</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">:</span><span
+class="crayon-cn">80</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">message</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092235818563179-6">&nbsp;</div><div
+class="crayon-line" id="crayon-56886ea092235818563179-7"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">Failed </span><span
+class="crayon-i">running</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092235818563179-8">&nbsp;</div><div
+class="crayon-line" id="crayon-56886ea092235818563179-9"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">C</span><span
+class="crayon-o">:</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Users</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Max</span><span
+class="crayon-o">/</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-o">/</span><span
+class="crayon-v">b2</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">exe</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">includedir</span><span
+class="crayon-o">=</span><span
+class="crayon-v">C</span><span
+class="crayon-o">:</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Users</span><span
+class="crayon-o">/</span><span
+class="crayon-v">Max</span><span
+class="crayon-o">/</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-cn">1.57.0</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">toolset</span><span
+class="crayon-o">=</span><span
+class="crayon-v">gcc</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">4.9.1</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">-</span><span
+class="crayon-v">j1</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">layout</span><span
+class="crayon-o">=</span><span
+class="crayon-v">versioned</span><span
+class="crayon-sy">;</span><span
+class="crayon-o">--</span><span
+class="crayon-v">build</span><span
+class="crayon-o">-</span><span
+class="crayon-v">type</span><span
+class="crayon-o">=</span><span
+class="crayon-v">complete</span><span
+class="crayon-o">:</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092235818563179-10">&nbsp;</div><div
+class="crayon-line" id="crayon-56886ea092235818563179-11"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">error</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">wrong </span><span
+class="crayon-e">library </span><span
+class="crayon-i">name</span><span
+class="crayon-h"> </span><span
+class="crayon-s">'spirit'</span><span
+class="crayon-h"> </span><span
+class="crayon-st">in</span><span
+class="crayon-h"> </span><span
+class="crayon-v">the</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">with</span><span
+class="crayon-o">-</span><span
+class="crayon-h"> </span><span
+class="crayon-v">option</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092235818563179-12">&nbsp;</div></div></td></tr></table></div></div><p></p><p>This is what I have in the CMakeLists.txt</p><p></p><div
+id="crayon-56886ea092243693297865" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+include(biicode/boost/setup)
+set(Boost_USE_STATIC_LIBS ON)
+bii_find_boost(COMPONENTS spirit REQUIRED)
+target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886ea092243693297865-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092243693297865-2">2</div><div
+class="crayon-num" data-line="crayon-56886ea092243693297865-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092243693297865-4">4</div><div
+class="crayon-num" data-line="crayon-56886ea092243693297865-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea092243693297865-6">6</div><div
+class="crayon-num" data-line="crayon-56886ea092243693297865-7">7</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886ea092243693297865-1">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092243693297865-2"><span
+class="crayon-e">include</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">boost</span><span
+class="crayon-o">/</span><span
+class="crayon-v">setup</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886ea092243693297865-3"><span
+class="crayon-e">set</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">Boost_USE_STATIC_LIBS </span><span
+class="crayon-v">ON</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092243693297865-4"><span
+class="crayon-e">bii_find_boost</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">COMPONENTS </span><span
+class="crayon-e">spirit </span><span
+class="crayon-v">REQUIRED</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886ea092243693297865-5"><span
+class="crayon-e">target_include_directories</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_INCLUDE_DIRS</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea092243693297865-6"><span
+class="crayon-e">target_link_libraries</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">Boost_LIBRARIES</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886ea092243693297865-7">&nbsp;</div></div></td></tr></table></div></div><p></p><p>My include in the cpp file looks like this:</p><p></p><div
+id="crayon-56886ea09224d966331260" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;boost/spirit/include/qi.hpp&gt;
+</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886ea09224d966331260-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886ea09224d966331260-2">2</div><div
+class="crayon-num" data-line="crayon-56886ea09224d966331260-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886ea09224d966331260-1">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886ea09224d966331260-2"><span
+class="crayon-p">#include &lt;boost/spirit/include/qi.hpp&gt;</span></div><div
+class="crayon-line" id="crayon-56886ea09224d966331260-3">&nbsp;</div></div></td></tr></table></div></div><p></p> ]]></content:encoded> </item> <item><title>By: doomdayx</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-207</link> <dc:creator><![CDATA[doomdayx]]></dc:creator> <pubDate>Thu, 05 Mar 2015 21:57:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-207</guid> <description><![CDATA[I can reproduce the problem]]></description> <content:encoded><![CDATA[<p>I can reproduce the problem</p> ]]></content:encoded> </item> <item><title>By: Manu343726</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-196</link> <dc:creator><![CDATA[Manu343726]]></dc:creator> <pubDate>Fri, 20 Feb 2015 18:04:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-196</guid> <description><![CDATA[Thanks Sebastian, I&#039;m glad you like it. About the deps issue, it&#039;s something we are working on. Originally the biicode deps analyzer was designed to search for code in blocks only. Since the code of boost is hosted externally to any block (In a system folder) bii is unable to find the sources.
+Remember you can post any issue you want on the repo. Actually this is one of the first points I want to mark as an issue.]]></description> <content:encoded><![CDATA[<p>Thanks Sebastian, I&#8217;m glad you like it. About the deps issue, it&#8217;s something we are working on. Originally the biicode deps analyzer was designed to search for code in blocks only. Since the code of boost is hosted externally to any block (In a system folder) bii is unable to find the sources.</p><p>Remember you can post any issue you want on the repo. Actually this is one of the first points I want to mark as an issue.</p> ]]></content:encoded> </item> <item><title>By: Sebastian Messmer</title><link>http://blog.biicode.com/dependency-management-boost-libraries/#comment-195</link> <dc:creator><![CDATA[Sebastian Messmer]]></dc:creator> <pubDate>Fri, 20 Feb 2015 15:54:00 +0000</pubDate> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086#comment-195</guid> <description><![CDATA[That is awesome news :)
+Just tried it and it works great.
+One small bug: &quot;bii find&quot; still displays &quot;WARN: Can&#039;t find block candidate for: boost/filesystem&quot; and &quot;bii deps&quot; also shows the boost headers as unresolved dependencies.
+But just ignoring these warnings works - it compiles even if boost is not locally installed.
+Thanks for the great work :)]]></description> <content:encoded><![CDATA[<p>That is awesome news :)</p><p>Just tried it and it works great.</p><p>One small bug: &#8220;bii find&#8221; still displays &#8220;WARN: Can&#8217;t find block candidate for: boost/filesystem&#8221; and &#8220;bii deps&#8221; also shows the boost headers as unresolved dependencies.<br
+/> But just ignoring these warnings works &#8211; it compiles even if boost is not locally installed.</p><p>Thanks for the great work :)</p> ]]></content:encoded> </item> </channel> </rss>

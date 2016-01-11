@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; pkg</title> <atom:link href="http://blog.biicode.com/tag/pkg/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>bii internals: Automating DEB pkg generation</title><link>http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/</link> <comments>http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/#comments</comments> <pubDate>Mon, 23 Jun 2014 08:00:20 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[automate]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[deb]]></category> <category><![CDATA[generation]]></category> <category><![CDATA[pkg]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=677</guid> <description><![CDATA[<p>To continue with our series about packaging and distributing biicode, today we are talking about deb packages generation. Even though deb packages are broadly documented, sometimes a concrete example is more helpful. To create a debian package we need to create a folder called DEBIAN. In that folder we will place our program files, recreating [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/">bii internals: Automating DEB pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>To continue with our series about packaging and distributing biicode, today we are talking about deb packages generation. Even though deb packages are broadly documented, sometimes a concrete example is more helpful.</p><p><span
+id="more-677"></span></p><p>To create a debian package we need to create a folder called DEBIAN. In that folder we will place our program files, recreating the structure we want in the client&#8217;s machines. This means that if we want biicode installed inside /usr/lib/biicode then we place biicode inside DEBIAN/usr/lib/biicode. Following the same schema, copyright file should be placed in DEBIAN/usr/share/doc/biicode/copyright. Along with these contents we should also place the control file and the scripts needed to finish installation or removal process. In this case we need postinst and prerm, that will run with sudo permissions.</p><p>To sum up this is how our DEBIAN directory should look like:</p><pre class="crayon-plain-tag">├── DEBIAN
+│   ├── control
+│   ├── postinst
+│   ├── prerm
+│   └── usr
+│       └── share
+│       |   └── doc
+│       |       └── biicode
+│       |           └── copyright
+│       └── lib
+│           └── biicode
+│               └── # Tons os stuff</pre><p>You can read <a
+title="Debian Control File Documentation" href="http://www.debian.org/doc/debian-policy/ch-controlfields.html" target="_blank">control file documentation</a> at debian&#8217;s page, our control file looks like this:</p><pre class="crayon-plain-tag">Package: biicode
+Priority: optional
+Section: devel
+Maintainer: Julia S.Simon &lt;julia.simon@biicode.com&gt;
+Architecture: %ARCHITECTURE%
+Version: %VERSION%
+Depends: zlib1g, libc-bin
+Recommends: build-essential | python2.7 | nodejs
+Homepage: http://www.biicode.com
+Installed-Size: %SIZE%
+Description: Biicode
+ Biicode is a novel tool that aims to make easier our lives as developers.
+ It will make you forget about setting up dependencies, build scripts,
+ distribution... and let us focus on the only task that is valuable,
+ productive, creative and cannot be automated, which is coding.</pre><p>In the postinstallation step we just create a symlink in the PATH:</p><pre class="crayon-plain-tag">#!/usr/bin/env/ bash
+chmod -R a+rx /usr/lib/biicode/
+ln -s -f /usr/lib/biicode/bii /usr/bin/bii</pre><p>Which is removed in the pre-remove step:</p><pre class="crayon-plain-tag">#!/usr/bin/env bash
+rm /usr/bin/bii</pre><p>We also have a small bash script to set the permissions, calculate md5sum and creates the package.<br
+/> Md5sum contains a list of MD5 checksums for all files contained within the package so they can be verified when they are extracted to the client&#8217;s machine:</p><pre class="crayon-plain-tag">chmod 755 ${POSTINST_FILE}
+chmod 755 ${PRERM_FILE}
+chmod 755 ${TMPDIR}/DEBIAN
+chmod 755 ${TMPDIR}/DEBIAN/control
+find ${TMPDIR}/usr -type d -exec chmod 755 {} +
+echo "cd ${TMPDIR}"
+cd ${TMPDIR}
+echo "Calculating md5sums"
+find . -type f ! -regex '.*?biicode*' ! -regex '.*?DEBIAN.*' -printf '%P ' | xargs md5sum &gt; DEBIAN/md5sums
+chmod 644 DEBIAN/md5sums
+echo "cd ${HOLDER}"
+cd ${HOLDER}
+fakeroot dpkg-deb -z8 -Zgzip --build biicode
+echo "cp biicode.deb ~/biicode.deb"</pre><p>Finally everything is wired up with a python script that grabs <a
+title="bii internals: Compiling your python application with Cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">cythonized</a>,<a
+title="bii internals: Packaging a compiled app with PyInstaller" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/" target="_blank"> pyinstalled</a> biicode, creates the folder structure and invokes mentioned bash script:</p><pre class="crayon-plain-tag">import shutil
+import os
+import tempfile
+from biicode.common import __version__
+from biicode.common.utils import file_utils
+from biicode.utils.pack import create_client_binary
+from biicode.client.command.process_executor import execute
+import sys
+import platform
+def get_folder_size(p):
+    size = os.popen('du -s %s' % p).read()
+    return int(size.split('\t')[0])
+def main(compiled=True, force_compile=False):
+    create_client_binary.main(compiled=compiled, onefile=False, force_compile=force_compile)
+    folder_temp = tempfile.mkdtemp(suffix='biicode')
+    tmpdir = os.path.join(folder_temp, 'biicode')
+    os.mkdir(tmpdir)
+    pkg_path = os.path.join(tmpdir, 'usr/lib/biicode')
+    debian_path = os.path.join(tmpdir, 'DEBIAN')
+    os.mkdir(debian_path)
+    share_path = os.path.join(tmpdir, 'usr/share')
+    compiled_path = os.path.expanduser('~/PyInstaller-2.1/bii/dist/bii')
+    src_debian_path = os.path.join(os.path.dirname(__file__), 'resources/DEBIAN')
+    src_share_path = os.path.join(os.path.dirname(__file__), 'resources/DEBIAN/usr/share')
+    to_deb_script = os.path.join(os.path.dirname(__file__), 'resources/DEBIAN/to_deb.sh')
+    control_file = os.path.join(debian_path, 'control')
+    postinst_file = os.path.join(debian_path, 'postinst')
+    prerm_file = os.path.join(debian_path, 'prerm')
+    print 'Copying compiled folder %s to %s' % (compiled_path, pkg_path)
+    shutil.copytree(compiled_path, pkg_path)
+    shutil.copy(os.path.join(src_debian_path, 'control'), control_file)
+    shutil.copy(os.path.join(src_debian_path, 'postinst'), postinst_file)
+    shutil.copy(os.path.join(src_debian_path, 'prerm'), prerm_file)
+    shutil.copytree(src_share_path, share_path)
+    arch = platform.architecture()[0]
+    if arch == '64bit':
+        architecture = 'amd64'
+    else:
+        if 'arm' in platform.machine():
+            architecture = 'armhf'
+        else:
+            architecture = 'i386'
+    version = __version__
+    if version == 'develop':
+        version = '0'
+    file_utils.search_and_replace(control_file, '%VERSION%', version)
+    file_utils.search_and_replace(control_file, '%ARCHITECTURE%', architecture)
+    file_utils.search_and_replace(control_file, '%SIZE%', str(get_folder_size(compiled_path)))
+    from os.path import expanduser
+    home = expanduser("~")
+    env = {'POSTINST_FILE': postinst_file,
+           'PRERM_FILE': prerm_file,
+           'TMPDIR': tmpdir,
+           'HOLDER': folder_temp,
+           'HOME': home}
+    retcode, _ = execute(to_deb_script, env=env)
+    sys.exit(retcode)
+if __name__ == '__main__':
+    main()</pre><p>Have you tried to package your own installer now? We hope you have!</p><p>Did you miss how to package an app for other OS?</p><ul><li>They are available here: for <a
+title="windows installer" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/" target="_blank">Windows </a> and for <a
+title="MacOS Installer" href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/" target="_blank">MacOS</a>.</li></ul><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/">bii internals: Automating DEB pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>bii internals: Automating MacOS pkg generation</title><link>http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/</link> <comments>http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/#comments</comments> <pubDate>Fri, 06 Jun 2014 08:52:36 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[mac]]></category> <category><![CDATA[macos]]></category> <category><![CDATA[pkg]]></category> <category><![CDATA[pkgbuild]]></category> <category><![CDATA[productbuild]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=618</guid> <description><![CDATA[<p>In a previous posts we talked about how we cythonized and packaged biicode with pyinstaller. Now we will explain how to generate installers for the different systems, starting with mac. The problem with pkg generation is that most of the existing tutorials and references are xcode oriented, and we just wanted to use plain console. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">bii internals: Automating MacOS pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In a previous posts we talked about how we <a
+title="bii internals: Compiling your python application with Cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/">cythonized</a> and <a
+title="bii internals: Packaging a compiled app with PyInstaller" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/">packaged biicode with pyinstaller</a>. Now we will explain how to generate installers for the different systems, starting with mac. The problem with pkg generation is that most of the existing tutorials and references are xcode oriented, and we just wanted to use plain console.</p><p><span
+id="more-618"></span></p><p>Let’s get started on how generate a mac installer:</p><p>Before packaging we need to prepare a set of additional files: license and welcome text, background img, postinstall script and the Distribution.xml.</p><p><strong>Distribution.xm</strong>l is a distribution definition file which defines the installation experience for the installer package that contains it, you can read about its different options in the <a
+href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/DistributionDefinitionRef/Chapters/Introduction.html#//apple_ref/doc/uid/TP40005370-CH1-SW1">Apple developers page</a>. A minimal Distribution.xml looks like this:</p><pre class="crayon-plain-tag">&lt;?xml version="1.0" encoding="utf-8" standalone="yes"?&gt;
+   &lt;installer-gui-script minSpecVersion="2"&gt;
+   &lt;!--+==========================+
+       |       Presentation       |
+       +==========================+--&gt;
+   &lt;title&gt;Biicode&lt;/title&gt;
+   &lt;options customize="never" rootVolumeOnly="true"/&gt;
+   &lt;welcome file="Welcome.rtf"/&gt;
+   &lt;license file="license.rtf"/&gt;
+   &lt;background file="background.png" scaling="proportional" alignment="bottomleft"/&gt;
+   &lt;allowed-os-versions&gt;
+       &lt;os-version min="10.9" /&gt;
+   &lt;/allowed-os-versions&gt;
+   &lt;options customize="never" require-scripts="false"/&gt;
+   &lt;product id="biicode" version="%VERSION%" /&gt;
+   &lt;!--+==========================+
+       |         Installer        |
+       +==========================+--&gt;
+   &lt;choices-outline&gt;
+       &lt;line choice="default"&gt;
+           &lt;line choice="biicode"/&gt;
+       &lt;/line&gt;
+   &lt;/choices-outline&gt;
+   &lt;choice id="default"/&gt;
+   &lt;choice id="biicode" visible="false"&gt;
+       &lt;pkg-ref id="biicode"/&gt;
+   &lt;/choice&gt;
+   &lt;!--+==========================+
+       |    Package References    |
+       +==========================+--&gt;
+   &lt;pkg-ref id="biicode" version="%VERSION%" onConclusion="none"&gt;%PKG%&lt;/pkg-ref&gt;
+&lt;/installer-gui-script&gt;</pre><p><strong>postinstall</strong> script is a script that runs as super user after installation is complete. In our case it will set permissions and create a symbolic link in the PATH:</p><pre class="crayon-plain-tag">#!/usr/bin/env bash
+echo "Setting permissions"
+sudo chmod -R a+rx /usr/lib/biicode
+echo "Creating symlink"
+sudo ln -f -s /usr/lib/biicode/bii /usr/bin/bii</pre><p><strong>Welcome.rtf</strong> is the rich text that appears in the first step of the installation wizard, that looks like this:</p><div
+id="attachment_619" style="width: 640px" class="wp-caption aligncenter"><img
+class="wp-image-619" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/wizard1.png" alt="Biicode installation Wizard: Welcome" width="630" height="447" /><p
+class="wp-caption-text">Biicode installation Wizard: Welcome</p></div><p><strong>background.png</strong> is the image containing the bee you se above.</p><p><strong>license.rtf</strong> contains the license users need to accept in the next step.</p><div
+id="attachment_620" style="width: 640px" class="wp-caption aligncenter"><img
+class="wp-image-620 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/wizard2.png" alt="Biicode installation Wizard: License" width="630" height="440" /><p
+class="wp-caption-text">Biicode installation Wizard: License</p></div><p>Both Welcome and license can be in different languages with the proper suffixes so they will display in the user’s language.</p><p>In our automation repo we have all these files in a folder like this:</p><pre class="crayon-plain-tag">resources
+├── macos
+   ├── Distribution.xml
+   ├── Resources
+   │   ├── Welcome.rtf
+   │   ├── background.png
+   │   └── license.rtf
+   └── scripts
+       └── postinstall</pre><p>Now that we have everything set up we can start packaging, the main script looks like this:</p><pre class="crayon-plain-tag">import os
+import sys
+import tempfile
+folder_tmp = tempfile.mkdtemp(suffix='biicode')
+   pkg_path = os.path.join(folder_tmp, 'tmpbiicode.pkg')
+   resources = os.path.join(os.path.dirname(__file__), 'resources/macos/')
+   retcode = create_package_from_sources(binary_path, pkg_path, resources)
+   if retcode == 0:
+       retcode = create_product_package(folder_tmp, resources)
+   sys.exit(retcode)</pre><p>This script, creates a temporary directory to work in, creates the base package, patches the distribution file and creates the final pkg to release. binary_path is the path to the app processed by PyInstaller.</p><pre class="crayon-plain-tag">def create_package_from_sources(binary_path, pkg_path, resources):
+   try:
+       shutil.copytree(os.path.join(resources, 'Resources'),
+                       os.path.join(os.path.split(binary_path)[0],
+                       'Resources'))
+   except:
+       pass
+   command = 'pkgbuild --root %s/ %s --scripts %s/scripts ' \
+              % (os.path.split(binary)[0], pkg_path, resources)
+   command += '--identifier biicode --version %s ' % version
+   command += '--install-location usr/lib/biicode'
+   print command
+   return os.system(command)</pre><p>So we copy the previously mentioned files (resources) to a Resources file in the pyinstaller generated folder and invoke pkgbuild.</p><p>pkgbuild builds an OS X Installer component package from on-disk files. A “component package” contains payload to be installed by the OS X Installer. Although a component<br
+/> package can be installed on its own, it is typically incorporated into a product archive, along with a “distribution” and localized resources, using<a
+href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/productbuild.1.html#//apple_ref/doc/man/1/productbuild"> productbuild.</a></p><p>So then we can create the final product package:</p><pre class="crayon-plain-tag">def create_product_package(holder, resources):
+   dist_file = os.path.join(holder, 'Distribution.xml')
+   shutil.copy(os.path.join(resources, 'Distribution.xml'), dist_file)
+   file_utils.search_and_replace(dist_file, '%VERSION%', version)
+   file_utils.search_and_replace(dist_file, '%PKG%', 'tmpbiicode.pkg')
+   command = 'productbuild '
+   command += '--distribution %s ' % dist_file
+   command += '--package-path %s ' % holder
+   command += '--resources %s ' % os.path.join(resources, 'Resources')
+   command += '~/biicode.pkg'
+   print command
+   print holder
+   return os.system(command)</pre><p>productbuild builds a product archive for the OS X Installer or the Mac App Store. A product archive is a flat file with a .pkg extension.  productbuild creates a deployable product archive, which can be used with the OS X Installer, or submitted to the Mac App Store.</p><p>An additional step would be signing the package so it comes from a “trusted” developer (and you dont need to right-click on it to install it) but we are skipping that step for the moment.</p><p>Hope you enjoy packaging!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">bii internals: Automating MacOS pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; software desing</title> <atom:link href="http://blog.biicode.com/tag/software-desing/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>A software design principle: Don&#8217;t make me use your design</title><link>http://blog.biicode.com/software-design-proposal/</link> <comments>http://blog.biicode.com/software-design-proposal/#comments</comments> <pubDate>Thu, 30 Oct 2014 11:47:46 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[Software design]]></category> <category><![CDATA[dependency management]]></category> <category><![CDATA[functionality vs. design]]></category> <category><![CDATA[software desing]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1862</guid> <description><![CDATA[<p>Or why there is no SerialPort in C++ Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/software-design-proposal/">A software design principle: Don&#8217;t make me use your design</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Or why there is no SerialPort in C++</h2><p>Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out there. So communicating over a serial port in a portable way should be straightforward.</p><p><span
+id="more-1862"></span></p><p>Probably as straightforward as it is in python. To send a few bytes, with just a bare python installation, all you have to do (in any OS) is:</p><p><code>$ pip install pyserial</code></p><p>this downloads and sets up a dozen files, just a few KBs. Then, write your code:</p><pre class="crayon-plain-tag">import serial
+ser = serial.Serial(0)
+ser.write("hello")
+ser.close()</pre><p>And that’s it!</p><p>Lets do it now in C++. Suppose you want to write a similar application just to send some bytes over the serial port. The first difficulty is that seems there’s nothing as “standard” or widely accepted, so my first attempt was to use <a
+href="http://www.mrpt.org">MRPT</a>. MRPT is a robotics library plenty of great drivers, algorithms, tools, interfaces… an amazing and very popular tool kit for robotics. I could use the whole MRPT, but lets say I am not willing to introduce a dependency to it, it is very large (60Mb of source code, &gt;5k source files) and contains tons of stuff I do not need. I want to get just the SerialPort functionality. Going down to the code, you can find a <code>CSerialPort_win.cpp</code> and a <code>CSerialPort_lin.cpp</code> files, both implementing the same CSerialPort class, declared in <code>CSerialPort.h</code> header file. In the implementation file you can find:</p><pre class="crayon-plain-tag">void  CSerialPort::open( )
+{
+	MRPT_START
+	…
+	// Open the serial port:
+	if ( INVALID_HANDLE_VALUE == (
+	            hCOM = CreateFileA( m_serialName.c_str(), // Serial Port name</pre><p>And in the header:</p><pre class="crayon-plain-tag">class HWDRIVERS_IMPEXP CSerialPort : public CStream
+		{
+			friend class PosixSignalDispatcherImpl;
+		public:</pre><p>That&#8217;s it, the implementation relies on a macro MRPT_START (it allows profiling and exception handling), which seems could be easily removed, but the header inherits from CStream, a base class for streams (network, files, output, etc), which in turn depends on a serialization framework (CSerializable, CObject).</p><p>While the overall software design of the library is great, it is very difficult to isolate what, in my opinion, should be a very independent and low coupled component. Please, do not misunderstand my opinion, MRPT is really great. The problem is simply that the library was not designed with that goal in mind.</p><p>My guess was that something more generic, not tied to robotics, solution already existed. So I googled for it a little and it seemed that the most accepted solution (at least in stackoverflow) was using <code>boost::asio</code>. It seemed reasonable to me that depending on 500 Mb of source code is probably overkill for sending some bytes, so I also tried to extract the serial port functionality. But I found some high levels of abstractions over it, for example, in the file <code>basic_serial_port.hpp</code>:</p><pre class="crayon-plain-tag">template &lt;typename SerialPortService = serial_port_service&gt;
+class basic_serial_port
+  : public basic_io_object&lt;SerialPortService&gt;,
+    public serial_port_base
+{
+public:</pre><p>You have to dig deeply into <code>win_iocp_serial_port_service.ipp</code> to actually find the code that opens the port in Win:</p><pre class="crayon-plain-tag">boost::system::error_code win_iocp_serial_port_service::open(
+    win_iocp_serial_port_service::implementation_type&amp; impl,
+    const std::string&amp; device, boost::system::error_code&amp; ec)
+{
+  if (is_open(impl))
+  {
+    ec = boost::asio::error::already_open;
+    return ec;
+  }
+  // Open a handle to the serial port.
+  ::HANDLE handle = ::CreateFileA(name.c_str()</pre><p>Surprisingly, the functionality is spread between different files, for example, the latter contains code for opening, closing and setting parameters, but the code for sending and receiving bytes is located in another file.</p><p>Basically the conclusion is that you cannot use the serial port separately, you are forced to use it with Asio. We’re facing the same problem again: boost is really amazing and asio is also brilliant. And surely their serial port implementations (both MRPT and boost::asio) are more configurable and powerful than the python one is. I personally wish someday I could write code half as good as the one in any of those projects. But I see a pattern here, one, that doesn&#8217;t allow to have a small and simple SerialPort functionality to just synchronously send and receive some bytes over the serial port. So I dare to state what IMHO could be considered as a design principle:</p><h2>Let me use your functionality without using your design</h2><p>Of course, this principle is nothing new. It is very related to many well known principles and patterns. It is very related to the trending functional programming approach, and could be considered as a consequence of many patterns as single responsibility, low coupling, separation of concerns, high cohesion, etc. But I have never seen it stated as above, and I think it could be another perspective to be taken into account. By &#8220;without using your design&#8221; I mean architectural design, obviously every single line of code has some design in it.</p><p>How do I think the SerialPort example should be addressed? The main problem I see with it, is the failure to identify SerialPort as a first level building block, and thus it deserves its own “package”, namespace, library… you named it. With that in mind, it could be very easy to build it in those libraries. For example, in the MRPT case, you can have both the SerialPort and a streams and serialization framework independent from each other. Then, bind both things very easily with templates (very simplified for clarity, just an idea):</p><pre class="crayon-plain-tag">class SerialPort{
+public:
+	void write(char c);
+};
+class MyBaseStream{
+	virtual void write(std::string str)=0;
+	friend MyBaseStream&amp; operator &lt;&lt;(MyBaseStream&amp; mystream, std::string str){
+		mystream.write(str);
+		return mystream;
+	}
+};
+template &lt;typename T&gt;
+class Stream: public MyBaseStream{
+public:
+	Stream(T&amp; _port): port(_port){}
+	virtual void write(std::string str){
+		for(auto c: str)
+			port.write(c);
+	}
+private:
+	T port;
+};
+//example client code of generic streams
+void write2stream(MyBaseStream&amp; stream, std::string str){
+	stream&lt;&lt;str;
+}
+using SerialPortStream = Stream&lt;SerialPort&gt;;
+int main(){
+SerialPort serial;
+    SerialPortStream serial_stream(serial);
+    serial_stream&lt;&lt;"Hello World\n";
+    write2stream(serial_stream, "Good Bye\n");
+}</pre><p>In this way, both the SerialPort and the Stream classes become two independent first class citizens in our project. It becomes very easy to test (and mock), understand, maintain and extend them, and it is also simpler to grow and scale the whole project using them. I know I am not saying something very new with this software design proposal, for example it is similar to Alexandrescu’s policy based design, though the final goal could be different.</p><h3>Failures to follow this principle are more common in C/C++</h3><p>I have seen this pattern a few times in C and C++ projects, but very rarely in other languages (at least those that I have used more as java and python) and I believe there is a reason, not directly related to software design for it: the lack of a widely used dependency manager. And no, OS package managers, installers and so, are not enough to solve this problem. Even if the authors of these libraries decide to decouple the functionality of the SerialPort basic wrapper in their design, there is little gain in it, users should still manually extract those files and integrate them in their projects, which doesn&#8217;t sound as reasonable engineering and will produce, for sure, maintenance problems and lack of updates. It is really unlikely that the authors will decide to create a separate project/library for the SerialPort, it is more effort not only to do it in the short term, but also to maintain and work with it in the mid and long terms. So developers just roll out their designs, and fill the functionality in it as required. I’ve done it so many times too.</p><p>On the contrary, if a dependency manager existed, it is very likely that a simple, independent and robust SerialPort implementation would emerge and be widely adopted, and people creating asynchronous communication frameworks or robotics applications would use it and have less code to write.</p><p>Hopefully such a dependency manager for C and C++ will someday be a reality :D</p><p>&nbsp;</p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/software-design-proposal/">A software design principle: Don&#8217;t make me use your design</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/software-design-proposal/feed/</wfw:commentRss> <slash:comments>9</slash:comments> </item> </channel> </rss>

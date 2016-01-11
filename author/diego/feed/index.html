@@ -1,0 +1,954 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; diego</title> <atom:link href="http://blog.biicode.com/author/diego/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>The Sunset of C and C++</title><link>http://blog.biicode.com/c-cpp-biggest-threats-modern-ecosystem/</link> <comments>http://blog.biicode.com/c-cpp-biggest-threats-modern-ecosystem/#comments</comments> <pubDate>Wed, 25 Mar 2015 12:47:31 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2156</guid> <description><![CDATA[<p>Because not only CPU cycles count, but also developers’ time There are approximately 4 million C and C++ programmers in the world, probably the largest community, with about 20% of the market, which is comparable or even larger than Java (both C and C++ together). They are also by far the oldest languages of the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/c-cpp-biggest-threats-modern-ecosystem/">The Sunset of C and C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2><em><strong>Because not only CPU cycles count, but also developers’ time</strong></em></h2><p>There are approximately 4 million C and C++ programmers in the world, probably the largest community, with about 20% of the market, which is comparable or even larger than Java (both C and C++ together). They are also by far the oldest languages of the current mainstream ones, used in key industries and even increasingly due to synergies with other fields as the IoT/embedded systems or robotics, in which these languages are important.</p><p>C++ is a great language, and it is improving faster than ever with the recent 11 and 14 standards, and 17 is very promising too. It is amazing how the syntax is becoming closer and closer to other more “modern” languages as python. And C is the solid foundation of most current IT technology. State of the art compilers, optimizers, debuggers and IDEs for C and C++ are excellent.</p><div
+id="attachment_2158" style="width: 310px" class="wp-caption aligncenter"><img
+class="wp-image-2158 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/C-600x600-300x300.png" alt="C and C++ logo" width="300" height="300" /><p
+class="wp-caption-text">C and C++ make up to 20% of the world code</p></div><p><span
+id="more-2156"></span></p><p>But then, one day you want to write some simple portable and reusable code that is able to send <code>Hello World</code> characters over a serial port.</p><p>Ask a <span
+style="text-decoration: underline;">pythonist</span>. He will write <code>$ pip install pyserial</code>, and in a few minutes he will have the solution.</p><p>Ask a <span
+style="text-decoration: underline;">C++ dev</span>. The first surprise is that there is no such pyserial equivalent in C++. And C++ is allegedly very good at low level. The closest thing could be the serial port inside Boost.Asio (which is the most voted answer in StackOverflow), but just downloading Boost could take more time than the python solution, and it also requires the serial port to be used in an asynchronous framework, which is probably overkill for this task. The proof is that hundreds of files will typically be included in this simple job. Furthermore the C++ coder will typically have to manually introduce the include paths or equivalent in their project.</p><p>In contrast, the python pyserial has a few files, and the funniest thing is that most part of it is actually written in simple C. Creating a reusable component for this serial “Hello World” will take even more effort, and the process of installing Boost will have to be repeated on every new computer.</p><p>In no way I pretend to say that Boost is bad code, <span
+style="text-decoration: underline;">it is brilliant</span>, but it is clear that in the C and C++ development processes large inefficiencies are still present.</p><p>The motto <em>don’t pay for what you don’t use</em> is certainly true in terms of the potential of the languages and the achievable computational resources efficiency, but totally misleading in terms of the development process. This process is less efficient in C and C++ compared to other languages. And <a
+href="http://tech.co/highest-paying-programming-languages-2015-03">C++ is the highest-paying programming language</a>. This means, in C and C++ we, as developers, have to pay for a precious time that does not generate value into our products, wasted time that creates a competitive disadvantage with respect to our colleagues or ourselves developing in other languages.</p><p>So the biggest problem is not languages themselves, but the development tools and ecosystem around them. First, <b>the build system</b> is a complete diaspora of different compilers with different options and libraries, but what is worst, different build systems not only among OSs, but also among compilers.</p><p>Fortunately in this case <strong>CMake</strong><b> </b>comes to the rescue. It is not strictly a build system, but a layer over them, generating native builds for different targets. CMake is the de-facto standard for multi-OS projects, and it is also getting more adoption even for single OS projects. It is mature and powerful, and keeps improving very fast. New projects as the cool CLion IDE, directly use CMake as the only supported build system, and it is a good approach. Although  the scripting syntax could be better, the consensus is far more important than any other factor, and I think that the C and C++ communities’ universal adoption of CMake would be a great win for everybody, and pray to the God of Bits to find a CMakeLists.txt in every project.</p><p>Secondly but even more important is <b>the lack of a C and/or C++ dependency manager</b><b>.</b> Python has pip, Java has Maven, Node has NPM, Ruby has bundler, Go has get, Rust has cargo… And no, apt or similar are not  dependency managers, otherwise those languages wouldn’t feature their own dependencies managers. This will be the ultimate cause of the sunset of C and C++ languages, which will be reduced to the very core components in a few years, just as assembler is today.</p><h3><strong>The real menace: Rust and Go</strong></h3><p>Because interpreted and dynamic languages keep evolving, virtual machines and advances in JIT compiling are producing amazing results in terms of speed, as in PyPy, and some of the best technologies that support the C and C++ ecosystems as LLVM also nurture those languages tools. But the <b>real menace comes from modern compiled languages like Go or Rust</b>, which have the advantages of decades of learning in computing languages and no legacy codebases to keep supporting. Not only for the language syntax itself, which can have very convenient features (easy, concurrency, safety…) but also for the ease with which dependencies are managed. Simple deps management creates virtuous circles with exponential growths. You can easily build with Rust or Go apps, libraries or systems, just by declaring or importing the GUI, network, AI, graphics, server, serialization, ORM libraries, etc., you want to integrate in your project. Despite C or C++ could hypothetically get further performance, setting up an equivalent project can take much, much longer to complete in C or C++.</p><p><b>No matter how much the languages are improved, as long as this problem is not fixed, future looks gloomy for my beloved C and C++ languages</b>. Develop an ecosystem in which this is possible, and they will not only not decline, but even take over in less traditional domains such as web apps and mobile.</p><p>If you have read so far, you are most probably a smart developer, and you have realized that <b>this post is on biicode’s blog during our open source challenge, and this post is nothing but f***ing marketing with an intended-to-be catchy title to get your attention. I am sorry, it is. </b>However the above still holds true, I meant every word, the menace is real, and I am not trying to cheat you by saying that biicode is the solution or the lifesaver of the C and C++ languages. It is marketing about a team of people really committed to try to help in the development of whatever the C and C++ communities require.</p><p>We have been doing large improvements in biicode versions from 1.0 to 2.7, based on your feedback: plain-text configuration, flexible project layouts, avoid modifications of #includes… you name it, we do our best to address it.</p><p>And you have consistently <b>requested it to be Open Source</b>, that is why, after negotiating with our investors we launched our <a
+href="http://www.biicode.com/biicode-open-source-challenge">challenge</a>. With this announcement and the latest improvements based on your feedback biicode is finally gaining a decent traction and we got our first clients even before launching the premium accounts publicly. But it could certainly improve even faster with your help.</p><p><img
+class="aligncenter wp-image-2159 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/biicode-im-your-father-1024x576.jpg" alt="C and C++, the father(s) of almost every programming language" width="630" height="354" /></p><p>&nbsp;</p><p>So this is why <b>I am proposing the board this Friday to directly start to be open-source, encouraged by our growing metrics and your support</b>. Want to help me and see biicode start going open source in early April? Register in biicode and/or (anonymous usage possible too) download it, try the getting started and give feedback, and spread the word as much as possible.</p><p><strong><br
+/> <i>UPDATE:  While writing this post, Google open sourced Bazel and  went top in Hacker News. This is good news, and a hint that the ecosystem is looking for more open source development tools that tackle mainly the build and dependencies problems.</i></strong></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/c-cpp-biggest-threats-modern-ecosystem/">The Sunset of C and C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/c-cpp-biggest-threats-modern-ecosystem/feed/</wfw:commentRss> <slash:comments>13</slash:comments> </item> <item><title>Raspberry PI cross building native (C/C++) graphical applications from Windows</title><link>http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/</link> <comments>http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/#comments</comments> <pubDate>Tue, 17 Feb 2015 15:30:27 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[try this out]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2077</guid> <description><![CDATA[<p>Developing and testing C and C++ applications for the Raspberry can be inconvenient because of slow builds, so it is usually far more interesting to be able to develop in your own box, then just do the final checks in the target platform, in this case the Raspberry PI. This article shows how to develop [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/">Raspberry PI cross building native (C/C++) graphical applications from Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Developing and testing C and C++ applications for the Raspberry can be inconvenient because of slow builds, so it is usually far more interesting to be able to develop in your own box, then just do the final checks in the target platform, in this case the Raspberry PI.</p><p><img
+class="aligncenter size-full wp-image-2083" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/postdiego.png" alt="raspberry pi ++" width="640" height="300" /></p><p>This article shows how to develop an OpenGL based application (using the GLFW library), that will be first built and run in the desktop, then cross-built to the RaspberryPI, using biicode hooks and toolchains features to easily automate the process.</p><p><span
+id="more-2077"></span></p><p>All you need to run this example is to get biicode installed with its C/C++ dev tools (bii setup:cpp). No need to install or configure any other tool, as it will manage to download and install them when required.</p><p>We will build the basic GLFW examples:</p><pre class="crayon-plain-tag">$ bii init glapp
+$ bii open examples/glfw
+$ bii build
+$ .\bin\examples_glfw_particles</pre><p><img
+class="aligncenter size-full wp-image-2079" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/particles.png" alt="particles" width="440" height="341" />Note that biicode has retrieved the GLFW source code, it is not in the examples, but as an external dependency defined in the biicode.conf file.</p><p>Biicode uses CMake as build system and thanks to the possibility of defining custom toolchains, it is quite simple to define a new one. Sysprogs (<a
+href="http://sysprogs.com/">http://sysprogs.com/</a>) has created an excellent cross build suite, including R-PI one with gcc4.9 support as well as a complete sysroot. Next commands will download and setup everything we need:</p><pre class="crayon-plain-tag">$ bii open diego/rpiwin
+$ bii build</pre><p>When the GNU Toolchain for Raspberry launches, accept the defaults and the license agreement:<img
+class="aligncenter size-full wp-image-2081" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/toolchain.png" alt="toolchain" width="543" height="301" /></p><p>It will also download and unzip the SmartTTY application that is useful to upload the final binaries to the R-PI.</p><p>Once this is done, the cpp:build is still building the Windows desktop version. We can change to the new toolchain that has been created (in bii/rpi_toolchain.cmake) with the following commands:</p><pre class="crayon-plain-tag">$ bii configure –t=rpi
+$ bii build</pre><p>That will build the same examples, but for the RPI. It is time to upload them to the R-PI, to check if they work. We use here the previously installed SmartTTY:</p><pre class="crayon-plain-tag">$ C:\SysGCC\PortableSmartty\SmarTTY.exe</pre><p><img
+class="aligncenter size-full wp-image-2080" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/ssh.png" alt="ssh" width="488" height="331" /> Go to Menu -&gt; SCP -&gt; Upload a directory. Then select your project “glapp/bin” folder and upload it to the folder you want in the R-PI (eg. /home/pi/glfwexamples)</p><p>Then go to the R-PI (you need a connected monitor and keyboard, we are developing a graphical application), launch X if you haven’t, and run the app:</p><pre class="crayon-plain-tag">$ cd glfwexamples
+$ ./examples_glfw_splitview</pre><p><img
+class="aligncenter size-full wp-image-2082" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/torus.png" alt="torus" width="420" height="444" />You can switch back and forth between desktop and cross build, very easily:</p><pre class="crayon-plain-tag">$ bii configure –t</pre><p>Note that the block diego/rpiwin, once it installed things, it is no longer necessary in your project, you can safely close it (or delete it)</p><pre class="crayon-plain-tag">$ bii close diego/rpiwin</pre><p>There is however a problem with these apps, they run on the Raspberry, but they are too slow. This is because we are using the default OpenGL renderer, which uses the CPU instead of the R-PI GPU and thus is very slow. To take advantage of the HW accelerated support of the Raspberry, we should use EGL (GLES v2) instead, but this is the subject of a different post. Please leave a comment if you are interested in it or if you experience any problem while trying these examples. Remember there is a <a
+href="http://forum.biicode.com" target="_blank">Forum</a> and you can also use the tag &#8220;biicode&#8221; in <a
+href="http://www.stackoverflow.com" target="_blank">StackOverflow</a></p><p><strong> Enjoy!</strong></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/">Raspberry PI cross building native (C/C++) graphical applications from Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/raspberry-pi-cross-building-opengl-glfw-windows/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>A software design principle: Don&#8217;t make me use your design</title><link>http://blog.biicode.com/software-design-proposal/</link> <comments>http://blog.biicode.com/software-design-proposal/#comments</comments> <pubDate>Thu, 30 Oct 2014 11:47:46 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[Software design]]></category> <category><![CDATA[dependency management]]></category> <category><![CDATA[functionality vs. design]]></category> <category><![CDATA[software desing]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1862</guid> <description><![CDATA[<p>Or why there is no SerialPort in C++ Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/software-design-proposal/">A software design principle: Don&#8217;t make me use your design</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Or why there is no SerialPort in C++</h2><p>Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out there. So communicating over a serial port in a portable way should be straightforward.</p><p><span
+id="more-1862"></span></p><p>Probably as straightforward as it is in python. To send a few bytes, with just a bare python installation, all you have to do (in any OS) is:</p><p><code>$ pip install pyserial</code></p><p>this downloads and sets up a dozen files, just a few KBs. Then, write your code:</p><pre class="crayon-plain-tag">import serial
+ser = serial.Serial(0)
+ser.write("hello")
+ser.close()</pre><p>And that’s it!</p><p>Lets do it now in C++. Suppose you want to write a similar application just to send some bytes over the serial port. The first difficulty is that seems there’s nothing as “standard” or widely accepted, so my first attempt was to use <a
+href="http://www.mrpt.org">MRPT</a>. MRPT is a robotics library plenty of great drivers, algorithms, tools, interfaces… an amazing and very popular tool kit for robotics. I could use the whole MRPT, but lets say I am not willing to introduce a dependency to it, it is very large (60Mb of source code, &gt;5k source files) and contains tons of stuff I do not need. I want to get just the SerialPort functionality. Going down to the code, you can find a <code>CSerialPort_win.cpp</code> and a <code>CSerialPort_lin.cpp</code> files, both implementing the same CSerialPort class, declared in <code>CSerialPort.h</code> header file. In the implementation file you can find:</p><pre class="crayon-plain-tag">void  CSerialPort::open( )
+{
+	MRPT_START
+	…
+	// Open the serial port:
+	if ( INVALID_HANDLE_VALUE == (
+	            hCOM = CreateFileA( m_serialName.c_str(), // Serial Port name</pre><p>And in the header:</p><pre class="crayon-plain-tag">class HWDRIVERS_IMPEXP CSerialPort : public CStream
+		{
+			friend class PosixSignalDispatcherImpl;
+		public:</pre><p>That&#8217;s it, the implementation relies on a macro MRPT_START (it allows profiling and exception handling), which seems could be easily removed, but the header inherits from CStream, a base class for streams (network, files, output, etc), which in turn depends on a serialization framework (CSerializable, CObject).</p><p>While the overall software design of the library is great, it is very difficult to isolate what, in my opinion, should be a very independent and low coupled component. Please, do not misunderstand my opinion, MRPT is really great. The problem is simply that the library was not designed with that goal in mind.</p><p>My guess was that something more generic, not tied to robotics, solution already existed. So I googled for it a little and it seemed that the most accepted solution (at least in stackoverflow) was using <code>boost::asio</code>. It seemed reasonable to me that depending on 500 Mb of source code is probably overkill for sending some bytes, so I also tried to extract the serial port functionality. But I found some high levels of abstractions over it, for example, in the file <code>basic_serial_port.hpp</code>:</p><pre class="crayon-plain-tag">template &lt;typename SerialPortService = serial_port_service&gt;
+class basic_serial_port
+  : public basic_io_object&lt;SerialPortService&gt;,
+    public serial_port_base
+{
+public:</pre><p>You have to dig deeply into <code>win_iocp_serial_port_service.ipp</code> to actually find the code that opens the port in Win:</p><pre class="crayon-plain-tag">boost::system::error_code win_iocp_serial_port_service::open(
+    win_iocp_serial_port_service::implementation_type&amp; impl,
+    const std::string&amp; device, boost::system::error_code&amp; ec)
+{
+  if (is_open(impl))
+  {
+    ec = boost::asio::error::already_open;
+    return ec;
+  }
+  // Open a handle to the serial port.
+  ::HANDLE handle = ::CreateFileA(name.c_str()</pre><p>Surprisingly, the functionality is spread between different files, for example, the latter contains code for opening, closing and setting parameters, but the code for sending and receiving bytes is located in another file.</p><p>Basically the conclusion is that you cannot use the serial port separately, you are forced to use it with Asio. We’re facing the same problem again: boost is really amazing and asio is also brilliant. And surely their serial port implementations (both MRPT and boost::asio) are more configurable and powerful than the python one is. I personally wish someday I could write code half as good as the one in any of those projects. But I see a pattern here, one, that doesn&#8217;t allow to have a small and simple SerialPort functionality to just synchronously send and receive some bytes over the serial port. So I dare to state what IMHO could be considered as a design principle:</p><h2>Let me use your functionality without using your design</h2><p>Of course, this principle is nothing new. It is very related to many well known principles and patterns. It is very related to the trending functional programming approach, and could be considered as a consequence of many patterns as single responsibility, low coupling, separation of concerns, high cohesion, etc. But I have never seen it stated as above, and I think it could be another perspective to be taken into account. By &#8220;without using your design&#8221; I mean architectural design, obviously every single line of code has some design in it.</p><p>How do I think the SerialPort example should be addressed? The main problem I see with it, is the failure to identify SerialPort as a first level building block, and thus it deserves its own “package”, namespace, library… you named it. With that in mind, it could be very easy to build it in those libraries. For example, in the MRPT case, you can have both the SerialPort and a streams and serialization framework independent from each other. Then, bind both things very easily with templates (very simplified for clarity, just an idea):</p><pre class="crayon-plain-tag">class SerialPort{
+public:
+	void write(char c);
+};
+class MyBaseStream{
+	virtual void write(std::string str)=0;
+	friend MyBaseStream&amp; operator &lt;&lt;(MyBaseStream&amp; mystream, std::string str){
+		mystream.write(str);
+		return mystream;
+	}
+};
+template &lt;typename T&gt;
+class Stream: public MyBaseStream{
+public:
+	Stream(T&amp; _port): port(_port){}
+	virtual void write(std::string str){
+		for(auto c: str)
+			port.write(c);
+	}
+private:
+	T port;
+};
+//example client code of generic streams
+void write2stream(MyBaseStream&amp; stream, std::string str){
+	stream&lt;&lt;str;
+}
+using SerialPortStream = Stream&lt;SerialPort&gt;;
+int main(){
+SerialPort serial;
+    SerialPortStream serial_stream(serial);
+    serial_stream&lt;&lt;"Hello World\n";
+    write2stream(serial_stream, "Good Bye\n");
+}</pre><p>In this way, both the SerialPort and the Stream classes become two independent first class citizens in our project. It becomes very easy to test (and mock), understand, maintain and extend them, and it is also simpler to grow and scale the whole project using them. I know I am not saying something very new with this software design proposal, for example it is similar to Alexandrescu’s policy based design, though the final goal could be different.</p><h3>Failures to follow this principle are more common in C/C++</h3><p>I have seen this pattern a few times in C and C++ projects, but very rarely in other languages (at least those that I have used more as java and python) and I believe there is a reason, not directly related to software design for it: the lack of a widely used dependency manager. And no, OS package managers, installers and so, are not enough to solve this problem. Even if the authors of these libraries decide to decouple the functionality of the SerialPort basic wrapper in their design, there is little gain in it, users should still manually extract those files and integrate them in their projects, which doesn&#8217;t sound as reasonable engineering and will produce, for sure, maintenance problems and lack of updates. It is really unlikely that the authors will decide to create a separate project/library for the SerialPort, it is more effort not only to do it in the short term, but also to maintain and work with it in the mid and long terms. So developers just roll out their designs, and fill the functionality in it as required. I’ve done it so many times too.</p><p>On the contrary, if a dependency manager existed, it is very likely that a simple, independent and robust SerialPort implementation would emerge and be widely adopted, and people creating asynchronous communication frameworks or robotics applications would use it and have less code to write.</p><p>Hopefully such a dependency manager for C and C++ will someday be a reality :D</p><p>&nbsp;</p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/software-design-proposal/">A software design principle: Don&#8217;t make me use your design</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/software-design-proposal/feed/</wfw:commentRss> <slash:comments>9</slash:comments> </item> <item><title>Why a FILE BASED dependency manager rocks for C/C++</title><link>http://blog.biicode.com/file-based-cpp-dependency-manager/</link> <comments>http://blog.biicode.com/file-based-cpp-dependency-manager/#comments</comments> <pubDate>Fri, 26 Sep 2014 15:56:32 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/c++ dependencies manager]]></category> <category><![CDATA[c/c++ dependency manager]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[deps manager]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1729</guid> <description><![CDATA[<p>We have a big problem. We have miserably failed to explain the core value proposition of biicode: a file-based dependency manager. We have tried to communicate it in the homepage, in features landing pages, videos, etc. While we certainly are growing, it is also true that not as fast as we would like. There are [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/file-based-cpp-dependency-manager/">Why a FILE BASED dependency manager rocks for C/C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have a big problem. We have miserably failed to explain the core value proposition of biicode: a file-based dependency manager. We have tried to communicate it in the homepage, in <a
+href="http://web.biicode.com/features/cpp">features landing pages</a>, <a
+href="https://www.youtube.com/biicode">videos</a>, etc. While we certainly are growing, it is also true that not as fast as we would like.</p><p>There are many reasons that explain this: People understand that we are a dependency manager for C/C++, but also realize that we still don&#8217;t have premium accounts (for private code), in-house deployment or that we’re not open-source. This is all true, we are working in <strong>all these features</strong>, including going open-source regarding which we will soon announce something relevant. But we think these are not reasons (stoppers) enough to not engage with the platform now, try it, check how it works, give feedback to help define the tool to your needs.</p><p>We believe that the main problem is that we didn’t explain properly what makes biicode so special, and we failed because we have used the wrong channels. Here, I will explain it with the language we, developers, all love: <strong>source code</strong>.</p><p><img
+class="size-full wp-image-1208 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/03/biicode.jpg" alt="C/C++ dependency manager" width="320" height="320" /></p><p><span
+id="more-1729"></span></p><h2>Hands into the file-based dependency manager</h2><p>I have recently written about how to use <a
+href="http://docs.biicode.com/c++/examples/zmq_protobuf.html">ZMQ and protocol buffers with biicode</a>. Here I will develop a client-server application which components can be very easily reused individually in new projects, without having to write a single line of configuration or having to worry about packaging or installing. [If you want to try it on the go just download biicode <a
+href="https://www.biicode.com/downloads">HERE</a>]</p><blockquote><p>Stop talking, show me the code!</p></blockquote><p><strong>client.h</strong></p><pre class="crayon-plain-tag">#pragma once
+#include "diego/zmqcpp/zmq.hpp"
+#include "person.pb.h"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+class Client{
+public:
+	Client(const char* address);
+	void send(const Person&amp; person);
+private:
+	zmq::context_t context;
+	zmq::socket_t socket;
+};</pre><p><strong>client.cpp</strong></p><pre class="crayon-plain-tag">#include "client.h"
+Client::Client(const char* address) : context(1), socket(context, ZMQ_PAIR){
+	socket.connect(address);
+}
+void Client::send(const Person&amp; person){
+	std::string msg_str;
+	person.SerializeToString(&amp;msg_str);
+	// create a zmq message from the serialized string
+	zmq::message_t request(msg_str.size());
+	memcpy((void *)request.data(), msg_str.c_str(), msg_str.size());
+	socket.send(request);
+}</pre><p>The <code>person.pb.h</code> and <code>person.pb.cc</code> files are generated with the “protoc” binary from the <code>person.proto</code>, as explained in our docs.</p><p><strong>person.proto</strong></p><pre class="crayon-plain-tag">message Person {
+  required string name = 1;
+  optional string phone = 2;
+  optional string email = 3;
+}</pre><p>We will create a simple client application that just creates a Person object, serialize and send it to the server.</p><p><strong>clientapp.cpp</strong></p><pre class="crayon-plain-tag">#include "client.h"
+int main ()
+{
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    Person person; //fill a person data
+    person.set_name("john");
+    person.set_email("john@mycompany.com");
+    person.set_phone("1234567");
+    Client client("tcp://localhost:5555");
+    client.send(person);
+    // Optional:  Delete all global objects allocated by libprotobuf.
+    google::protobuf::ShutdownProtobufLibrary();
+    return 0;
+}</pre><p>&nbsp;</p><p>The server application will continuously receive Person data from clients and send them to a SQLite database.</p><p><strong>severapp.cpp</strong></p><pre class="crayon-plain-tag">#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include "person.pb.h"
+#include &lt;google/protobuf/text_format.h&gt;
+#include "server.h"
+#include &lt;sqlite/sqlite/include/SQLiteCpp/SQLiteCpp.h&gt;
+int main() {
+	SQLite::Database    db("server.db", SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+	std::cout &lt;&lt; "SQLite database file '" &lt;&lt; db.getFilename().c_str() &lt;&lt; "' opened successfully\n";
+	// Create a new table with an explicit "id" column aliasing the underlying rowid
+	db.exec("DROP TABLE IF EXISTS test");
+	db.exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT, email TEXT, phone TEXT)");
+	//  Prepare our context and socket
+	Server server("tcp://*:5555");
+	while (true) {
+		Person person = server.receive();
+		std::string text_str;
+		SQLite::Statement   query(db, "INSERT INTO test VALUES (NULL, ?, ?, ?)");
+		query.bind(1, person.name());
+		query.bind(2, person.email());
+		query.bind(3,  person.phone());
+		int nb = query.exec();
+		google::protobuf::TextFormat::PrintToString(person, &amp;text_str);
+		std::cout &lt;&lt; text_str &lt;&lt; std::endl;
+	}
+	return 0;
+}</pre><p>with the server being:</p><p><b>server.h</b></p><pre class="crayon-plain-tag">#pragma once
+#include "diego/zmqcpp/zmq.hpp"
+#include "person.pb.h"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+class Server{
+public:
+	Server(const char* address);
+	Person receive();
+private:
+	zmq::context_t context;
+	zmq::socket_t socket;
+};</pre><p><strong><b>server.cpp</b></strong></p><pre class="crayon-plain-tag">#include "server.h"
+Server::Server(const char* address) : context(1), socket(context, ZMQ_PAIR){
+	socket.bind(address);
+}
+Person Server::receive(){
+	zmq::message_t request;
+	//  Wait for next request from client
+	socket.recv(&amp;request);
+	Person person;
+	std::string msg_str(static_cast&lt;char*&gt;(request.data()), request.size());
+	person.ParseFromString(msg_str);
+	return person;
+}</pre><p>Building all this code is pretty simple and can be done with biicode without any configuration, remember to generate the <code>person.pb</code> files with “protoc”, check the documentation <a
+href="http://docs.biicode.com/c++/examples/zmq_protobuf.html">here</a>.</p><pre class="crayon-plain-tag">$ bii init zmqapp
+$ cd zmqapp
+$ bii new diego/clientserver //you can use your username instead of diego
+//copy the above files into the zmqapp/blocks/diego/clientserver folder
+$ bii find // to find and retrieve missing dependencies.
+$ bii cpp:configure -G “Visual Studio 12” //only if in windows
+$ bii cpp:build
+//launch server, then client in another console</pre><p>So far, biicode is a “smart” dependency manager, that figures out which dependencies it needs from #include directives (of course, you can also define them in requirements.bii file). In this case, <strong>ZeroMQ</strong>, <strong>protobufs</strong> and <strong>SQLite</strong>.</p><p>But the key point is not that. It is how easy you can <strong>reuse individual components from this project</strong> into new projects, how simple you can share it with the world without having to worry about packaging or installers. The first step is to upload to biicode:</p><pre class="crayon-plain-tag">$ bii publish</pre><p>This command will create a DEV version (which means that it is not frozen, you can overwrite it; there are other BETA, STABLE tags that freezes a version) in biicode, you can go to <strong>www.biicode.com/yourusername</strong> and check it.</p><p>Imagine that the server side is developed to run only in X systems, but it will not build in Windows, due to some non portable code. In this example we have used SQLite which is portable. In any case, it is clear that if we want to develop a new client application we do not need to build the server or depend on SQLite at all. Lets build such a client:</p><pre class="crayon-plain-tag">$ cd ..
+$ bii init zmqnewclient
+$ cd zmqnewclient
+$ bii new yourusername/newclient</pre><p>Copy the following code inside the “blocks/yourusername/newclient” folder:</p><p><strong>yourClientapp.cpp</strong></p><pre class="crayon-plain-tag">#include "yourusername/clientserver/client.h"
+int main ()
+{
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    Person person; //fill a person data
+    person.set_name("john");
+    person.set_email("john@mycompany.com");
+    person.set_phone("1234567");
+    Client client("tcp://localhost:5555");
+    client.send(person);
+    // Optional:  Delete all global objects allocated by libprotobuf.
+    google::protobuf::ShutdownProtobufLibrary();
+    return 0;
+}</pre><p>And execute:</p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:configure -G “Visual Studio 12” //only if in windows, skip otherwise
+$ bii cpp:build
+//launch server from the other project in another console, then this client</pre><p></p><h2>Let&#8217;s explain what a file-based dependency manager is</h2><p><strong>Now the key point!</strong> Go to the project <em>“deps”</em> folder, and check what is there: There is no server code, and there is no SQLite code!! And we have done it without a single line of configuration. How is this done<img
+class=" wp-image-1732 alignright" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/biicode-package-free.jpg" alt="C/C++ file-based dependency manager " width="426" height="292" />?</p><p>Biicode is a FILE BASED dependency manager. That lets amazing things to happen, such as allowing to reuse individual files from previous projects without having to worry about packaging, setup or installs. <strong>Biicode tracks which files depends on which files</strong>, and use it to automatically define build targets, or <strong>manage dependencies accordingly</strong>. For example, you could just reuse the “Person” object from the previous example in another project, and you will not depend on ZMQ or SQLite at all, as those files do not depend on them. And this is only the beginning, with this file based approach you can also do many other amazing things, stay tuned for next posts.</p><p>We believe this is indeed a new paradigm for dependency management. We are still in beta, releasing based on our users feedback almost every week, towards such a system that could rock for all of us as developers. That means that we are not perfect, as I told you we are working hard and defining the best possible roadmap for our community, including open-sourcing the code and building all the necessary tools for production environments.</p><p
+class="widgettitleFeatures" align="center"><strong>Help us improve, try it out</strong></p><p><a
+href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank"><img
+class="aligncenter" src="/wp-content/uploads/sites/3/2014/05/bt-get-started-features-on.jpg" alt="Get started Now" width="265" height="57" /></a></p><p>If you feel that this makes sense, give feedback, spread the word as much as possible.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/file-based-cpp-dependency-manager/">Why a FILE BASED dependency manager rocks for C/C++</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/file-based-cpp-dependency-manager/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Rapid prototyping and teaching ZeroMQ in C++ with biicode.</title><link>http://blog.biicode.com/zeromq-cpp-biicode/</link> <comments>http://blog.biicode.com/zeromq-cpp-biicode/#comments</comments> <pubDate>Tue, 16 Sep 2014 13:07:43 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[ZeroMQ]]></category> <category><![CDATA[0MQ]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Pieter Hintjens]]></category> <category><![CDATA[ZMQ]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1600</guid> <description><![CDATA[<p>ZMQ or ZeroMQ is one of the coolest open source libraries out there. It fills a real necessity in a new, brilliant way. It is very active, has bindings to many languages… that’s why it is so popular. I was a professor in university, teaching C/C++, software engineering, distributed systems (plain old sockets, SOAP, web…), [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/zeromq-cpp-biicode/">Rapid prototyping and teaching ZeroMQ in C++ with biicode.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>ZMQ or ZeroMQ is one of the coolest open source libraries out there. It fills a real necessity in a new, brilliant way. It is very active, has bindings to many languages… that’s why it is so popular.</p><p><img
+class="alignright size-full wp-image-1603" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/zeromq1-300x115.png" alt="ZeroMQ is already in biicode" width="300" height="115" /></p><p>I was a professor in university, teaching C/C++, software engineering, distributed systems (plain old sockets, SOAP, web…), and I really enjoyed keeping my classes up to date and teaching last trends and technologies. If I was still a teacher, I would definitely teach some sessions using ZeroMQ.</p><p><span
+id="more-1600"></span></p><p>But I suffered many problems when using third party source code in the classroom, and not only there, but also in my real projects. In the classroom, most of the time could be spent configuring and installing external dependencies, and the problem would became worse when students tried to repeat the process at home or in their laptops, maybe in another OS. This is one of the reasons we started the biicode project.</p><p>Today, if you try to build the basic C++ client-server example that ZeroMQ provides in their site, you might encounter some problems. You have to guess that the C++ binding is not in the library, instead, it’s inside another repo (zmqcpp). I had to google it myself to find it. You have to get, configure and build the library, then setup your own project to use it.</p><p>The question is: Given some example source code snippets that use zmq, can anyone, even unexperienced developers build them quickly and easily, even without writing a single line of configuration, in any of the major OS? We think that it can be done, in a few simple steps.</p><h2>A simple client-server example with ZeroMQ</h2><p>We have the source code we want to build:</p><p><strong>hwclient.cpp</strong></p><pre class="crayon-plain-tag">//
+//  Hello World client in C++
+//  Connects REQ socket to tcp://localhost:5555
+//  Sends "Hello" to server, expects "World" back
+//
+#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+int main ()
+{
+    //  Prepare our context and socket
+    zmq::context_t context (1);
+    zmq::socket_t socket (context, ZMQ_REQ);
+    std::cout &lt;&lt; "Connecting to hello world server…" &lt;&lt; std::endl;
+    socket.connect ("tcp://localhost:5555");
+    //  Do 10 requests, waiting each time for a response
+    for (int request_nbr = 0; request_nbr != 10; request_nbr++) {
+        zmq::message_t request (6);
+        memcpy ((void *) request.data (), "Hello", 5);
+        std::cout &lt;&lt; "Sending Hello " &lt;&lt; request_nbr &lt;&lt; "..." &lt;&lt; std::endl;
+        socket.send (request);
+        //  Get the reply.
+        zmq::message_t reply;
+        socket.recv (&amp;reply);
+        std::cout &lt;&lt; "Received World " &lt;&lt; request_nbr &lt;&lt; std::endl;
+    }
+    return 0;
+}</pre><p><strong>hwserver.cpp</strong></p><pre class="crayon-plain-tag">#include "diego/zmqcpp/zmq.hpp"
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#ifndef _WIN32
+#include &lt;unistd.h&gt;
+#else
+#include &lt;windows.h&gt;
+#define sleep(n)    Sleep(n)
+#endif
+int main () {
+    //  Prepare our context and socket
+    zmq::context_t context (1);
+    zmq::socket_t socket (context, ZMQ_REP);
+    socket.bind ("tcp://*:5555");
+    while (true) {
+        zmq::message_t request;
+        //  Wait for next request from client
+        socket.recv (&amp;request);
+        std::cout &lt;&lt; "Received Hello" &lt;&lt; std::endl;
+        //  Do some 'work'
+        sleep(1);
+        //  Send reply back to client
+        zmq::message_t reply (5);
+        memcpy ((void *) reply.data (), "World", 5);
+        socket.send (reply);
+    }
+    return 0;
+}</pre><p>Note that these are exactly the examples hosted in <a
+title="ZeroMQ" href="http://zeromq.org/" target="_blank">http://zeromq.org/</a>, except for the #include directives.</p><h2>Let’s build the examples</h2><p>Building this example is straightforward with biicode. If you haven’t installed it yet, you might want to try <a
+href="http://docs.biicode.com/c++/gettingstarted.html">the C++ getting started</a> first.</p><p>The first step is to create a project (e.g. myzmqproject) and a block (a folder inside your project) named myuser/zmqexamples. You don’t need to be actually registered, you can type exactly “myuser”, or any other name.</p><pre class="crayon-plain-tag">$ bii init myzmqproject
+$ cd myzmqproject
+$ bii new myuser/zmqexamples</pre><p>Copy the files above, inside the folder <em>blocks/myuser/zmqexamples</em></p><pre class="crayon-plain-tag">$ bii find</pre><p>This command checks your <em>#includes</em> and tries to find a compatible zmq version in biicode, and then it will automatically generate a <strong>requirements.bii</strong> file, with the contents:</p><pre class="crayon-plain-tag">diego/zmqcpp: 0</pre><p>This file defines your block’s requirements, in this case, the block required is <a
+href="http://www.biicode.com/diego/zmqcpp">www.biicode.com/diego/zmqcpp</a>, version number 0, which holds the ZeroMQ C++ binding. Of course, you can also write this file manually instead of relying on the finder, and this file can also be used to resolve dependencies conflicts. In turn, this zmqcpp biicode block has a dependency to version 0 of libzmq in <a
+title="diego/libzmq" href="http://www.biicode.com/diego/libzmq">http://www.biicode.com/diego/libzmq</a></p><p>You might want to check what biicode has retrieved into your project “<em>deps</em>” folder. There you can find the zmqcpp binding, as well as the libzmq library. Interestingly for the library, it has only retrieved the necessary files but skipped, for example, unnecessary test code. This is an advantage of biicode, and I will show interesting use cases for this feature in forthcoming posts.</p><p>Building and running the project is also fairly simple:</p><pre class="crayon-plain-tag">$ bii configure //if in windows, add -G “Visual Studio 12”, to build with VS</pre><p>We use the de-facto standard CMake build system,  you can pass also other generators to the -G option. Building the project will create 2 executables inside the <em>“bin”</em> folder.</p><pre class="crayon-plain-tag">$ bii build</pre><p>Run first  your server, then your client, you can find both inside the <em>bin</em> folder</p><h2>How was libzmq uploaded?</h2><p>This functionality is great, but before taking advantage of it, it is necessary to upload the necessary code to biicode. The code that has been retrieved in this example can be found in :</p><ul><li><a
+href="http://www.biicode.com/diego/diego/libzmq/master">http://www.biicode.com/diego/diego/libzmq/master</a></li><li><a
+href="http://www.biicode.com/diego/diego/zmqcpp/master">http://www.biicode.com/diego/diego/zmqcpp/master</a></li></ul><p>Uploading code is absolutely trivial for simple code (e.g. the zmqcpp C++ binding), but can take some more time to do for configuration-intensive projects. I will summarize here the steps I did to upload libzmq.</p><p>The first step is usually to create a fork of the origin project, to manage changes and versions and keep synchronized with the original project.  You can check the fork of libzmq here: <a
+href="https://github.com/drodri/libzmq">https://github.com/drodri/libzmq</a>, and you can compare with the upstream repo to see the differences involved.</p><p>Usually the required changes are just limited to the <em>CMakeLists.tx</em>t file. Biicode provides a variable that can be used to leave the original <em>CMakeLists.txt</em> unaltered in functionality:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  INCLUDE(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  INIT_BIICODE_BLOCK()
+ENDIF()</pre><p>The unique major changes ZeroMQ required in the main <em>CMakeLists.txt</em> are:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  IF(BII_BLOCK_EXES)
+    list(REMOVE_ITEM BII_BLOCK_EXES builds_zos_test_fork) # Not supporting ZOS
+    IF(WIN32)
+      list(REMOVE_ITEM BII_BLOCK_EXES tests_test_fork</pre><p>This code removes (do not build), executables not intended to be build in that platform. Note the check for BII_BLOCK_EXES (this is a variable defined by biicode) to exist because when we depend on this code, executables might not exist, just the library.</p><p>Also the  build directory has to be included, as <em>config.h</em> is generated there, and some definitions have to be added in case of building with MSVC.</p><pre class="crayon-plain-tag">ADD_BIICODE_TARGETS()
+  target_include_directories(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+  if(MSVC)
+    target_compile_definitions(${BII_LIB_TARGET} PUBLIC -DWIN32
+                                                        -DDLL_EXPORT
+                                                        -DFD_SETSIZE=1024
+                                                        -D_CRT_SECURE_NO_WARNINGS)
+  endif()</pre><p>Finally, the <em>tests</em> subdirectory is added only if it exists (it might not when this block is being reused).</p><pre class="crayon-plain-tag">if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")
+    ADD_SUBDIRECTORY(tests)
+  endif()</pre><p>You can check the file <em>tests/CMakeLists.txt </em>to see required changes, that are very simple in this case.</p><p>This <em>CMakeLists.txt</em> changes are not only for managing ZeroMQ as a dependency, but also for full development. At any time you can “bii open” a block you depend on, and you will get that block inside your blocks folder, with full source code, and all executables including tests.</p><p>In this ocassion, I had to manually add some dependencies. This can be done in the file <em>“bii/dependencies.bii”</em>:</p><pre class="crayon-plain-tag">CMakeLists.txt + builds/cmake/Modules/TestZMQVersion.cmake
+     builds/cmake/Modules/ZMQSourceRunChecks.cmake
+     builds/cmake/platform.hpp.in
+     src/version.rc.in
+     src/libzmq.pc.cmake.in
+     copying
+     copying.lesser</pre><p>Biicode parses and detect dependencies via <em>#includes</em> and automatically detecting implementations (a header implemented in a source file), but <em>CMakeLists.txt</em> are not parsed yet. If we want auxiliary cmake and config files to be detected as a dependency of <em>CMakeLists.txt</em>, and always be retrieved when we depend on libzmq, we just add the file names in that file.</p><h2>Ongoing work</h2><p>This example has been tested in Mac, Win (with VS 2012) and Ubuntu 14, but further testing might be necessary, and also checking other compilers as MinGW. Included unit tests pass also except a single test in VS2012, which I am investigating.</p><p>Libsodium dependency is not handled now. I have disabled the default use of TweetNaCL, so it is not really required in Linux. I am working in uploading Libsodium to biicode, so it can also be managed easily. Also OpenPGM is not available yet.</p><p>It is easy to set-up a <a
+href="https://travis-ci.org/">travis-ci</a>  to automatically pull last github version, download biicode (and a more modern version of Cmake, as the one included is a little bit outdated), build the project, run tests, and finally publish to biicode, so everybody else can easily upgrade to the most recent version if they want to. I will post about all these things soon, stay tuned.</p><p><a
+href="http://hintjens.com/books"><img
+class="aligncenter wp-image-1609 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/libro-code-connected-volume-1-learning-zeromq-16651-MLM6571115728_072014-O.jpg" alt="ZeroMQ books by Pieter Hintjens" width="131" height="187" /></a></p><h2>Conclusion</h2><p>I have shown how easy is to build C++ ZeroMQ examples with the use of biicode, as it manages to retrieve and configure it in your project, and only requiring very few changes to the <em>CMakeLists.txt</em> while also avoiding any lock-in.</p><p>But biicode is a little bit more than a plain dependency manager. You can develop in one of your projects a server, a client and some serialization classes, and let&#8217;s say that your server has some functionality only available in Linux. You don&#8217;t have to worry about creating different projects/repositories/libraries for client, server and serialization. A windows application can just directly <em>#include</em> the client and it will be able to build correctly very easily.</p><p>&nbsp;</p><p>I will show it in next posts, meanwhile I would love to<strong> hear your feedback, please try this example and tell me!</strong></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/zeromq-cpp-biicode/">Rapid prototyping and teaching ZeroMQ in C++ with biicode.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/zeromq-cpp-biicode/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Those are my ToS, and if you don&#8217;t like them&#8230;well I have others.</title><link>http://blog.biicode.com/tos-dont-like-well-others/</link> <comments>http://blog.biicode.com/tos-dont-like-well-others/#comments</comments> <pubDate>Tue, 09 Sep 2014 10:14:19 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Our Story]]></category> <category><![CDATA[start-up]]></category> <category><![CDATA[ToS]]></category> <category><![CDATA[where we come from]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1542</guid> <description><![CDATA[<p>Facts In my last post I stated that I am not afraid of technical challenges, but that I had made a mistake about the community challenge involved in launching a tool as biicode. I’ve been a C and C++ developer for years, I have released some projects as open source, collaborated in industrial projects and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tos-dont-like-well-others/">Those are my ToS, and if you don&#8217;t like them&#8230;well I have others.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Facts</h2><p>In my last post I stated that I am not afraid of technical challenges, but that I had made a mistake about the community challenge involved in launching a tool as biicode. I’ve been a C and C++ developer for years, I have released some projects as open source, collaborated in industrial projects and met many other developers, I&#8217;ve taught those languages thousands of hours and organized many activities as robotic contests programmed in such languages. So I thought that belonging to that community implied fully understanding such community. It was a big mistake.</p><p><img
+class=" wp-image-1597 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/terms-of-service.jpg" alt="Biicode's new ToS" width="800" height="197" /></p><p><span
+id="more-1542"></span></p><h2>When adding functionality is your main focus</h2><p>A few days ago, there was a small flame in <a
+title="Reddit: programmers willing to try a new dependency manager" href="http://www.reddit.com/r/cpp/comments/2ffus9/cc_programmers_willing_to_try_a_new_dependencies/" target="_blank">reddit</a>, as a result of someone posting there our <a
+title="Call for beta testers" href="http://www.codeproject.com/Messages/4894137/Any-C-Cplusplus-programmers-want-to-try-a-new-depe.aspx" target="_blank">call for beta testers posted in CodeProject</a>. Some redditors were harshly criticizing biicode&#8217;s Terms of Service (ToS).</p><p>They might have had a rude tone, but the truth is that they were pointing out real problems on our ToS. They were written in summer 2013, long before our first version was released. Many things have changed since then, our vision about our tools, workflows and value proposition have changed largely. In our 1.0 release last July we incorporated anonymous usage, you can download and use the client side tools for reading and retrieving code without having to register at all. We have also flattened (to text files) all biicode’s meta-information so it is easier to integrate with other tools as VCS and services as GitHub. We are improving every week, and biicode is becoming amazing.</p><p>But we didn’t pay much attention to our old ToS. They would cost us more time (which is very scarce due to our users’ many feature requests), and would also cost more money (the ToS have to be reviewed by lawyers, and they have the bad habit of billing us). So, after all, we were centered on creating the functionality and didn&#8217;t think deeply enough about the possible concerns the ToS could create in the community.</p><p>So when we read things like: “<em>you authorize biicode to use, update, adapt, transform, enhance or modify in any way the code stored on the platform</em>” we realized that it is not clear at all, in the sense that it can be understood as if biicode could violate the current licence or remove it. And we have not, the rights to do so by any means. If the user code has a licence, everybody, including ourselves, must comply with that licence, and removing it is a law infringement. We immediately started to review the ToS and will change them ASAP so they become clear about the user rights and our real intentions, not only in this issue, but as deeply as necessary.</p><h2>What our ToS really persue</h2><p>It happens that when you build a start-up, you still feel like a colleague developer and you don’t realize that you are running a business, and people might see you as such, even though you are the same developer. And it is OK. The key point here is how you communicate your alignment with the community as a business.</p><p>Some people don’t understand that we propose to have the right to retain a copy of the code uploaded to biicode, even if the author (free account) wants to delete it. The only purpose of this is to make sure that the projects that depend on such code, won’t break. Successful examples of a similar approach can be: Github, that allows to easily fork a repo (that cannot be deleted by the original author) or MavenCentral which does not allow to delete uploaded artifacts.</p><p>These mechanisms are very important for the community as a whole to keep rolling and not breaking thousands of builds or projects in an arbitrary way.</p><p>I am ready to change our ToS, and will soon do it to address the issues mentioned above. So as the great Groucho Marx said once, &#8220;Those are my principles, and if you don&#8217;t like them&#8230;well I have others&#8221;. I will change our ToS to anything that really benefits our community. But I need to know first where your heart relies on.</p><h3>Should biicode have the right to keep a copy of uploaded code?</h3><p>As in all other aspects, you’ve got to walk in the shoes of both users: the one that uploads code and the one that depends on other’s code. They might even be the same person.</p><h3>Post a comment, tell us what you think.</h3><p>[<strong>UPDATE</strong> 16/04/2015]: The ToS have been updated, click here.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tos-dont-like-well-others/">Those are my ToS, and if you don&#8217;t like them&#8230;well I have others.</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/tos-dont-like-well-others/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Why C/C++ made me quit a tenure track position at University &#124; Our Story (I)</title><link>http://blog.biicode.com/our-story-i/</link> <comments>http://blog.biicode.com/our-story-i/#comments</comments> <pubDate>Tue, 26 Aug 2014 08:42:28 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[Our Story]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[entrepeneurship]]></category> <category><![CDATA[start-up]]></category> <category><![CDATA[where we come from]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=994</guid> <description><![CDATA[<p>Our pain was common to all C/C++ programmers, handling dependencies has wasted huge amounts of useful programming time. We decided to end that problem by creating a C/C++ dependency manager like biicode. Our solution comes to solve those common problems at university, at software companies, at banks, at gamedev companies... Let's make C/C++ not Jurassic anymore, let's make C even better. Come join us.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/our-story-i/">Why C/C++ made me quit a tenure track position at University | Our Story (I)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>This is the first chapter of our story, a story in which we embarked on a journey to create biicode. We hope this gives you a hint of the pains and gains of creating a start-up from scratch. This is our story.</p><h2>Why I quit a tenure track position as professor</h2><p>I&#8217;m <a
+href="https://sites.google.com/site/diegorlosada/">Diego Rodriguez-Losada</a>, the first promoter of biicode and one of its founders. Right before embracing this adventure, I had a comfortable position as a professor in Universidad Politecnica de Madrid.</p><div
+id="attachment_1087" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1087" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/Diego-Rodríguez-Losada-biicode.jpg" alt="Diego biicode our story" width="400" height="300" /><p
+class="wp-caption-text">Credit: Sintetia.com</p></div><p><span
+id="more-994"></span></p><p>I had been working very hard many years before and after my PhD: publishing research papers in top ranked journals, leading projects, etc. I had recently obtained my tenure track position, I was the first to do so in my department and probably the youngest in my college. I had also recently had my third child. I knew I was smart and I was also confident with my solid background, but compared to some of the brilliant and talented people I met during those years I felt merely mediocre. Meeting in conferences with some of the best brains in my area (Robotics), like S. Thrun or P. Newman was amazing, but realizing that even the local and much younger than me Spanish talents such as <a
+href="http://www.ual.es/~jlblanco/">J. L. Blanco</a> were far more capable than me, was simultaneously frustrating and inspiring.</p><h3>Motivation</h3><p>This inspiration motivated me to join the open source movement. I started to release our C/C++ research code, working together with my friends M. Hernando (my former advisor) and A. Valero (former colleague, now an openHW and 3D printers master in BQ). We had a lot of trouble managing dependencies and I wondered about the absence of a good multi-OS dependencies manager for C/C++. I love C/C++, but it made me jealous how languages like python managed so easily to dependencies on third party code (e.g. just the simple task to use a serial port in any OS). Why couldn&#8217;t this be done in C/C++? Why libraries are so huge in C/C++, forcing one to use the whole library even for a simple task? Why one of the most used languages (up to 20% of the world source code) does not have a dependency manager?</p><blockquote><p>Why couldn&#8217;t this be done in C/C++? Why libraries are so huge in C/C++, forcing one to use the whole library even for a simple task? Why one of the most used languages (up to 20% of the world source code) does not have a dependency manager?</p></blockquote><p>So I imagined a simple dependency manager for C/C++ that completely avoided packaging and, at the same time, was able to reuse individual source code files easily. I even realized that such an approach could be great for every language, as exactly the same procedure for publishing, reusing, handling dependencies and conflicts for every language sound the proper approach to the problem. This however is yet a very abstract and probably naïve approach on the matter since dependency managers already exist for other languages and it is almost impossible to compete with them.</p><h2>Let&#8217;s go!</h2><p>I made some initial research to check that indeed nobody was building or trying to build something similar to this idea. And I decided that I could try to build it. How could I even dare think I could be able to build such a system? Why in heaven would I have any chance of succeeding in such a complex and challenging project?</p><div
+id="attachment_1088" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1088" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/Amstrad.jpg" alt="Our Story starts with an Amstrad" width="400" height="286" /><p
+class="wp-caption-text">Credit: Mo5.com</p></div><p>Those questions drove me back in time to my early teens, when I was a top student in school, and probably the typical nerd that built miniaturized fm radio emitters with my homemade PCBs (using acids, the reason why my mother was not very happy about it), and programmed videogames in our Amstrad CPC6128 instead of playing them. Those years I learnt that in technology, everything is possible: it is not necessary to be a genius, just smart enough and have a clear goal and ambition, have discipline and commitment and people you can learn from. And I learnt to love challenges. The PhD, the tenure track position… are probably partly just the consequence of that love.</p><p>As you can guess, I decided to quit my position (the first professor to do so and the only one until today in my University) and run my startup: biicode, where we are building this system, and I am enjoying an ecosystem of brilliant (more than me, as usual) developers and software engineers, that are also challenge-hungry and willing to learn. And we are very close to show that this technological challenge is, indeed, also possible. There is only a missing piece, a different kind of challenge I have possible underestimated: the community. This deserves a dedicated post, so stay tuned :)</p><p>&nbsp;</p><p>This story continues with Miguel Hernando&#8217;s memories of where everything started. Find the second episode <a
+href="http://blog.biicode.com/our-story-ii/">HERE</a>.</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/our-story-i/">Why C/C++ made me quit a tenure track position at University | Our Story (I)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/our-story-i/feed/</wfw:commentRss> <slash:comments>11</slash:comments> </item> <item><title>IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</title><link>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/</link> <comments>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/#comments</comments> <pubDate>Tue, 08 Apr 2014 14:23:04 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[CC3000]]></category> <category><![CDATA[email]]></category> <category><![CDATA[example]]></category> <category><![CDATA[temboo]]></category> <category><![CDATA[wifi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=362</guid> <description><![CDATA[<p>In this post we will show how it is possible to send email from Arduino! We registered at the great temboo service which offers connection &#62;100 services (gmail, twiter, github, and many more) and a library for Arduino. But the provided temboo library expects a reference to something implementing the Arduino SDK Client &#8220;interface&#8221;. In the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/">IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In this post we will show how it is possible to send email from Arduino!</p><div><p>We registered at the great <a
+title="Temboo" href="http://www.temboo.com" target="_blank">temboo</a> service which offers connection &gt;100 services (gmail, twiter, github, and many more) and a library for Arduino. But the provided temboo library expects a reference to something implementing the Arduino SDK Client &#8220;interface&#8221;. In the setup we&#8217;re using an Arduino Mega2560 with the Adafruit CC3000 WiFi module.</p><p>If you ever need to connect the CC3000 module with another service, you can do it using this <a
+title="biicode Ardunet block" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master#.U0RdCK2Szc4" target="_blank">Ardunet block with network utilities for Arduino</a>. Unluckily, the <a
+title="biicode Adafruit CC3000 WiFi" href="https://www.biicode.com/adafruit/blocks/adafruit/cc3000_library/branches/master#.U0RdXa2Szc4" target="_blank">Adafruit CC3000 library</a> does not conform with this interface, so I had to roll my own one.</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-363" title="temboo adafruit email biicode" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/temboo-adafruit-email-biicode.jpg" alt="temboo adafruit email biicode" width="400" height="371" /></p><p>&nbsp;</p><p><span
+id="more-362"></span></p><p>And it&#8217;s use is very simple:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "../../../mywifidetails.h"
+//This file, located in your hive root folder define your wifi settings. Do not publish it!
+//#define WLAN_SSID "YOUR_SSID" // cannot be longer than 32 characters!
+//#define WLAN_PASS "your_password"
+//#define WLAN_SECURITY YOUR_WIFI_SECURITY //WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+		ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(9600);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop(void) {
+	client.connect("www.your_url.com", 80);
+	http_get(client, "www.your_url.com", "/");
+	client.stop();
+	delay(6000);
+}</pre><p>&nbsp;</p><p>The <a
+title="temboo" href="http://www.temboo.com" target="_blank">temboo</a> service generates in the web, code you can run in your arduino. If you want to create your own code, it is also quite simple. I have generated some helper functions for the email example. With the following code you should be able to send a couple of emails:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "../../../mywifidetails.h"
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+#include "diego/temboochoreos/choreo.h"
+#include "diego/temboochoreos/sendmail.h"
+//This file will contain your TEMBOO_MYMAIL_CREDENTIAL, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY, do not publish it with your block
+#include "../../../tembooaccount.h"
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+		ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(9600);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop(void) {
+	Serial.println("Send hello email");
+	TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+	sendEmail(choreo, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "Hello", "Hello World!");
+	delay(10000);
+	Serial.println("Send bye email");
+	sendEmail(choreo, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "Bye", "Bye World!");
+	while(1); //Do nothing
+}</pre><p>&nbsp;</p><p>It is not necessary to download or install anything manually! Biicode manages to get everything, the temboo library, the CC300 adapter class and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically. Just do &#8220;bii find&#8221;, and &#8220;bii arduino:upload&#8221; after customising the email address.</p><p>You might notice that<strong> you don&#8217;t need to provide your email password</strong>; you tell temboo to use your credentials (in the example TEMBOO_MYMAIL_CREDENTIAL), which is a name for your settings stored in Temboo, in which you configure your email provider (e.g. gmail), user and password. The connection to temboo is done via your TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME and TEMBOO_APP_KEY, which you can get in temboo web.</p><p>Note that there are a couple of files that are NOT located inside the block, they contain sensitive data: the &#8220;mywifidetails.h&#8221; with details about your WiFi, and &#8220;tembooaccount.h&#8221; with the data of temboo.</p><p>Temboo has hundreds of services, and using the great adafruit HW components is simple with biicode, so let your imagination fly and <strong>build your Internet of Things application</strong>!</div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/">IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Biicode in &#8220;using std::cpp&#8221;</title><link>http://blog.biicode.com/biicode-std-cpp/</link> <comments>http://blog.biicode.com/biicode-std-cpp/#comments</comments> <pubDate>Thu, 05 Dec 2013 07:52:55 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[Std]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=293</guid> <description><![CDATA[<p>Biicode was invited by Professor Jose Daniel Garcia to participate in &#8220;using std::cpp&#8220;, a national workshop on the C++ language and standard, on late November 2013, at Carlos III University. It was a success, a lot of attendees, very interesting talks and discussions. Congratulations to the organizers and speakers! It was a pleasure to be [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-std-cpp/">Biicode in &#8220;using std::cpp&#8221;</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode was invited by Professor Jose Daniel Garcia to participate in &#8220;<a
+title="cpp day uc3m" href="http://www.arcos.inf.uc3m.es/~cpp-day/" target="_blank" rel="nofollow">using std::cpp</a>&#8220;, a national workshop on the C++ language and standard, on late November 2013, at Carlos III University.</p><p>It was a success, a lot of attendees, very interesting talks and discussions. Congratulations to the organizers and speakers! It was a pleasure to be there.</p><div
+id="attachment_1196" style="width: 310px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1196" src="http://blog.biicode.com/wp-content/uploads/sites/2/2013/12/cropped-logo-small.png" alt="using std::cpp" width="300" height="88" /><p
+class="wp-caption-text">Credit: Carlos III University</p></div><p><span
+id="more-293"></span></p><p>These are the <strong>slides</strong> for the presentation:</p><p><iframe
+src="https://www.slideshare.net/slideshow/embed_code/28915279" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe><div
+style="margin-bottom:5px"> <strong> <a
+href="https://www.slideshare.net/biicode/using-std-cpp" title="C++ code reuse with biicode" target="_blank">C++ code reuse with biicode</a> </strong> from <strong><a
+href="http://www.slideshare.net/biicode" target="_blank">biicode</a></strong></div><p>And this is the <strong>presentation video</strong> (sorry, only in spanish)</p><p>&nbsp;</p><p
+dir="ltr">We want to thank all participants for coming by and making &#8220;using std:cpp&#8221; a great day! :)</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicode-std-cpp/">Biicode in &#8220;using std::cpp&#8221;</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicode-std-cpp/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Project Domo</title> <atom:link href="http://blog.biicode.com/tag/project-domo/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Project Domo: Domotics with Arduino</title><link>http://blog.biicode.com/domotics-with-arduino/</link> <comments>http://blog.biicode.com/domotics-with-arduino/#comments</comments> <pubDate>Fri, 24 Apr 2015 10:26:22 +0000</pubDate> <dc:creator><![CDATA[danimtb]]></dc:creator> <category><![CDATA[Arduino]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[domotics]]></category> <category><![CDATA[Domotics with Arduino]]></category> <category><![CDATA[Project Domo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2207</guid> <description><![CDATA[<p>Turning the heating on before arriving home, watching real-time video from the inside, automatically turning the alarm on when you leave home… These are common tasks you would like to implement in a smart domotized home. However, incorporating domotic systems to our home is still hard due to lack of an effective, simple and cheap commercial solution that [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/domotics-with-arduino/">Project Domo: Domotics with Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+style="text-align: justify;">Turning the heating on before arriving home, watching real-time video from the inside, automatically turning the alarm on when you leave home… These are common tasks you would like to implement in a smart domotized home.</p><p
+style="text-align: justify;">However, incorporating domotic systems to our home is still hard due to lack of an effective, simple and cheap commercial solution that fits our needs, or maybe the steps required to make it yourself are far too complex. When you realize the options available aren’t what you were looking for, and you have tried DIY solutions to automate things with Arduino, the idea comes up clear to your mind: <strong>I want to create my own domotics with arduino</strong>.</p><p
+style="text-align: justify;"><img
+class="aligncenter wp-image-2230 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/domotica1.png" alt="Domotics with Arduino" width="640" height="350" /></p><p
+style="text-align: justify;">In this post I will talk about my domotics project using Arduino to incorporate some automation to my bedroom.</p><p
+style="text-align: justify;"><span
+id="more-2207"></span></p><h3 style="text-align: justify;">Cheap, simple and completely customizable</h3><p
+style="text-align: justify;">When I started to think about my own domotic system I tried to follow three main ideas:</p><ul
+style="text-align: justify;"><li><strong>Simple:</strong> Easy to develop system focused on usefulness. Both form the hardware and the software side.</li><li><strong>Cheap:</strong> Minimum high-cost components, standard parts, common Arduino sensors and JUST ONE Arduino board.</li><li><strong>Customizable:</strong> Modular design, easy to expand and completely adjusted to fit someone needs.</li></ul><h1 style="text-align: justify;"><b>Project Domo</b>: Domotics with Arduino</h1><p
+style="text-align: justify;">My domotics project is mainly based on the automation of <span
+style="text-decoration: underline;">lights</span>, <span
+style="text-decoration: underline;">blinds,</span> <span
+style="text-decoration: underline;">plugs</span> and the <span
+style="text-decoration: underline;">alarm clock</span>.</p><p
+style="text-align: justify;">Currently the project is still developing and things working are:</p><ul
+style="text-align: justify;"><li>Automatic lights</li><li>Smart plug</li><li>Remote Control</li></ul><p
+style="text-align: justify;">This is the configuration of my bedroom:</p><p
+style="text-align: justify;"><img
+class="  wp-image-2231 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/Bedroom1.jpg" alt="Bedroom" width="490" height="296" /></p><ul
+style="text-align: justify;"><li><span
+style="text-decoration: underline;">Two lights</span>, one in the corridor (at the entrance) and the main light.</li><li><span
+style="text-decoration: underline;">Two double three-way-switches</span>, one next to the door and the other one nex to to my bed.</li><li><span
+style="text-decoration: underline;">One plug</span> at the right wall.</li><li><span
+style="text-decoration: underline;">Arduino MEGA 2560</span> next to the bed (centralized control).</li></ul><h2 style="text-align: justify;"><strong><strong> </strong></strong><b>Materials</b></h2><ul
+style="text-align: justify;"><li>Arduino Mega 2560</li><li>2 PIR sensors</li><li>4 conductor wire</li><li>3 Relay modules</li><li>Buttons</li><li>IR receiver</li><li>Remote Control</li></ul><p
+style="text-align: justify;">The domotic system incorporates just one <strong>Arduino Mega 2560</strong> board to ensure a high amount of digital I/O pins. The board is connected to different electronic modules of sensors/actuators by a <strong>4 conductor wire</strong>.</p><p
+style="text-align: justify;"><img
+class="  aligncenter wp-image-2221" title="4 conductor wire in display for the hardware lovers!" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/4-connector-wirepp-300x169.jpg" alt="Domotics with Arduino requires indeed of good Arduino boards and cables" width="364" height="205" /></p><p
+style="text-align: justify;">The original wires for the switches of my bedroom were replaced by this other kind. Power supply goes directly to the lights which are now controlled by a relay.</p><p
+style="text-align: justify;"><strong>Plugs</strong> maintain original wiring and are only equipped with another relay to control power supply and a button to interact with its operation modes.</p><p
+style="text-align: justify;"><strong>PIR (Passive InfraRed)</strong> sensors are placed above the door and the other on the ceiling next to the main light.</p><p
+style="text-align: justify;"><img
+class="  aligncenter wp-image-2222" title="PIR sensor looks like the Gregorian system of the Arecibo radiotelescope." src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/PIR_sensor-300x169.jpg" alt="Domotics with Arduino requires too infrared sensors." width="366" height="206" /></p><p
+style="text-align: justify;"><strong><strong> </strong></strong>The<strong> IR receiver</strong> is next to the Arduino board to ensure the maximum visibility to control everything from the <strong>remote control</strong>.</p><p
+style="text-align: justify;"><strong><strong><img
+class="attachment-266x266 aligncenter" title="IR receiver + Remote Control. It's a bedroom, no one wants to work out there." src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/IRreceiver-RemoeControl-Internet-300x257.jpg" alt="Domotics with arduino requires to an IR receiver to send commands from the remote control." width="266" height="228" /></strong></strong></p><h2 style="text-align: justify;"><b>Hacking Arduino</b></h2><p
+style="text-align: justify;"><strong><strong> </strong></strong>There are great projects using Arduino with domotic pruposes, like <a
+href="https://www.openhomeautomation.net/home-automation-arduino/">Open Home Automation</a>, that are very well developed or more specific ones, like <a
+href="http://www.souliss.net/">Souliss</a> or <a
+href="http://forum.arduino.cc/index.php?topic=179673.0">Excontrol</a>, but those solutions use more than one Arduino board and have more expensive components.</p><p
+style="text-align: justify;"><img
+class="aligncenter wp-image-2229 size-full" title="Domotics with Arduino" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/arduino1.png" alt="Arduino powered by biicode" width="640" height="300" /></p><p
+style="text-align: justify;">To program Arduino in a robust and structured way I have chosen <strong>C++ language</strong> and splitted the code in a modular way (the same way the electronics are set-up). This f<span
+style="text-decoration: underline;">unctionalities are decoupled and can be incorporated progressively to the domotic system or reused in other similar projects.</span> Here’s where the potential of <strong>biicode&#8217;s way of programming</strong> comes to make the difference.</p><p
+style="text-align: justify;">Utilities to incorporate to an Arduino project are countless, but many times there’s no reusable code and you have to completely adapt it. biicode lets you reuse third-party code and include it directly to your project.</p><p
+style="text-align: justify;"><strong><strong> </strong></strong>My domotic project is stored at <a
+href="http://www.biicode.com/Dani_MTB/Domo/master">Dani_MTB/Domo</a> block and it has two implementations:</p><ul
+style="text-align: justify;"><li><em>main.cpp</em>: currently code running in the domotic system of my bedroom.</li><li><em>domo.cpp</em>: parallel implementation to test new features.</li></ul><p
+style="text-align: justify;">This is <em>main.cpp&#8217;</em>s code:</p><p></p><pre class="crayon-plain-tag">#include "kenshirriff/irremote/irremote.h"
+#include "Dani_MTB/SimpleTimer/SimpleTimer.h"
+#include "Dani_MTB/MultiwaySwitches/MultiwaySwitches.h"
+#include "Dani_MTB/Relay/Relay.h"
+#include "Dani_MTB/SmartPlug/SmartPlug.h"
+#include "Dani_MTB/PIR/PIR.h"
+Relay corridorLight;				//Corridor lights of my bedroom
+Relay centralLight;		            //Main lights of my bedroom
+MultiwaySwitches switchesCentral;	//Two switches (one near my bed and other one at the entrance) that control main lights
+MultiwaySwitches switchesCorridor;	//Two switches (one near my bed and other one at the entrance) that control corridor lights
+PIR corridorSensor=PIR(14);			//PIR sensor in corridor of my bedroom
+PIR centralSensor=PIR(15);			//PIR sensor in the center of my bedroom
+SmartPlug rightPlug=SmartPlug(50, LOW_LVL, 200000, 51);	//Plug at the right, pin 50 for relay, activated with a relay with LOW LEVEL, 200 seconds to desactivate, and 51 for PLUG button
+IRrecv IR(40);						//Pin for remote IR receiver
+decode_results remoteCode;			//Variable to store RemoteControl's codes
+bool MODE=false;
+void setup()
+{
+	Serial.begin(9600);
+   switchesCentral.setSwitch(2);	//Switch 1 near my bed for main lights
+   switchesCentral.setSwitch(3);	//Switch 2 near the door for main lights
+   switchesCorridor.setSwitch(4);	//Switch 3 near my bed for corridor lights
+   switchesCorridor.setSwitch(5);	//Switch 4 near the door for corridor lights
+   centralLight.setup(9, HIGH_LVL);	//Relay (active at HIGH LEVEL) controlling main lights
+   centralLight.off();				//Main Lights start OFF (In case power supply of arduino comes OFF and program resets)
+   corridorLight.setup(8, LOW_LVL);	//Relay (active at LOW LEVEL) controlling corridor lights
+   corridorLight.off();				//Corridor Lights start OFF (In case power supply of arduino comes OFF and program resets)
+   IR.enableIRIn();
+   IR.blink13(true);
+}
+void loop()
+{
+   rightPlug.loop();						//Internal loop for SmartPlug
+   if(switchesCentral.change())			//If the state of switches for main lights changes
+   {
+	   centralLight.commute();				//Commute the state of the main lights
+   }
+   if(switchesCorridor.change())		//If the state of switches for main lights changes
+   {
+	   corridorLight.commute();				//Commute the state of the main lights
+   }
+   if(corridorSensor.rising_edge())		//If there's a positive edge in corridor's PIR sensor (detects a person)
+   {
+		   corridorLight.on();				//Power ON Corridor Lights
+   }
+   if(corridorSensor.falling_edge())	//If there's a negative edge in corridor's PIR sensor (NOT detects a person)
+   {
+	   corridorLight.off();					//Power OFF Corridor Lights
+   }
+   if(centralSensor.rising_edge())		//If there's a positive edge in main's PIR sensor (detects a person)
+   {
+		   corridorLight.on();				//Power ON Main Lights
+   }
+   if(centralSensor.falling_edge())		//If there's a negative edge in main's PIR sensor (NOT detects a person)
+   {
+	   corridorLight.off();					//Power OFF Main Lights
+   }
+//+++++++++++++++++++REMOTE CONTROL CODE++++++++++++++++++++++
+   if(IR.decode(&amp;remoteCode))
+   {
+	   if(remoteCode.value==16736925) 	//If MODE button is pressed
+		   MODE=true;						//Enable MODE
+	   if(remoteCode.value==16753245) 	//If 1 button is pressed Remote Power ON/OFF central light
+	   {
+		  if(centralLight.getState())		//Power ON/OFF main lights
+		  	centralLight.off();
+		  else
+		  	centralLight.on();
+	   }
+	   if(remoteCode.value==16724175) 	//If 0 button is pressed
+	   {
+		   if(rightPlug.getState()) 			//If plug is ON
+		  {
+			  rightPlug.off();  					//Power off the Plug
+		  }
+		  else								//If plug is OFF
+		  {
+			  if(MODE) 							//If MODE is enabled
+			  {
+				  rightPlug.on_Sensor();				//Power ON Plug in Sensor mode
+				  MODE=false;
+			  }
+			  else								//If MODE is disabled, and plug is OFF
+				rightPlug.on();							//Power ON plug in Normal mode
+		   }
+	   }
+	   IR.resume();						//Resume receiving remote codes
+   }
+// ++++++++++++++++++++DISABLE PLUG IF SENSORS ARE OFF+++++++++++++++++++++
+	if(!centralSensor.getState() &amp;&amp; !corridorSensor.getState())	//If both PIR sensors don't detect
+	{
+		rightPlug.off_Sensor();											//Power off rightPlug in sensor mode
+	}
+}</pre><p></p><p
+style="text-align: justify;">As you can see there are some class definitions that make the program look so much cleaner and it also makes it easy to understand what&#8217;s going on!</p><h3 style="text-align: justify;">Reusing code: Make domotics powerful</h3><p
+style="text-align: justify;">If you take a look at [requirements] section you&#8217;ll notice that some portions of code (the classes used in the code) are reused from other blocks, and even those other blocks reuse more blocks again.</p><p
+style="text-align: justify;"><img
+class="aligncenter wp-image-2224 size-full" title="Domo's requirements" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/requirements-domo.png" alt="Requirements of Domo: Domotics with Arduino" width="848" height="541" /></p><p
+style="text-align: justify;">Here is a brief explanation for each one:</p><ul
+style="text-align: justify;"><li><strong>MultiwaySwitches: </strong><a
+href="https://www.biicode.com/Dani_MTB/MultiwaySwitches">This block</a> implements a C++ class that encapsulates the usage of three-way switches that power on and off the same light. Switches  are now digital arduino inputs (5v), which is safer for people when manipulating them.</li><li><strong>SmartPlug:</strong> <a
+href="https://www.biicode.com/Dani_MTB/SmartPlug">Here is where the code for plugs is stored</a>. This class incorporates the activation of power supply by a relay when a button is pressed. You can select two modes: Normal activation and Sensor activation. It also incorporates a security time to automatically power off the plug. SmartPlug is useful if you want to connect an electric stove for example. This block reuses some other utilities in other blocks of biicode like <a
+href="https://www.biicode.com/Dani_MTB/SimpleTimer">SimpleTimer</a>, <a
+href="https://www.biicode.com/hithwen/button">Button</a> or <a
+href="https://www.biicode.com/Dani_MTB/Relay">Relay</a>.</li><li><strong>Relay: </strong><a
+href="https://www.biicode.com/Dani_MTB/Relay">Relay block</a> simplifies the usage of relays with arduino (handles HIGH or LOW level activation). In my case, it is useful to control lights and plugs.</li><li><strong>IRremote: </strong><a
+href="https://www.biicode.com/kenshirriff/irremote">IRremote </a>implements and simplifies the usage of a remote control receiver for different kinds of standard remotes.</li><li><strong>PIR:</strong> <a
+href="https://www.biicode.com/Dani_MTB/PIR">A class that encapsulates PIR sensor’s code</a>, with methods to detect rising or falling edges and the state of the sensor.</li></ul><p
+style="text-align: justify;">Other developed classes and utilities are already allocated in biicode so you can incorporate and use them in your project with just an #include: <a
+href="http://www.biicode.com/Dani_MTB/Clock">Clock</a> (Non-blocking Real Time clock without RTC module), <a
+href="https://www.biicode.com/pablotoledo/pablotoledo/drinkuino_arduino/master/1/libs/ultrasonic/ultrasonic.h">Ultrasonic</a>&#8230;</p><h2 style="text-align: justify;">Future implementations</h2><p
+style="text-align: justify;">There’s still a lot work ahead in my small domotic system based in arduino: internet wireless connection, a graphical user interface with a display (under construction), blind implementation… However, thanks to its modularity, robust C++ code and biicode powered Arduino, this system is a great bet to achieve a full domotic system for our bedroom.</p><p
+style="text-align: justify;">As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/domotics-with-arduino/">Project Domo: Domotics with Arduino</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/domotics-with-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

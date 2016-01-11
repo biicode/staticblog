@@ -1,0 +1,797 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/publish-share-reuse-cmake-macros/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:46:01 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/indexd8d0.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/themes/terminal/terminal.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>Publish, share and reuse CMake macros - biicode Blog</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="As fun as Mastering CMake can be, this biicode feature is a way to reuse CMake macros or &quot;recipes&quot;. Learn how with this short guide."/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="Publish, share and reuse CMake macros - biicode Blog" /><meta
+property="og:description" content="As fun as Mastering CMake can be, this biicode feature is a way to reuse CMake macros or &quot;recipes&quot;. Learn how with this short guide." /><meta
+property="og:url" content="http://blog.biicode.com/publish-share-reuse-cmake-macros/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="cmake" /><meta
+property="article:tag" content="macro" /><meta
+property="article:tag" content="macros" /><meta
+property="article:tag" content="recipe" /><meta
+property="article:tag" content="reuse" /><meta
+property="article:tag" content="scripts" /><meta
+property="article:section" content="biicode" /><meta
+property="article:published_time" content="2014-12-30T10:07:42+00:00" /><meta
+property="article:modified_time" content="2015-02-04T12:24:38+00:00" /><meta
+property="og:updated_time" content="2015-02-04T12:24:38+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/CMAKE-MACROSS.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary_large_image"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="Publish, share and reuse CMake macros"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><meta
+property="og:image:width" content="280"><meta
+property="og:image:height" content="150"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Publish, share and reuse CMake macros Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../index5865.html?p=1974' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-1974 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/biicode/index.html" rel="v:url" property="v:title">biicode</a> » <strong
+class="breadcrumb_last">Publish, share and reuse CMake macros</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-1974" class="post-1974 post type-post status-publish format-standard hentry category-biicode tag-cmake tag-macro tag-macros tag-recipe tag-reuse tag-scripts"> <header
+class="entry-header"><h1 class="entry-title">Publish, share and reuse CMake macros</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="10:07" rel="bookmark"><time
+class="entry-date" datetime="2014-12-30T10:07:42+00:00">December 30, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/franramirez/index.html" title="View all posts by franchuti" rel="author">franchuti</a></span></span></div> </header><div
+class="entry-content"><h1>CMake Macros for everyone!</h1><p>There were many great reasons to develop this feature, main is that you want it and as fun as <a
+title="Mastering CMake" href="http://www.cmake.org/cmake-tutorial/" target="_blank">Mastering CMake </a>can be, this feature is a way to reuse CMake &#8220;recipes&#8221;, don&#8217;t repeat yourself.</p><p><img
+class="aligncenter size-full wp-image-2065" src="../wp-content/uploads/sites/2/2014/12/CMAKE-MACROSS.png" alt="CMAKE-MACROSS" width="750" height="350" /></p><p>&nbsp;</p><p>Publish, share and reuse <a
+title="CMake Macros " href="http://www.cmake.org/Wiki/CMake_User_Contributed_Macros" target="_blank">CMake macros</a>/scripts and use any &#8220;recipe&#8221; in your CMakeLists.txt.</p><p><span
+id="more-1974"></span></p><p>Reusing CMake code is as simple as  “#including” libraries in C++.</p><p><strong>CMakeLists.txt</strong></p><div
+id="crayon-56886cd6aa57c589192703" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+...
+INCLUDE(user/block/My_macros) # Without .cmake extension
+MACRO_NAME_TO_USE() # Macro defined in My_macros.cmake
+...</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="hide"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa57c589192703-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa57c589192703-2">2</div><div
+class="crayon-num" data-line="crayon-56886cd6aa57c589192703-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa57c589192703-4">4</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa57c589192703-1"><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa57c589192703-2"><span
+class="crayon-e">INCLUDE</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">user</span><span
+class="crayon-o">/</span><span
+class="crayon-v">block</span><span
+class="crayon-o">/</span><span
+class="crayon-v">My_macros</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-p"># Without .cmake extension</span></div><div
+class="crayon-line" id="crayon-56886cd6aa57c589192703-3"><span
+class="crayon-e">MACRO_NAME_TO_USE</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-p"># Macro defined in My_macros.cmake</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa57c589192703-4"><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span><span
+class="crayon-sy">.</span></div></div></td></tr></table></div></div><p>And execute <code>bii find</code> to download the dependency as usual:</p><div
+class="highlight-bash"><div
+class="highlight"><div
+id="crayon-56886cd6aa58d228357282" class="crayon-syntax crayon-theme-terminal crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+~$ bii find</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa58d228357282-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa58d228357282-1"><span
+class="crayon-o">~</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">find</span></div></div></td></tr></table></div></div></div></div><p>Once done, you can finde your CMake dependencies in your  <strong><em>project/deps/user/block folder.</em></strong></p><h2><strong>Example: how to activate C++11 flag with a macro in biicode?</strong></h2><p><strong>“biicode”</strong> featured user has a block named <a
+href="https://www.biicode.com/biicode/cmake" target="_blank">cmake</a> where you can find useful macros from the <strong>tools.cmake</strong> file, like one to activate C++11 flags for any OS, or to link a OSX framework to a target, etc.</p><p><b
+class="b4">Follow this example to understand it fully,</b> start creating a project:</p><div
+class="highlight-bash"><div
+class="highlight"><div
+id="crayon-56886cd6aa598110506912" class="crayon-syntax crayon-theme-terminal crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+~$ bii init cpp11
+~$ cd cpp11
+~/cpp11$ bii new user/hello_cpp11 --hello</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa598110506912-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa598110506912-2">2</div><div
+class="crayon-num" data-line="crayon-56886cd6aa598110506912-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa598110506912-1"><span
+class="crayon-o">~</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">init </span><span
+class="crayon-v">cpp11</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa598110506912-2"><span
+class="crayon-o">~</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cd </span><span
+class="crayon-v">cpp11</span><span
+class="crayon-h"> </span></div><div
+class="crayon-line" id="crayon-56886cd6aa598110506912-3"><span
+class="crayon-o">~</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cpp11</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">user</span><span
+class="crayon-o">/</span><span
+class="crayon-v">hello_cpp11</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">hello</span></div></div></td></tr></table></div></div></div></div><p>and create the files below into your user/hello_cpp11 folder:</p><p><strong>main.cpp</strong></p><div
+id="crayon-56886cd6aa5a1343067980" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;ctype.h&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt; // std::for_each
+using namespace std;
+int main()
+{
+ char s[]="Hello World!";
+ int Uppercase = 0; //modified by the lambda
+ for_each(s, s+sizeof(s), [&amp;Uppercase] (char c) {
+ if (isupper(c))
+     Uppercase++;
+ });
+ cout&lt;&lt; Uppercase&lt;&lt;" uppercase letters in: "&lt;&lt; s&lt;&lt;endl;
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-2">2</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-4">4</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-6">6</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-8">8</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-10">10</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-12">12</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-14">14</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5a1343067980-16">16</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5a1343067980-17">17</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-1"><span
+class="crayon-p">#include &lt;ctype.h&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-3"><span
+class="crayon-p">#include &lt;iostream&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-4"><span
+class="crayon-p">#include &lt;algorithm&gt; // std::for_each</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-5">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-6"><span
+class="crayon-e">using </span><span
+class="crayon-t">namespace</span><span
+class="crayon-h"> </span><span
+class="crayon-v">std</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-7">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-8"><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-e">main</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-9"><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-10"> <span
+class="crayon-t">char</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s</span><span
+class="crayon-sy">[</span><span
+class="crayon-sy">]</span><span
+class="crayon-o">=</span><span
+class="crayon-s">"Hello World!"</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-11"> <span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Uppercase</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">//modified by the lambda</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-12"> <span
+class="crayon-e">for_each</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">s</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s</span><span
+class="crayon-o">+</span><span
+class="crayon-e">sizeof</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">s</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">[</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">Uppercase</span><span
+class="crayon-sy">]</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-t">char</span><span
+class="crayon-h"> </span><span
+class="crayon-v">c</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-13"> <span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-e">isupper</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">c</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-14">     <span
+class="crayon-v">Uppercase</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-15"> <span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5a1343067980-16"> <span
+class="crayon-v">cout</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">Uppercase</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-s">" uppercase letters in: "</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">s</span><span
+class="crayon-o">&lt;&lt;</span><span
+class="crayon-v">endl</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5a1343067980-17"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>This is the basic <tt
+class="docutils literal">CMakeLists.txt</tt> file with an include: <tt
+class="docutils literal">INCLUDE(biicode/cmake/tools)</tt> and a line to use the Macro:</p><p><strong>CMakeLists.txt</strong></p><div
+id="crayon-56886cd6aa5ab138202937" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+INIT_BIICODE_BLOCK()
+# Including tools.cmake from biicode/cmake user block
+# see https://www.biicode.com/biicode/cmake
+INCLUDE(biicode/cmake/tools)
+ADD_BIICODE_TARGETS()
+# Calling specific macro to activate c++11 flags
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET})</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa5ab138202937-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5ab138202937-2">2</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5ab138202937-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5ab138202937-4">4</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5ab138202937-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5ab138202937-6">6</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5ab138202937-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5ab138202937-8">8</div><div
+class="crayon-num" data-line="crayon-56886cd6aa5ab138202937-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5ab138202937-10">10</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa5ab138202937-1"><span
+class="crayon-e">INIT_BIICODE_BLOCK</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5ab138202937-2">&nbsp;</div><div
+class="crayon-line" id="crayon-56886cd6aa5ab138202937-3"><span
+class="crayon-p"># Including tools.cmake from biicode/cmake user block</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5ab138202937-4"><span
+class="crayon-p"># see https://www.biicode.com/biicode/cmake</span></div><div
+class="crayon-line" id="crayon-56886cd6aa5ab138202937-5"><span
+class="crayon-e">INCLUDE</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">biicode</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cmake</span><span
+class="crayon-o">/</span><span
+class="crayon-v">tools</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5ab138202937-6">&nbsp;</div><div
+class="crayon-line" id="crayon-56886cd6aa5ab138202937-7"><span
+class="crayon-e">ADD_BIICODE_TARGETS</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5ab138202937-8">&nbsp;</div><div
+class="crayon-line" id="crayon-56886cd6aa5ab138202937-9"><span
+class="crayon-p"># Calling specific macro to activate c++11 flags</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5ab138202937-10"><span
+class="crayon-e">ACTIVATE_CPP11</span><span
+class="crayon-sy">(</span><span
+class="crayon-t">INTERFACE</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">$</span><span
+class="crayon-sy">{</span><span
+class="crayon-v">BII_BLOCK_TARGET</span><span
+class="crayon-sy">}</span><span
+class="crayon-sy">)</span></div></div></td></tr></table></div></div><p>Execute <code>bii find</code> to download the dependency as usual and bii cpp:build to compile:</p><div
+class="highlight-bash"><div
+class="highlight"><div
+id="crayon-56886cd6aa5b7291639879" class="crayon-syntax crayon-theme-terminal crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+~/cpp11$ bii find
+~/cpp11$ bii cpp:build</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa5b7291639879-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5b7291639879-2">2</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa5b7291639879-1"><span
+class="crayon-o">~</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cpp11</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">find</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5b7291639879-2"><span
+class="crayon-o">~</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cpp11</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-v">cpp</span><span
+class="crayon-o">:</span><span
+class="crayon-v">build</span></div></div></td></tr></table></div></div></div></div><p>Now you&#8217;re ready to run your executable, it&#8217;s in your cpp11/bin folder:</p><div
+class="highlight-bash"><div
+class="highlight"><div
+id="crayon-56886cd6aa5c1629450794" class="crayon-syntax crayon-theme-terminal crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+~/cpp11$ ./bin/user_hello_cpp11_main
+2 uppercase letters in: Hello World!</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886cd6aa5c1629450794-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886cd6aa5c1629450794-2">2</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886cd6aa5c1629450794-1"><span
+class="crayon-o">~</span><span
+class="crayon-o">/</span><span
+class="crayon-v">cpp11</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">.</span><span
+class="crayon-o">/</span><span
+class="crayon-v">bin</span><span
+class="crayon-o">/</span><span
+class="crayon-v">user_hello_cpp11</span><span
+class="crayon-sy">_</span>main</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886cd6aa5c1629450794-2"><span
+class="crayon-cn">2</span><span
+class="crayon-h"> </span><span
+class="crayon-e">uppercase </span><span
+class="crayon-e">letters </span><span
+class="crayon-st">in</span><span
+class="crayon-o">:</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Hello </span><span
+class="crayon-v">World</span><span
+class="crayon-o">!</span></div></div></td></tr></table></div></div></div></div><p>I hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../compiling-with-biicode-cmake-build-process-ides-and-more/index.html" title="Compiling with biicode: CMake, build process, IDEs and more">Compiling with biicode: CMake, build process, IDEs and more</a></li><li><a
+href="../bii-internals-c-vs-python/index.html" title="bii internals: C vs Python efficiency">bii internals: C vs Python efficiency</a></li><li><a
+href="../bii-internals-automating-deb-pkg-generation/index.html" title="bii internals: Automating DEB pkg generation">bii internals: Automating DEB pkg generation</a></li><li><a
+href="../bii-internals-how-to-do-your-own-windows-installer/index.html" title="bii internals: How to do your own Windows Installer">bii internals: How to do your own Windows Installer</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/publish-share-reuse-cmake-macros/' addthis:title='Publish, share and reuse CMake macros' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/biicode/index.html" rel="category tag">biicode</a> and tagged <a
+href="../tag/cmake/index.html" rel="tag">cmake</a>, <a
+href="../tag/macro/index.html" rel="tag">macro</a>, <a
+href="../tag/macros/index.html" rel="tag">macros</a>, <a
+href="../tag/recipe/index.html" rel="tag">recipe</a>, <a
+href="../tag/reuse/index.html" rel="tag">reuse</a>. Bookmark the <a
+href="index.html" title="Permalink to Publish, share and reuse CMake macros" rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../new-feature-version-tags/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> New feature: Version Tags</a></div><div
+class="next"><a
+href="../arduino-yun/index.html" rel="next">Arduino Yun now supported <span
+class="meta-nav">&rarr;</span></a></div> </nav></div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/publish-share-reuse-cmake-macros/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:46:01 GMT -->
+</html>

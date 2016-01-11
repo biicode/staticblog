@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; temperature</title> <atom:link href="http://blog.biicode.com/tag/temperature/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>IoT: Get a temperature email alert with Arduino and Carriots</title><link>http://blog.biicode.com/iot-temperature-email-arduino-carriots/</link> <comments>http://blog.biicode.com/iot-temperature-email-arduino-carriots/#comments</comments> <pubDate>Tue, 15 Apr 2014 08:50:58 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[carriots]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[temperature]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=304</guid> <description><![CDATA[<p>In this post we will show you how to receive a temperature email alert via Arduino. Using Biicode lasote/carriots_stream block and Carriots service it’s very easy! How does the lasote/carriots_stream block work? Instances CarriotsStreamClient passing your Carriots credentials and an Arduino Client instance. Adds the variables you need and call send_data() [crayon-568871fbd6c8e355131080/] Now, we&#8217;ll show [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-temperature-email-arduino-carriots/">IoT: Get a temperature email alert with Arduino and Carriots</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In this post we will show you <strong>how to receive a temperature email alert via Arduino</strong>.<br
+/> Using Biicode <a
+title="lasote/carriots_stream block, biicode" href="https://www.biicode.com/lasote/blocks/lasote/carriots_stream/branches/master" target="_blank">lasote/carriots_stream</a> block and <a
+title="Carriots, Internet of Things platform" href="http://www.carriots.com/" target="_blank">Carriots</a> service it’s very easy!</p><h4><img
+class="aligncenter wp-image-307 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/arduino_schema_temperature.png" alt="Arduino schema for room temperature" width="600" height="496" /></h4><p><span
+id="more-304"></span></p><h4>How does the lasote/carriots_stream block work?</h4><ul><li>Instances CarriotsStreamClient passing your Carriots credentials and an <a
+title="Arduino ClientConstructor" href="http://arduino.cc/es/Reference/ClientConstructor" target="_blank">Arduino Client instance</a>.</li><li>Adds the variables you need and call send_data()</li></ul><p></p><pre class="crayon-plain-tag">CarriotsStreamClient carriots_client(API_KEY, DEVICE_ID, client, Serial);
+carriots_client.add_variable("sensor1", "foo"); carriots_client.send_data();</pre><p>Now, we&#8217;ll show how to use it with an example:</p><h4>Step 1. Hardware used</h4><ul><li><a
+title="Arduino ethernet module" href="http://www.ebay.com/sch/i.html?_odkw=enc28j60%20ethernet%20lan%20network%20module&amp;_osacat=0&amp;_from=R40&amp;_trksid=p2045573.m570.l1313.TR0.TRC0.H0.Xenc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_nkw=enc28j60%20ethernet%20lan%20network%20module%20arduino&amp;_sacat=0" target="_blank">Ethernet Enc28j60</a> no-shield module for connecting to internet.</li><li><a
+title="Adafruit 10-DOF IMU" href="https://www.adafruit.com/products/1604" target="_blank">Adafruit 10-DOF IMU</a> for temperature measuring.</li><li><a
+title="Arduino Mega2560" href="http://arduino.cc/en/Main/arduinoBoardMega2560" target="_blank">Arduino Mega2560</a>.</li></ul><h4>Step 2. Create a Carriots account and configure a device and a listener.</h4><ol><li><a
+title="Carriots service registration" href="https://www.carriots.com/joinus" target="_blank">Get a free account in Carriots</a> service.</li><li>Create a new device on <strong>Device Management</strong> section.</li></ol><h4><img
+class="aligncenter wp-image-309" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_device_creation.png" alt="Carriots device creation" width="630" height="434" /></h4><ol
+start="3"><li>Create a new Listener with the <code
+style="color: #dd1144">Wizard Create Listener</code> on <code
+style="color: #dd1144">Rules Management</code> section, select <code
+style="color: #dd1144">Send Email</code> and your device. In next step write the email account will receive the comunications.</li></ol><p><img
+class="aligncenter wp-image-313 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_wizard_1.png" alt="Carriots listener wizard (1)" width="600" height="192" /></p><p><img
+class="aligncenter size-full wp-image-315" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_wizard_2.png" alt="Carriots listener wizard (2)" width="600" height="202" /></p><ol
+start="4"><li>In the last step we can custom the email content.</li></ol><p><img
+class="aligncenter size-full wp-image-316" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/carriots_wizard_3.png" alt="Carriots listener wizard (2)" width="800" height="409" /></p><h4>Step 3. Create your biicode hive and upload to your Arduino</h4><ol><li>New at biicode? Follow this tutorial for <a
+title="Getting started with Arduino | Biicode Docs" href="http://docs.biicode.com/arduino/gettingstarted.html" target="_blank">getting started with Arduino</a>.</li><li>You will need to pass an instance of Client for your hardware adapter to CarriotsStreamClient.</li><li>Copy the following source code into a file in your block and fill your Carriots credentials API_KEY and DEVICE_ID.</li><li>Execute these two commands:</li></ol><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii arduino:upload</pre><p>And this is the source code example:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;Wire.h&gt;
+#include &lt;adafruit/ada_10dof/adafruit_10dof.h&gt;
+#include "ntruchsess/arduino_uip/uipethernet.h"
+#include "lasote/carriots_stream/carriots_stream_client.h"
+using namespace lasote;
+#define DEVICE_ID "*********************" //YOUR DEVICE ID
+#define API_KEY "***********************" //YOUR CARRIOT API KEY
+/* Assign a unique ID to the sensors */
+Adafruit_BMP085_Unified  bmp   = Adafruit_BMP085_Unified(18001);
+//Our hardware adapter is Ethernet Enc28J60 HanRun module
+EthernetClient client;
+//Instance a carriots client for check weather
+CarriotsStreamClient carriots_client(API_KEY, DEVICE_ID, client, Serial);
+void setup(void)
+{
+    //MAC init
+    uint8_t mac[6] = {0x10,0x31,0x02,0x33,0x04,0x65};
+    Ethernet.begin(mac);
+    delay(4000);
+    if(!bmp.begin()){
+        /* There was a problem detecting the BMP085 ... check your connections */
+        Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+    }
+}
+void loop(void)
+{
+    //Clear previous loop sensor variables
+    carriots_client.reset();
+    /* Get a new sensor event */
+    sensors_event_t event;
+    /* Display the pressure sensor results (barometric pressure is measure in hPa) */
+    bmp.getEvent(&amp;event);
+    float temperature;
+    if (event.pressure){
+        bmp.getTemperature(&amp;temperature);
+    }
+    char buf[6];
+    dtostrf(temperature, 2, 2, buf);
+    //Put temperature to client in variable "sensor1"
+    carriots_client.add_variable("sensor1", buf);
+    //Send!
+    carriots_client.send_data();
+    delay(60*1000);
+}</pre><p>You can use <a
+title="lasote/carriots_stream block at Biicode" href="https://www.biicode.com/lasote/blocks/lasote/carriots_stream/branches/master" target="_blank">lasote/carriots_stream</a> block and <a
+title="Carriots service" href="http://www.carriots.com/" target="_blank">Carriots</a> service for many purposes.</p><p>Let your imagination flow and stay tuned!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-temperature-email-arduino-carriots/">IoT: Get a temperature email alert with Arduino and Carriots</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-temperature-email-arduino-carriots/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

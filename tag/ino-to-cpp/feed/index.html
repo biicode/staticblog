@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; ino to cpp</title> <atom:link href="http://blog.biicode.com/tag/ino-to-cpp/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>How to adapt your Arduino sketches (I)</title><link>http://blog.biicode.com/adapt-arduino-sketches-i/</link> <comments>http://blog.biicode.com/adapt-arduino-sketches-i/#comments</comments> <pubDate>Tue, 31 Mar 2015 10:40:02 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[Arduino]]></category> <category><![CDATA[Arduino sketches]]></category> <category><![CDATA[Github code]]></category> <category><![CDATA[ino to cpp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1972</guid> <description><![CDATA[<p>In this first example we going to see how to adapt an Arduino code from github to biicode in a simple way. Let&#8217;s go! Create a biicode project and copy your code inside First, create a new biicode project and a block. [crayon-56886dc80afc1654485135/] The following layout has been created: [crayon-56886dc80afd3836615405/] Make your code grow with [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/adapt-arduino-sketches-i/">How to adapt your Arduino sketches (I)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>In this first example we going to see how to adapt an Arduino code from github to biicode in a simple way. Let&#8217;s go!</h3><p><img
+class="aligncenter wp-image-2140 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/post-arduino.png" alt="Arduino sketches work like a charm with biicode" width="638" height="336" /><br
+/> <span
+id="more-1972"></span></p><h2><strong>Create a biicode project and copy your code inside</strong></h2><p>First, create a new biicode project and a block.</p><pre class="crayon-plain-tag">$ git clone https://github.com/br3ttb/Arduino-PID-Library.git
+...
+$ cd Arduino-PID-Library/
+$ bii init -L
+Successfully initialized biicode project
+$ bii work
+INFO: Processing changes...
+Work done!</pre><p>The following layout has been created:</p><pre class="crayon-plain-tag">├── bii
+├── biicode.conf
+├── PID_v1
+│   ├── Examples
+│   │   ├── PID_AdaptiveTunings
+│   │   │   └── PID_AdaptiveTunings.ino
+│   │   ├── PID_Basic
+│   │   │   └── PID_Basic.ino
+│   │   └── PID_RelayOutput
+│   │       └── PID_RelayOutput.ino
+│   ├── keywords.txt
+│   ├── PID_v1.cpp
+│   └── PID_v1.h
+└── README.txt</pre><p></p><h2><strong>Make your code grow with all the power of C++</strong></h2><p><img
+class="aligncenter wp-image-2119 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/ito_to_cpp-1024x389.png" alt="Ino files to cpp files through biicode" width="630" height="239" /></p><p>Change your .ino executables to .cpp and add #include &#8220;Arduino.h&#8221; at the top. To know which are executables or not, just see if the file has the loop() function inside it.</p><pre class="crayon-plain-tag">├── bii
+├── biicode.conf
+├── PID_v1
+│   ├── Examples
+│   │   ├── PID_AdaptiveTunings
+│   │   │   └── PID_AdaptiveTunings.cpp
+│   │   ├── PID_Basic
+│   │   │   └── PID_Basic.cpp
+│   │   └── PID_RelayOutput
+│   │       └── PID_RelayOutput.cpp
+│   ├── keywords.txt
+│   ├── PID_v1.cpp
+│   └── PID_v1.h
+└── README.txt</pre><p>Now, check your unresolved dependencies. There are 3 unresolved dependencies of the file PID_v1.h, it is because the #include paths are relative.</p><pre class="crayon-plain-tag">$ bii deps --detail
+david/Arduino-PID-Library depends on:
+       david/Arduino-PID-Library (self)
+          PID_v1/PID_v1.cpp
+                PID_v1/PID_v1.h (I)
+          PID_v1/PID_v1.h
+                PID_v1/PID_v1.cpp (E)
+       system:
+          Arduino.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp
+                PID_v1/PID_v1.cpp
+       unresolved:
+          PID_v1.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp
+          WProgram.h
+                PID_v1/PID_v1.cpp</pre><p>To solve it, just include the PID_v1.h path relative to your block,  <em>/PID_v1,</em> in your biicode.conf. You can change the file&#8217;s #include from <em>#include &#8220;PID_v1.h&#8221;</em> to <em>#include &#8220;david/Arduino-PID-Library/PID_v1/PID_v1.h&#8221;</em>, but this change broke the compatibility with the Arduino IDE so we prefer  touch the code as little as posible.</p><pre class="crayon-plain-tag"># Biicode configuration file
+[requirements]
+[parent]
+[paths]
+    /PID_v1
+[dependencies]
+[mains]
+[tests]
+[hooks]
+[includes]
+[data]</pre><p>Check your deps again and see that the unresolved dependendencies to <em>PID_v1/PID_v1.h</em> have desapiered.</p><pre class="crayon-plain-tag">$ bii deps --detail
+david/Arduino-PID-Library depends on:
+       david/Arduino-PID-Library (self)
+          PID_v1/PID_v1.cpp
+                PID_v1/PID_v1.h (I)
+          PID_v1/PID_v1.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp (E)
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp (E)
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp (E)
+                PID_v1/PID_v1.cpp (E)
+       system:
+          Arduino.h
+                PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp
+                PID_v1/Examples/PID_Basic/PID_Basic.cpp
+                PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp
+                PID_v1/PID_v1.cpp
+       unresolved:
+          WProgram.h
+                PID_v1/PID_v1.cpp</pre><p></p><h2><strong> Build and Upload your Code with biicode</strong></h2><h3>Configure your project</h3><p>Connect your Arduino and configure the project settings with the info of your Arduino SDK and your board name. If you need help with the name of your board write <em>/o</em> when biicode ask you for the <em>board</em>.</p><p>It&#8217;s important that you connect your Arduino first.</p><p><img
+class="aligncenter wp-image-2120 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/Arduino-Plug-it-in.jpg" alt="Plugged Arduino Uno board ready to work with biicode" width="600" height="450" /></p><pre class="crayon-plain-tag">$ bii arduino:settings
+Installed SDKs:
+ [0.] version=1.0.6 path=/home/david/.biicode_env/arduino-1.0.6
+ [1.] version=1.5.8 path=/home/david/.biicode_env/arduino-1.5.8
+ [2.] version=1.6.0 path=/home/david/.biicode_env/arduino-1.6.0
+Enter SDK number or type path (/home/david/.biicode_env/arduino-1.0.6): 2
+Enter board (/o list supported options): mega2560
+Using arduino port: /dev/ttyACM0
+WARN: Arduino toolchain defined, regenerating project
+Creating toolchain for Arduino
+Run "bii cpp:configure -t arduino" to activate it
+Run "bii cpp:configure -t" to disable it</pre><p>Now. configure your project.</p><pre class="crayon-plain-tag">$ bii configure -t arduino
+INFO: Processing changes...
+...</pre><p></p><h3> Build your code</h3><p>Now, build your code as usual with biicode. Just execute <em>bii build</em>.</p><pre class="crayon-plain-tag">$ bii build
+INFO: Processing changes...
+Building: "/home/david/.biicode/cmake-3.0.2-Linux-64/bin/cmake" --build .
+Scanning dependencies of target mega2560_CORE
+[  3%] Building CXX object david/Arduino-PID-Library/CMakeFiles/mega2560_CORE.dir/home/david/.biicode_env/arduino-1.0.6/hardware/arduino/cores/arduino/WString.cpp.obj
+...
+[ 92%] Building CXX object david/Arduino-PID-Library/CMakeFiles/david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings.dir/PID_v1/Examples/PID_AdaptiveTunings/PID_AdaptiveTunings.cpp.obj
+Linking CXX executable /home/david/Escritorio/pid_arduino/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings.elf
+Generating EEP image
+Generating HEX image
+Calculating image size
+Firmware Size:  [Program: 5116 bytes (2.0%)]  [Data: 104 bytes (1.3%)] on atmega2560
+EEPROM   Size:  [Program: 0 bytes (0.0%)]  [Data: 0 bytes (0.0%)] on atmega2560
+[ 92%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings
+Scanning dependencies of target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+[ 96%] Building CXX object david/Arduino-PID-Library/CMakeFiles/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.dir/PID_v1/Examples/PID_Basic/PID_Basic.cpp.obj
+Linking CXX executable /home/david/Escritorio/pid_arduino/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.elf
+Generating EEP image
+Generating HEX image
+Calculating image size
+Firmware Size:  [Program: 4890 bytes (1.9%)]  [Data: 80 bytes (1.0%)] on atmega2560
+EEPROM   Size:  [Program: 0 bytes (0.0%)]  [Data: 0 bytes (0.0%)] on atmega2560
+[ 96%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+Scanning dependencies of target david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput
+[100%] Building CXX object david/Arduino-PID-Library/CMakeFiles/david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput.dir/PID_v1/Examples/PID_RelayOutput/PID_RelayOutput.cpp.obj
+Linking CXX executable /home/david/Escritorio/pid_arduino/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput.elf
+Generating EEP image
+Generating HEX image
+Calculating image size
+Firmware Size:  [Program: 4460 bytes (1.7%)]  [Data: 86 bytes (1.0%)] on atmega2560
+EEPROM   Size:  [Program: 0 bytes (0.0%)]  [Data: 0 bytes (0.0%)] on atmega2560
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput</pre><p></p><h3> Upload your Arduino sketches</h3><p>To upload your code in the Arduino just need to execute <em>bii arduino:upload.</em></p><pre class="crayon-plain-tag">$ bii arduino:upload
+INFO: Processing changes...
+Building: "/home/david/.biicode/cmake-3.0.2-Linux-64/bin/cmake" --build .
+[ 76%] Built target mega2560_CORE
+[ 80%] Built target mega2560_PID_v1
+[ 88%] Built target david_Arduino-PID-Library
+[ 92%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings
+[ 96%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput
+Using arduino port: /dev/ttyACM0
+You have the following firmwares:
+  david_Arduino-PID-Library_PID_v1_Examples_PID_AdaptiveTunings_PID_AdaptiveTunings
+  david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+  david_Arduino-PID-Library_PID_v1_Examples_PID_RelayOutput_PID_RelayOutput
+Firmware name: PID_Basic
+Uploading...
+[sudo] password for david:
+[ 85%] Built target mega2560_CORE
+[ 89%] Built target mega2560_PID_v1
+[ 96%] Built target david_Arduino-PID-Library
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic
+Scanning dependencies of target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic-upload
+avrdude: AVR device initialized and ready to accept instructions
+Reading | ################################################## | 100% 0.02s
+avrdude: Device signature = 0x1e9801
+avrdude: reading input file "/tmp/Arduino-PID-Library/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.hex"
+avrdude: writing flash (4782 bytes):
+Writing | ################################################## | 100% 0.84s
+avrdude: 4782 bytes of flash written
+avrdude: reading input file "/tmp/Arduino-PID-Library/bin/david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic.eep"
+avrdude: writing eeprom (0 bytes):
+Writing | ################################################## | 100% 0.00s
+avrdude: 0 bytes of eeprom written
+avrdude: safemode: Fuses OK (H:FF, E:D0, L:FF)
+avrdude done.  Thank you.
+[100%] Built target david_Arduino-PID-Library_PID_v1_Examples_PID_Basic_PID_Basic-upload
+Upload finished</pre><p>We hope you liked this first example of many to come, feel free to comment below.<br
+/> As you know, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/adapt-arduino-sketches-i/">How to adapt your Arduino sketches (I)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/adapt-arduino-sketches-i/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

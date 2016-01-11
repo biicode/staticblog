@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; meta-programming</title> <atom:link href="http://blog.biicode.com/tag/meta-programming-2/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</title><link>http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/</link> <comments>http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/#comments</comments> <pubDate>Wed, 14 Jan 2015 14:36:43 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[A Tiny Metaprogramming Lib]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[meta-programming]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2012</guid> <description><![CDATA[<p>I know I&#8217;m repeating this everytime I write a new article, but it&#8217;s one of the key points to make template metaprogramming feasible, which means: TMP is just a functional language. A language with a &#8220;Aghhhh, my eyes, please!!! Aaahhhhhg!!!&#8221; syntax, but still a functional language. To start a C++ metaprogramming library the right way, [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/">A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>I know I&#8217;m repeating this everytime I write a new article, but it&#8217;s one of the key points to make template metaprogramming feasible, which means: <strong>TMP is just a functional language</strong>. A language with a &#8220;<em>Aghhhh, my eyes, please!!! Aaahhhhhg!!!</em>&#8221; syntax, but still a functional language.</p><p>To start a C++ metaprogramming library the right way, we&#8217;d better have a clear idea of what a metafunction is, and how our library represents and manages a metafunction.</p><p><span
+id="more-2012"></span></p><h2>Functions</h2><p><img
+class="alignnone" src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Function_machine2.svg/500px-Function_machine2.svg.png" alt="Metafunctions next episode of the Tiny Metaprogramming Library in biicode" width="500" height="495" /></p><p>What&#8217;s a metafunction? Forget that. <a
+href="http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/">Enter in our Haskell metaphor first</a>. <strong>What&#8217;s a function?</strong> From <a
+href="http://en.wikipedia.org/wiki/Function_%28mathematics%29" target="_blank">Wikipedia</a>:</p><blockquote><p>&#8220;[&#8230;] a function is a relation between a set of inputs and a set of permissible outputs with the property that each input is related to exactly one output.&#8221;</p></blockquote><p>I hope you noticed that&#8217;s the mathematical definition of function, instead of a <em>programming-related</em> one. In general, I think calling programming entities <em>functions</em> is not a good idea. They have more to do with old subroutines than with math functions: Most of our code depends on side effects, generates side effects, or depends on reading and changing an external state in some way.</p><p>This is C++, but not the C++ most of us usually play with. This is a functional language: There are no side effects, there&#8217;s no external state. A function only takes an input, does some transformations on it, producing an output. Functions are mathematical functions, not some kind of prettified subroutines.</p><h3>Metafunctions</h3><p><em>&#8220;Something that takes an input, does something with it, producing a result&#8221;</em></p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct add_const
+{
+    using type = const T;
+};</pre><p>This is a struct template parametrized with a type parameter <code>T</code>. Whatever type you instance the template with, the instance struct has a public member type called <code>type</code> equivalent to <code>const T</code>.</p><p>For example: If you instance the template with <code>int</code> as parameter:</p><pre class="crayon-plain-tag">using a = add_const&lt;int&gt;</pre><p>The member type <code>type</code> will be an alias of <code>const int</code>:</p><pre class="crayon-plain-tag">using b = add_const&lt;int&gt;::type; //b is const int</pre><p>Something that takes an input, <code>T</code>, does something with it (add <code>const</code>), returning and output <code>type</code>.</p><p>A template is just a way to represent a function operating on C++ types. That&#8217;s what we call <strong>metafunction</strong>. A function operating on C++ types. Since a type cannot be modified, metafunctions are pure functions, which have no side effects.<br
+/> The functional language metaphor has much more sense now, right?</p><h2>Metafunctions in our tiny metaprogramming library</h2><p>We are playing with the C++ type system, using types or type generators (templates) as elements of our abstract metaprogramming type system.<br
+/> We will have functions, values, &#8220;arrays&#8221;, etc. But these are really sets of C++ types.</p><p>Since C++ lacks type categories (I&#8217;m waiting for the Concepts proposal) there&#8217;s no direct way to arrange C++ types into different groups, and use those groups to simulate a high-order type system for our metaprogramming library. <em>Take a look at <a
+href="https://ldionne.github.io/hana/" target="_blank">Boost.Hana</a> for an approximation of type categories for a metaprogramming library, based on tag dispatching</em>.</p><p>Instead of building a complex category system like Hana (I&#8217;m not a good mathematician, nor an specialist on category theory :) ), my library will be based on some conventions and rules.</p><h4>Return value of metafunctions</h4><p>Using a template as a function operating on types, as a metafunction, is not a new concept. Take a look at <code></code>:</p><pre class="crayon-plain-tag">using ptr = std::decay&lt;int[3]&gt;::type;</pre><p>The templates defined there, called type traits, provide information and transformations of given types. For example, <a
+href="http://en.cppreference.com/w/cpp/types/decay" target="_blank"><code>std::decay</code></a> simulates the decay applied to a type when a parameter is passed by value to a function.</p><p>To be compatible with the Standard Library, in my Tiny Metaprogramming Library I<strong>&#8216;m assuming that any type with a <code>type</code> public member type is a metafunction</strong>.</p><p>Following that convention, a simple template alias can be a way to get rid of the <code>typename ::type</code> construction, accessing directly to the return value of a metafunction:</p><pre class="crayon-plain-tag">template&lt;typename F&gt;
+alias eval = typename F::type;
+alias myint = eval&lt;std::remove_reference&lt;int&amp;&gt;&gt;;</pre><p>Of course this only works for simple expressions. Follow this series to see how this simple but powerful tool evolves.</p><h2>Parameters of metafunctions</h2><p>A C++ template can take many kinds of parameters: Types, pointers, values, etc. But let&#8217;s keep it simple and <strong>only allow type parameters</strong>. Why? Because that simplifies a lot our metafunctions.</p><p>In fact, a simple variadic template-template parameter like the following represents any function our library can deal with:</p><pre class="crayon-plain-tag">template&lt;typename... ARGS&gt; class F</pre><p><em>Using this little jewel, imagine the next step of the <code>eval</code> tool above.</em></p><p>But you may think: <em>&#8220;Manu, I need value parameters too. And template-template parameters&#8221;</em>. Don&#8217;t worry, we can simulate this using type parameters. Stay tuned for the next post!</p><h2>Summary</h2><p>We&#8217;ve just learned what does &#8220;TMP is a functional language&#8221; means. We also learned a way to represent functions operating on C++ types, metafunctions, and two simple conventions for our tiny metaprogramming library:</p><p>&#8211; <strong>Any <code>type</code> with a <code>type</code> public member type is considered a metafunction. That member contains the result of the function</strong>.<br
+/> &#8211; <strong>Our metafunctions, represented via templates, can take type parameters only</strong>.</p><p>In the next post we will see how to use boxing to simulate value parameters and template-template parameters for our metafunctions.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/">A Tiny Metaprogramming Library: Extending the Metaphor, entering metafunctions</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/a-tiny-metaprogramming-lib-metafunctions/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>Metaprogramming with Modern C++: The Haskell Metaphor</title><link>http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/</link> <comments>http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/#comments</comments> <pubDate>Fri, 31 Oct 2014 11:36:50 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Haskell]]></category> <category><![CDATA[meta-programming]]></category> <category><![CDATA[template metaprogramming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1863</guid> <description><![CDATA[<p>I you are one of who have been following our post series about template metaprogramming with modern C++, at this time you should have become a C++ template Guru. At least thats what I expect ;). You know about class templates, function templates, value parameters, type parameters, variadic templates… Your template metaprogramming toolbox is full [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/">Metaprogramming with Modern C++: The Haskell Metaphor</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<div
+class="article-wrap"><p>I you are one of who have been following our <a
+href="http://blog.biicode.com/category/meta-programming/">post series</a> about template metaprogramming with modern C++, at this time you should have become a C++ template Guru. At least thats what I expect ;).</p><p>You know about class templates, function templates, value parameters, type parameters, variadic templates… Your template metaprogramming toolbox is full of great things to play with. Thats good, but you want to start playing with your compiler, writting some cool metaprograms.</p><p>Lets start the game!</p><p><span
+id="more-1863"></span></p><h2 id="good-old-template-metaprogramming"><em>“Good”</em> old template metaprogramming</h2><p>In the old days of C++98/03 there were no variadic templates, no template aliases, no <code>std::enable_if</code>. Metaprogramming with C++ was a hard and ugly task.</p><p>But it was a <em>neccesary</em> task. Most of the time library implementers used template metaprogramming to parametrize and automatize code generation for the library, instead of writting multiple duplicates or derivatives of the same code just to cover all the cases. This was, and it is, a common practice even for Standard Library vendors.</p><p>Template metaprogramming was used to improve perfomance on high-computing libraries too, with some clever code transformations done thanks to tmp. The best example of this is the <a
+href="http://en.wikipedia.org/wiki/Blitz%2B%2B">blitz++ library</a>, one of the first examples of a real use case of template metaprogramming.</p><p>But such codebases where hard to read and maintain, so for most common C++ programmers tmp was just <em>“crazy stuff for nerds”</em>.</p><p>Since C++11 the language has evolved to support some ways of metaprogramming as a common and useful thing. Metaprogramming became a first class citizen in C++, instead of the obscure, magical, and freaking way to abuse the compiler it was at the beginning.</p><p>Look at the <code>&lt;type_traits&gt;</code> header. It provides the so called <code>type traits</code>, class templates designed to provide some useful information about a given type.</p><div
+class="highlight"><pre class="crayon-plain-tag">#include &lt;type_traits&gt;
+constexpr bool is_ptr = std::is_pointer&lt;int*&gt;::value;</pre></div><p>Language features like <code>static_cast</code> and variadic templates help a lot too when doing tmp.</p><p>But the syntax is still too ugly. Consider the implementation of <code>std::decay</code>:</p><div
+class="highlight"><pre class="crayon-plain-tag">template&lt; class T &gt;
+struct decay {
+    typedef typename std::remove_reference&lt;T&gt;::type U;
+    typedef typename std::conditional&lt;
+        std::is_array&lt;U&gt;::value,
+        typename std::remove_extent&lt;U&gt;::type*,
+        typename std::conditional&lt;
+            std::is_function&lt;U&gt;::value,
+            typename std::add_pointer&lt;U&gt;::type,
+            typename std::remove_cv&lt;U&gt;::type
+        &gt;::type
+    &gt;::type type;
+};</pre></div><p>Too many nested <code>typename</code>s, its hard to follow and undertand the code.</p><p><strong>Could that syntax be improved?</strong> I think that&#8217;s possible, and that&#8217;s exactly what we will learn today.</p><h2 id="lets-get-simpler">Let&#8217;s get simpler</h2><p>As we seen in our introduction to tmp, the C++ template system can be seen as a pure functional language. In that way, suppose that you are working with a weird version of Haskell.</p><p>There are no templates, there are no types. You have expressions and values. Expressions and values that you can evaluate, manipulate, etc. Call this abstraction <em>“The Haskell Metaphor”</em>.</p><p><img
+class="alignright size-full wp-image-1866" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/haskell-logo-with-name.jpg" alt="The Haskell Metaphor in template metaprogramming in modern cpp" width="800" height="400" /></p><p>In our functional language, a C++ type is really a value we work with. And templates are expressions that take values (C++ types) as parameters:</p><div
+class="highlight"><pre class="crayon-plain-tag">template&lt;typename T&gt;
+using identity = T;
+using i = identity&lt;int&gt;;</pre></div><p>In the example above, the <code>identity</code> alias is a <em>metafunction</em> in our Haskell Metaphor: Takes a value and returns it. The alias <code>i</code> is only a value with a name, consider it a <em>(meta)variable</em>.</p><p>To get this metaphor simpler, our metafunctions will get C++ type parameters only. If you need to pass a C++ value, use boxing though <code>std::integral_constant</code>:</p><div
+class="highlight"><pre class="crayon-plain-tag">using one = identity&lt;std::integral_constant&lt;int,1&gt;&gt;;</pre></div><h2 id="play-with-simple-expressions">Play with simple expressions</h2><p>Here is an example of our <em>Haskell Metaphor</em>, using my Turbo metaprogramming library for C++11. Turbo is designed to be used with biicode, which makes Turbo completely platform independent and easy to use. For most of the cases, just include <code>&lt;manu343726/turbo_core/turbo_core.hpp&gt;</code> and you are ready:</p><div
+class="highlight"><pre class="crayon-plain-tag">#include &lt;manu343726/turbo_core/turbo_core.hpp&gt;
+using one = tml::Int&lt;1&gt;;
+using two = tml::Int&lt;2&gt;;
+using three = tml::eval&lt;tml::add&lt;one,two&gt;&gt;;
+int main()
+{
+    std::cout &lt;&lt; tml::to_runtime&lt;three&gt;() &lt;&lt; std::endl;
+}</pre></div><p>Let&#8217;s examine the example step by step:</p><ul><li><code>tml::Int</code> declares an integer value. Is just and alias to <code>std::integral_constant&lt;int&gt;</code>.</li><li><code>tml::add</code> is a metafunction to perform addition.</li><li><code>tml::eval</code> is the magic wand of Turbo. It takes any expression and evaluates it. The addition expression in this case.</li><li><code>tml::to_runtime</code> is the <em>bridge</em> between the compile-time and the runtime world. This function templates takes a type (A value in the Haskell metaphor) and returns the C++ equivalent value. This work is done completely at compile time and has zero runtime overhead.</li></ul><p>After compiling (Running the metaprogram), you can run the resulting C++ program:</p><div
+class="highlight"><pre class="crayon-plain-tag">$ bii cpp:build
+$ ./bin/example
+3</pre></div><p>Thats all! Simple, isn’t it? Here’s <code>std::decay</code> in the Turbo way:</p><div
+class="highlight"><pre class="crayon-plain-tag">template&lt; class T &gt;
+struct decay {
+    using U = tml::eval&lt;std::remove_reference&lt;T&gt;&gt;;
+    using type = tml::eval&lt;
+                 tml::conditional&lt;
+                                  std::is_array&lt;U&gt;,
+                                  tml::eval&lt;std::remove_extent&lt;U&gt;&gt;*,
+                                  tml::conditional&lt;
+                                                   std::is_function&lt;U&gt;,
+                                                   std::add_pointer&lt;U&gt;,
+                                                   std::remove_cv&lt;U&gt;
+                                                  &gt;
+                                 &gt;
+                          &gt;;
+};</pre></div><p>I found it much more readable. What do you think?</p><h2 id="summary">Summary</h2><p>Today we have seen that treating tmp as a functional language is a simpler way to do metaprogramming. We introduced what we call <em>The Haskell Metaphor</em> as a way to see and work with metaprograms: Look at that code as Haskell, instead of the C++ type system.</p><p>In the next posts we will see more complex examples of this metaphor, with high level metaprogramming constructions such as high-order metafunctions, lambda expressions, etc. Stay tuned!</p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/">Metaprogramming with Modern C++: The Haskell Metaphor</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/template-metaprogramming-modern-cpp-haskell-metaphor/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Template Metaprogramming with Modern C++: Introduction</title><link>http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/</link> <comments>http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/#comments</comments> <pubDate>Wed, 10 Sep 2014 10:00:27 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Learn to code]]></category> <category><![CDATA[meta-programming]]></category> <category><![CDATA[modern c++]]></category> <category><![CDATA[template]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1531</guid> <description><![CDATA[<p>Template Metaprogramming with Modern C++: Introduction Any sufficiently complex C++ code is indistinguishable from trolling Arthur C. Clarke Preface Template metaprogramming is one of the things that makes C++ that complex, poor known, and sometimes horrible language. However, its power and expressiveness are some of the best features of C++. Extensible and fully generic C++ libraries aren&#8217;t possible without [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/">Template Metaprogramming with Modern C++: Introduction</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<article
+class="markdown-body entry-content"><h1><a
+class="anchor" href="#template-metaprogramming-with-modern-c-introduction" name="user-content-template-metaprogramming-with-modern-c-introduction"></a>Template Metaprogramming with Modern C++: Introduction</h1><blockquote><p><em>Any sufficiently complex C++ code is indistinguishable from trolling</em></p><p>Arthur C. Clarke</p></blockquote><h2><a
+class="anchor" href="#preface" name="user-content-preface"></a>Preface</h2><p>Template metaprogramming is one of the things that makes C++ that complex, poor known, and sometimes horrible language. However, its power and expressiveness are some of the best features of C++.</p><p>Extensible and fully generic C++ libraries aren&#8217;t possible without template metapogramming. Even the Standard Library implementations hide many template metaprogramming tricks to make standard containers and algorithms that generic, high level, and efficient tools we use everyday.</p><p>The fact that tmp is a powerful tool can be seen in the evolution of the language, which now has features designed to improve metaprogramming, see C++11 <code>&lt;type_traits&gt;</code>, C++11 variadic templates, C++14 variable templates, C++14<code>std::integer_sequence</code>, etc.</p><div
+id="attachment_1648" style="width: 235px" class="wp-caption aligncenter"><img
+class="wp-image-1648 size-full" title="A rendering example of the metatrace compile-time raytracer" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/unnamed-1.jpg" alt="template metaprogramming" width="225" height="224" /><p
+class="wp-caption-text">Credit: https://gitorious.org/metatrace</p></div><p><span
+id="more-1531"></span></p><p>But C++ template metaprogramming power comes at a high cost: Its really hard to do and understand. The template system was not originally designed to do such things, and that&#8217;s reflected primarily in the cumbersome syntax involved and the cryptic error messages one get when something fails. Those are the reasons why people is usually scared by tmp, and most of us doesn&#8217;t even try to use it.</p><p>These posts try to introduce template metaprogramming to the average C++ programmer, showing how it works, what can do, and finally leading with its problems trying to make it easier than in the old days of C++98, thanks to C++11 and C++14 language improvements.</p><hr
+/><h2><a
+class="anchor" href="#but-what-ismetaprogramming" name="user-content-but-what-ismetaprogramming"></a><br
+/> But, what is <em>metaprogramming</em>?</h2><p>From Wikipedia:</p><blockquote><p>Metaprogramming is the writing of computer programs that write or manipulate other programs (or themselves) as their data, or that do part of the work at compile time that would otherwise be done at run-time.</p></blockquote><p>So instead of writing code that is compiled and does something at run-time (i.e. represents some actions to be done at run-time), we write code (<em>meta-code?</em>) that generates code. Let me show you a simple example:</p><pre class="crayon-plain-tag">#define MIN(x,y) (((x) &gt; (y)) ? (x) : (y))</pre><p>C parameterized macros could be viewed as metaprogramming functions, <em>metafunctions</em>. That is, a function that takes some parameters and generates C code. If you use that macro:</p><pre class="crayon-plain-tag">int main()
+{
+    int a , b , c = MIN(a,b);
+}</pre><p><em>Please ignore the UB, is just an example.</em></p><p>The C preprocessor parses that macro, interprets its arguments, and returns the code <code>(((a) &gt; (b)) ? (a) : (b))</code>, so the resulting code becomes:</p><pre class="crayon-plain-tag">int main()
+{
+    int a , b , c = (((a) &lt; (b)) ? (a) : (b));
+}</pre><p>Reflection, the ability of some programming languages to inspect type and code information at runtime and modify it, could be another type of metaprogramming.</p><hr
+/><h2><a
+class="anchor" href="#c-template-metaprogramming" name="user-content-c-template-metaprogramming"></a><br
+/> C++ Template Metaprogramming</h2><p>Template metaprogramming, sometimes shorted to <em>tmp</em>, consists in <strong>using the C++ template system to generate C++ types, and C++ code in the process</strong>.</p><p>Consider what a C++ template is: As the name says, <strong>it&#8217;s only a template</strong>. A template function is not a function at all, it is <strong>a template to generate functions</strong>, and the same for class templates.</p><p>That wonderful thing we all love, <code>std::vector</code>, is not a class. Is a template designed to generate a correct vector class for each type. When we <strong><em>instance</em></strong> a template, like <code>std::vector&lt;int&gt;</code>, then the compiler generates the code for a vector of ints, following the template the Standard Library developer provided.</p><p>So if we write a template <code>foo</code> parameterized with a type parameter:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct foo
+{
+    T elem;
+};</pre><p>and then that template is instanced:</p><pre class="crayon-plain-tag">typedef foo&lt;int&gt; fooint;
+typedef foo&lt;char&gt; foochar;</pre><p>and the compiler generates different versions of the <code>foo</code> struct, <strong>one for each different combinations of template parameters</strong>:</p><pre class="crayon-plain-tag">struct foo_int
+{
+    int elem;
+};
+struct foo_char
+{
+    char elem;
+};
+typedef foo_int fooint;
+typedef foo_char foochar;</pre><p><em>Note that the generated classes <code>foo_int</code> and <code>foo_char</code> are not written in your source file at all, like what the C preprocessor does. The template instantiation is managed internally by the compiler. I wrote them in that way to make a clear example.</em></p><div
+id="attachment_1647" style="width: 802px" class="wp-caption aligncenter"><img
+class="wp-image-1647" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/1.png" alt="template metaprogramming tree diagram" width="792" height="326" /><p
+class="wp-caption-text">Credit: http://plc.inf.elte.hu/templight/</p></div><p>As you can see, the C++ template system actually generates code. We, as C++ <em>metaprogrammers</em>, explode this to generate some code automatically.</p><hr
+/><h2><a
+class="anchor" href="#metafunctions" name="user-content-metafunctions"></a><br
+/> Metafunctions</h2><p>In the C preprocessor example, we introduced the concept of <em>metafunction</em>. In general a metafunction is a function working in the specific metaprogramming domain we are. In the case of C preprocessor, we manipulate C sourcecode explicitly, so its metafunctions (macros) take and manipulate C source.</p><p>In C++ template metaprogramming we work with types, so a metafunction is a function working with types. C++ templates could take non-type parameters too, but its hard to be generic using heterogeneous categories of template parameters. Instead, we will work with type parameters only whenever possible.</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+ struct identity
+ {
+     using type = T;
+ };</pre><p>The template <code>identity</code> is a metafunction representing the identity function: Takes a value (Actually a type, since we work with types) and returns itself untouched.</p><p>We can <em>&#8220;call&#8221;</em> that metafunction referencing its member type <code>type</code>:</p><pre class="crayon-plain-tag">using t = typename identity&lt;int&gt;::type; // t is int</pre><p>Of course nested metafunction <em>calls</em> are possible:</p><pre class="crayon-plain-tag">using t = typename identity&lt;typename identity&lt;int&gt;::type&gt;::type; //t is int</pre><p>But that <code>typename ::type</code> syntax doesn&#8217;t scale well. Consider a more complex example:</p><pre class="crayon-plain-tag">using t = typename add&lt;typename add&lt;std::integral_constant&lt;int,1&gt;,std::integral_constant&lt;int,2&gt;&gt;::type,
+                       std::integral_constant&lt;int,-2&gt;
+                      &gt;::type;</pre><p>There are a few possible solutions to this problem:</p><h3><a
+class="anchor" href="#use-aliases-to-the-result-instead-of-the-metafunction-itself" name="user-content-use-aliases-to-the-result-instead-of-the-metafunction-itself"></a>Use aliases to the result instead of the metafunction itself</h3><p>Since C++11 we have <em>template aliases</em>, a kind of parametrized typedef. We can use them to write <em>user-side metafunctions</em>:</p><pre class="crayon-plain-tag">template&lt;typename LHS , typename RHS&gt;
+ using add = typename impl::add&lt;LHS,RHS&gt;::type;</pre><p>Where <code>add</code> is the <em>metafunction</em> for the user, and <code>impl::add</code> is the class template that actually implements the metafunction. This allows us to write nested expressions in a clear way:</p><pre class="crayon-plain-tag">using t = add&lt;std::integral_constant&lt;int,1&gt;,add&lt;std::integral_constant&lt;int,-2&gt;,std::integral_constant&lt;int,-4&gt;&gt;;</pre><p></p><h3><a
+class="anchor" href="#build-an-expression-evaluation-system" name="user-content-build-an-expression-evaluation-system"></a>Build an expression evaluation system</h3><p>The above approach hides the machinery to the user. But hidding means that those user side metafunctions are not metafunctions but aliases to their result. That means we cannot use user-side aliases in contexts expecting metafunctions: <strong>User-side metafunctions are not first class functions</strong>.</p><p>Instead, we could build an expression evaluation system which takes an expresssion (A template with its parameters) and evaluate it saying <em>&#8220;Is this a metafunction? Ok, so I should get its result via <code>typename ::type</code>&#8220;</em>. This approach has the advantage that one could customize the evaluation and design it for many complex cases. The simplest one, before evaluating a metafunction evaluate its parameters.</p><p>This is what I did for <a
+href="https://github.com/Manu343726/Turbo">Turbo</a>, and Boost.MPL.Lambda takes a similar approach:</p><pre class="crayon-plain-tag">//https://www.biicode.com/manu343726/manu343726/turbo_core/master
+#include "manu343726/turbo_core/turbo_core.hpp"
+using tml::placeholders::_1;
+using tml::placeholders::_2;
+//t is tml::Int&lt;3&gt; (std::integral_constant&lt;int,3&gt;)
+using t = tml::eval&lt;tml::lambda&lt;_1,_2 , tml::add&lt;_1,_2&gt;&gt; , tml::Int&lt;1&gt;,tml::Int&lt;2&gt;&gt;;</pre><p></p><h3><a
+class="anchor" href="#c14-variable-templates-stop-doing-ugly-template-metaprogramming-and-use-a-natural-syntax" name="user-content-c14-variable-templates-stop-doing-ugly-template-metaprogramming-and-use-a-natural-syntax"></a>C++14 variable templates: Stop doing ugly template metaprogramming and use a natural syntax</h3><p>This last approach is available since C++14 thanks to <em>variable templates</em>. A variable template is a constant parametrized with a template. The canonical example is a <code>pi</code> constant aware of the precision of the type used:</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+constexpr T pi = 3.141592654;
+float radious = 1.0f;
+float circle  = pi&lt;float&gt;*pi&lt;float&gt;*radious;</pre><p>Variable templates are <strong>values parametrized with templates</strong>, instead of types. So we can use <code>constexpr</code> functions instead of template metafunctions to operate even with types (Imagine a variable template acting as a box for a type).</p><p>See <a
+href="https://github.com/ldionne/hana">Boost.Hanna</a> for an example of this approach.</p><hr
+/><h2><a
+class="anchor" href="#a-haskell-like-language-inside-c" name="user-content-a-haskell-like-language-inside-c"></a><br
+/> A Haskell-like language inside C++</h2><p><img
+class="aligncenter wp-image-1649 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/unnamed.jpg" alt="template metaprogramming meme" width="568" height="335" /></p><p>Since we work with the C++ type system, using types as values for our computations, tmp works like a functional programming language; because metafunctions have no side effects: <strong>We can only create types, not to modify existing ones</strong>.<br
+/> And like in a functional language, one of the pillars of tmp is <strong>recursion</strong>. In this case <strong><em>recursive template instantiations </em></strong>(Remember that name).</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct throw_stars
+{
+    using type = T;
+};
+template&lt;typename T&gt;
+struct throw_stars&lt;T*&gt;
+{
+    using type = typename throw_stars&lt;T&gt;::type;
+};</pre><p>I think the classic factorial/Fibonacci metafunctions examples are so boring. Here is something more interesting: The template <code>throw_stars</code> is a metafunction that takes a type and throws away all the <em>&#8220;stars&#8221;</em>.</p><pre class="crayon-plain-tag">using t = typename throw_stars&lt;int********&gt;::type; //t is int</pre><p>The template specialization acts as the recursive case, and the main template as the base case. Note how C++ template specialization behaves like pattern matching.</p><p>Another example could be traversing of C++11 variadic packs:</p><pre class="crayon-plain-tag">template&lt;typename HEAD , typename... TAIL&gt;
+struct last
+{
+    using type = typename last&lt;TAIL...&gt;::type;
+};
+template&lt;typename T&gt;
+struct last&lt;T&gt;
+{
+    using type = T;
+};
+using t = typename last&lt;int,char,bool,double&gt;::type; //t is double</pre><p>which is a great example of a <code>head:tail</code> approach for list traversing common in functional languages.</p><hr
+/><h2><a
+class="anchor" href="#summary" name="user-content-summary"></a><br
+/> Summary</h2><p>In this first approach to C++ template metaprogramming we have seen that:</p><ul
+class="task-list"><li><strong><em>Metaprogramming</em></strong> is the process of writing code to generate code, that is, automatize code generation.</li><li><strong>C++ template metaprogramming uses the template system to generate types, and code in the process</strong>: We generate types using templates, and we actually use those types to do computations or to generate the desired code.</li><li><strong>The basic unit of metaprogramming is the</strong> <strong><em>metafunction</em></strong>, as in common programming the basic unit is the function. Metafunctions manipulate entities of their specific metaprogramming domain. In C++ template metaprogramming, those entities are types, and metafunctions are represented through templates.</li><li><strong>Template metaprogramming is like a functional language embedded into C++ itself</strong>. That &#8220;<em>language</em>&#8221; has no side effects (We cannot modify an existing type, only create new ones), so we use the same patterns as in a functional programming language such as Haskell or F#.</li></ul><p>Now we have a good overview of what C++ template metaprogramming is, but we need some C++ knowledge before getting into it.<br
+/> The next time we will learn C++ templates in depth: Template parameters, template specialization, SFINAE, etc; to make sure we all have and understand the necessary tools to do proper metaprogramming in Modern C++.</p><p><em>Written by <a
+href="https://twitter.com/Manu343726">Manu Sánchez</a>.</em></p> </article><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/">Template Metaprogramming with Modern C++: Introduction</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/template-metaprogramming-with-modern-cpp-introduction/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>Meta-configuration with CMake of C/C++ projects</title><link>http://blog.biicode.com/meta-configuration-cpp-projects-cmake/</link> <comments>http://blog.biicode.com/meta-configuration-cpp-projects-cmake/#comments</comments> <pubDate>Tue, 17 Dec 2013 16:08:31 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[c++ templates]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[meta]]></category> <category><![CDATA[meta-configuration]]></category> <category><![CDATA[meta-programming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=340</guid> <description><![CDATA[<p>In biicode, meta-configuration is the process in which the project setup is done (most of the time automatically) by collecting information about the project and user intentions from different origins. For example, the source code itself is a great source of information that can be exploited for this purpose.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/meta-configuration-cpp-projects-cmake/">Meta-configuration with CMake of C/C++ projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>This blog post is out dated.</h3><p>If you&#8217;re interested on knowing the updates, <a
+title="docs biicode building and cmake" href="http://docs.biicode.com/c++/building.html">check our docs</a> for more information.</p><h3>Project configuration and setup</h3><div><p>Project configuration in software development is the process of setting up <em>how</em> your code will be built, managed and/or run. It varies depending on the programming language and tools, as the IDE, used. For instance, when programming in C/C++, the project setup usually comes with defining which artifacts (executables, libraries) will be built from certain source code files, with given compiling and linking options. In Microsoft Visual, this can be mostly done with wizards, menu and contextual commands; e.g. you can configure your directories containing external libraries in a dialog (Project Properties).</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-341" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/files_biicode.png" alt="Meta-configuration with CMake" width="629" height="297" /></p><div></div><p><span
+id="more-340"></span></p><div><p><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#cc-project-meta-configuration" name="cc-project-meta-configuration"></a></p><h2>C/C++ project meta-configuration with CMake</h2></div><p>Other languages, especially interpreted ones, as node or python, typically require much less project configuration or setup. In languages, such as Java, typical project setup can be done with IDEs like Eclipse or Netbeans, nevertheless, the use of Maven is probably more extended. Maven allows you to define not only how the project has to be built, packaged, executed or tested, but also, to specify dependencies to binaries artifacts (jars), which can be retrieved from external servers.</p><p>In the C/C++ ecosystem, the best tool for project configuration is CMake. CMake allows to specify the build of a project in files named CmakeLists.txt with a simple syntax (it is simpler than writing Makefiles). From those files it can generate projects for the most popular IDEs and build systems in different OS. It is a must have tool. It is the de-facto standard in the industry for the C/C++ multiplatform and even for single OS development. We love it. We have used it for a long time in our own projects, and, as professors, we have taught it from the first day in our Software Engineering courses at university since 2005. We obviously began using it in the biicode platform from the very beginning of the company in 2012.</p></div><div><p>What is the project meta-configuration? Probably you already know something about meta-programming. Meta-programming is a process in which the code you write (as in a C++ template) is the specification or instructions of how the real code will be generated by a system (in the case of C++ templates, the compiler).</p><p>In biicode, meta-configuration is the process in which the project setup is done (most of the time automatically) by collecting information about the project and user intentions from different origins. For example, the source code itself is a great source of information that can be exploited for this purpose.</p><p>Let&#8217;s see how it works with the well-known example &#8220;Hello World&#8221;:</p><p>Imagine someone starts to write code, and writes the following three (simplified) files for a Hello World application.<br
+/> Analyzing the source code, it is clear that the user wants to build an executable (from the main function, in green), that <em>includes</em> the file &#8220;hello.h&#8221; (red). Cross-checking declared and defined symbols in &#8220;hello.h&#8221; and &#8220;hello.cpp&#8221; it can be easily deduced that the implementation (blue) of the function hello() is found in the &#8220;hello.cpp&#8221; file, and so it is required to build the application. Accordingly, a CMakeLists.txt like the following could be automatically generated:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">ADD_EXECUTABLE(main
+               main.cpp
+               hello.cpp)</pre></div><p>What makes this automatic generation of the CMakeLists.txt file interesting? If a couple of new files are added and included by &#8220;main.cpp&#8221; or &#8220;hello.cpp&#8221;, they will automatically be added to the executable. If the user wants to create a new executable, all they have to do is to write a file (with whatever name) with a main() function inside, i.e. the user just has to focus on writing code, practically the rest of the process can be automated. Although real large scale multiplatform projects usually have a complex building process which probably cannot be automatically fully deduced, this approach can be very valuable for students, programming courses, rapid prototyping and testing, etc. And for such large projects, they can also benefit from this approach. Lets see how.</p></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#biicode-approach-to-c-projects-meta-configuration" name="biicode-approach-to-c-projects-meta-configuration"></a>Biicode approach to C++ projects meta-configuration with Cmake</h4><p>Biicode is a free tool (and it will always be free for OSS) created by C/C++ lovers to manage source code files dependencies in a novel way, facilitating the process of sharing and reusing source code.</p><p>In biicode, each project is called a hive, and it has the following simplified layout:</p><pre class="crayon-plain-tag">|-- my_hive
+|    +-- blocks (the user source code is here)
+|    |    +-- my_user_name
+|    |          +-- my_block
+|    |          |       |-- hello.c
+|    |          |       |-- hello.h
+|    |          +-- my_other_block
+|    |                  |-- foo.c
+|    |                  └── bar.h
+|    +-- build (to store generated project and build files)
+|    +-- cmake (stores the generated CMake files)
+|    +-- deps (stores source code of dependencies)</pre><p>The user&#8217;s source code is arranged in blocks, each one in the form <em>username/blockname</em>. These blocks are the units that are published and reused, somewhat (but different, really) similar to repositories in a version control system.</p><p>Let&#8217;s assume that the username for this example is <strong>maya</strong>, the hive is called <strong>hello</strong>, and the blockname in this case (this is not necessary), is also <strong>hello</strong>. The layout will be:</p><pre class="crayon-plain-tag">|-- hello (the hive - project)
+|    +-- blocks
+|    |    +-- maya
+|    |          +-- hello (block maya/hello)
+|    |                  |-- hello.cpp
+|    |                  |-- hello.h
+|    |                  └── main.cpp
+|    +-- cmake
+|    |    |-- CMakeLists.txt
+|    |    ├── bii_targets.cmake
+|    |    └── bii_vars.cmake</pre><p></p><div><h3><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#generated-cmake-files" name="generated-cmake-files"></a>Generated CMake files</h3><p>The files inside the cmake folder are automatically generated by biicode. The CMakeLists.txt is created just once, so the user can modify its contents if necessary.</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">PROJECT( hello )
+cmake_minimum_required(VERSION 2.8)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ../bin)
+INCLUDE_DIRECTORIES(../blocks)
+INCLUDE_DIRECTORIES(../deps)
+# This file has all the variables used in bii_targets.cmake to define the targets
+INCLUDE(bii_vars.cmake)
+# This file defines the actual targets EXEs, LIBs STATIC and SHARED with their respective
+# settings and definitions
+INCLUDE(bii_targets.cmake)</pre></div><p>It includes two other files, also generated by biicode. These two files are overwritten everytime the <em>bii</em> tool is called and there are changes in the project. The first one, <em>bii_vars.cmake</em> creates variables that define the targets to build and their properties, but does not create those targets yet. Some variables might be empty, but they are declared here for convenience to the user.</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">###### Defining target maya_hello_main #######
+SET(BII_TARGET_maya_hello_main_NAME maya_hello_main)
+SET(BII_TARGET_maya_hello_main_TYPE EXE)
+#Ordered list of libraries to link with
+SET(BII_TARGET_maya_hello_main_LIBS )
+SET(BII_TARGET_maya_hello_main_COMPILE_FLAGS )
+SET(BII_TARGET_maya_hello_main_FILES ../blocks/maya/hello/hello.cpp
+                                ../blocks/maya/hello/hello.h
+                                ../blocks/maya/hello/main.cpp)
+SET(BII_TARGET_maya_hello_main_DATA_FILES )</pre></div><p>The other <em>bii_targets.cmake</em> file, is the one that actually define the targets to be built, based on the variables declared in the previous file.</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">#This file is automatically created by biicode.
+#Do not modify it, as your changes will be overwritten.
+###### Artifact for target maya_hello_main #######
+ADD_EXECUTABLE( ${BII_TARGET_maya_hello_main_NAME}
+                                ${BII_TARGET_maya_hello_main_EXE_TYPE}
+                                ${BII_TARGET_maya_hello_main_FILES})
+TARGET_LINK_LIBRARIES( ${BII_TARGET_maya_hello_main_NAME} ${BII_TARGET_maya_hello_main_LIBS})
+SET_TARGET_PROPERTIES(${BII_TARGET_maya_hello_main_NAME} PROPERTIES COMPILE_FLAGS
+                                &quot;${BII_TARGET_maya_hello_main_COMPILE_FLAGS}&quot;)</pre></div><p>This way makes it very simple to define or customize the building process. Users can edit the used variables in the CMakeLists.txt between the two included .cmake files. Note that this approach is not exclusive with the possibility of the user having their own CMakeLists inside their blocks along with his source code, or even other cmake files that could be included from the biicode generated CMakeList.txt one.</p></div><div><h3><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#integrating-dependencies" name="integrating-dependencies"></a>Integrating dependencies</h3><p>Biicode allows a very simple publication and sharing of your source code to the biicode cloud. You (or anyone else in the world) can later very easily reuse code in another project. All you have to do to reuse previously published code is to write in your code a #include directive, in the form &#8220;username/block/path/to/file.h&#8221;. If biicode does not find such file locally, it will look for it in biicode cloud and retrieve it into your project along with other files (included by or implementing such file). What happens with such source code?</p><p>It is retrieved as source code, not as binaries, so it has to be built locally. The source files could be just directly added to the executable, but it seems more intuitive to define a library that contains such files, as they wont be usually edited by the user, and link the executable to such library.</p><p>For example, imagine that the user <strong>willy</strong> has developed a similar application that says goodbye instead of hello, with the following layout:</p><pre class="crayon-plain-tag">|-- bye (the hive - project)
+|    +-- blocks
+|    |    +-- willy
+|    |          +-- bye (block willy/bye)
+|    |                  |-- bye.cpp
+|    |                  |-- bye.h
+|    |                  └── main.cpp</pre><p>Willy can very easily publish and share his code, with the command (see HYPERLINK to DOCU):</p><div
+class="highlight highlight-bash"><pre class="crayon-plain-tag">$ bii publish</pre></div><p>Maya can very easily reuse that code, writing in her code:</p><div
+class="highlight highlight-cpp"><pre class="crayon-plain-tag">#include "maya/hello/hello.h"
+#include "willy/bye/bye.h"
+#include &lt;iostream&gt;;
+int main(){
+        hello();
+        bye();
+        return 1;
+}</pre></div><p>and issuing the command:</p><div
+class="highlight highlight-bash"><pre class="crayon-plain-tag">$ bii find</pre></div><p>The source code files <em>&#8220;bye.cpp&#8221;</em> and <em>&#8220;bye.h&#8221;</em> are retrieved and written in the <em>deps</em> folder. Note that willy&#8217;s main.cpp file is not retrieved as it is not necessary as indicated by the dependency graph.</p><p>The generated CMake <em>bii_vars.cmake</em> file will now also contain:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">###### Defining target willy_bye #######
+SET(BII_TARGET_willy_bye_NAME willy_bye)
+SET(BII_TARGET_willy_bye_TYPE STATIC)
+SET(BII_TARGET_willy_bye_FILES ../blocks/willy/bye/bye.cpp
+                                ../blocks/willy/bye/bye.h)
+###### Defining target maya_hello_main #######
+SET(BII_TARGET_maya_hello_main_NAME maya_hello_main)
+SET(BII_TARGET_maya_hello_main_TYPE EXE)
+#Ordered list of libraries to link with
+SET(BII_TARGET_maya_hello_main_LIBS willy_bye)</pre></div><p>and the <em>bii_targets.cmake</em> file:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">###### Artifact for target willy_bye #######
+ADD_LIBRARY( ${BII_TARGET_willy_bye_NAME}
+                                ${BII_TARGET_willy_bye_TYPE}
+                                ${BII_TARGET_willy_bye_FILES})
+TARGET_LINK_LIBRARIES( ${BII_TARGET_willy_bye_NAME} ${BII_TARGET_willy_bye_LIBS})
+SET_TARGET_PROPERTIES(${BII_TARGET_willy_bye_NAME} PROPERTIES COMPILE_FLAGS
+                                &quot;${BII_TARGET_willy_bye_COMPILE_FLAGS}&quot;)</pre></div></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#advanced-configuration" name="advanced-configuration"></a>Advanced configuration</h4><p>Why we call it meta-configuration instead of automated configuration? Because, is the user who specifies the configuration of the project in a higher level. The automatic dependencies detection in C/C++ can sometimes fail, most of the times due to the usage of macros that a normal parser cannot handle. The programmer could also want to specify his own dependencies to do reflection, feature toggling, etc. Custom dependencies can be set in a file called <em>&#8220;dependencies.bii&#8221;</em> in which the user can add, remove or redefine dependencies between files.</p><p>Biicode has also a way to define custom build options. These options are propagated to the affected targets automatically, following the dependency graph. For example, imagine the user <strong>willy</strong> uses in the <em>bye</em> block some mathematical functions from <em>&lt;math.h&gt;</em>, that requires to link with the &#8220;m&#8221; library under linux (the typical -lm link flag). How can user willy specify such behaviour? It is true that #pragma directives can sometimes be used to define libraries to link with, but biicode defines a more general approach that can be used not just for linking libraries, but for many building properties.</p><p>The user <strong>willy</strong> can create a file <strong>cpp_rules.bii</strong> in his block <strong>bye</strong> that could contain something similar to:</p><div
+class="highlight highlight-python"><pre class="crayon-plain-tag">if settings.os.family == 'Linux':
+        target.add_library('m')</pre></div><p>This defines that under Linux, the library &#8216;m&#8217; has to be added to the current target (in this case, the STATIC library that will be created, named <em>willy_bye</em>. Although it is a static library and it does not make much sense to link it with another library (linking is only actually performed for exes and shared libraries), biicode knows that this setting has to be transitively propagated, that is, executables and shared libraries that link to <strong>willy_bye</strong> will have in turn to link with <strong>m</strong>, so biicode adds it to the list of required libraries for such executables and shared libraries.</p></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#editing-cmakeliststxt" name="editing-cmakeliststxt"></a>Editing CMakeLists.txt</h4><p>Suppose that you need to use a library, let&#8217;s say Boost. If such library was already in biicode, it would be enough to just #include it. But boost is still not in biicode (and it is not likely to be in the short term, for many reasons, as being too large or having many complex interdependencies among its libraries). Fortunately, as explained above, it is fairly straightforward to modify the CMakeLists.txt in order to account for it.</p><p>For example, if the required library is lambda, which is only composed by headers, you just need to specify your boost installation directory as:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">PROJECT( hello )
+	# This file has all the variables used in bii_targets.cmake to define the targets
+	INCLUDE(bii_vars.cmake)
+	INCLUDE_DIRECTORIES(path/to/your/boost/installation)
+	# This file defines the actual targets EXEs, LIBs STATIC and SHARED with their respective
+	# settings and definitions
+	INCLUDE(bii_targets.cmake)</pre><br
+/> Of course, you can also use FIND_PACKAGE features of CMake for such purpose. In fact, we are already using it to find and configure projects with well known dependencies, large and massively used libraries as WxWidgets or Boost, so it will be enough for users to just #include what they want and biicode is able to fully configure the project if a local installation of such libraries is found.</p></div></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#conclusion" name="conclusion"></a>Conclusion</h4><p>In this post we have introduced a new approach to C/C++ projects configuration: meta-configuration with CMake from user information, mainly source code. This is a powerful approach, that can lower barriers for students and new users of the C/C++ language, but that can be also very interesting for many users used in conjunction with a dependency manager based on source code instead of binary artifacts.</p><p>Biicode is such novel dependency manager for the C/C++ ecosystem in which source code files can be easily reused among projects and very simply shared with the OSS community. Biicode is in Beta stage, it has currently few contents, so it could happen that your typical requirements are not available in it yet, and it is still not very stable. But it is a solid proof of the power of this approach, and it is evolving quickly, iterating on user feedback. The fact that we use CMake has been widely accepted by our users, we are so convinced about its power that can assure that we will always use it. We are even using it for our experimental Fortran biicode tools!</p><p>Would you like to give it a try? Sign up for free at www.biicode.com</p></div></div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/meta-configuration-cpp-projects-cmake/">Meta-configuration with CMake of C/C++ projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/meta-configuration-cpp-projects-cmake/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

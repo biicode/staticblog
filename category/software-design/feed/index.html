@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Software design</title> <atom:link href="http://blog.biicode.com/category/software-design/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>About non-intrusive polymorphism</title><link>http://blog.biicode.com/about-non-intrusive-polymorphism/</link> <comments>http://blog.biicode.com/about-non-intrusive-polymorphism/#comments</comments> <pubDate>Tue, 19 May 2015 14:59:48 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[java]]></category> <category><![CDATA[polymorphism]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2266</guid> <description><![CDATA[<p>Polymorphism in C++ C++ implements subtyping polymorphism in the form of virtual functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function: [crayon-56886bf01663f652074962/] In the example above, the Interface class defines a pure virtual function f() that all the hierarchy members should override. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Polymorphism in C++</h2><p>C++ implements <a
+href="http://en.wikipedia.org/wiki/Subtyping">subtyping polymorphism</a> in the form of <code>virtual</code> functions, member functions that should be overridden on derived classes, in a way each class implements its own behavior for the function:</p><pre class="crayon-plain-tag">struct Interface
+{
+    virtual void f() = 0;
+    virtual ~Interface() = default;
+};
+struct A : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "A!" &lt;&lt; std::endl;
+    }
+};
+struct B : public Interface
+{
+    void f() overrides
+    {
+        std::cout &lt;&lt; "B!" &lt;&lt; std::endl;
+    }
+};</pre><p><span
+id="more-2266"></span></p><p>In the example above, the <code>Interface</code> class defines a pure virtual function <code>f()</code> that all the hierarchy members should override. Now you can play with objects of that hierarchy in a uniform way, being sure all of those have a <code>f()</code> function of its own.</p><pre class="crayon-plain-tag">void call_f(Interface&amp; i)
+{
+    return i.f();
+}
+int main()
+{
+    A a;
+    B b;
+    call_f(a);
+    call_f(b);
+}</pre><p>One of the most common uses cases of polymorphism is to be able to store multiple heterogeneous objects into the same container and then operate on them on the same way. While <code>virtual</code> ensures each object acts with its correct behavior. This is usually achieved with dynamic allocation: Allocating objects and the use pointers to the base class to refer to them. This way we can refer to any object of the hierarchy using the same pointer type.</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Interface&gt; objects;
+    objects.emplace_back(new A{});
+    objects.emplace_back(new B{});
+    ...
+    for(Interface* o : objects)
+        o-&gt;f();
+}</pre><p>This simple <em>&#8220;Inherit and dynamically allocate&#8221;</em> approach works like a charm, but is very error prone. Did you noticed the memory leak in the example? Also suffers from a little culprint that, IMHO, is not that little: Inheritance. To make all the sorcery work, you should belong to a class hierarchy. What if I want polymorphic behavior for existing types? What if I want polymorphic functions for <code>int</code>? Being bound to a class hierarchy is not the way to go. <em>I&#8217;m looking at you Java</em>.</p><p>Fortunately we are using C++, a multi-paradigm programming language that allows you to write very smart tricks. Meet <span
+style="text-decoration: underline;">non-intrusive polymorphism</span>.</p><h2 id="to-or-not-to-">To <code>:</code> or not to <code>:</code></h2><p>What if you can find a way to provide that kind of polymorphism, <em>a function with a specific implementation for each type</em> and at the same type have easy heterogeneous storage?</p><pre class="crayon-plain-tag">int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(1);
+    objects.emplace_back("hello world!"s);
+    for(Poly&amp; o : objects)
+        o.f();
+}</pre><p>Bonus: No dynamic memory management, just RAIIfied polymorphism from the beginning.</p><p>The fundamentals are simple: <strong>Hide all the polymorphism intricacies to the user</strong>. We will do exactly the same inheritance, base class, dynamic allocation as above, but all closed inside the <code>Poly</code> class.</p><p>Lets look at the internals of <code>Poly</code>:</p><pre class="crayon-plain-tag">struct Poly
+{
+    void f()
+    {
+        ptr-&gt;f();
+    }
+private:
+    base* ptr;
+};</pre><p>A pointer to a dynamically-allocated object and a <code>f()</code> member function that calls the <code>f()</code> from the object. As I said, all polymorphism will be managed inside the <code>Poly</code> class internally. The point is that having to inherit from a base class to achieve polymorphism <strong>is an implementation detail</strong>, only based on how the language works.</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    base* ptr;
+};</pre><p>The trick consists in being able to store any kind of data dynamically, instead of explicitly asking that type to belong to the <code>base</code> hierarchy. Come in templates!</p><pre class="crayon-plain-tag">struct Poly
+{
+    ...
+private:
+    struct base
+    {
+        virtual void f() = 0;
+        virtual ~base() = default;
+    };
+    template&lt;typename T&gt;
+    struct derived
+    {
+        T data;
+        void f() overrides
+        {
+            ::f(data);
+        }
+    };
+    base* ptr;
+};</pre><p>Now each type we introduce into <code>Poly</code> has its own implementation of <code>f()</code>. In this example, I supposed there&#8217;s a viable free <code>f()</code> function taking a <code>T</code> as parameter. As long as your type has a valid <code>f()</code> overload, template, whatever, your type can be used in <code>Poly</code>.<br
+/> Here&#8217;s an example:</p><pre class="crayon-plain-tag">void f(int i)
+{
+    std::cout &lt;&lt; "int: " &lt;&lt; i &lt;&lt; std::endl;
+};
+void f(vonst std::string&amp; str)
+{
+    std::cout &lt;&lt; "std::string: " &lt;&lt; str &lt;&lt; std::endl;
+}
+int main()
+{
+    std::vector&lt;Poly&gt; objects;
+    objects.emplace_back(0);
+    objects.emplace_back("hello!"s);
+    for(auto&amp; o : objects)
+        o.f();
+};</pre><p></p><h2 id="some-details">Some details</h2><p>The constructor of <code>Poly</code> does part of the trick: It gets a value and instances the correct derived class dynamically:</p><pre class="crayon-plain-tag">struct Poly
+{
+    template&lt;typename T&gt;
+    Poly(T&amp;&amp; data) :
+        _ptr{ new derived&lt;T&gt;{std::forward&lt;T&gt;(data)}
+    {}
+    ...
+};</pre><p>&nbsp;</p><p>Also don&#8217;t forget to follow <a
+href="http://stackoverflow.com/questions/4782757/rule-of-three-becomes-rule-of-five-with-c11">The Rule Of Five/Three</a> and implement all the special member functions required for correct value semantics of <code>Poly</code> objects. Use a smart pointer instead or raw <code>new</code>/<code>delete</code> if you like.</p><h2 id="references">References</h2><p><a
+href="http://channel9.msdn.com/Events/GoingNative/2013/Inheritance-Is-The-Base-Class-of-Evil">&#8220;Inheritance is The Base Class of Evil&#8221;, Sean Parent</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/about-non-intrusive-polymorphism/">About non-intrusive polymorphism</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/about-non-intrusive-polymorphism/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>Criticizing the Rust Language, and Why C and C++ Will Never Die</title><link>http://blog.biicode.com/cpp-will-never-die/</link> <comments>http://blog.biicode.com/cpp-will-never-die/#comments</comments> <pubDate>Wed, 13 May 2015 15:25:31 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[Haskell]]></category> <category><![CDATA[Rust]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2248</guid> <description><![CDATA[<p>This is an original text by Eax Melanhovich that was rigourosly translated and kindly shared by Andrey Karpov. The original translation can be found here. Many thanks to both.  Why C and C++ Will Never Die I couldn’t but notice how much interest the readers of this blog [the author&#8217;s blog] had shown in the topic &#8220;should [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-will-never-die/">Criticizing the Rust Language, and Why C and C++ Will Never Die</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><em>This is an original text by <a
+href="https://twitter.com/afiskon">Eax Melanhovich</a> that was rigourosly translated and kindly shared by <a
+href="https://twitter.com/code_analysis">Andrey Karpov</a>. The original translation can be found <a
+href="http://www.viva64.com/en/b/0324/">here</a>. Many thanks to both. </em></p><h2>Why C and C++ Will Never Die</h2><p>I couldn’t but notice how much interest the readers of <a
+href="http://eax.me/">this blog</a> [the author&#8217;s blog] had shown in the topic &#8220;should we let kittens play with new balls of wool?&#8221; So I felt like sharing a few more of my reflections on a related subject in regard to the C and C++ languages and the odds that Rust will kill them. No need to tell you that it will inevitably cause a big holy war, so before you proceed, think twice if you really want to go on reading this post and especially participate in a &#8220;constructive debate&#8221; via comments.</p><p><span
+id="more-2248"></span></p><p>The original article can be found <a
+href="http://www.viva64.com/go.php?url=733">here</a> (in Russian). It was translated and published in our blog by the author’s permission.</p><p><em>Note</em>: Further in this text, I am presuming that Rust is a conscious attempt to create a <em>fast </em>and safe language. After all, it was initially conceived by the guys from Mozilla as a tool to develop a <a
+href="http://www.viva64.com/go.php?url=1539">browser engine</a>. But if it proves to be yet another <em>just </em>safe language, then I just don’t get the whole thing. There is plenty of very different safe languages to choose from to any taste, and if Rust is not meant to replace C++, then (1) why does it need to include an unsafe subset?; and (2) why did the authors <a
+href="http://www.viva64.com/go.php?url=1540">throw away lightweight processes from Rust</a>? They are convenient, after all, aren’t they? In other words, if I’m wrong in my assumption, then the whole affair just doesn’t seem to make any sense at all.</p><p>If you happen to occasionally drop by the linux.org.ru forum, be warned that this post doesn’t have to do with the list of 10 purely technical reasons for not liking <a
+href="http://www.viva64.com/go.php?url=1541">Rust</a> that was <a
+href="http://www.viva64.com/go.php?url=1542">discussed in this thread</a>. A Skype conversation with <a
+href="http://www.viva64.com/go.php?url=1543">dear comrade @sum3rman</a> has revealed that there is more than one opinion on how much &#8220;technical&#8221; those reasons are. So I have to admit that the list I composed is a lousy one but I’m still taking a risk to cite some of the most interesting clauses from it here. Actually, the number of plain common sense reasons alone is big enough to not care about the technical ones.</p><p>It is crystal clear for every sane programmer that C/C++ is not going to die in the nearest future. No one is going to rewrite almost all of the existing desktop applications, operating system kernels, compilers, game and browser engines, virtual machines, databases, archivers, audio and video codecs, tons of other C-libraries, and so on and so forth, into other languages. This is a huge mass of fast, debugged, and time-proven code. Rewriting it is way, way too expensive, risky, and, honestly, doesn’t seem to make sense except in the heads of the most frantic Rust fans. The demand for C/C++ programmers has always been high and will remain so for a long time to come.</p><p>OK, what about using Rust to write new code then?</p><p>Well, as you probably remember, it is far not the first attempt to create a &#8220;better&#8221; C/C++. Take the D language, for instance. It was released in 2001 and is a good language indeed. But there are no vacancies, no decent development tools, no remarkable success stories associated with it. The <a
+href="http://www.viva64.com/go.php?url=1544">OpenMW</a> project was initially started in D but then the authors suddenly decided to <a
+href="http://www.viva64.com/go.php?url=1545">completely rewrite it into C++</a>. As they <a
+href="http://www.viva64.com/go.php?url=1546">confessed</a>, they’d been receiving piles of emails where people would say, &#8220;you are making a cool project and we’d like to contribute to it, but we don’t know and neither feel like studying this silly D&#8221;. Wikipedia tells us that there were a lot of other attempts besides D to kill C++ – for example <a
+href="http://www.viva64.com/go.php?url=1547">Vala</a>, Cyclone, Limbo, BitC. How many of you have even heard of these languages?</p><p>I think it’s high time we started learning lessons of history. No one sane will ever start using a new language in their projects until you show them a few cool development tools supporting it, tell them a couple of success stories, and show a dozen of programmers working with that language and living close by. As for programmers, they will never – except probably for the youngest ones – spend their time and health on learning another &#8220;very best&#8221; language until you show them a few cool development tools (not a frob like Racer) and a couple of <em>tens of thousands </em>of ready-made libraries (not &#8220;experimental&#8221; or &#8220;unstable&#8221; or stuff like that), tell them a couple of success stories, and show them a dozen of open vacancies in their city or town. You know, it’s like the &#8220;Chicken or the Egg&#8221; dilemma. On very rare occasions, this problem does get resolved (relatively representative examples are <a
+href="http://www.viva64.com/go.php?url=1548">Go</a> and <a
+href="http://www.viva64.com/go.php?url=1549">Scala</a>) – mostly thanks to investments of time and money from some large company (Google, Typesafe) who for some reason finds it worthy to popularize a new language.</p><p>As I already mentioned, there are too many <a
+href="http://www.viva64.com/go.php?url=1550">non-technical reasons</a> alone to feel skeptical about Rust. But let’s imagine for a moment they just do not exist. Then there would be no reasons to <em>not </em>write in Rust, right? Well, this too is very arguable, to say the least.</p><p>C/C++ is criticized for a variety of reasons. By the way, most of the critics have never seen C++ code in production. To put it brief and clear, the issue with C++ is that it is very fast (and also demanding little memory, battery charge, etc.) but not safe in the sense that it allows array overruns, addressing freed memory, and so on. Back in the past, this problem urged programmers to develop a variety of safe languages such as Java, C#, Python, and others. But they have proved to be too resource-demanding compared to C++ and have some other drawbacks as well – take, for instance, the inevitable &#8220;stop the world&#8221; issue during garbage collection. That’s why programmers are struggling to create a language as fast as C++ but also safe. Rust is one of the candidates.</p><p>Rust is safe indeed but, unfortunately, far from fast. By the moment of writing this article, it is <a
+href="http://www.viva64.com/go.php?url=1551">comparable</a> to Java, Go, and Haskell regarding performance:</p><p><img
+class="aligncenter wp-image-2249 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/Ten-tiny-exmaples.png" alt="C++ will never die" width="516" height="324" /></p><p>I sincerely hope that programmers will find a way to speed it up in time, but until then, it’s going to be of hardly more interest than Scala or Go from the viewpoint of the safety/speed compromise. The question is still open if it is possible at all to make a language both fast and safe or if it is automatically doomed to be twice slower than C/C++ because of the constant checks for array overruns, safe wraps of bindings to C-libraries, and other stuff like that.</p><p>And what actually makes Rust safe, by the way? To put it simple, this is a language with a built-in code analyzer and it’s a pretty tough one: it can catch all the bugs typical of C++ and <a
+href="http://www.viva64.com/go.php?url=1552">dealing not only with memory management, but multithreading as well</a>. Pass a reference to an assignable object through a pipe to another thread and then try to use this reference yourself – the program just will refuse to compile. And that’s really cool.</p><p>But C++ too hasn’t stood still during the last 30 years, and plenty of both <a
+href="http://www.viva64.com/ru/pvs-studio/">static</a> and dynamic analyzers supporting it have been released during this time. Just as one example, watch a short video about <a
+href="http://www.viva64.com/go.php?url=1554">Google sanitizers</a> – they are really <em>very</em> tough. Anyway, in any serious project, you use a <a
+href="http://www.viva64.com/go.php?url=1555">continuous integration system</a> and run tons of tests when compiling builds. If you don’t, then your troubles are much worse than the language’s lack of safety because static typing doesn’t guarantee correct execution logic! So, since you run tests anyway, why not use sanitizers as well? True, they don’t find all the bugs. On the other hand, if you don’t have a check for an array overrun somewhere at the deeper levels of your code and a sanitizer doesn’t report the bug, maybe it’s just because all the necessary checks are already provided one level higher and another one would only slow down the program? Even without sanitizers, you’ll find lots of stuff just building the project with various compilers on different platforms with assert’s checking your code’s invariants in the &#8220;assert(obj-&gt;isValid)&#8221; fashion and with proper fuzzing. Put rough, the question actually comes down to the good old holy war about the <a
+href="http://www.viva64.com/go.php?url=1556">(t)he(o)retic and kolkhoz approaches</a> to software development (<em>that is, an innovative yet too idealistic approach and a traditional empirical approach thought to be careless and simplistic by the supporters of the former – note by translator</em>).</p><p>You can often hear an argument that <a
+href="http://www.viva64.com/go.php?url=1557">90% of the execution time is spent executing only 10% of the code</a> (which is, as far as I get, just an empirical law – a quick scan through the Web has failed to reveal any strict scientific researches on this subject). Therefore, you can write most of your code in safe Rust and the rest 10% (the &#8220;hot&#8221; code) in its unsafe subset, so the bad performance of the current Rust implementation is actually not a problem. OK, but doesn’t it imply that I do not need Rust at all because I could write 90% of my code in Go and the rest 10% in C? Only silver bullet seekers and airy-fairy (t)he(o)retics will use Rust just for the sake of feeling contented about having 100% of a program written in seemingly one language. But these are actually two dialects of one language, which doesn’t look much different from the &#8220;Java + C&#8221; or &#8220;Go + C&#8221; combos.</p><p>But the 90/10 law is rubbish anyway. Following its logic, we could rewrite 90% of WebKit or VirtualBox or GCC into Java and get the same result. But it is obviously wrong. Even if it’s not because the ratio is very much different in some programs, let’s do some calculations and see. Suppose an entire program is written in unsafe C/C++ and its execution time is, say, 0.9*1 (a small portion of hot code) + 0.1*1 (a bulk of cold code) = 1. Now compare it to a program written in a safe language with C inserts: 0.9*1 + 0.1*2 = 1.1, which, theoretically speaking, makes the difference of 10%. Is it much or little? Well, it depends on the project scale. For Google, even a few percent may <a
+href="http://www.viva64.com/go.php?url=1558">help save millions of dollars</a> (see Section 5, &#8220;Utilization&#8221;, in the paper). Or imagine that with a next update, JVM will suddenly start requiring 10% more resources! I’m scared to even make any guesses about how many zeroes they’ll get in the figure after converting those percent into dollars! 10% is a whole lot for tasks where C and C++ are used.</p><p>We keep chanting the phrase &#8220;premature optimization is the root of all evil&#8221; like a mantra. But if we want to follow it word for word, why not use bubble sort instead of quicksort in all of the code? After all, we can’t know for sure where we’ll get a bottleneck, can we? Why wrap regular action counters into actors or transactional memory when we can use more efficient atomics right away? And, generally speaking, in <em>trivial cases</em>, it doesn’t make sense at all to forcedly initialize each and every single variable, implement a pile of auxiliary checks, and so on. Let there even be a 2-5% performance boost instead of 10%, but it’s not that bad if it took you just an extra couple of minutes to think over. Besides, as we have already figured out, it can make a huge difference in C/C++ programs! After all, who will dare to argue that finding a hot spot, rewriting the code (perhaps tons of it) and proving it has become really faster is an easier job than think about performance in advance?</p><p>Even apart from that speed/safety compromise issue, I’m also skeptical about the language’s design as such. In particular as regards to the five types of pointers used in it. On the one hand, it’s not bad to make programmers ponder if their variables are stored in the stack or heap and if they can or cannot be handled by several threads at a time. But on the other hand, imagine you are writing a program and discover at one moment that some variable should be stored in the heap instead of the stack. So you rewrite the code to use Box. Then you figure out that you actually need Rc or Arc. Again, you rewrite all that code. And then, once again, you rewrite it all to have an ordinary variable in the stack. All of that you have to do without a decent IDE at hand. Regular expressions won’t help. Or you might just <a
+href="http://www.viva64.com/go.php?url=1559">end up with a nightmare</a> like &#8220;Vec&lt;Rc&lt;RefCell&lt;Box&lt;Trait&gt;&gt;&gt;&gt;&#8221; – say hello to Java! But the saddest thing about it is that the compiler already knows everything about the lifetime of every variable and could automatically insert all those Box’s, Arc’s, etc. But for some reason, this duty was shifted on to the programmer. It would be much more convenient to let the programmer simply write val (we are living in the third millennium, after all!) and explicitly specify Box or Rc where necessary. From this viewpoint, Rust’s developers have screwed up the whole thing.</p><p>This, in particular, makes Rust’s scope much narrower. No one sane will write web and server-side software in a language like<em> that </em>– especially considering that it doesn’t offer any significant advantages over those languages for JVM. Even Go – with <em>normal </em>lightweight processes (not <a
+href="http://www.viva64.com/go.php?url=1560">futures</a>) – seems a way better choice for solving these tasks. As for futures, you have to learn how to handle them right not to shoot yourself in the foot – and you are talking of &#8220;safe languages&#8221;, huh? Sure, all these languages have their own peculiarities – take that very &#8220;stop the world&#8221;, for example. But this problem can be solved both by splitting the code into <a
+href="http://www.viva64.com/go.php?url=1561">micro services</a> and through <a
+href="http://www.viva64.com/go.php?url=1562">other techniques</a>. And yes, no one will be willing to translate Rust into JavaScript, use it to write scripts for AWS or as a query language for MongoDB. For Android, it’s also hardly probable, but for a different reason: there is way more than one architecture there, so JVM will do much better. So if you happen to think that Rust is &#8220;good for any task&#8221;, I have to disappoint you.</p><p>And here’s a few more reasons to finish it off:</p><ul><li>Macros used as a crutch to make up for the excessive verbosity caused by the absence of normal exceptions. I already wrote about the <a
+href="http://www.viva64.com/go.php?url=1563">metaprogramming issues</a> – it is because of them, in particular, that we are hardly ever to get a decent IDE for Rust. Also, though I’m not sure, it seems that macros in Rust don’t even have namespaces.</li><li>People are idiots and cargo actively encourages downloading packages directly from git repositories, bypassing Crates.io. As a result, we risk ending up with a huge mess with packages like in the Erlang world with its Rabar. By the way, I suspect the Go world has a similar trouble.</li><li>Like many of new languages, Rust is walking the path of simplification. I can generally understand why it doesn’t have a decent inheritance and exceptions, but the fact itself that someone is making decisions for me regarding things like that makes me feel somewhat displeased. C++ doesn’t restrict programmers regarding what they can or cannot use.</li><li>Now, since we have taken the path of simplification, why not throw away all those language extensions? The current state of things resembles the Haskell world where every programmer is coding in their own dialect.</li><li>Smart pointers, for you to know, are far not free of charge and <em>do not ensure </em>a fixed time of garbage collection. What if some thread gets honor to free a very deep data structure? While it is wandering a labyrinth of dead references, all the other threads depending on it are patiently waiting dumb. Erlang with its small pieces has a similar trouble – I’ve faced it myself many times. Smart pointers also have problems of their own – for example memory fragmentation and leaks. Just leave a weak pointer in a loop structure – the whole thing is screwed up. And all that in a language pretending to be safe&#8230; If you want a fixed GC time, study your program’s behavior under load and take precautions (for example, provide for object pools) if you are not satisfied with the figures, or manage memory manually.</li><li>Has anyone seen a <em>strict </em>description of Rust’s semantics? Does it have a memory model at least? And you call it a &#8220;safe&#8221; language &#8220;ensuring correctness&#8221; of programs, especially considering that it can interpret the source code in ten different ways?</li><li>I can’t but remind you for one more time that <strong>the source of troubles is usually in humans, not technology</strong>. If your C++ code is not good enough or Java code is painfully slow, it’s not because the technology is bad – it’s because you haven’t learned how to use it right. That way, you won’t be satisfied with Rust either, but just for some other reasons. Isn’t it easier to learn how to use more popular tools and start liking them?</li></ul><p>So, to sum it up, personally I will be investing my time into studying C/C++ rather than Rust in the next 5 or so years. C++ is an <em>industrial standard.</em> Programmers have been using it to solve a huge variety of tasks for over 30 years now. As for Rust and stuff like that – they are just odd toys with vague future. People have been predicting C++’s soon death since the 2000-s, but C/C++ hasn’t become less used and demanded for since then. Quite on the contrary, in fact. It is evolving (C ++11, C++14), new tools are released (take <a
+href="http://www.viva64.com/go.php?url=1564">CLion</a> and Clang, for example), and the number of vacancies is just huge.</p><p>A C++ programmer will hardly ever have any difficulties finding a job with a <a
+href="http://www.viva64.com/go.php?url=1565">more than worthy salary</a> and, if necessary, can quickly <a
+href="http://www.viva64.com/go.php?url=1566">learn</a> Rust. But the opposite scenario is very, very unlikely. By the way, the language choice is far not the only and most important factor when picking a new job. Besides, a skilled C/C++ programmer can easily find their way in PostgreSQL’s or Linux kernel’s source code, has access to modern powerful development tools, and has a pile of books and articles at hand (for example on OpenGL).</p><p>So, take care of your health and don’t waste your time – you have less of those than you think!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-will-never-die/">Criticizing the Rust Language, and Why C and C++ Will Never Die</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-will-never-die/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>The Pragmatic C++ Programmer</title><link>http://blog.biicode.com/the-pragmatic-cpp-programmer/</link> <comments>http://blog.biicode.com/the-pragmatic-cpp-programmer/#comments</comments> <pubDate>Tue, 12 May 2015 14:46:11 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[c++]]></category> <category><![CDATA[Software design]]></category> <category><![CDATA[c++ learning curve]]></category> <category><![CDATA[rant]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2242</guid> <description><![CDATA[<p> A couple of days ago I was studying at my university library when my colleague Miguel Madrid got up and started to traverse the library looking for programming books. It&#8217;s a game we usually play, to find out a good quality book in a place full of Java 2 SE manuals&#8230; There are some gems on [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/the-pragmatic-cpp-programmer/">The Pragmatic C++ Programmer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+id="the-pragmatic-c-programmer"> A couple of days ago I was studying at my university library when my colleague Miguel Madrid got up and started to traverse the library looking for programming books. It&#8217;s a game we usually play, to find out a good quality book in a place full of Java 2 SE manuals&#8230;</p><p>There are some gems on that library though. There&#8217;s a couple of copies of Alexandrescu&#8217;s <a
+href="http://www.amazon.es/Modern-Design-Applied-Generic-Patterns/dp/0201704315/ref=pd_sim_14_1?ie=UTF8&amp;refRID=10BQM5HP4J8VDY2P21J6">&#8220;Modern C++ Design&#8221;</a> (No longer that Modern, right?) and <a
+href="http://www.amazon.es/Template-Metaprogramming-Concepts-Techniques-Beyond/dp/0321227255">&#8220;C++ Template Metaprogramming&#8221;</a>, the latter only borrowed by me in the last five years according to the registry. I always try to have a copy of both, it&#8217;s easy since there are only a few people doing C++ there, never reaching the <em>&#8220;TMP mental asylum&#8221;</em> I&#8217;m usually in.</p><p>But that day, Miguel reached me with a copy of &#8220;The Pragmatic Programmer&#8221;. <em>&#8220;One of the most influential books in the history of software engineering&#8221;</em> the cover says. <strong>I&#8217;m so scared of how software engineering examples look like</strong>&#8230;</p><p>&nbsp;</p><p><span
+id="more-2242"></span></p><h2 id="software-engineering-books">Software engineering books</h2><p>Ignore the fact that I didn&#8217;t like the book at all. For me, it&#8217;s only another example of how someone sells his own experiences as a &#8220;how you should do&#8221; book. What really matters for me are the code examples and guidelines.</p><p>I always suspect from a book of this kind that provides examples in multiple programming languages. I&#8217;m sorry guys, but <strong>each language has its own rules, design decisions, optimal ways to perform a task</strong>. A language is designed to be used in a specific way. Of course you can use a chainsaw as a toothbrush, but don&#8217;t expect that things will work as optimal as expected&#8230;</p><p>There&#8217;s nothing wrong in providing multiple examples in different programming languages at the beginning, but things start to stink when a guideline is implemented in almost exactly the same way in two completely different languages. What&#8217;s wrong with <em>&#8220;The Pragmatic Programmer&#8221;</em>? In the fact that <strong>the only main differences between its examples are that in Java the author uses dots, and in C++ arrows.</strong></p><h2 id="people-dont-understand-c">People don&#8217;t understand C++</h2><p>C++ is hard, I will not deny it. But there are a lot of people who do not understand how C++ works, and even when considering C++ an object oriented language (I&#8217;m afraid it&#8217;s not), C++ OOP has nothing to do with Java-like OOP.</p><p><a
+href="http://c2.com/cgi/wiki?AlanKayOnMessaging">OOP is not about objects and classes</a>, but about program modules intercommunication, but we usually forget that and try to map everything as an object. And since people is used to GCed OO languages, most of them think that objects live <em>elsewhere</em> and should be <em>referenced</em>. So they usually do the horrible <code>Class* ptr = new Class();</code> pattern by default, and never get the role of constructors and destructors except in <em>wrapper classes that manage <code>new/delete</code> automatically</em>.</p><p>From &#8220;The Pragmatic Programmer&#8221;:</p><blockquote><p>If circumstances permit we can change from a pointer var to an actual node object</p></blockquote><p>Here the author realizes that C++ has ctors and dtors and hence you can write a wrapper class that manages that <em>object instantiation/destruction</em> for you. That&#8217;s the point when I started to cry. No, being in the pre move semantics era is not a reason to Javaize every variable in a way to boost object passing. And I&#8217;m sure the author didn&#8217;t write the examples in Java++ because of performance concerns.</p><p>Last year I had a teacher that, when teaching OpenGL, showed this as an example of how a 2d vector class should look like:</p><pre class="crayon-plain-tag">class vector2d
+{
+    vector2d* add(vector2d* a, vector2d* b)
+    {
+        return new vector2d(a-&gt;x + b-&gt;x, a-&gt;y + b-&gt;y);
+    }
+private:
+    float x, y;
+};</pre><p>Then I got up in the middle of the classroom and shouted &#8220;THAT&#8217;S JAVA!!!&#8221;. Not kidding, everybody there looked at me while saying &#8220;What this f&#8230; idiot is talking about?&#8221;. Then I reached my teacher and asked him why he was doing C++ in that way:</p><blockquote><p>I usually write C, C++, and Java in exactly the same way because I find it&#8217;s the most elegant.</p></blockquote><p>Ok so you write three of the most different programming languages in the world in exactly the same way&#8230;</p><p>Also the &#8220;Ok guys you can optimize your regular polygon function by storing sin and cos results in a variable instead of computing that on each loop iteration&#8221; example, ignoring optimizer capabilities that completely outperform us by doing sin and cos at the same time in one instruction only, plus loop hoisting. But I don&#8217;t expect any good C/C++ advice from a place where people still think that manual assembly outperforms any compiler, and boast themselves by discarding OpenCV in favor of their own &#8220;fast square root routine&#8221; for image processing.</p><p>Things started to get weird when some mates asked me how they could implement <code>operator+()</code>, since their compiler didn&#8217;t allowed them to write <code>vector2d* operator+(vector2d*, vector2d*)</code>&#8230;</p><p>The point is that they don&#8217;t understand C++ object model. Objects live on the stack except explicitly stated. This is one of the first topics I usually cover when teaching C++, to make people understand that C++ objects are tied to its scope, and cannot be moved from there. When returning a value from a function, the object does not fly out the function and reaches the caller, but there&#8217;s a value interchange between an object living on the callee, an object living on the caller, and an intermediary object between the two contexts that we usually don&#8217;t care about. Think of C++ objects as plants, not as bees flying around.</p><p>I don&#8217;t expect any C++ class to have a <code>sizeof()</code> greater than 60 bytes. That nearly fits a L1 cache line. And I trust RVO for in deep copy. Of course always profile first, but you may notice that it&#8217;s hard to get a context when copy elision is not applied by the compiler. <strong>Long live value semantics</strong>. Even better with modern C++, where you don&#8217;t worry about object passing anymore since the last corner cases don&#8217;t covered by N/RVO are handled by move semantics.</p><h2 id="but-why-why-is-c-that-hard-to-get">But why? Why is C++ that hard to get?</h2><p>Ask this to yourselves. At least for me, when I ask people why they feel C++ that hard, they answer something in the form of:</p><blockquote><p>Manual memory management. C++ has no GC.</p></blockquote><p>Garbage collection&#8230;. Why do we need garbage collection if we have our beloved</p><p><img
+class="alignnone" title="Who needs garbage collectors when we have }?" src="http://www.decodeunicode.org/data/glyph/196x196/007D.gif" alt="Garbage collectors aren't required in C++ when there is }" width="196" height="196" /></p><p>?</p><p>Also consider class special functions: Ctors, dtor, assignment operators. I&#8217;m always surprised looking at people reinventing the wheel, when aggregation of STL resource handlers do the work automatically. The very well known Rule Of Zero.</p><p>Here&#8217;s some real code:</p><pre class="crayon-plain-tag">class Class{
+...
+protected:
+    vector&lt;T&gt; m_g;
+    int m_size;
+    int m_BB;
+    std::string m_name;
+};
+Class::Class(void){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+}
+Class::Class(const Class::Class&amp; c){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+    (*this)=c;
+}
+Class::Class(int size){
+    m_size=0;
+    m_BB=0;
+    m_g.clear();
+    m_name.clear();
+    init(size);
+}
+Class&amp; Class::operator= (const Class&amp; g){
+    init(g.m_size);
+    for(int i=0; i&lt;m_size; i++){
+        m_g[i]=g.m_g[i];
+    }
+    this-&gt;m_name=g.m_name;
+    return *this;
+}
+void Class::clear(){
+    m_g.clear();
+    m_size=0;
+    m_BB=0;
+    m_name.clear();
+}
+int Class::init(int size){
+    //deallocates previous
+    clear();
+    try{
+        m_g.resize(size);
+    }catch(...){
+        cout&lt;&lt;"memory not allocated";
+        return -1;
+    }
+    m_size=size;
+    ...
+    return 0;
+}</pre><p>Clearly the author comes from C background. This class suffers from a lot of repetitive code, code that mimics the job the compiler already does for class member variables (Look at the <code>init()</code> function and where it&#8217;s called from), etc. I&#8217;m not worried about performance here, you may be surprised this was extracted from a library that has the merit of being the faster lib in its field, outperforming even C++ gurus Boost code. Imagine what this lib can do with an in depth C++ guidelines review.</p><p>C++ is hard, but it&#8217;s not hard on &#8220;mundane&#8221; tasks like defining a class and its special members. <strong>It&#8217;s the programmer who make it hard by ignoring how the language works</strong>. I always say this to my C++ pupils: I don&#8217;t remember the last time I wrote a C++ destructor, assignment operator, etc; except for freaking purposes.</p><p>Dealing with templates could be hard. Dealing with name lookup rules is hard. But dealing with the implementation of object value semantics in a class that&#8217;s just an aggregate of other objects is not hard. You just should rely on the language.</p><h2 id="so-what-we-should-do">So, what we should do?</h2><p>That depends on the context of course. But my main advice is to known how something works before buzzing about how horrible it is. Do C in C++ if you like, even Java++, but then don&#8217;t cry when your codebase starts going crazy.</p><p>Here are some advices from my own:</p><ul><li><strong>Know the language</strong>: <a
+href="https://docs.google.com/viewer?a=v&amp;pid=sites&amp;srcid=YXVzdGluLWNzLm9yZ3x3ZWJ8Z3g6MzBhNDk2M2JiZTA5NTU0ZA">C++ is a huge elephant</a>, but the elephant is not exactly what you are used to in other OO languages. I don&#8217;t even consider C++ an object oriented language since it&#8217;s not object/class centered. Choose the tool (functional programming, generic algorithms, objetc, whatever) that best fits to your problem. If you strip some of that paradigms using a little subset of the language only, it does not play as well and easy as it would.</li><li><strong>Understand how it works</strong>: If you try to do things in the same way you learned for other languages, things go wrong. Each language is different. In case of software engineering guidelines, OO patterns, etc; pay special attention since these are usually written for usual OO languages based on reference semantics. They may work, but can be non optimal on C++ value semantics. Doing reference semantics, i.e. Javaize everything with pointers/smart pointers, does not work since C++ is not designed to do that intensive use of dynamic allocation. Take into account that in OO reference languages such as Java, doing <code>new</code> has almost zero cost since the whole language and its runtime its designed to work in that way. That&#8217;s not the case for C++.</li><li><strong>Trust the compiler</strong>: The ages when a compiler was a mere code translator are gone. When doing optimizations by hand you are trying to beat the result of almost 30 years of compiler and optimization algorithms research boxed in a thing that runs on a chip that measures its computational power at MFLOPS. Even if you have an awesome brain that can compete with that power, you will be doomed at the point of code generation since you play in an ecosystem where CPU instruction sets and architectures are too far for being that &#8220;fetch, decode, execute&#8221; schema we all learned at the school/college. The <em>Ford factory pipeline</em> is not a valid metaphor to describe how CPUs work these days. This is reflected in the fact that if you think of C++ as a &#8220;syntactical abstraction layer hiding a couple of assembly instructions&#8221; you are wrong 99% of times. That&#8217;s no longer the case, since hardware is not that simple. <strong>Think of your C++ code as a high level description of what the program should do, not how really does it</strong>.<br
+/> But be careful! Don&#8217;t treat the compiler as a genius! Check its assembly output from time to time to see what it actually did. The cool point here is that the more readable the code is, more optimizable is since the optimizer understands your intention. Write convoluted code like a fast square root routine that I&#8217;m sure relies on Undefined Behavior and you will get a code that runs 30% slower than what GCC would generate by its own, considering <a
+href="http://developerblog.redhat.com/2015/01/02/improving-math-performance-in-glibc/">the effort glibc guys put</a> on efficient floating point code generation.</li></ul><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/the-pragmatic-cpp-programmer/">The Pragmatic C++ Programmer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/the-pragmatic-cpp-programmer/feed/</wfw:commentRss> <slash:comments>9</slash:comments> </item> <item><title>A software design principle: Don&#8217;t make me use your design</title><link>http://blog.biicode.com/software-design-proposal/</link> <comments>http://blog.biicode.com/software-design-proposal/#comments</comments> <pubDate>Thu, 30 Oct 2014 11:47:46 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[Software design]]></category> <category><![CDATA[dependency management]]></category> <category><![CDATA[functionality vs. design]]></category> <category><![CDATA[software desing]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1862</guid> <description><![CDATA[<p>Or why there is no SerialPort in C++ Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/software-design-proposal/">A software design principle: Don&#8217;t make me use your design</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>Or why there is no SerialPort in C++</h2><p>Developing code in C++ for robotics, I often faced the problem of communicating via serial port with a robot, a sensor or any other device. C and C++ are languages supposedly very close to hardware. Furthermore, they are the most common and oldest mainstream programming languages out there. So communicating over a serial port in a portable way should be straightforward.</p><p><span
+id="more-1862"></span></p><p>Probably as straightforward as it is in python. To send a few bytes, with just a bare python installation, all you have to do (in any OS) is:</p><p><code>$ pip install pyserial</code></p><p>this downloads and sets up a dozen files, just a few KBs. Then, write your code:</p><pre class="crayon-plain-tag">import serial
+ser = serial.Serial(0)
+ser.write("hello")
+ser.close()</pre><p>And that’s it!</p><p>Lets do it now in C++. Suppose you want to write a similar application just to send some bytes over the serial port. The first difficulty is that seems there’s nothing as “standard” or widely accepted, so my first attempt was to use <a
+href="http://www.mrpt.org">MRPT</a>. MRPT is a robotics library plenty of great drivers, algorithms, tools, interfaces… an amazing and very popular tool kit for robotics. I could use the whole MRPT, but lets say I am not willing to introduce a dependency to it, it is very large (60Mb of source code, &gt;5k source files) and contains tons of stuff I do not need. I want to get just the SerialPort functionality. Going down to the code, you can find a <code>CSerialPort_win.cpp</code> and a <code>CSerialPort_lin.cpp</code> files, both implementing the same CSerialPort class, declared in <code>CSerialPort.h</code> header file. In the implementation file you can find:</p><pre class="crayon-plain-tag">void  CSerialPort::open( )
+{
+	MRPT_START
+	…
+	// Open the serial port:
+	if ( INVALID_HANDLE_VALUE == (
+	            hCOM = CreateFileA( m_serialName.c_str(), // Serial Port name</pre><p>And in the header:</p><pre class="crayon-plain-tag">class HWDRIVERS_IMPEXP CSerialPort : public CStream
+		{
+			friend class PosixSignalDispatcherImpl;
+		public:</pre><p>That&#8217;s it, the implementation relies on a macro MRPT_START (it allows profiling and exception handling), which seems could be easily removed, but the header inherits from CStream, a base class for streams (network, files, output, etc), which in turn depends on a serialization framework (CSerializable, CObject).</p><p>While the overall software design of the library is great, it is very difficult to isolate what, in my opinion, should be a very independent and low coupled component. Please, do not misunderstand my opinion, MRPT is really great. The problem is simply that the library was not designed with that goal in mind.</p><p>My guess was that something more generic, not tied to robotics, solution already existed. So I googled for it a little and it seemed that the most accepted solution (at least in stackoverflow) was using <code>boost::asio</code>. It seemed reasonable to me that depending on 500 Mb of source code is probably overkill for sending some bytes, so I also tried to extract the serial port functionality. But I found some high levels of abstractions over it, for example, in the file <code>basic_serial_port.hpp</code>:</p><pre class="crayon-plain-tag">template &lt;typename SerialPortService = serial_port_service&gt;
+class basic_serial_port
+  : public basic_io_object&lt;SerialPortService&gt;,
+    public serial_port_base
+{
+public:</pre><p>You have to dig deeply into <code>win_iocp_serial_port_service.ipp</code> to actually find the code that opens the port in Win:</p><pre class="crayon-plain-tag">boost::system::error_code win_iocp_serial_port_service::open(
+    win_iocp_serial_port_service::implementation_type&amp; impl,
+    const std::string&amp; device, boost::system::error_code&amp; ec)
+{
+  if (is_open(impl))
+  {
+    ec = boost::asio::error::already_open;
+    return ec;
+  }
+  // Open a handle to the serial port.
+  ::HANDLE handle = ::CreateFileA(name.c_str()</pre><p>Surprisingly, the functionality is spread between different files, for example, the latter contains code for opening, closing and setting parameters, but the code for sending and receiving bytes is located in another file.</p><p>Basically the conclusion is that you cannot use the serial port separately, you are forced to use it with Asio. We’re facing the same problem again: boost is really amazing and asio is also brilliant. And surely their serial port implementations (both MRPT and boost::asio) are more configurable and powerful than the python one is. I personally wish someday I could write code half as good as the one in any of those projects. But I see a pattern here, one, that doesn&#8217;t allow to have a small and simple SerialPort functionality to just synchronously send and receive some bytes over the serial port. So I dare to state what IMHO could be considered as a design principle:</p><h2>Let me use your functionality without using your design</h2><p>Of course, this principle is nothing new. It is very related to many well known principles and patterns. It is very related to the trending functional programming approach, and could be considered as a consequence of many patterns as single responsibility, low coupling, separation of concerns, high cohesion, etc. But I have never seen it stated as above, and I think it could be another perspective to be taken into account. By &#8220;without using your design&#8221; I mean architectural design, obviously every single line of code has some design in it.</p><p>How do I think the SerialPort example should be addressed? The main problem I see with it, is the failure to identify SerialPort as a first level building block, and thus it deserves its own “package”, namespace, library… you named it. With that in mind, it could be very easy to build it in those libraries. For example, in the MRPT case, you can have both the SerialPort and a streams and serialization framework independent from each other. Then, bind both things very easily with templates (very simplified for clarity, just an idea):</p><pre class="crayon-plain-tag">class SerialPort{
+public:
+	void write(char c);
+};
+class MyBaseStream{
+	virtual void write(std::string str)=0;
+	friend MyBaseStream&amp; operator &lt;&lt;(MyBaseStream&amp; mystream, std::string str){
+		mystream.write(str);
+		return mystream;
+	}
+};
+template &lt;typename T&gt;
+class Stream: public MyBaseStream{
+public:
+	Stream(T&amp; _port): port(_port){}
+	virtual void write(std::string str){
+		for(auto c: str)
+			port.write(c);
+	}
+private:
+	T port;
+};
+//example client code of generic streams
+void write2stream(MyBaseStream&amp; stream, std::string str){
+	stream&lt;&lt;str;
+}
+using SerialPortStream = Stream&lt;SerialPort&gt;;
+int main(){
+SerialPort serial;
+    SerialPortStream serial_stream(serial);
+    serial_stream&lt;&lt;"Hello World\n";
+    write2stream(serial_stream, "Good Bye\n");
+}</pre><p>In this way, both the SerialPort and the Stream classes become two independent first class citizens in our project. It becomes very easy to test (and mock), understand, maintain and extend them, and it is also simpler to grow and scale the whole project using them. I know I am not saying something very new with this software design proposal, for example it is similar to Alexandrescu’s policy based design, though the final goal could be different.</p><h3>Failures to follow this principle are more common in C/C++</h3><p>I have seen this pattern a few times in C and C++ projects, but very rarely in other languages (at least those that I have used more as java and python) and I believe there is a reason, not directly related to software design for it: the lack of a widely used dependency manager. And no, OS package managers, installers and so, are not enough to solve this problem. Even if the authors of these libraries decide to decouple the functionality of the SerialPort basic wrapper in their design, there is little gain in it, users should still manually extract those files and integrate them in their projects, which doesn&#8217;t sound as reasonable engineering and will produce, for sure, maintenance problems and lack of updates. It is really unlikely that the authors will decide to create a separate project/library for the SerialPort, it is more effort not only to do it in the short term, but also to maintain and work with it in the mid and long terms. So developers just roll out their designs, and fill the functionality in it as required. I’ve done it so many times too.</p><p>On the contrary, if a dependency manager existed, it is very likely that a simple, independent and robust SerialPort implementation would emerge and be widely adopted, and people creating asynchronous communication frameworks or robotics applications would use it and have less code to write.</p><p>Hopefully such a dependency manager for C and C++ will someday be a reality :D</p><p>&nbsp;</p><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/software-design-proposal/">A software design principle: Don&#8217;t make me use your design</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/software-design-proposal/feed/</wfw:commentRss> <slash:comments>9</slash:comments> </item> </channel> </rss>

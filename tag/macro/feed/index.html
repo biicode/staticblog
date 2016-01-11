@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; macro</title> <atom:link href="http://blog.biicode.com/tag/macro/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Publish, share and reuse CMake macros</title><link>http://blog.biicode.com/publish-share-reuse-cmake-macros/</link> <comments>http://blog.biicode.com/publish-share-reuse-cmake-macros/#comments</comments> <pubDate>Tue, 30 Dec 2014 09:07:42 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[macro]]></category> <category><![CDATA[macros]]></category> <category><![CDATA[recipe]]></category> <category><![CDATA[reuse]]></category> <category><![CDATA[scripts]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1974</guid> <description><![CDATA[<p>CMake Macros for everyone! There were many great reasons to develop this feature, main is that you want it and as fun as Mastering CMake can be, this feature is a way to reuse CMake &#8220;recipes&#8221;, don&#8217;t repeat yourself. &#160; Publish, share and reuse CMake macros/scripts and use any &#8220;recipe&#8221; in your CMakeLists.txt. Reusing CMake code is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/publish-share-reuse-cmake-macros/">Publish, share and reuse CMake macros</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h1>CMake Macros for everyone!</h1><p>There were many great reasons to develop this feature, main is that you want it and as fun as <a
+title="Mastering CMake" href="http://www.cmake.org/cmake-tutorial/" target="_blank">Mastering CMake </a>can be, this feature is a way to reuse CMake &#8220;recipes&#8221;, don&#8217;t repeat yourself.</p><p><img
+class="aligncenter size-full wp-image-2065" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/CMAKE-MACROSS.png" alt="CMAKE-MACROSS" width="750" height="350" /></p><p>&nbsp;</p><p>Publish, share and reuse <a
+title="CMake Macros " href="http://www.cmake.org/Wiki/CMake_User_Contributed_Macros" target="_blank">CMake macros</a>/scripts and use any &#8220;recipe&#8221; in your CMakeLists.txt.</p><p><span
+id="more-1974"></span></p><p>Reusing CMake code is as simple as  “#including” libraries in C++.</p><p><strong>CMakeLists.txt</strong></p><pre class="crayon-plain-tag">...
+INCLUDE(user/block/My_macros) # Without .cmake extension
+MACRO_NAME_TO_USE() # Macro defined in My_macros.cmake
+...</pre><p>And execute <code>bii find</code> to download the dependency as usual:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii find</pre></div></div><p>Once done, you can finde your CMake dependencies in your  <strong><em>project/deps/user/block folder.</em></strong></p><h2><strong>Example: how to activate C++11 flag with a macro in biicode?</strong></h2><p><strong>“biicode”</strong> featured user has a block named <a
+href="https://www.biicode.com/biicode/cmake" target="_blank">cmake</a> where you can find useful macros from the <strong>tools.cmake</strong> file, like one to activate C++11 flags for any OS, or to link a OSX framework to a target, etc.</p><p><b
+class="b4">Follow this example to understand it fully,</b> start creating a project:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init cpp11
+~$ cd cpp11
+~/cpp11$ bii new user/hello_cpp11 --hello</pre></div></div><p>and create the files below into your user/hello_cpp11 folder:</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include &lt;ctype.h&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt; // std::for_each
+using namespace std;
+int main()
+{
+ char s[]="Hello World!";
+ int Uppercase = 0; //modified by the lambda
+ for_each(s, s+sizeof(s), [&amp;Uppercase] (char c) {
+ if (isupper(c))
+     Uppercase++;
+ });
+ cout&lt;&lt; Uppercase&lt;&lt;" uppercase letters in: "&lt;&lt; s&lt;&lt;endl;
+}</pre><p>This is the basic <tt
+class="docutils literal">CMakeLists.txt</tt> file with an include: <tt
+class="docutils literal">INCLUDE(biicode/cmake/tools)</tt> and a line to use the Macro:</p><p><strong>CMakeLists.txt</strong></p><pre class="crayon-plain-tag">INIT_BIICODE_BLOCK()
+# Including tools.cmake from biicode/cmake user block
+# see https://www.biicode.com/biicode/cmake
+INCLUDE(biicode/cmake/tools)
+ADD_BIICODE_TARGETS()
+# Calling specific macro to activate c++11 flags
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET})</pre><p>Execute <code>bii find</code> to download the dependency as usual and bii cpp:build to compile:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/cpp11$ bii find
+~/cpp11$ bii cpp:build</pre></div></div><p>Now you&#8217;re ready to run your executable, it&#8217;s in your cpp11/bin folder:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/cpp11$ ./bin/user_hello_cpp11_main
+2 uppercase letters in: Hello World!</pre></div></div><p>I hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/publish-share-reuse-cmake-macros/">Publish, share and reuse CMake macros</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/publish-share-reuse-cmake-macros/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

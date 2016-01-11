@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; http</title> <atom:link href="http://blog.biicode.com/tag/http/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>IoT: Arduino and HTTP made simple</title><link>http://blog.biicode.com/iot-arduino-http-made-simple/</link> <comments>http://blog.biicode.com/iot-arduino-http-made-simple/#comments</comments> <pubDate>Wed, 09 Apr 2014 16:16:31 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[http]]></category> <category><![CDATA[json]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=366</guid> <description><![CDATA[<p>Today I bring you a new block (lasote/arduino_http) to make simpler the interaction between Arduino and HTTP. Interaction between Arduino and HTTP with biicode: High-level: Forget about writing HTTP headers and CRLF. Make GET and POST requests in an easy way. Response: Don&#8217;t write complex flow for manage timeouts, socket response code or stream availability. Just use the stream [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-arduino-http-made-simple/">IoT: Arduino and HTTP made simple</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Today I bring you a new block <a
+title="HTTP arduino biicode block" href="https://www.biicode.com/lasote/blocks/lasote/arduino_http/branches/master" target="_blank">(lasote/arduino_http)</a> to make simpler the interaction between Arduino and HTTP.</p><p><H2>Interaction between Arduino and HTTP with biicode:</h2><ol><li>High-level: Forget about writing HTTP headers and CRLF. Make GET and POST requests in an easy way.</li><li>Response: Don&#8217;t write complex flow for manage timeouts, socket response code or stream availability. Just use the <a
+href="#stream_processor">stream processors</a> you need or write your own ones.</li><li>Low memory: Through the stream processors the memory consumption remains low.</li><li>No hardware dependent: You can use your favorite ethernet or wifi adapter.</li><li>Extensible: You can add custom HTTP headers and write your own <a
+href="#stream_processor">stream processors</a>. So you can program your own classes to interact with a concrete web service.</li></ol><p><span
+id="more-366"></span></p><h4>How does it look like?</h4><div><pre class="crayon-plain-tag">//INSTANCE HARDWARE CLIENT AND INIT HttpClient
+EthernetClient client;
+HttpClient http_client(client, Serial);
+//Create the processors you want in order to parse the response
+char response_buffer[50];
+StreamRecorderProcessor response_recorder(response_buffer, 50); //Capture response in buffer
+//SETUP: Plug the stream processors you need to the http_client!
+http_client.processors.add_item(&amp;response_recorder);
+//LOOP:
+http_client.reset(); //Reset previous processors status and custom headers etc.
+if(http_client.get("www.google.com", "/webhp#q=biicode"){
+  if(http_client.receive()==200){
+    //Check the processors results! ;)
+	Serial.println(response_buffer);
+  }
+}</pre></div><p>Check full examples in <a
+title="Http Arduino block biicode" href="https://www.biicode.com/lasote/blocks/lasote/arduino_http/branches/master" target="_blank">block &#8220;lasote/arduino_http&#8221; home page</a>!</p><h2 id="stream_processor">What are stream processors?</h2><p>Stream processors are classes that read a stream char by char, and only stores in memory the necessary data.</p><p>In the previous example, we use a processor that stores the body response in a buffer. But there are other processors that you can use (or implement your own IStreamProcessor interface).</p><p>In coming blog posts I will show you how to use these processors and HttpClient to create useful classes to access  your favorite web services like a weather API or Carriots service!! Stay tuned!!</p><table
+style="height: 326px;" border="1" width="690" cellpadding="10"><tbody><tr><td
+width="30%">Name</td><td
+width="30%">Description</td><td
+width="40%">Include</td></tr><tr><td><pre class="crayon-plain-tag">StreamJsonProcessor</pre></td><td>Parse json from http response getting only the nodes you want. Based on <a
+href="https://www.biicode.com/lasote/blocks/lasote/stream_json_reader/branches/master">StreamJsonReader</a></td><td><pre class="crayon-plain-tag">#include&nbsp;&quot;lasote/stream_processor/stream_json_processor.h&quot;</pre></td></tr><tr><td><pre class="crayon-plain-tag">StreamFinderProcessor</pre></td><td>Checks if a string exists in a body response. Based on a <a
+href="https://www.biicode.com/lasote/blocks/lasote/stream_finder/branches/master"> StreamFinder</a>. Check the menu_detector example in <a
+href="https://www.biicode.com/lasote/blocks/lasote/arduino_http/branches/master">block &#8220;lasote/arduino_http&#8221; home page</a></td><td><pre class="crayon-plain-tag">#include &quot;lasote/http_response_processor/http_stream_processor.h&quot;</pre></td></tr><tr><td><pre class="crayon-plain-tag">StreamRecorderProcessor</pre></td><td>Just record the whole response in a buffer. Check the post example in <a
+href="https://www.biicode.com/lasote/blocks/lasote/arduino_http/branches/master">block &#8220;lasote/arduino_http&#8221; home page</a></td><td><pre class="crayon-plain-tag">#include &quot;lasote/stream_recorder/stream_recorder.h&quot;</pre></td></tr></tbody></table><p>Happy Internet Of Things Day!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-arduino-http-made-simple/">IoT: Arduino and HTTP made simple</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-arduino-http-made-simple/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

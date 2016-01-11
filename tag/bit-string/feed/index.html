@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; bit string</title> <atom:link href="http://blog.biicode.com/tag/bit-string/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>BITSCAN: a C++ library for bit strings</title><link>http://blog.biicode.com/bitscan-cpp-library-bit-strings/</link> <comments>http://blog.biicode.com/bitscan-cpp-library-bit-strings/#comments</comments> <pubDate>Fri, 17 Oct 2014 11:03:03 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[BITSCAN]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[bitscanning]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1840</guid> <description><![CDATA[<p>A comprehensive view of BITSCAN BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>A comprehensive view of BITSCAN</h2><p>BITSCAN is a C++ library dedicated to efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of bits (ones and zeros). It gets interesting when these bits have semantics, i.e.  refer to a Boolean property of a group, so that each element is identified by a bit in the chain. In previous posts I have repeatedly stated that BITSCAN “is a useful library to manage bit strings”, and that was that. Readers of our blog have questioned the usefulness of bit strings in practice so I will start this post explaining some common situations in which bit strings may be an alternative to more common data structures.</p><p><img
+class="aligncenter wp-image-1841 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bitstring_logo.png" alt="Bit strings can now be processed more powerfully with BITSCAN hosted in biicode" width="359" height="123" /></p><p><span
+id="more-1840"></span></p><h2>Bit strings in practice</h2><p>Say you need to store and compare subsets of <em>different</em> numbers from 1 to N; or possibly you need to encode that a collection of objects belong to a set, or perhaps reason with two such collections and find those common to both. These situations are quite frequent in practice and commonly solved by mapping objects to identifiers, storing them (typically in some predefined order) in containers and employ their built-in methods to make the required inferences.</p><p>Here is an example: a subset of students takes an exam; each student has a different ID and writes it on the exam. A possible (non-efficient) solution to the query as to which students did not assist using STL collections appears below:</p><pre class="crayon-plain-tag">//… appropiate headers
+template&lt;class Collection&gt;
+void printCol(Collection&amp; col){
+	copy(col.begin(), col.end(), ostream_iterator&lt;Collection::value_type&gt;(cout, " "));
+}
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	set&lt;int&gt; s_ids;		// student ids
+	set&lt;int&gt; e_ids;		// exam ids
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		s_ids.insert(i);
+		if((i%2)==0)
+			e_ids.insert(i);
+	}
+	//students which did not assist
+	set&lt;int&gt; s_not_assist;
+  	set_difference(s_ids.begin(), s_ids.end(), e_ids.begin(), e_ids.end(),
+                             insert_iterator&lt;set&lt;int&gt;&gt; (s_not_assist, s_not_assist.begin()) );
+	printCol(s_not_assist);
+}</pre><p>&nbsp;</p><p>In the PREVIOUS example  each call to <code>insert</code> is logarithmic and <code>set_difference</code> is linear in the number of total students. Now compare with a bit string encoding for exams and students (a 1-bit indicates membership):</p><pre class="crayon-plain-tag">#include "pablodev/bitscan/bitscan.h"		//BITSCAN header in biicode repository
+using namespace std;
+#define NUMBER_OF_STUDENTS 5
+void main(){
+	bitarray s_ids(NUMBER_OF_STUDENTS);	// student ids
+	bitarray e_ids(NUMBER_OF_STUDENTS);	// exam ids
+	s_ids.set_bit(0,NUMBER_OF_STUDENTS-1);
+	for(int i=1; i&lt;=NUMBER_OF_STUDENTS; i++){
+		if((i%2)==0)
+		e_ids.set_bit(i-1);		//id is 0 based
+	}
+	//students which passed the exam
+	bitarray s_not_assist(s_ids);
+	s_not_assist.erase_bit(e_ids);
+	//I/O
+	s_not_assist.print();
+}</pre><p>From the point of view of efficiency, students are inserted in the (bit) sets in constant time. The reasoning is computed in the <code>erase_bit</code> function in linear time, but there is a reduction by a constant factor related to register word size (typically 64 in today’s computers) because processing occurs in chunks of bit blocks. Moreover, the code is no less readable (possibly <em>more</em> readable) than its counterpart and slightly more compact.</p><p>Note that the example did not intend to suggest that bit strings are better than typical STL collections (exlcude std::bitset) or anything like that. It only shows that bit strings can be a useful alternative to consider in everyday programming.</p><h2>Data types available in BITSCAN</h2><p>Having made a case in favor of bit strings I will now comment briefly on the data types available in BITSCAN and the kind of problems they address. As stated in <a
+href="http://blog.biicode.com/category/bitscan-2/">previous posts</a>, I developed BITSCAN to deal with hard combinatorial optimization problems in the graph domain. Why did I not use other common solutions such as <code>std</code><code>∷</code><code>bitset</code> or boost<code>∷</code><code>dynamic_bitset</code> containers? Simply because the majority of functions I required back then (say almost a decade ago) were not built-in (they still aren&#8217;t, specifically those related to different types of efficient bit scanning) not to mention the fact that the size of <code>std</code><code>∷</code><code>bitset</code> has to be hard wired at compile time. Also some critical optimization issues appeared which required ad hoc solutions. I therefore decided to start from scratch at my own risk. The types in BITSCAN are a result of a decade of experience in algorithmic optimization. The current release is intended to share this knowledge in the hope that it is useful to others and that it may be improved. In this sense I find Biicode ideal for managing and sharing the code.</p><p>Back to business, and sorry for the digression. The main types in BITSCAN are <em>bitblock</em>, <em>bitarray</em> and <em>sparse_bitarray</em> and most of the time you will only be using these. Other types are meant for compilers which do not accept assembly or intrinsic instructions (i.e. <em>simple_bitarray</em>, <em>simple_sparse_array</em>) or some specific optimization (i.e. <em>watched_bitarray</em>). I will leave the latter types for a future post.</p><h3>TYPE bitblock</h3><p>The <em>bitblock</em> type is a wrapper for bit twiddling inside 64 bit numbers. It includes typical least- significant-bit (LSB) and most-significant-bit (MSB) functions as well as different implementations of population counts (i.e. number of 1-bits in the number).  Useful inline macros are MASK_1 and MASK_0 which change bits in a predefined range (see example below).</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+void main(){
+	BITBOARD bb=0xFFFF;
+	cout&lt;&lt;"number of 1-bits in bb:"&lt;&lt;bitblock::popc64(bb)&lt;&lt;endl;
+	//useful masks
+	bitblock::print(bb &amp; bitblock::MASK_0(4,8));    //removes bits 4-8 from bb
+	bitblock::print(bb | bitblock::MASK_1(4,8));    //sets bits 4-8 in bb
+}</pre><p></p><h3>TYPE bitarray</h3><p><em>bitarray</em> extends the <em>bitblock</em> type to arrays of bitblocks and it is BITSCAN&#8217;s basic type. Besides typical operations which may be found elsewhere (bit masks etc.), the wrapper contains a number of optimizations mainly concerned with extracting the information from bit strings (alias bitscanning) which I have found pretty useful when solving combinatorial problems. In particular:</p><ul><li>Caching bitblock index and position of the last bit scanned in a bit scanning loop.</li><li>Specific implementation for destructive (simultaneous scanning and deletion) scans.</li><li>Specific implementation for reverse scans (i.e. from last to least significant bit of the bitstring).</li></ul><p>Here is a simple example of how to implement normal and destructive scanning loops with BITSCAN:</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATON_SIZE-1);     //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::NON_DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+	cout&lt;&lt;endl;
+	//bit scanning loop (destructive)
+	nBit=EMPTY_ELEM;
+	bba.init_scan(bbo::DESTRUCTIVE);
+	while(true){
+		nBit=bba.next_bit_del();
+		if(nBit==EMPTY_ELEM) break;
+		cout&lt;&lt;nBit&lt;&lt;" ";
+	}
+}</pre><p><span
+style="font-size: 13px;">It is worth noting that bit scanning introduces critical overhead compared to standard data structures. I strongly recommend to avoid it as much as possible in critical problem solving routines  in favor of reasoning with bit masks (the good part). Still, at some point you will surely need to enumerate the elements (1-bits) in the bit sets and the above functions (and others available in BITSCAN) will come in handy.</span></p><h3>TYPE sparse_bitarray</h3><p>This type introduces specific functionality to deal with the sparse case. A sparse bit string typically holds many more 0-bits than 1-bits (usually the useful chunks of information) and using  the general purpose <em>bitarray</em> type will generally lead to dealing with a lot of useless chunks of 0-bits. I recommend to use the <em>sparse_bitarray</em> type in such cases. The interface for most operations is very much the same. BELOW is the code for the normal bit scanning loop in the previous examples but using the sparse type.</p><pre class="crayon-plain-tag">#include &lt;iostream&gt;
+#include "pablodev/bitscan/bitscan.h"
+using namespace std;
+#define POPULATION_SIZE 100
+void main(){
+	sparse_bitarray bba(POPULATION_SIZE);
+	bba.set_bit(0, POPULATION_SIZE-1);      //sets all bits to 1
+	//bit scanning loop
+	int nBit=EMPTY_ELEM;
+	if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM){
+		while(true){
+			nBit=bba.next_bit();
+			if(nBit==EMPTY_ELEM) break;
+			cout&lt;&lt;nBit&lt;&lt;" ";
+		}
+	}
+	cout&lt;&lt;endl;
+}</pre><p>Notice that the code is exactly the same as for the <em>bitarray</em> type (now <em>sparse_bitarray</em>) with the exception of the empty checking condition at the beginning of the bit scanning loop:</p><pre class="crayon-plain-tag">if(bba.init_scan(bbo::NON_DESTRUCTIVE)!=EMPTY_ELEM)(…}</pre><p>This is necessary because sparse bitarrays have empty semantics: an empty bitarray (i.e. with no allocated bitblocks) might just as well not be used as refer to a bitset exent of 1-bits. Either way entering the main scanning loop will result in an error during execution.</p><h2>Current status</h2><p>As indicated in other posts, BITSCAN is still very much in Alpha but it is being actively developed.  As such it suffers from lack of proper doc, non standardization of names and namespaces etc.  Still, it is very simple to use and including it in your projects requires no effort using Biicode (just include the header  #include &#8220;pablodev/bitscan/bitscan.h&#8221; and you are done). It has been tested both in Linux and Windows (64 bit).</p><p>If you are wondering about efficiency,  BITSCAN is in the core of BBMC <sup><a
+href="#fn1" id="ref1">[1]</a></sup><sup><a
+href="#fn2" id="ref2">[2]</a></sup><sup><a
+href="#fn3" id="ref3">[3]</a></sup> and PASS <sup><a
+href="#fn4" id="ref4">[4]</a></sup>, two state of the art algorithms for the NP-hard maximum clique and vertex coloring problems respectively. Also worth reading is a performance comparison with STL and BOOST in <sup><a
+href="#fn5" id="ref5">[5]</a></sup>. If you finally decide that it is worth a try please read the legal stuff. In case you use it for research purposes, please include the indicated citations. Finally, any feedback or improvement is most welcome.</p><p>&nbsp;</p><p><sup
+id="fn1"><a
+href="http://dl.acm.org/citation.cfm?id=1860369%20">[1] An exact bit-parallel algorithm for the maximum clique problem</a></sup></p><p><sup
+id="fn2"><a
+href="http://link.springer.com/article/10.1007%2Fs11590-011-0431-y">[2] An improved bit parallel exact maximum clique algorithm</a></sup></p><p><sup
+id="fn3"><a
+href="http://dl.acm.org/citation.cfm?id=2566230">[3] Relaxed approximate coloring in exact maximum clique search</a></sup></p><p><sup
+id="fn4"><a
+href="/oa.upm.es/11802/2/INVE_MEM_2011_107285.pdf">[4] A new DSATUR-based algorithm for exact vértex coloring</a></sup></p><p><sup
+id="fn5"><a
+href="http://blog.biicode.com/bitscan-efficiency-at-glance/">[5] BITSCAN efficiency at a glance</a></sup></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bitscan-cpp-library-bit-strings/">BITSCAN: a C++ library for bit strings</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bitscan-cpp-library-bit-strings/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Bit-encoded Graphs</title><link>http://blog.biicode.com/bit-encoded-graph/</link> <comments>http://blog.biicode.com/bit-encoded-graph/#comments</comments> <pubDate>Thu, 31 Jul 2014 08:30:26 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[news]]></category> <category><![CDATA[bit set]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitarray]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[graph]]></category> <category><![CDATA[np-hard]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=969</guid> <description><![CDATA[<p>UPDATED: 11/09/2014 Today, by the hand of Pablo San Segundo, we present graph and ugraph, two simple, easy-to-use, C++ wrappers for unweighted graphs encoded as bit strings. Preliminaries One of the most interesting and versatile applications of bit strings is to encode simple unweighted graphs dynamic in the number of edges (i.e. there is an [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-encoded-graph/">Bit-encoded Graphs</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>UPDATED: 11/09/2014</p><p>Today, by the hand of <a
+title="Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a>, we present g<em>raph</em> and <em>ugraph</em>, two simple, easy-to-use, C++ wrappers for unweighted graphs encoded as bit strings.</p><h2>Preliminaries</h2><p>One of the most interesting and versatile applications of bit strings is to encode simple unweighted graphs dynamic in the number of edges (i.e. there is an efficient way to add/remove edges but not so for the vertices). Graphs encoded as bit strings have recently attracted the attention of researchers in relation to  well known NP-hard problems such as <em>vertex coloring</em> or <em>clique</em>. The main reason is that efficient algorithms that exploit bit-parallelism at CPU level have been found for such problems.</p><p><span
+id="more-969"></span></p><p>The figure shows a simple undirected graph with 6 vertices (in red a 3-clique).  The last two columns show the bit encoding of the adjacency matrix of the graph. Each 1-bit refers to an edge in the graph and each bit string encodes the neighbor set of the corresponding vertex.</p><p><img
+class="aligncenter wp-image-970" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/ugraph-pablo-exmple-bitstring.png" alt="ugraph pablo exmple bitstring" width="630" height="240" /></p><p>For example, the bitstring for V1 is 010010, which indicates that V2 and V5 are its neighbors (we assume bit positions start at 1 and increase from left to right).</p><h2>graph CLASS</h2><p>A graph object refers to a (bit-encoded) simple directed graph. In the current version it is possible either to create an empty graph of any order (and add or remove edges manually) or to read a graph in DIMACS format from a text file.</p><p>Here is an example:</p><pre class="crayon-plain-tag">#include "pablodev/graph/graph.h"   //header for the block in Biicode repository
+graph g1("brock200_1.clq");         //reads the file in g1
+graph g2(3);                        //creates a 3-clique in g2
+g2.add_edge(0,1);
+g2.add_edge(1,2);
+g2.add_edge(0,3);</pre><p><em>graph</em> includes a number of functionalities related to graph configuration, examples of which can be found in the <em>test_graph.cpp</em> file inside the <em>tests</em> folder of the distribution. Adding and removing edges can be done in constant time. However removing vertices modifies the adjacency matrix and requires memory reallocation.</p><p>It is important to remember that graph objects are by default <em>directed</em> (the adjacency matrix is not symmetrical). If you want to ensure that edges are symmetrical use the <em>make_bidirected</em> member function.</p><h2>ugraph CLASS</h2><p>The <em>u</em>g<em>raph</em> class is a specialization of the <em>graph</em> class for undirected graphs. Each time an edge is added to the graph (with the <em>add_edge</em> function) it is always symmetrical. Moreover a number of functions can be implemented more efficiently for the undirected case and have been overridden for <em>graph</em>, such as logical checking for equality, edge processing etc. As before  we refer the reader to the <em>test_graph.cpp</em> file for examples of code.</p><h2>APPLICATIONS</h2><p>The <em>ugraph</em> class has been used to implement <em>BBMC</em>, a leading state of the art algorithm for the maximum clique problem known to be NP-hard. A number of variants for BBMC are described in literature <sup><a
+id="ref1" href="#fn1">1</a></sup> <sup><a
+id="ref2" href="#fn2">2</a></sup> <sup><a
+id="ref3" href="#fn3">3</a></sup><br
+/> . BBMC has also been applied successfully to approximate vertex coloring  and exact coloring <sup><a
+id="ref4" href="#fn4">4</a></sup>. Finally some applications for real problems related to matching can be found in <sup><a
+id="ref5" href="#fn5">5</a> </sup><sup><a
+id="ref6" href="#fn6">6</a></sup>.</p><p><a
+title="Graph Ugraph classes bit-encoding" href="http://www.biicode.com/pablodev/pablodev/graph/master" target="_blank"><em>graph</em> and <em>ugraph</em> types are available exclusively at Biicode. </a>We make them public for researchers and practitioners which are interested in combinatorial problem solving and as an example of  bit string graph encoding. We also hope that Biicode´s reuse paradigm helps to add new exciting features!</p><p>&nbsp;</p><h3>Footnotes</h3><p><sup
+id="fn1">1.    San Segundo, P. Rodriguez-Losada, D., Jimenez, A.; <em>An exact bit-parallel algorithm for the maximum clique problem</em>. Computers &amp; Operations Research  38:2, 2011, 571-581.<a
+title="Jump back to footnote 1 in the text." href="#ref1">↩</a></sup></p><p><sup
+id="fn2">2.    San Segundo, P. Matia, F., Rodriguez-Losada, D., Hernando, M.; <em>An improved bit parallel exact maximum clique algorithm.</em> Optimization Letters.  7:3, Springer 2011, 467-479.<a
+title="Jump back to footnote 2 in the text." href="#ref2">↩</a></sup></p><p><sup
+id="fn3">3.      San Segundo, P., Tapia, C. <em>Relaxed approximate coloring in exact maximum clique search. </em><em>Computers &amp; Operations Research</em>, 44, 2014, 185-192.<a
+title="Jump back to footnote 3 in the text." href="#ref3">↩</a></sup></p><p><sup
+id="fn4">4.      San Segundo, P. <em>A new DSATUR-based algorithm for exact vertex coloring</em>. Computers &amp; Operations Research, 39:7, 2012, 1724-1733.<a
+title="Jump back to footnote 4 in the text." href="#ref4">↩</a></sup></p><p><sup
+id="fn5">5.      San Segundo, P., Rodriguez-Losada, D., Matia, F., Galan, R. <em>Fast exact feature based data correspondence search with an efficient bit-parallel MCP solver</em>. Applied Intelligence, 32:3, 2010, 311-329.<a
+title="Jump back to footnote 5 in the text." href="#ref5">↩</a></sup></p><p><sup
+id="fn6">6.      San Segundo, P., Rodriguez-Losada, D. <em>Robust Global Feature Based Data Association With a Sparse Bit Optimized Maximum Clique Algorithm</em>.  IEEE Transactions on Robotics, 29:5, 2013, 1332-1339.<a
+title="Jump back to footnote 6 in the text." href="#ref6">↩</a></sup><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-encoded-graph/">Bit-encoded Graphs</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bit-encoded-graph/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; packaging</title> <atom:link href="http://blog.biicode.com/tag/packaging/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>bii internals: Packaging a compiled app with PyInstaller</title><link>http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/</link> <comments>http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/#comments</comments> <pubDate>Fri, 23 May 2014 17:57:59 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[app]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[packaging]]></category> <category><![CDATA[pyinstaller]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=523</guid> <description><![CDATA[<p>In a previous post we talked about how we compiled biicode into c extensions. Today we are going to talk about how we prepare it for execution with PyInstaler. PyInstaller is a program that converts (packages) Python programs into stand-alone executables, under Windows, Linux, Mac OS X, Solaris and AIX. It does so by packaging [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/">bii internals: Packaging a compiled app with PyInstaller</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><a
+href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/">In a previous post</a> we talked about how we compiled biicode into c extensions. Today we are going to talk about how we prepare it for execution with PyInstaler. PyInstaller is a program that converts (packages) Python programs into stand-alone executables, under Windows, Linux, Mac OS X, Solaris and AIX. It does so by packaging together your code with all third party libraries your code is using along with python runtime libraries. Third party libraries are discovered inspecting imports in your code but this is a problem when your code is in binary extension.</p><p><span
+id="more-523"></span></p><p>So we have defined the following process to package our app:</p><p>1. First we create an artificial main that will contain all needed imports for the project, we take them by parsing requirements.txt files and put them under &#8220;if False&#8221; to avoid execution overhead, you can also use <a
+href="http://www.pyinstaller.org/export/develop/project/doc/Manual.html#listing-hidden-imports">hidden imports</a> for this, whatever you prefer.</p><pre class="crayon-plain-tag">import biicode.client.shell.bii
+import biicode.client
+if False:
+    # Third party imports
+biicode.client.shell.bii.main(sys.argv[1:])</pre><p>Sometimes importing a package is not enough and you need to import the specific subpackage.</p><p>This artificial main is put in the binary extensions folder</p><p>2. Then we autogenerate a spec file for the project</p><pre class="crayon-plain-tag">python $PYINSTALLER_PATH/utils/makespec.py $ARTIFICIAL_MAIN_PATH</pre><p>3. Then we add to the spec file folders that are not automatically included: folders with binary data or packages that pyinstaller fail to import correctly</p><pre class="crayon-plain-tag">a.datas += Tree('BII_SRC_PATH/biicode/client/setups/images', prefix = 'images')
+dict_tree = Tree('MIMER_PATH', prefix = 'mimer', excludes=["*.pyc"])
+          # This package is a gittler non pypip dependency
+          # It contains dynamically loadable resources that are not
+          # automatically included by pyinstaller
+a.datas += dict_tree
+a.datas += Tree('CRYPTO_PATH', prefix='Crypto', excludes=["*.pyc"])
+a.binaries += Tree('BII_COMPILED_PATH/biicode', prefix='biicode')</pre><p>4. Now we are ready to create the executable with pyinstaller</p><pre class="crayon-plain-tag">python pyinstaller.py -p $BII_COMPILED_PATH $SPEC_FILE</pre><p>This generates a folder with an executable and everything we need to run our app.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/">bii internals: Packaging a compiled app with PyInstaller</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> </channel> </rss>

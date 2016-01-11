@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; franchuti</title> <atom:link href="http://blog.biicode.com/author/franramirez/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>POCO C++ Libraries are now available in biicode</title><link>http://blog.biicode.com/poco-cpp-libraries-available-biicode/</link> <comments>http://blog.biicode.com/poco-cpp-libraries-available-biicode/#comments</comments> <pubDate>Mon, 02 Mar 2015 14:15:08 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[Embedded programming]]></category> <category><![CDATA[Modules]]></category> <category><![CDATA[POCO C++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2091</guid> <description><![CDATA[<p>The POCO C++ Libraries are, like their own web recites, &#8220;Modern, powerful open source C++ class libraries and frameworks for building network- and internet-based applications that run on desktop, server, mobile and embedded systems&#8220;. They were created by Günter Obiltschnig in 2004 and have been extended by enthusiastic C++ developers from all over the world. Now, you have the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/poco-cpp-libraries-available-biicode/">POCO C++ Libraries are now available in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The <a
+title="POCO website" href="http://pocoproject.org/" target="_blank">POCO C++ Libraries</a> are, like their own web recites, &#8220;<em>Modern, powerful open source C++ class libraries and frameworks for building network- and internet-based applications that run on desktop, server, mobile and embedded systems</em>&#8220;. They were created by <a
+href="http://obiltschnig.com/" target="_blank">Günter Obiltschnig</a> in 2004 and have been extended by <a
+href="http://pocoproject.org/community/contributors.html">enthusiastic C++ developers</a> from all over the world.</p><p><a
+title="POCO home page" href="http://pocoproject.org/"><img
+class="aligncenter wp-image-2093 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/poco_libraries_in_biicode.png" alt="POCO C++ Libraries working fine in biicode" width="600" height="240" /></a></p><p>Now, you have the following versions available in biicode:</p><ul><li><a
+title="POCO C++ branch develop (GitHub)" href="https://www.biicode.com/fenix/fenix/poco/develop">fenix/poco (develop)</a> -&gt; changing continuously</li><li><a
+title="POCO C++ release 1.6.0" href="https://www.biicode.com/fenix/fenix/poco/v1.6.0">fenix/poco (v1.6.0)</a></li><li><a
+title="POCO C++ release 1.5.4" href="https://www.biicode.com/fenix/fenix/poco/v1.5.4">fenix/poco (v1.5.4)</a></li><li><a
+title="POCO C++ release 1.4.7p1" href="https://www.biicode.com/fenix/fenix/poco/v1.4.7p1">fenix/poco (v1.4.7p1)</a></li></ul><p><span
+id="more-2091"></span></p><h2><span
+style="color: #489cdf;"><strong>Benefits</strong></span></h2><p>biicode is a file based dependency manager, which has many advantages:</p><ul><li><strong>Save time</strong> reusing from any POCO C++ library (<em>Foundation, Net, NetSSL_OpenSSL, etc.</em>) such times as you need and avoid to configure and build out the libraries first. <strong>biicode&#8217;ll only retrieve the necessary files</strong> to build your project.</li><li>POCO C++ depends on <strong>external libraries</strong> like <a
+title="zlib home page" href="http://www.zlib.net/"><strong>zlib</strong></a>, <a
+title="PCRE home page" href="http://www.pcre.org/"><strong>PCRE</strong> </a>(Perl Compatible Regular Expressions), <a
+title="HPDF home page" href="https://hackage.haskell.org/package/HPDF"><strong>HPDF</strong></a>, <a
+title="7-Zip home page" href="http://www.7-zip.org/"><strong>7-Zip</strong></a>, <a
+title="OpenSSL home page" href="https://www.openssl.org/"><strong>OpenSSL</strong> </a>and <a
+title="SQLite home page" href="http://www.sqlite.org/"><strong>SQLite</strong> </a>that they&#8217;re <strong>uploaded on biicode</strong> and maintained by our users.</li><li>It&#8217;s been tested on biicode in <strong>Windows</strong> with <strong>Visual Studio 10</strong> and <strong>Visual Studio 12</strong>, <strong>Linux</strong> with <strong>GCC</strong> and <strong>Apple</strong> with <strong>CLang</strong></li></ul><p><strong>Note: </strong> if you&#8217;re using Windows OS, I recommend you to use Visual Studio to configure your project because with MinGW you could get some errors.</p><h2><span
+style="color: #489cdf;"><strong>POCO C++ external dependencies</strong></span></h2><p>These libraries have many external and third party dependencies to build some of them, e.g., Foundation depends on PCRE and ZLib. Without biicode PCRE and ZLib source files must be present in POCO C++ project, but with biicode it&#8217;s not needed. The following table shows all the dependencies for every version uploaded which biicode&#8217;ll find if you use all the modules in a project:</p><p><img
+class=" wp-image-2096  aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/poco_external_deps_in_biicode-1024x136.png" alt="POCO external deps found in biicode" width="1058" height="141" /></p><p>So, you&#8217;ll not have to worry about to install or build them, biicode does all the effort for you ;) These are the depending blocks in biicode:</p><ul><li><em><strong>PCRE(v8.36)</strong></em>: <a
+title="block fenix/pcre in biicode" href="https://www.biicode.com/fenix/pcre">fenix/pcre</a></li><li><em><strong>PCRE(v7.8)</strong></em>: <a
+title="block fenix/pcre(v7.8) in biicode" href="https://www.biicode.com/fenix/fenix/pcre/v7.8">fenix/pcre(v7.8)</a></li><li><em><strong>HPDF</strong></em>: <a
+title="block fenix/hpdf in biicode" href="https://www.biicode.com/fenix/hpdf">fenix/hpdf</a></li><li><em><strong>zlib</strong></em>: <a
+title="block zlib/zlib in biicode" href="http://www.biicode.com/zlib/zlib">zlib/zlib</a></li><li><em><strong>7-Zip</strong></em>:<a
+title="block fenix/7z in biicode" href="https://www.biicode.com/fenix/7z"> fenix/7z</a></li><li><em><strong>OpenSSL</strong></em>: <a
+title="block lasote/openssl(v1.0.2) in biicode" href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2">lasote/openSSL(v1.0.2)</a></li><li><em><strong>SQLite</strong></em>: <a
+title="block fenix/sqlite in biicode" href="https://www.biicode.com/fenix/sqlite">fenix/sqlite</a></li></ul><h2><span
+style="color: #489cdf;"><strong>Using POCO C++ Libraries in your project</strong></span></h2><p><strong>1.</strong> Create a new project and an empty block:</p><pre class="crayon-plain-tag">$ bii init poco_sample
+$ cd poco_sample
+$ bii new myuser/myblock</pre><p><strong>2.</strong> Add your sample code (orignal code from <em>Net/samples/dict.cpp</em>) into <em><strong>./blocks/</strong></em><em><strong>myuser/myblock/sample.cpp</strong></em></p><pre class="crayon-plain-tag">// dict.cpp
+//
+// $Id: //poco/1.4/Net/samples/dict/src/dict.cpp#1 $
+//
+// This sample demonstrates the StreamSocket and SocketStream classes.
+//
+// Copyright (c) 2005-2006, Applied Informatics Software Engineering GmbH.
+// and Contributors.
+//
+// SPDX-License-Identifier:	BSL-1.0
+#include "fenix/poco/Net/include/Poco/Net/StreamSocket.h"
+#include "fenix/poco/Net/include/Poco/Net/SocketStream.h"
+#include "fenix/poco/Net/include/Poco/Net/SocketAddress.h"
+#include "fenix/poco/Foundation/include/Poco/StreamCopier.h"
+#include "fenix/poco/Foundation/include/Poco/Path.h"
+#include "fenix/poco/Foundation/include/Poco/Exception.h"
+#include &lt;iostream&gt;
+using Poco::Net::StreamSocket;
+using Poco::Net::SocketStream;
+using Poco::Net::SocketAddress;
+using Poco::StreamCopier;
+using Poco::Path;
+using Poco::Exception;
+int main(int argc, char** argv){
+      const std::string HOST("dict.org");
+      const unsigned short PORT = 2628;
+      if (argc != 2){
+            Path p(argv[0]);
+            std::cout &lt;&lt; "usage: " &lt;&lt; p.getBaseName() &lt;&lt; " &lt;term&gt;" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "       looks up &lt;term&gt; in dict.org and prints the results" &lt;&lt; std::endl;
+            return 1;
+      }
+      std::string term(argv[1]);
+      try{
+            SocketAddress sa(HOST, PORT);
+            StreamSocket sock(sa);
+            SocketStream str(sock);
+            str &lt;&lt; "DEFINE ! " &lt;&lt; term &lt;&lt; "\r\n" &lt;&lt; std::flush;
+            str &lt;&lt; "QUIT\r\n" &lt;&lt; std::flush;
+            sock.shutdownSend();
+            StreamCopier::copyStream(str, std::cout);
+      }
+      catch (Exception&amp; exc){
+            std::cerr &lt;&lt; exc.displayText() &lt;&lt; std::endl;
+            return 1;
+      }
+      return 0;
+}</pre><p><b>3. </b>Choose which uploaded  POCO version you want to depend on, configure it through your <em><strong>./blocks/</strong></em><em><strong>myuser/myblock/</strong></em><em><strong>biicode.conf</strong></em>  file. Create it and copy the following:</p><pre class="crayon-plain-tag">[requirements]
+   fenix/poco(v1.6.0): 0</pre><p><strong>4.</strong> Finally, you&#8217;d only have to retrieve your POCO dependencies and build your sample.cpp. For it, use this command:</p><pre class="crayon-plain-tag">$ bii cpp:build</pre><p><strong>Note: </strong>for Windows users, to configure your project with Visual Studio, e.g., 10 version, execute:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 10"
+$ bii cpp:build</pre><p>So, biicode&#8217;ll download all the dependencies from <a
+title="fenix/poco(v1.6.0) block version" href="https://www.biicode.com/fenix/fenix/poco/v1.6.0">release version 1.6.0</a> and compile the project. Now, you can run the binary created in your <em><strong>./bin/ </strong></em>folder.</p><h2><span
+style="color: #489cdf;"><strong>Use the original #<em>include</em>&#8216;s</strong></span></h2><p>Change all the includes from the previous sample.cpp code to:</p><pre class="crayon-plain-tag">...
+#include "Poco/Net/StreamSocket.h"
+#include "Poco/Net/SocketStream.h"
+#include "Poco/Net/SocketAddress.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/Exception.h"
+...</pre><p>Now, tell biicode how to find this dependencies, so, modify again the <em><strong>biicode.conf</strong></em> and add the following:</p><pre class="crayon-plain-tag">[includes]
+    Poco/Net/*.h: fenix/poco/Net/include
+    Poco/*.h: fenix/poco/Foundation/include</pre><p><strong>Warning:</strong>  take care with <em><span
+style="background-color: #f2f2f2;">Poco/*.h: fenix/poco/Foundation/include</span></em> because it should always be at the end of <em><span
+style="background-color: #f2f2f2;">[includes]</span></em> section for being a really wide search pattern.</p><p>Finally, clean the metadata and build again the project:</p><pre class="crayon-plain-tag">$ bii clean
+$ bii cpp:build</pre><p></p><h4><span
+style="color: #489cdf;"><strong>Creating an example with <em>NetSSL_OpenSSL</em> or <em>NetSSL_Win </em>library</strong></span></h4><p>Making a project using these libraries is a special use case of original includes. Why? Take a look at the following example:</p><pre class="crayon-plain-tag">#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/URI.h"
+#include "Poco/SharedPtr.h"
+#include "Poco/Exception.h"
+/* headers in Net library */
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
+/* headers in NetSSL_OpenSSL and NetSSL_Win libraries */
+#include "Poco/Net/HTTPSStreamFactory.h"
+#include "Poco/Net/SSLManager.h"
+#include "Poco/Net/KeyConsoleHandler.h"
+#include "Poco/Net/ConsoleCertificateHandler.h"
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+/* Main code */</pre><p>Like you see, <em><strong>NetSSL_OpenSSL</strong> </em>and <em><strong>NetSSL_Win</strong> </em>have the same relative inlcude headers, so, the only way to resolve successfully your dependencies is writing the full path for them.</p><pre class="crayon-plain-tag">#include "Poco/URIStreamOpener.h"
+#include "Poco/StreamCopier.h"
+#include "Poco/Path.h"
+#include "Poco/URI.h"
+#include "Poco/SharedPtr.h"
+#include "Poco/Exception.h"
+/* headers in Net library */
+#include "Poco/Net/HTTPStreamFactory.h"
+#include "Poco/Net/FTPStreamFactory.h"
+/* headers in NetSSL_OpenSSL library */
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/HTTPSStreamFactory.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/SSLManager.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/KeyConsoleHandler.h"
+#include "fenix/poco/NetSSL_OpenSSL/include/Poco/Net/ConsoleCertificateHandler.h"
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+/* Main code */</pre><p>The <em>biicode.conf </em>would be like the previous one.</p><h2><span
+style="color: #489cdf;"><strong>Build all the POCO C++ samples</strong></span></h2><p>Try to build all the available samples Poco brings us with each release. Create a project, open any <em><strong>examples/poco</strong></em> block and build it, e.g., examples from <a
+href="https://www.biicode.com/examples/examples/poco/v1.4.7p1"><em><strong>1.4.7p1 version</strong></em></a>:</p><pre class="crayon-plain-tag">$ bii init samples_1_4_7p1
+$ bii open "examples/poco(v1.4.7p1)"
+$ bii cpp:build</pre><p>&nbsp;</p><p>So, that&#8217;s all! POCO C++ Libraries are amazing and I strongly recommend you to start using them for your network projects.</p><p>I hope you enjoy with this post and don&#8217;t forget check our <a
+title="C++ documentation" href="http://docs.biicode.com/c++.html">complete C++ documentation</a>! If you&#8217;ve any doubt, contact us through our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or ask directly in <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow</a></p><p>&nbsp;</p><p>[<strong>UPDATE</strong>]</p><p>There is already one project reusing POCO C++ libs using biicode:</p><p><strong><br
+/> <a
+href="https://gist.github.com/carlosvin/ba77ab007fafacc32e7f">First Biicode project with Poco C++</a> </strong>by <a
+href="https://github.com/carlosvin">Carlos Martín</a>.</p><p>&nbsp;</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/poco-cpp-libraries-available-biicode/">POCO C++ Libraries are now available in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/poco-cpp-libraries-available-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Publish, share and reuse CMake macros</title><link>http://blog.biicode.com/publish-share-reuse-cmake-macros/</link> <comments>http://blog.biicode.com/publish-share-reuse-cmake-macros/#comments</comments> <pubDate>Tue, 30 Dec 2014 09:07:42 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[macro]]></category> <category><![CDATA[macros]]></category> <category><![CDATA[recipe]]></category> <category><![CDATA[reuse]]></category> <category><![CDATA[scripts]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1974</guid> <description><![CDATA[<p>CMake Macros for everyone! There were many great reasons to develop this feature, main is that you want it and as fun as Mastering CMake can be, this feature is a way to reuse CMake &#8220;recipes&#8221;, don&#8217;t repeat yourself. &#160; Publish, share and reuse CMake macros/scripts and use any &#8220;recipe&#8221; in your CMakeLists.txt. Reusing CMake code is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/publish-share-reuse-cmake-macros/">Publish, share and reuse CMake macros</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h1>CMake Macros for everyone!</h1><p>There were many great reasons to develop this feature, main is that you want it and as fun as <a
+title="Mastering CMake" href="http://www.cmake.org/cmake-tutorial/" target="_blank">Mastering CMake </a>can be, this feature is a way to reuse CMake &#8220;recipes&#8221;, don&#8217;t repeat yourself.</p><p><img
+class="aligncenter size-full wp-image-2065" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/CMAKE-MACROSS.png" alt="CMAKE-MACROSS" width="750" height="350" /></p><p>&nbsp;</p><p>Publish, share and reuse <a
+title="CMake Macros " href="http://www.cmake.org/Wiki/CMake_User_Contributed_Macros" target="_blank">CMake macros</a>/scripts and use any &#8220;recipe&#8221; in your CMakeLists.txt.</p><p><span
+id="more-1974"></span></p><p>Reusing CMake code is as simple as  “#including” libraries in C++.</p><p><strong>CMakeLists.txt</strong></p><pre class="crayon-plain-tag">...
+INCLUDE(user/block/My_macros) # Without .cmake extension
+MACRO_NAME_TO_USE() # Macro defined in My_macros.cmake
+...</pre><p>And execute <code>bii find</code> to download the dependency as usual:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii find</pre></div></div><p>Once done, you can finde your CMake dependencies in your  <strong><em>project/deps/user/block folder.</em></strong></p><h2><strong>Example: how to activate C++11 flag with a macro in biicode?</strong></h2><p><strong>“biicode”</strong> featured user has a block named <a
+href="https://www.biicode.com/biicode/cmake" target="_blank">cmake</a> where you can find useful macros from the <strong>tools.cmake</strong> file, like one to activate C++11 flags for any OS, or to link a OSX framework to a target, etc.</p><p><b
+class="b4">Follow this example to understand it fully,</b> start creating a project:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init cpp11
+~$ cd cpp11
+~/cpp11$ bii new user/hello_cpp11 --hello</pre></div></div><p>and create the files below into your user/hello_cpp11 folder:</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include &lt;ctype.h&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt; // std::for_each
+using namespace std;
+int main()
+{
+ char s[]="Hello World!";
+ int Uppercase = 0; //modified by the lambda
+ for_each(s, s+sizeof(s), [&amp;Uppercase] (char c) {
+ if (isupper(c))
+     Uppercase++;
+ });
+ cout&lt;&lt; Uppercase&lt;&lt;" uppercase letters in: "&lt;&lt; s&lt;&lt;endl;
+}</pre><p>This is the basic <tt
+class="docutils literal">CMakeLists.txt</tt> file with an include: <tt
+class="docutils literal">INCLUDE(biicode/cmake/tools)</tt> and a line to use the Macro:</p><p><strong>CMakeLists.txt</strong></p><pre class="crayon-plain-tag">INIT_BIICODE_BLOCK()
+# Including tools.cmake from biicode/cmake user block
+# see https://www.biicode.com/biicode/cmake
+INCLUDE(biicode/cmake/tools)
+ADD_BIICODE_TARGETS()
+# Calling specific macro to activate c++11 flags
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET})</pre><p>Execute <code>bii find</code> to download the dependency as usual and bii cpp:build to compile:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/cpp11$ bii find
+~/cpp11$ bii cpp:build</pre></div></div><p>Now you&#8217;re ready to run your executable, it&#8217;s in your cpp11/bin folder:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/cpp11$ ./bin/user_hello_cpp11_main
+2 uppercase letters in: Hello World!</pre></div></div><p>I hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/publish-share-reuse-cmake-macros/">Publish, share and reuse CMake macros</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/publish-share-reuse-cmake-macros/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</title><link>http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/</link> <comments>http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/#comments</comments> <pubDate>Wed, 04 Jun 2014 11:02:10 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[drive]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[spreadsheet]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=583</guid> <description><![CDATA[<p>What is this biiday project about? Take your Arduino to filling real data from you home to any SpreadSheet in your Google Drive account, in this case with some values obtained from the 10-DOF IMU Breakout module : pitch, roll, altitude, pressure and temperature. Our code, reuses from the diego/ardunet block in order to connect us with the CC3000 WiFi [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/">IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>What is this biiday project about?</p><p>Take your Arduino to filling real data from you home to any SpreadSheet in your Google Drive account, in this case with some values obtained from the <a
+href="http://www.adafruit.com/products/1604">10-DOF IMU Breakout module</a> : pitch, roll, altitude, pressure and temperature.</p><p>Our code, reuses from the <a
+title="diego/ardunet" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master#.U4h-MvnV-X8">diego/ardunet block</a> in order to connect us with the <a
+href="http://www.adafruit.com/products/1469">CC3000 WiFi module.</a></p><p>And the new <a
+title="fenix/ardunet" href="https://www.biicode.com/fenix/blocks/fenix/ardunet/branches/master#.U4hUNfnV-X8">Ardunet block with SpreadSheet service for Arduino</a> has the functions to achieve the data filling. The following layout was made for an Arduino Mega 2560:</p><p><img
+class="alignnone wp-image-584" title="IoT: Temboo and Adafruit CC3000 WiFi 10Dof Breakout Arduino" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/10Dof_CC3000_Adafruit_Mega2560.png" alt="10Dof_CC3000_Adafruit_Mega2560" width="630" height="501" /><span
+id="more-583"></span></p><p>Just make sure you have a temboo choreo configured in order to get data from your google account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/google --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;SPI.h&gt;
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "fenix/ardunet/adafruit_10dof_utils.h"
+#include "fenix/ardunet/spreadsheet_choreo.h"
+#include "../../../../credentials.h"
+//Define the EXISTING SpreadSheet name which you have in your Google Drive
+#define SPREAD_SHEET_TITLE "My_SpreadSheet_Proof"
+/*
+This file (credentials.h), located in your hive root folder define your wifi settings. Do not publish it!
+	#define TEMBOO_ACCOUNT "user_account_name"  // Your Temboo account name
+	#define TEMBOO_APP_KEY_NAME "app_key_name"  // Your Temboo app key name
+	#define TEMBOO_APP_KEY "app_hey"  // Your Temboo app key
+	#define TEMBOO_CREDENTIAL "ProfileCredential"
+	#define WLAN_SSID "my_wifi" // cannot be longer than 32 characters!
+	#define WLAN_PASS "password"
+	#define WLAN_SECURITY YOUR_WIFI_SECURITY //WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
+*/
+// The number of times to trigger the action if the condition is met.
+// We limit this so you won't use all of your Temboo calls while testing.
+int maxCalls = 3;
+// The number of times this Choreo has been run so far in this sketch.
+int calls = 0;
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+//IMU initializations
+Adafruit_10DOF                dof   = Adafruit_10DOF();
+Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
+Adafruit_BMP085_Unified       bmp   = Adafruit_BMP085_Unified(18001);
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+										 ADAFRUIT_CC3000_IRQ,
+										 ADAFRUIT_CC3000_VBAT,
+										 SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(115200);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+    initSensors(accel, bmp); //check all the components are OK
+    displaySensorDetails(accel, bmp); //display their characteristics
+}
+void loop() {
+	if (calls &lt; maxCalls) {
+		Serial.println("\nTriggered! Calling /Library/Google/Spreadsheets/AppendRow...");
+		TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+		String all_values_imu = getValuesIMU(dof, accel, bmp); //get values we want to know
+		fillSpreadsheet(choreo, TEMBOO_CREDENTIAL, SPREAD_SHEET_TITLE, all_values_imu);	//fill our spreadsheet
+		digitalWrite(6, HIGH);
+		calls++;
+	} else {
+		Serial.println("\nTriggered! Skipping the action to save Temboo calls during testing.");
+		Serial.println("You can adjust or remove the calls/maxCalls if() statement to change this behavior.\n");
+	}
+	delay(250);
+}</pre><p>&nbsp;</p><p>First, you have to create a SpreadSheet in your Google Drive site. <strong>Don&#8217;t forget to fill the first row and as many columns as different information you wish to save</strong>, or you&#8217;ll have problems sending the data.</p><p><img
+class="alignleft wp-image-604" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/SpreadSheet_10DOF_empty.png" alt="SpreadSheet_10DOF_empty" width="400" height="208" /></p><p>&nbsp;</p><p
+style="color: #574d4d;">It is not necessary to download or install anything manually! Biicode manages to get everything, the temboo library, the 10-DOF IMU adafruit library and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically.</p><p
+style="color: #574d4d;"><strong>Just customise your email address in the code, and</strong></p><p
+style="color: #574d4d;">press <img
+class="alignnone size-full wp-image-587" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /> or execute:</p><p></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /> or:</p><pre class="crayon-plain-tag">bii arduino:upload</pre><p></p><p
+style="color: #574d4d;">You might notice that<strong
+style="font-style: inherit;"> you don’t need to provide your email password</strong>; Temboo is the one that knows and uses your credentials (in the example TEMBOO_CREDENTIAL), which is the name of your settings stored in Temboo, over there you configure your email provider (e.g. gmail), user and password. The connection to temboo is done via your TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME and TEMBOO_APP_KEY, provided in their web page.</p><p
+style="color: #574d4d;">Note that there is a file missing in the <a
+title="fenix/ardunet" href="https://www.biicode.com/fenix/blocks/fenix/ardunet/branches/master#.U4hUNfnV-X8">A<img
+class="alignleft wp-image-603" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/SpreadSheet_10DOF1.png" alt="SpreadSheet_example_temboo" width="400" height="225" />rdunet block with SpreadSheet service for Arduino</a>, it contains sensitive data: the “credentials.h” with details about your WiFi and Temboo credentials.</p><p
+style="color: #574d4d;">Check in this screenshot  how data was filled!</p><p
+style="color: #574d4d;"><a
+title="temboo" href="https://temboo.com/" target="_blank">Temboo</a> has hundreds of services, and using the great adafruit HW components is simple with biicode, so let your imagination fly and <strong
+style="font-style: inherit;">build your Internet of Things</strong> application!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/">IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Create a button panel with your 5&#8221; TFT Display with TouchScreen</title><link>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/</link> <comments>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/#comments</comments> <pubDate>Fri, 30 May 2014 10:00:19 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[button]]></category> <category><![CDATA[example]]></category> <category><![CDATA[panel]]></category> <category><![CDATA[tft]]></category> <category><![CDATA[touchscreen]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=456</guid> <description><![CDATA[<p>If you have calibrated your TFT &#38; RA8875 Driver, you&#8217;ll be able to use this post without any trouble. If you haven&#8217;t calibrated your TFT yet, look our last post where we explained how to achieve it. This example creates a button panel on the left side of your TFT. Each one of the buttons created have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/">Create a button panel with your 5&#8221; TFT Display with TouchScreen</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>If you have calibrated your TFT &amp; RA8875 Driver, you&#8217;ll be able to use this post without any trouble.</p><p><a
+title="how to calibrate your tft touchscreen eeprom" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/" target="_blank">If you haven&#8217;t calibrated your TFT yet, look our last post where we explained how to achieve it.</a></p><p>This example creates a button panel on the left side of your TFT.</p><p><img
+class="aligncenter wp-image-462" title="Button Panel 5'' TFT TouchScreen &amp; RA8875 Driver" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/Button-Panel-TFT.jpg" alt="Button Panel TFT" width="630" height="402" /><span
+id="more-456"></span>Each one of the buttons created have different functionalities. There are  six buttons:  &#8220;Free&#8221; to draw free, &#8220;Random&#8221; to draw with all types of colours depending on when you press the button, &#8220;Triangle&#8221;, &#8220;Rectangle&#8221; and &#8220;Circle&#8221; to draw these polygons with different sizes, colours and positions,  and finally, &#8220;Clear&#8221;  button, cleans our TFT screen.</p><p>Just start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/tft --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><p><strong>Do you like it?</strong> Then copy the following main.cpp file in yours, it should be located in a block of your project:</p><pre class="crayon-plain-tag">/******************************************************************
+ This is an example for the Adafruit RA8875 Driver board for TFT displays
+ ---------------&gt; http://www.adafruit.com/products/1590
+ The RA8875 is a TFT driver for up to 800x480 dotclock'd displays
+ It is tested to work with displays in the Adafruit shop. Other displays
+ may need timing adjustments and are not guanteed to work.
+ Adafruit invests time and resources providing this open
+ source code, please support Adafruit and open-source hardware
+ by purchasing products from Adafruit!
+ Written by Limor Fried/Ladyada for Adafruit Industries.
+ BSD license, check license.txt for more information.
+ All text above must be included in any redistribution.
+ ******************************************************************/
+#include "fenix/ra8875_button_panel/button_panel.h"
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+tsMatrix_t _tsMatrix;
+ButtonPanel panel;
+//declaring needed variables
+unsigned long previousMillis = 0;
+unsigned long interval = 100;
+void waitingTouchEvents(tsPoint_t * point);
+void setup()
+{
+    Serial.begin(9600);
+    Serial.println("RA8875 start");
+    /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
+    if (!tft.begin(RA8875_800x480)) {
+    Serial.println("RA8875 Not Found!");
+    while (1);
+    }
+    Serial.println("Found RA8875");
+    tft.displayOn(true);
+    tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
+    tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+    tft.PWM1out(255);
+    // With hardware accelleration this is instant
+    tft.fillScreen(BLACK);
+    pinMode(RA8875_INT, INPUT);
+    digitalWrite(RA8875_INT, HIGH);
+    if (readCalibrationMatrix (&amp;_tsMatrix))
+        Serial.println("Calibration is OK! :)");
+    else
+        Serial.println("Calibration is wrong! Repeat the process!");
+    tft.touchEnable(true);
+    panel.draw();
+    Serial.print("Status: "); Serial.println(tft.readStatus(), HEX);
+    Serial.println("Waiting for touch events ...");
+}
+void loop()
+{
+    tsPoint_t point;
+    tsPoint_t calibrated;
+    unsigned long currentMillis = millis();
+    // waiting for touch events
+    waitingTouchEvents(&amp;point);
+    /* Calcuate the real X/Y position based on the calibration matrix */
+    calibrateTSPoint(&amp;calibrated, &amp;point, &amp;_tsMatrix );
+    //To avoid creating a lot of figures if you touch only once
+    //It's not BLOCKING your Arduino
+    if(currentMillis - previousMillis &gt; interval){
+        // save the last time you touched the button
+        previousMillis = currentMillis;
+        panel.OnTouch(calibrated);
+    }
+    //if we touch button Free, we don't need to wait OnTouch event
+    panel.OnDrawFree(calibrated);
+}
+void waitingTouchEvents(tsPoint_t* point)
+{
+  /* Clear the touch data object and placeholder variables */
+  memset(point, 0, sizeof(tsPoint_t));
+  /* Clear any previous interrupts to avoid false buffered reads */
+  uint16_t x, y;
+  tft.touchRead(&amp;x, &amp;y);
+  delay(1);
+  /* Wait around for a new touch event (INT pin goes low) */
+  while (digitalRead(RA8875_INT)){}
+  /* Make sure this is really a touch event */
+  if (tft.touched())
+  {
+    tft.touchRead(&amp;x, &amp;y);
+    point-&gt;x = x;
+    point-&gt;y = y;
+    Serial.print("Touch: ");
+    Serial.print(point-&gt;x); Serial.print(", "); Serial.println(point-&gt;y);
+  }
+  else
+  {
+    point-&gt;x = 0;
+    point-&gt;y = 0;
+  }
+}</pre><p>Just press <img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" />in our <a
+title="Download Bii-IDE" href="https://www.biicode.com/downloads" target="_blank">Bii-IDE,</a> or execute in the terminal:</p><pre class="crayon-plain-tag">$ bii find</pre><p>and</p><p><img
+class="alignleft wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><p>&nbsp;</p><p>&nbsp;</p><pre class="crayon-plain-tag">$ bii arduino:upload</pre><p><strong> Enjoy drawing!</strong></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/">Create a button panel with your 5&#8221; TFT Display with TouchScreen</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</title><link>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/</link> <comments>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/#comments</comments> <pubDate>Tue, 27 May 2014 10:32:40 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[eeprom]]></category> <category><![CDATA[example]]></category> <category><![CDATA[tft]]></category> <category><![CDATA[touchscreen]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=430</guid> <description><![CDATA[<p>Today, you can learn how to save the calibration matrix in your EEPROM and load it any time you use your  TFT Display. Everytime you use the TFT Display you have to calibrate it for drawing anything properly. We can use the Arduino EEPROM to save the  TFT Display calibration matrix and then use it [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/">5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+style="text-align: left;">Today, you can learn how to save the calibration matrix in your EEPROM and load it any time you use your  TFT Display.</p><p><img
+class="size-full wp-image-450 alignleft" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/IMG_20140513_165231281.jpg" alt="TFT display calibration" width="522" height="340" /></p><p>Everytime you use the TFT Display you have to calibrate it for drawing anything properly. We can use the Arduino EEPROM to save the  TFT Display calibration matrix and then use it anytime you want easier than ever before.</p><p><span
+id="more-430"></span></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>We’re re-using from the following Adafruit modules:</p><table
+border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td><img
+class="alignleft wp-image-533" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/tft_adafruit.jpg" alt="TFT Touchscreen adafruit" width="215" height="161" /> <a
+title="ra8875 driver" href="http://www.adafruit.com/products/1590">RA8875 Driver Board for 40-pin TFT Touch Displays</a></td></tr><tr><td><img
+class="alignleft wp-image-532" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/ra8875_adafruit.jpg" alt="Adafruit RA8875 driver" width="215" height="161" /><br
+/> <a
+title="5'' TFT with touchscreen" href="http://www.adafruit.com/products/1596">5.0&#8243; 40-pin TFT Display &#8211; 800&#215;480 with Touchscreen</a></td></tr></tbody></table><p>This is the main code to calibrate your TFT Display and save/load the calibration matrix. We made it by re-using from the <a
+title="adafruit_ra8875 library" href="https://www.biicode.com/adafruit/blocks/adafruit/ra8875/branches/master#.U00SgPl_u3I">adafruit_ra8875 library</a>, and the <a
+title="ra8875_calibrate library" href="https://www.biicode.com/fenix/blocks/fenix/ra8875_calibrate/branches/master#.U00aRfl_u3I">ra8875_calibrate library</a> , both allocated in biicode. Our code is just like this, to use it,  start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/tft --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "SPI.h"
+#include "fenix/ra8875_calibrate/ra8875_calibration.h"
+#include "fenix/ra8875_calibrate/test/aux_funcs.h"
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+tsPoint_t       _tsLCDPoints[3];
+tsPoint_t       _tsTSPoints[3];
+tsMatrix_t      _tsMatrix;
+tsMatrix_t      _tsCalibratedMatrix;
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println("Hello, RA8875!");
+  /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
+    if (!tft.begin(RA8875_800x480))
+  {
+    Serial.println("RA8875 not found ... check your wires!");
+    while (1);
+  }
+  /* Enables the display and sets up the backlight */
+  Serial.println("Found RA8875");
+  tft.displayOn(true);
+  tft.GPIOX(true); // Enable TFT - display enable tied to GPIOX
+  tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+  tft.PWM1out(255);
+  /* Enable the touch screen */
+  Serial.println("Enabled the touch screen");
+  pinMode(RA8875_INT, INPUT);
+  digitalWrite(RA8875_INT, HIGH);
+  tft.touchEnable(true);
+  tft.fillScreen(RA8875_WHITE);
+  delay(100);
+  /* Start the calibration process */
+  tsCalibrate(tft, _tsLCDPoints, _tsTSPoints, &amp;_tsMatrix);
+  if (readCalibrationMatrix (&amp;_tsCalibratedMatrix))
+	  Serial.println("Calibration is OK! :)");
+  else
+	  Serial.println("Calibration is wrong! Repeat the process!");
+  /* _tsMatrix should now be populated with the correct coefficients! */
+  Serial.println("Waiting for touch events ...");
+}
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void loop()
+{
+  tsPoint_t raw;
+  tsPoint_t calibrated;
+  /* Wait around for a touch event */
+  waitForTouchEvent(tft, &amp;raw);
+  /* Calcuate the real X/Y position based on the calibration matrix */
+  calibrateTSPoint(&amp;calibrated, &amp;raw, &amp;_tsCalibratedMatrix);
+  /* Draw a single pixel at the calibrated point */
+  tft.fillCircle(calibrated.x, calibrated.y, 3, RA8875_BLACK);
+}</pre><p><strong> </strong><strong>Do you want to code it?</strong></p><p>It is not necessary to download or install anything manually! Biicode manages to get everything, the Adafruit library, the calibration library, the helper functions, etc. and everything is configured automatically.</p><p>Just copy this main file and then:</p><pre class="crayon-plain-tag">$ bii find</pre><p>and</p><pre class="crayon-plain-tag">$ bii arduino:upload</pre><p><strong> Enjoy drawing!</strong><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/">5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

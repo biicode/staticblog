@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; windows</title> <atom:link href="http://blog.biicode.com/tag/windows/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Using AppVeyor CI and Deploy for Windows</title><link>http://blog.biicode.com/appveyor-ci-windows-biicode/</link> <comments>http://blog.biicode.com/appveyor-ci-windows-biicode/#comments</comments> <pubDate>Mon, 09 Feb 2015 16:35:08 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[continuous integration]]></category> <category><![CDATA[deploy]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2029</guid> <description><![CDATA[<p>Let&#8217;s use AppVeyor CI for Windows to automatically build and publish our new commits and releases to biicode. GitHub or Bitbucket enable creating remote repositories to develop them collaboratively. First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Let&#8217;s use <a
+href="https://ci.appveyor.com/">AppVeyor</a> CI for Windows to automatically build and publish our new commits and releases to biicode.</p><p><img
+class="aligncenter wp-image-2030 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_logo.png" alt="AppVeyor CI service now integrated with biicode to make it work in Windows." width="162" height="29" /></p><p>GitHub or Bitbucket enable creating remote repositories to develop them collaboratively.</p><p><span
+id="more-2029"></span></p><p>First, put your repo into a biicode block, we’re using GitHub in this tutorial, but same basic steps apply for Bitbucket repos. Get your repo’s URL here:</p><p><img
+class="aligncenter wp-image-2031 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/2_clone-1024x786.png" alt="Clone a Github repo as the first step in our AppVeyor CI tutorial" width="630" height="484" /></p><p>Create a new biicode project, and paste the URL to clone the repository into your block:</p><pre class="crayon-plain-tag">bii init myproject
+cd myproject
+bii new amalulla/cpp-expresion-parser
+cd blocks\amalulla\cpp-expresion-parser
+git clone https://github.com/MariadeAnton/cpp-expression-parser.git .</pre><p>Don’t miss the dot at the end, this copies your repo’s files and folders into your block’s main folder.</p><h2>Automatically build and publish via AppVeyor CI</h2><p>Login at <a
+href="https://ci.appveyor.com/" target="_blank">AppVeyor</a> with your favourite developer account and once logged-in clic on <em>“+ new project”</em></p><p><img
+class="aligncenter wp-image-2032 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/new_appveyor_project.png" alt="Open a new AppVeyor CI project" width="1006" height="214" /></p><p>Choose the repo you want to deploy with AppVeyor:</p><p><img
+class="aligncenter wp-image-2033 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/add_appveyor_project2-1024x466.png" alt="Choose and AppVeyor CI project" width="630" height="287" /></p><p>Once enabled, let&#8217;s get back to our local project and create an <code>appveyor.yml</code> file into your block&#8217;s folder. This file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, but you can configure it to fit your needs:</p><pre class="crayon-plain-tag">version: 1.0.{build}
+install:
+  - ps: wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-win32-x86.zip -OutFile cmake.zip
+  - cmd: echo "Unzipping cmake..."
+  - cmd: 7z x cmake.zip -o"C:\Program Files (x86)\" -y &gt; nul
+  - cmd: set PATH=%PATH:CMake 2.8\bin=%;C:\Program Files (x86)\cmake-3.0.2-win32-x86\bin
+  - cmd: cmake --version
+  - cmd: echo "Downloading biicode..."
+  - ps: wget http://www.biicode.com/downloads/latest/win -OutFile bii-win.exe
+  - cmd: bii-win.exe /VERYSILENT
+  - cmd: set PATH=%PATH%;C:\Program Files (x86)\BiiCode\bii
+  - cmd: bii -v
+  - cmd: del bii-win.exe
+  - cmd: del cmake.zip
+before_build:
+  - cmd: bii init -L
+    # copy files and folders
+  - cmd: xcopy "%APPVEYOR_BUILD_FOLDER%" blocks\%block_user%\%block_name%\ /e
+  - cmd: bii configure -G "Visual Studio 12"
+build_script:
+  - cmd: bii build
+test_script:
+  - cmd: cd bin
+  - cmd: amalulla_cpp-expression-parser_test-shunting-yard.exe
+# to run your custom scripts instead of provider deployments
+deploy_script:
+  - cmd: bii user %block_user% -p %secured_passwd%
+  - if defined APPVEYOR_REPO_TAG_NAME set VERSION=%APPVEYOR_REPO_TAG_NAME%
+  - if defined APPVEYOR_REPO_TAG_NAME bii publish -r --tag=%tag% --versiontag=%VERSION%
+  - if not defined APPVEYOR_REPO_TAG_NAME bii publish -r
+on_success:
+  - ps: |
+        git checkout "$env:APPVEYOR_REPO_BRANCH"
+        git config --global core.autocrlf true
+        git config --global credential.helper store
+        Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:access_token):x-oauth-basic@github.com`n"
+        git remote add neworigin "$env:github_repo"
+        git config --global user.email "$env:github_email"
+        git config --global user.name "$env:github_user"
+        git add .
+        git commit -m "Updated biicode parents [skip ci]"
+        git push neworigin "$env:APPVEYOR_REPO_BRANCH"
+environment:
+  block_user:
+    "amalulla"
+  block_name:
+    "cpp-expression-parser"
+  secured_passwd:
+    secure: ZMvgETfLAUo7kISnvrinBA==
+  access_token:
+    secure: GdIDIRkmsM9blqS143lQErkxguMYgJBs74GzWw+lgzjvl/NoLs4ErcOZ2JBAEmkr
+  tag:
+    "STABLE"
+  github_user:
+    "MariadeAnton"
+  github_email:
+    "maria.deanton@biicode.com"
+  github_repo:
+    "git@github.com:MariadeAnton/cpp-expression-parser.git"</pre><p>Let&#8217;s take a deeper look into this file to adapt it to your build config, changes are only needed in <strong>test_script</strong><em> and <strong>enviroment</strong></em> values, other changes may depend on what you will use Appveyor for:</p><ul><li>install: Just copy this part, it installs all tools required to deploy your biicode projects in AppVeyor.</li><li>before_build: Copy your project&#8217;s files into the biicode project and configure it to use Visual Studio 12 via <code> bii cpp:configure</code>.  Check <a
+href="http://docs.biicode.com/c++/ides.html" target="_blank">biicode docs</a> and  your project&#8217;s settings in <a
+title="appveyor" href="http://www.appveyor.com/" target="_blank">Appveyor </a> to use other build configurations. *Also note that there&#8217;s a commented line here you should also write if your project contains folders.</li><li>build_script: builds the project via <code> bii cpp:build. </code></li><li>test_script: cd bin and execute your project. Ensure about your project&#8217;s executable, build and execute it locally via  <code>bii cpp:build</code>.</li><li>deploy_script: This script publishes your block to biicode, as stable including your version tag only when it&#8217;s tagged, otherwise your block is published as dev.</li><li>on_success: If your biicode.conf file is updated commit its changes to github without launching a new build. Else do nothing.</li><li><em>environment:</em> Replace all  the environment variables with your own values: project_name, tag, default version tag value&#8230;</li></ul><h2 id="building-appveyor-specifics">Specifics:</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Here&#8217;s an <a
+title="git push from appveyor build" href="http://http://www.appveyor.com/docs/how-to/git-push" target="_blank">appveyor guide about how to git push from build</a>. Following this Appveyor Guide we&#8217;re using it as credentials with Git commands. Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="configuring-build-secure-variable-with-access-token">Configuring build secure variable</h3><p>Encrypt your biicode password and your access token using <a
+href="https://ci.appveyor.com/tools/encrypt" target="_blank">Encrypt Data tool</a> and then put it as secure variable into your <code>appveyor.yml</code>, for example, to generate an encrypted password with Appveyor go to your profile and choose <em>Encrypt data:</em></p><p><img
+class="aligncenter wp-image-2034 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypt_data-1024x563.png" alt="Encrypt the data of your AppVeyor CI project" width="630" height="346" />Once there, encrypt your password and copy the value generated to put it in your  environment &#8220;<em>secured_password: secure:&#8221;</em></p><p><img
+class="aligncenter wp-image-2035 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/encrypted_appveyor_data-300x144.png" alt="AppVeyor CI encryption config" width="300" height="144" /></p><p>When it comes to specifying your project settings, it&#8217;s useful to check them online. For example, you can skip branches without an <code>appveyor.yml</code> file just saying it your <code>appveyor.yml</code> or into their web interface. Also, <a
+href="http://www.appveyor.com/docs/build-configuration">AppVeyor docs explain in detail build configuration.</a></p><h2>The icing</h2><p>Put a nice AppVeyor badge to show your project builds in Windows.</p><p>Go to your projects settings&gt;Badges, copy your repo&#8217;s badge and paste it in your README file:</p><p><img
+class="aligncenter wp-image-2036 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/appveyor_project_settings-1024x809.png" alt="AppVeyor CI project settings" width="630" height="498" /></p><h2>Update and push to GitHub!</h2><p>Add, commit and push your changes to GitHub</p><pre class="crayon-plain-tag">$ git add --all
+$ git commit -m "commit message"
+$ git push origin master</pre><p></p><h3>Working with tags</h3><p>Using the <code>appveyor.yml</code> file described before, you can tag a version with git, push it to github and it will be automatically tagged in biicode too:</p><pre class="crayon-plain-tag">git tag -a v0.1 -m 'my version 0.1'
+ git push origin v0.1</pre><p>Here&#8217;s <a
+title="git taggin basics" href="http://git-scm.com/book/en/v2/Git-Basics-Tagging" target="_blank">Git basics about Tagging</a>.</p><p>Unless you specify it otherwise, each time you push to AppVeyor CI System, a build launches to check everything is still working.</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Fork Cpp-expression-parser" href="https://github.com/MariadeAnton/cpp-expression-parser" target="_blank">Forked cpp-expresion-parser repo in GitHub</a>  from the <a
+href="https://github.com/bamos/cpp-expression-parser" target="_blank">Original repo by Brandon Amos</a></li><li><a
+title="appveyor build cpp-expression-parser" href="https://ci.appveyor.com/project/MariadeAnton/cpp-expression-parser" target="_blank">cpp-expression-parser builds in AppVeyor</a> CI and Deployment</li><li><a
+href="http://www.biicode.com/amalulla/cpp-expression-parser" target="_blank">cpp-expression parser biicode block</a> and with its automatically published releases</li></ul><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our<span
+class="Apple-converted-space"> </span><a
+href="http://docs.biicode.com/">docs</a>,<span
+class="Apple-converted-space"> </span><a
+href="http://forum.biicode.com/">forum</a><span
+class="Apple-converted-space"> </span>and/or<span
+class="Apple-converted-space"> </span><a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a><span
+class="Apple-converted-space"> </span>for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/appveyor-ci-windows-biicode/">Using AppVeyor CI and Deploy for Windows</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/appveyor-ci-windows-biicode/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>CMake Tutorial to build better biicode projects</title><link>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/</link> <comments>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/#comments</comments> <pubDate>Thu, 27 Nov 2014 14:34:28 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[linux]]></category> <category><![CDATA[mac]]></category> <category><![CDATA[OSX]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[Visual]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1929</guid> <description><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses CMake to configure and build your projects. Hope there are no surprises here! This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt. Develop as usual To [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses <a
+title="CMake" href="http://www.cmake.org/" target="_blank">CMake</a> to configure and build your projects. Hope there are no surprises here!</p><p>This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt.</p><p><img
+class="aligncenter size-full wp-image-1848" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/cmakebanner1.jpg" alt="Custom CMake toolchain is now a feature in biicode" width="280" height="77" /></p><p><span
+id="more-1929"></span></p><h2>Develop as usual</h2><p>To start, let’s configure a biicode project to work with your usual editor, compiler and IDE.<br
+/> Execute:</p><pre class="crayon-plain-tag">$ cmake --help</pre><p>to show a list of CMake generators available in your system, these might be “<code>Eclipse CDT4 - Ninja</code>”, “<code>Unix Makefiles</code>”, “<code>Visual Studio 10</code>”, “<code>Sublime Text 2</code>” or others. Choose yours and tell bii to configure:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G “Visual Studio 10”</pre><p>Is it an arduino project? Write <code>bii arduino:configure -G “Eclipse CDT4 - Unix Makefiles”</code></p><p>Want to debug? <code>$ bii cpp:configure -D CMAKE_BUILD_TYPE=DEBUG</code></p><p>Use them all together:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 9 2008" -D CMAKE_BUILD_TYPE=DEBUG”</pre><p>Note that <code>bii cpp:configure </code>admits any CMake directives</p><p><code>bii clean</code> to restore default project settings, those are MinGW Makefiles (Windows) or UNIX Makefiles (MacOS and Linux) and no IDE.</p><h2>Advanced CMake configuration through CMakeLists.txt</h2><p>It’s usual to have a previous build config in which some parts are shared with biicode and others are specific for the old way out of dependency hell. We’ve developed a way to maintain both ways on your CMakeLists.txt:</p><pre class="crayon-plain-tag">#shared configuration here
+IF(BIICODE)
+   include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+   INIT_BIICODE_BLOCK()
+   ADD_BIICODE_TARGETS()
+ELSE()
+      # Your old project configuration here
+ENDIF()</pre><p>And that’s it, as you can see in previous posts , this process is more or less straight forward depending on the library’s complexity: Json11 by Dropbox, Box2D by Erin Catto, Little CMS by Marti Maria or Oscpack by Ross Bencina.</p><h4>INIT_BIICODE_BLOCK()</h4><p>This function defines these variables:</p><ul><li><code>${BII_BLOCK_NAME} </code>The name of the current block (e.g. &#8220;box2d&#8221;)</li><li><code>${BII_BLOCK_USER} </code>The user&#8217;s name (e.g. &#8220;phil&#8221;)</li><li><code>${BII_BLOCK_PREFIX} </code>The directory where the block is located (&#8220;blocks&#8221; or &#8220;deps&#8221;)</li></ul><p>It also loads variables and  you can use or modify them. Check the default CMakeLists.txt comments to learn more.</p><h4>ADD_BIICODE_TARGETS()</h4><p>A CMake <code>TARGET</code> represents each one of the executables or libraries CMake compiles. This function defines these variables:</p><ul><li><code>${BII_BLOCK_TARGETS} </code>List of targets defined in this block</li><li><code>${BII_LIB_TARGET} </code> This is the library biicode builds for each one of the blocks within your project. Just the target library name, usually in the form &#8220;user_block&#8221;</li><li> You can also use directly the name of the executable target (e.g. user_block_main)</li></ul><h2>10 CMake Tips</h2><h3>#1 Variable declaration</h3><p>STRING is a basic CMake variable. It can be used as part of any other identificator.<br
+/> Like the preprocessor, if the var name is enclosed between {} and preceded by $, that expression is equal to the contents of the variable:</p><pre class="crayon-plain-tag">set(MYVAR /var/run/bootstamp)
+# is equivalent to:
+set(MYVAR “/var/run/bootstamp”)
+# list and text substitution examples:
+set(MYVAR “element1” )
+set(${MYVAR}_name “hello”)
+set(MYVAR2 element1 “${MYVAR}_name” element3 ${${MY_VAR}_name}})</pre><p>As CMake stores the sets as a string where elements are separated by &#8220;;&#8221;-&gt; MYVAR2 contains the string <code>“element1;element1_name;element3;hello”</code></p><h3>#2 Logging to Screen</h3><p>Fatal error messages interrupt the CMake execution:</p><pre class="crayon-plain-tag">message("hello world MYVAR=${MYVAR}")
+message(SEND_ERROR "Should not have got here")
+message(FATAL_ERROR "Something bad happened")</pre><p></p><h3>#3 Relevant CMake vars</h3><h4>DIRECTORIES</h4><ul><li><b><code>CMAKE_CURRENT_SOURCE_DIR</code></b>: source directory currently being processed</li><li><b><code>CMAKE_CURRENT_BINARY_DIR</code></b>: binary directory currently being processed</li><li><b><code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code></b>: directory being used as IDE run</li></ul><h4>SYSTEM DESCRIPTION</h4><ul><li><b><code>APPLE</code></b>: True if running on Mac OS X</li><li><b><code>UNIX</code></b>: True for UNIX and UNIX like operating systems (i.e.: APPLE and CYGWIN)</li><li><b><code>MSVC:</code></b> True when using Microsoft Visual C</li><li><b><code>WIN32</code></b>: True on windows systems, including win64</li><li><b><code>MINGW</code></b>: True when generating MinGW Makefiles</li><li><b><code>CMAKE_SYSTEM_NAME</code></b>: Name of system cmake is being run on</li></ul><p><a
+title="SDL CMakeLists.txt" href="http://www.biicode.com/miguel/miguel/sdl2/master/1/CMakeLists.txt" target="_blank">SDL CMakeLists.txt </a> is a clarifying example of use, take a look at from line 193 and on to see CMake vars in use.</p><h3>#4 Conditionals</h3><p>CMake Control Statements have an opening and a closing keyword that must be placed in exclusive lines. Also, CMake commands always have to include “()”</p><pre class="crayon-plain-tag">if(expression)
+  	...
+elseif(expression)
+  	...
+else()
+  	...
+endif()</pre><p></p><h4>Here&#8217;s some common if expressions:</h4><ul><li><b><code>if(MSVC)</code></b><b>  </b>True if the compiler is visual studio</li><li><b><code>if(NOT APPLE)</code></b> True if Linux, Windows, &#8230;</li><li><b><code>if(WIN32 AND NOT MSVC)</code></b> True  on MinGW compiler env</li><li><b><code>if(TARGET target-name) </code></b> True if the given name is an existing target.</li><li><b><code>if(CMAKE_SYSTEM_NAME MATCHES “.*Linux”)</code></b> true for linux systems</li><li><b><code>if(MINGW</code>)</b> useful for MinGW detection</li><li><b><code>if(UNIX AND NOT APPLE)</code></b><br
+/> <b>   <code>set(UNIX_SYS ON)</code></b><br
+/> <b><code>else()</code></b><br
+/> <b>   <code>set(UNIX_SYS OFF)</code></b><br
+/> <b><code>endif() </code>  </b>Simple way to differentiate between Apple and UNIX</li><li><code><b>if(MSVC_VERSION GREATER 1600)</b> </code>True for MSVC 12 and more recent versions</li></ul><h3>#5 Operations with lists</h3><h4>Removing elements from a &#8220;;&#8221; list:</h4><p></p><pre class="crayon-plain-tag">SET(MYLIST "elem1;elem2;elem3;elem4")
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p>Or (removing elements from a list)</p><pre class="crayon-plain-tag">SET(MYLIST  elem1 elem2 elem3 elem4)
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p></p><h4>Remove “UDPwin32.cpp” source file on compilation time:</h4><p></p><pre class="crayon-plain-tag">list(REMOVE_ITEM BII_LIB_SRC “src/nat/UDPwin32.cpp”)</pre><p>This one is pretty useful when you don&#8217;t want to consider or not a file depending on the OS compiling.</p><h4>Adding elements to a list</h4><p></p><pre class="crayon-plain-tag">list(APPEND MYLIST elem5 elem6)</pre><p></p><h4>Check if a list contains a value</h4><p></p><pre class="crayon-plain-tag">list(FIND MYLIST_VAR "src/google.cpp" HasGoogleFile)
+IF(HasGoogleFile EQUAL -1)
+	message(FATAL_ERROR "I could not find google.cpp")
+ENDIF()</pre><p></p><h3>#6 Setting the directories used by the compiler</h3><h4>Adding an include path to the compiler for the current project.</h4><p>This syntax is better for directories needed only in compilation phase, not to be reused.</p><pre class="crayon-plain-tag">INCLUDE_DIRECTORIES(/some/directory)
+INCLUDE_DIRECTORIES(/some/onedirectory /other/directory)</pre><p></p><h4>View the directories that are set in the path</h4><p></p><pre class="crayon-plain-tag">get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+message("inc_dirs = ${inc_dirs}")</pre><p></p><h4>Per-target public include directories.</h4><p>Include the PUBLIC keyword to transitively transmit the directories property to all the targets using the lib. Use it to transmit a public header path.</p><pre class="crayon-plain-tag">TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CURRENT_SOURCE_DIR}/include )</pre><p></p><h3>#7 Set the compile flags used by the compiler</h3><h4>Add a preprocessor definition for the current project</h4><p></p><pre class="crayon-plain-tag">ADD_DEFINITIONS(MY_OPTION)</pre><p></p><h4>Per-target public/private definitions</h4><p>On the 3rd point of tip #6, PUBLIC modifier is used to transmit a “include directory” to dependent targets. Here we use the PRIVATE modifier instead with target_compile_definitions so the DO_GNU_TESTS is only used for the specific target compilation, and it is not transmitted to its dependent targets .</p><pre class="crayon-plain-tag">target_compile_definitions(target_name PRIVATE DO_GNU_TESTS)</pre><p></p><h4>Per-target public/private compile flags</h4><p>Several flags are compiler specific, and are not preprocessor definitions. Use this command for non-standard flags:</p><pre class="crayon-plain-tag">target_compile_options(target_name PUBLIC "-Wall")</pre><p></p><h3>#8 Set linker Flags</h3><h4>Setting Windows application linker option</h4><p></p><pre class="crayon-plain-tag">if(MSVC)
+   set_target_properties(exe_target PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h4>Per-target public/private linker flags and libs</h4><p></p><pre class="crayon-plain-tag">TARGET_LINK_LIBRARIES(${TARGET_NAME} LINK_PUBLIC ${SOME_LIBRARY})
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC jpeg)
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC tiff X11)
+  	SET(PLATFORM_LIBS odbc32.lib odbccp32.lib shlwapi.lib)
+  	target_link_libraries(${BII_LIB_TARGET} PUBLIC ${PLATFORM_LIBS} ${PLATFORM_LDFLAGS})</pre><p></p><h3>#9 Finding and using external libs</h3><h4>OpenGL example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE(OpenGL QUIET)
+IF(OPENGL_FOUND)</pre><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})
+ADD_DEFINITIONS(-DHAVE_OPENGL)
+TARGET_INCLUDE_DIRECTORIES(${TARGET_NAME} PUBLIC
+${OPENGL_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${TARGET_NAME} PUBLIC
+${OPENGL_LIBRARIES})
+ENDIF()</pre><p></p><h4>Boost components example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE (Boost COMPONENTS system filesystem REQUIRED) INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
+TARGET_LINK_LIBRARIES(${BII_main_TARGET} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES( ${BII_LIB_TARGET} PUBLIC ${Boost_LIBRARIES} )</pre><p></p><h3>#10 Copying files</h3><h4>Copying files of some type to the binary and runtime directories</h4><p></p><pre class="crayon-plain-tag">file(GLOB pngFiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+            	${CMAKE_CURRENT_SOURCE_DIR}/*.png *.ttf)
+foreach(imgFile ${imgFiles})
+   message(STATUS "Copying file ${imgFile}")
+   file(COPY ${imgFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+   file(COPY ${imgFile} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endforeach(imgFile)</pre><p></p><h4>Copying a directory to the binary dir</h4><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})</pre><p>Hope you enjoy this CMake Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

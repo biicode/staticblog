@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; nexmo</title> <atom:link href="http://blog.biicode.com/tag/nexmo/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</title><link>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/</link> <comments>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/#comments</comments> <pubDate>Wed, 11 Jun 2014 08:30:38 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[nexmo]]></category> <category><![CDATA[project]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=659</guid> <description><![CDATA[<p>What&#8217;s this biiday project about? Get your Arduino to call you whenever the temperature rises! In this case, we&#8217;re going to make our Arduino board call a phone based on the temperature value obtained from the 10-DOF IMU Breakout module, and then remotely control it with the keypad. To connect to temboo, we&#8217;re using the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>What&#8217;s this biiday project about? Get your Arduino to call you whenever the temperature rises!</p><p>In this case, we&#8217;re going to make our Arduino board call a phone based on the temperature value obtained from the <a
+title="10-DOF IMU Breakout module" href="http://www.adafruit.com/products/1604" target="_blank">10-DOF IMU Breakout module</a>, and then remotely control it with the keypad.</p><p>To connect to <a
+title="temboo" href="https://temboo.com/" target="_blank">temboo</a>, we&#8217;re using the <a
+title="Adafruit CC300 WiFi Module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC300 WiFi Module</a> and reusing code from <a
+title="Diego Block for CC3000 Module Adafruit" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master" target="_blank">diego/ardunet.</a></p><p><img
+class="aligncenter wp-image-660" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/temboo_nexmo_bb.jpg" alt="temboo_nexmo_bb" width="630" height="544" /><span
+id="more-659"></span></p><p>The  layout above, was made with fritzing for an Arduino mega 2560.</p><p>If you want to make your Arduino make a phone call, we&#8217;ve made a new reusable block! . You just need to create a free Nexmo account and  reuse from davidvirseda/nexmo block.</p><p>Just make sure you have a temboo choreo configured in order to get data from your nexmo account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/nexmo --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include &lt;Arduino.h&gt;
+#include &lt;SPI.h&gt;
+#include &lt;diego/temboo/temboo.h&gt;
+#include "tembooaccount.h" // Contains Temboo account information
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "davidvirseda/nexmo/nexmochoreo.h"
+#include &lt;adafruit/ada_10dof/adafruit_10dof.h&gt;
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+/* Assign a unique ID to the sensors */
+Adafruit_BMP085_Unified  bmp   = Adafruit_BMP085_Unified(18001);
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+				 ADAFRUIT_CC3000_IRQ,
+				 ADAFRUIT_CC3000_VBAT,
+				 SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+String makeNexmoCall();
+// The number of times to trigger the action if the condition is met.
+// We limit this so you won't use all of your Temboo calls while testing.
+int maxCalls = 1;
+// The number of times this Choreo has been run so far in this sketch.
+int calls = 0;
+float temperature;
+void setup() {
+  Serial.begin(9600);
+  // For debugging, wait until the serial console is connected.
+  delay(4000);
+  while(!Serial);
+  startConnection(cc3000,
+        	        WLAN_SSID,
+                  WLAN_PASS,
+                  WLAN_SEC_WPA2);
+  Serial.println("OK");
+  if(!bmp.begin()){
+        /* There was a problem detecting the BMP085 ... check your connections */
+        Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+  }
+  delay(5000);
+  Serial.println("Setup complete.\n");
+}
+void loop() {
+  bmp.getTemperature(&amp;temperature);
+  Serial.println("Temperature: ");
+  Serial.println(temperature);
+  if (temperature &gt; 30) {
+    if (calls &lt; maxCalls) {
+      Serial.println("\nTriggered! Calling /Library/Nexmo/Voice/CaptureTextToSpeechPrompt...");
+      TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+      String choice = makeNexmoCall(choreo, "It's getting hot in here!, Press 1 to turn on A/C",
+                                    NEXMO_API_KEY, NEXMO_API_SECRET, NUMBER_TO, "1", "Ok, your wish is my command. Goodbye!");
+      if (choice == "1") {
+	digitalWrite(12, HIGH);
+        	Serial.println("A/C is on");
+      }
+      calls++;
+    } else {
+      Serial.println("\n Triggered! Skipping the action to save Temboo calls during testing.");
+      Serial.println("You can adjust or remove the calls/maxCalls if() statement to change this behavior.\n");
+    }
+  }
+  delay(10000);
+  digitalWrite(12, LOW);
+}</pre><p>As you can see in this example, the Arduino board will make a phone call whenever the temperature obtained from the 10- DOF IMU Breakout module is higher than 30 degrees.</p><p>Customize the temperature that pulls the trigger and adapt the text you want to listen by the phone.</p><p>The Temboo, Nexmo and WiFi credentials are stored in “tembooaccount.h”, this file is not publicly visible to keep sensitive data in private, but it&#8217;s the header file temboo gives you when you configure your settings, and it should look like this one:</p><pre class="crayon-plain-tag">/*
+IMPORTANT NOTE about TembooAccount.h
+TembooAccount.h contains your Temboo account information and must be included
+alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,
+and copy this content into it.
+*/
+#define TEMBOO_ACCOUNT "account_name"  // Your Temboo account name
+#define TEMBOO_APP_KEY_NAME "myFirstApp"  // Your Temboo app key name
+#define TEMBOO_APP_KEY "app_key"  // Your Temboo app key
+#define NEXMO_API_KEY "app_key" //Nexmo API Key
+#define NEXMO_API_SECRET "api_secret"
+#define NUMBER_TO "number_to_call"
+#define WLAN_SSID "wifi_ide"
+#define WLAN_PASS "your_pass_here"
+#define WLAN_SECURITY WLAN_SEC_WPA2
+/*
+The same TembooAccount.h file settings can be used for all Temboo SDK sketches.
+Keeping your account information in a separate file means you can share the
+main .ino file without worrying that you forgot to delete your credentials.
+*/</pre><p>Well, you&#8217;re ready to go:</p><p>Just push or execute<img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><pre class="crayon-plain-tag">bii arduino:upload</pre><p>&nbsp;</p><p>Let&#8217;s see the results with our Arduino Serial Monitor!<img
+class="aligncenter wp-image-663" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura_monitor.jpg" alt="Bii IDE" width="630" height="709" /></p><p>It is not necessary to download on install anything manually! Biicode manages to get everything, the temboo library, the 10-DOF IMU adafruit library and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically.</p><p>Temboo has hundreds of services, and using the great <a
+title="adafruit" href="https://www.adafruit.com/" target="_blank">adafruit</a> HW components is simple with biicode, so let your imagination fly and build your Internet of Things application!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

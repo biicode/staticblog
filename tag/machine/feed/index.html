@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; machine</title> <atom:link href="http://blog.biicode.com/tag/machine/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>State machine: A more advanced example</title><link>http://blog.biicode.com/state-machine-advanced-example/</link> <comments>http://blog.biicode.com/state-machine-advanced-example/#comments</comments> <pubDate>Mon, 31 Mar 2014 11:11:10 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[machine]]></category> <category><![CDATA[state]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=359</guid> <description><![CDATA[<p>For the Arduino Day we posted a state machine library. Today we are going to make a more elaborated example. in this example we have a button that is used to switch states in the same way than the previous example and a LCD screen. The LCD screen will rotate among various messages when we [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/state-machine-advanced-example/">State machine: A more advanced example</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>For the <a
+title="Arduino day" href="http://day.arduino.cc/" target="_blank">Arduino Day</a> we posted a state machine library. Today we are going to make a more elaborated example.</p><p>in this example we have a button that is used to switch states in the same way than the <a
+title="Arduino Day Project Persistent State Machine" href="http://blog.biicode.com/arduino-day-project-persistent-state-machine" target="_blank">previous example</a> and a LCD screen. The LCD screen will rotate among various messages when we press the button.</p><p>Here is the schematic:</p><p><img
+class="alignleft wp-image-385" title="LCD Button State Machine" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/03/lcd-button-statemachine.png" alt="LCD Button State Machine" width="630" height="474" /></p><p><span
+id="more-359"></span></p><p>We are also making a more advanced use of transition functions to control state entry setUp:</p><div><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "hithwen/statemachine/eepromstatemachine.h"
+#include "hithwen/button/button.h"
+#include "hithwen/led/led.h"
+#include &lt;LiquidCrystal.h&gt;
+StateMachine machine(3, 3);
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LED led = LED(13);                 //initialize the lcd LED
+void hello() {
+    lcd.setCursor(0, 0);
+    lcd.print("hello, world!");
+}
+void off() {
+    lcd.noDisplay();
+    led.off();
+}
+void counting() {
+    lcd.setCursor(0, 1);
+    // print the number of seconds since reset:
+    lcd.print(millis()/1000);
+}
+Button button = Button(8,PULLUP); //initialize the button (wire between pin 12 and ground)
+bool button_pressed() {
+    bool pressed = button.uniquePress();
+    if (pressed) {
+        lcd.clear();
+    }
+    return pressed;
+}
+bool one2two() {
+    bool pressed = button_pressed();
+    if (pressed) {
+        lcd.display();
+        led.on();
+        lcd.print("Counting!");
+    }
+    return pressed;
+}
+void setup() {
+	Serial.begin(9600);
+    lcd.begin(16, 2);
+    led.on();
+	machine.add_transition(0, 1, &amp;button_pressed);
+	machine.add_transition(1, 2, &amp;one2two);
+	machine.add_transition(2, 0, &amp;button_pressed);
+    machine.add_state_function(0, &amp;hello);
+    machine.add_state_function(1, &amp;off);
+    machine.add_state_function(2, &amp;counting);
+}
+void loop() {
+    int oldstate = machine.current_state();
+    int nustate = machine.loop();
+}</pre></div><p>And here there is a video of the whole thing working:</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/5iwqU--omB4?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p>&nbsp;</p><p
+dir="ltr">Wanna try it? just copy the code and do:</p><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii arduino:upload</pre><p>Or dont even copy the code</p><pre class="crayon-plain-tag">$ bii open hithwen/statemachine
+$ bii arduino:upload</pre><p></p><p
+dir="ltr">Happy coding!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/state-machine-advanced-example/">State machine: A more advanced example</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/state-machine-advanced-example/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Arduino day project: Persistent state machine</title><link>http://blog.biicode.com/arduino-day-project-persistent-state-machine/</link> <comments>http://blog.biicode.com/arduino-day-project-persistent-state-machine/#comments</comments> <pubDate>Sat, 29 Mar 2014 08:07:19 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[machine]]></category> <category><![CDATA[state]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=357</guid> <description><![CDATA[<p>For the Arduino Day I’ve built a state machine library or deterministic automaton. A state machine serves as a manager that organizes a set of states, or behaviors. It manages the transition between states, and the state itself. There was already a state machine library in arduino playground but there a couple things I didn’t [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-day-project-persistent-state-machine/">Arduino day project: Persistent state machine</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+dir="ltr">For the Arduino Day I’ve built a state machine library or <a
+title="Deterministic Automaton Wikipedia" href="http://en.wikipedia.org/wiki/Deterministic_automaton" target="_blank">deterministic automaton</a>. A state machine serves as a manager that organizes a set of states, or behaviors. It manages the transition between states, and the state itself.</p><p
+dir="ltr">There was already a<a
+title="State Machine Library Playground Arduino" href="http://playground.arduino.cc/code/FiniteStateMachine" target="_blank"> state machine library in arduino playground</a> but there a couple things I didn’t like about it:</p><p
+dir="ltr"><span
+id="more-357"></span></p><ul><li><p
+dir="ltr">It’s not self controlled, you need to have the transition logic inside your loop or interruptions. I like my state machine to be automanaged: Define it once and forget about it.</p></li><li><p
+dir="ltr">You may end up needing to define a lot of functions, enter function and exit function can be glued together in what I called transition functions.</p></li><li><p
+dir="ltr">It’s not persistent, I’d like my arduino to remain in the same state when I turn it on/off</p></li></ul><p
+dir="ltr">So I built a library with following characteristics:</p><ul><li><p
+dir="ltr">The machine is initialized with the number of states and number of transitions it needs.</p></li><li><p
+dir="ltr">You can optionally define a state function for each state, that will be called before checking state changes.</p></li><li><p
+dir="ltr">Then you need to specify each transition. A transition has an origin, a destiny and a transition function. Transition functions do not receive parameters so they must obtain their required info from global variables, input sources etc. If a transition function returns true then the state is changed to destiny.</p></li><li><p
+dir="ltr">You can instantiate it as state persistent or not (StateMachine or EEPROMStateMachine)</p></li></ul><p
+dir="ltr">So let’s make the same Led example with <a
+title="Hithwen StateMachine biicode" href="https://www.biicode.com/hithwen/blocks/hithwen/statemachine/branches/master#.UzWGx615MTY" target="_blank">my state machine</a>:</p><div><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "hithwen/statemachine/statemachine.h"
+#include "hithwen/button/button.h"
+#include "hithwen/led/led.h"
+StateMachine machine(4, 4);
+LED led = LED(13);                 //initialize the LED
+void ledOn() { led.on();}
+void ledOff() {led.off();}
+void ledFadeIn() {led.fadeIn(500);}
+void ledFadeOut() { led.fadeOut(500); }
+Button button = Button(12,PULLUP); //initialize the button (wire between pin 12 and ground)
+bool button_pressed() {
+    return button.uniquePress();
+}
+void setup() {
+	machine.add_transition(0, 1, &amp;button_pressed);
+	machine.add_transition(1, 2, &amp;button_pressed);
+	machine.add_transition(2, 3, &amp;button_pressed);
+	machine.add_transition(3, 0, &amp;button_pressed);
+    	machine.add_state_function(0, &amp;ledOn);
+    	machine.add_state_function(1, &amp;ledOff);
+    	machine.add_state_function(2, &amp;ledFadeIn);
+    	machine.add_state_function(3, &amp;ledFadeOut);
+}
+void loop() {
+    machine.loop();
+}</pre></div><p
+dir="ltr">Wanna try it? just copy the code and do:</p><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii arduino:upload</pre><p>Or dont even copy the code</p><pre class="crayon-plain-tag">$ bii open hithwen/statemachine
+$ bii arduino:upload</pre><p></p><p
+dir="ltr">Happy coding!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-day-project-persistent-state-machine/">Arduino day project: Persistent state machine</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-day-project-persistent-state-machine/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; tutorial</title> <atom:link href="http://blog.biicode.com/tag/tutorial/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>CMake Tutorial to build better biicode projects</title><link>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/</link> <comments>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/#comments</comments> <pubDate>Thu, 27 Nov 2014 14:34:28 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[Eclipse]]></category> <category><![CDATA[ide]]></category> <category><![CDATA[linux]]></category> <category><![CDATA[mac]]></category> <category><![CDATA[OSX]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[Visual]]></category> <category><![CDATA[windows]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1929</guid> <description><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses CMake to configure and build your projects. Hope there are no surprises here! This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt. Develop as usual To [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is a C and C++ dependency manager. And uses <a
+title="CMake" href="http://www.cmake.org/" target="_blank">CMake</a> to configure and build your projects. Hope there are no surprises here!</p><p>This post is a CMake Tutorial to understand the basics of generating biicode projects for your usual tools and some tips to make projects multi-os compatible via CMakeLists.txt.</p><p><img
+class="aligncenter size-full wp-image-1848" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/cmakebanner1.jpg" alt="Custom CMake toolchain is now a feature in biicode" width="280" height="77" /></p><p><span
+id="more-1929"></span></p><h2>Develop as usual</h2><p>To start, let’s configure a biicode project to work with your usual editor, compiler and IDE.<br
+/> Execute:</p><pre class="crayon-plain-tag">$ cmake --help</pre><p>to show a list of CMake generators available in your system, these might be “<code>Eclipse CDT4 - Ninja</code>”, “<code>Unix Makefiles</code>”, “<code>Visual Studio 10</code>”, “<code>Sublime Text 2</code>” or others. Choose yours and tell bii to configure:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G “Visual Studio 10”</pre><p>Is it an arduino project? Write <code>bii arduino:configure -G “Eclipse CDT4 - Unix Makefiles”</code></p><p>Want to debug? <code>$ bii cpp:configure -D CMAKE_BUILD_TYPE=DEBUG</code></p><p>Use them all together:</p><pre class="crayon-plain-tag">$ bii cpp:configure -G "Visual Studio 9 2008" -D CMAKE_BUILD_TYPE=DEBUG”</pre><p>Note that <code>bii cpp:configure </code>admits any CMake directives</p><p><code>bii clean</code> to restore default project settings, those are MinGW Makefiles (Windows) or UNIX Makefiles (MacOS and Linux) and no IDE.</p><h2>Advanced CMake configuration through CMakeLists.txt</h2><p>It’s usual to have a previous build config in which some parts are shared with biicode and others are specific for the old way out of dependency hell. We’ve developed a way to maintain both ways on your CMakeLists.txt:</p><pre class="crayon-plain-tag">#shared configuration here
+IF(BIICODE)
+   include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+   INIT_BIICODE_BLOCK()
+   ADD_BIICODE_TARGETS()
+ELSE()
+      # Your old project configuration here
+ENDIF()</pre><p>And that’s it, as you can see in previous posts , this process is more or less straight forward depending on the library’s complexity: Json11 by Dropbox, Box2D by Erin Catto, Little CMS by Marti Maria or Oscpack by Ross Bencina.</p><h4>INIT_BIICODE_BLOCK()</h4><p>This function defines these variables:</p><ul><li><code>${BII_BLOCK_NAME} </code>The name of the current block (e.g. &#8220;box2d&#8221;)</li><li><code>${BII_BLOCK_USER} </code>The user&#8217;s name (e.g. &#8220;phil&#8221;)</li><li><code>${BII_BLOCK_PREFIX} </code>The directory where the block is located (&#8220;blocks&#8221; or &#8220;deps&#8221;)</li></ul><p>It also loads variables and  you can use or modify them. Check the default CMakeLists.txt comments to learn more.</p><h4>ADD_BIICODE_TARGETS()</h4><p>A CMake <code>TARGET</code> represents each one of the executables or libraries CMake compiles. This function defines these variables:</p><ul><li><code>${BII_BLOCK_TARGETS} </code>List of targets defined in this block</li><li><code>${BII_LIB_TARGET} </code> This is the library biicode builds for each one of the blocks within your project. Just the target library name, usually in the form &#8220;user_block&#8221;</li><li> You can also use directly the name of the executable target (e.g. user_block_main)</li></ul><h2>10 CMake Tips</h2><h3>#1 Variable declaration</h3><p>STRING is a basic CMake variable. It can be used as part of any other identificator.<br
+/> Like the preprocessor, if the var name is enclosed between {} and preceded by $, that expression is equal to the contents of the variable:</p><pre class="crayon-plain-tag">set(MYVAR /var/run/bootstamp)
+# is equivalent to:
+set(MYVAR “/var/run/bootstamp”)
+# list and text substitution examples:
+set(MYVAR “element1” )
+set(${MYVAR}_name “hello”)
+set(MYVAR2 element1 “${MYVAR}_name” element3 ${${MY_VAR}_name}})</pre><p>As CMake stores the sets as a string where elements are separated by &#8220;;&#8221;-&gt; MYVAR2 contains the string <code>“element1;element1_name;element3;hello”</code></p><h3>#2 Logging to Screen</h3><p>Fatal error messages interrupt the CMake execution:</p><pre class="crayon-plain-tag">message("hello world MYVAR=${MYVAR}")
+message(SEND_ERROR "Should not have got here")
+message(FATAL_ERROR "Something bad happened")</pre><p></p><h3>#3 Relevant CMake vars</h3><h4>DIRECTORIES</h4><ul><li><b><code>CMAKE_CURRENT_SOURCE_DIR</code></b>: source directory currently being processed</li><li><b><code>CMAKE_CURRENT_BINARY_DIR</code></b>: binary directory currently being processed</li><li><b><code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code></b>: directory being used as IDE run</li></ul><h4>SYSTEM DESCRIPTION</h4><ul><li><b><code>APPLE</code></b>: True if running on Mac OS X</li><li><b><code>UNIX</code></b>: True for UNIX and UNIX like operating systems (i.e.: APPLE and CYGWIN)</li><li><b><code>MSVC:</code></b> True when using Microsoft Visual C</li><li><b><code>WIN32</code></b>: True on windows systems, including win64</li><li><b><code>MINGW</code></b>: True when generating MinGW Makefiles</li><li><b><code>CMAKE_SYSTEM_NAME</code></b>: Name of system cmake is being run on</li></ul><p><a
+title="SDL CMakeLists.txt" href="http://www.biicode.com/miguel/miguel/sdl2/master/1/CMakeLists.txt" target="_blank">SDL CMakeLists.txt </a> is a clarifying example of use, take a look at from line 193 and on to see CMake vars in use.</p><h3>#4 Conditionals</h3><p>CMake Control Statements have an opening and a closing keyword that must be placed in exclusive lines. Also, CMake commands always have to include “()”</p><pre class="crayon-plain-tag">if(expression)
+  	...
+elseif(expression)
+  	...
+else()
+  	...
+endif()</pre><p></p><h4>Here&#8217;s some common if expressions:</h4><ul><li><b><code>if(MSVC)</code></b><b>  </b>True if the compiler is visual studio</li><li><b><code>if(NOT APPLE)</code></b> True if Linux, Windows, &#8230;</li><li><b><code>if(WIN32 AND NOT MSVC)</code></b> True  on MinGW compiler env</li><li><b><code>if(TARGET target-name) </code></b> True if the given name is an existing target.</li><li><b><code>if(CMAKE_SYSTEM_NAME MATCHES “.*Linux”)</code></b> true for linux systems</li><li><b><code>if(MINGW</code>)</b> useful for MinGW detection</li><li><b><code>if(UNIX AND NOT APPLE)</code></b><br
+/> <b>   <code>set(UNIX_SYS ON)</code></b><br
+/> <b><code>else()</code></b><br
+/> <b>   <code>set(UNIX_SYS OFF)</code></b><br
+/> <b><code>endif() </code>  </b>Simple way to differentiate between Apple and UNIX</li><li><code><b>if(MSVC_VERSION GREATER 1600)</b> </code>True for MSVC 12 and more recent versions</li></ul><h3>#5 Operations with lists</h3><h4>Removing elements from a &#8220;;&#8221; list:</h4><p></p><pre class="crayon-plain-tag">SET(MYLIST "elem1;elem2;elem3;elem4")
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p>Or (removing elements from a list)</p><pre class="crayon-plain-tag">SET(MYLIST  elem1 elem2 elem3 elem4)
+list(REMOVE_ITEM MYLIST elem1 elem3)</pre><p></p><h4>Remove “UDPwin32.cpp” source file on compilation time:</h4><p></p><pre class="crayon-plain-tag">list(REMOVE_ITEM BII_LIB_SRC “src/nat/UDPwin32.cpp”)</pre><p>This one is pretty useful when you don&#8217;t want to consider or not a file depending on the OS compiling.</p><h4>Adding elements to a list</h4><p></p><pre class="crayon-plain-tag">list(APPEND MYLIST elem5 elem6)</pre><p></p><h4>Check if a list contains a value</h4><p></p><pre class="crayon-plain-tag">list(FIND MYLIST_VAR "src/google.cpp" HasGoogleFile)
+IF(HasGoogleFile EQUAL -1)
+	message(FATAL_ERROR "I could not find google.cpp")
+ENDIF()</pre><p></p><h3>#6 Setting the directories used by the compiler</h3><h4>Adding an include path to the compiler for the current project.</h4><p>This syntax is better for directories needed only in compilation phase, not to be reused.</p><pre class="crayon-plain-tag">INCLUDE_DIRECTORIES(/some/directory)
+INCLUDE_DIRECTORIES(/some/onedirectory /other/directory)</pre><p></p><h4>View the directories that are set in the path</h4><p></p><pre class="crayon-plain-tag">get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+message("inc_dirs = ${inc_dirs}")</pre><p></p><h4>Per-target public include directories.</h4><p>Include the PUBLIC keyword to transitively transmit the directories property to all the targets using the lib. Use it to transmit a public header path.</p><pre class="crayon-plain-tag">TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CURRENT_SOURCE_DIR}/include )</pre><p></p><h3>#7 Set the compile flags used by the compiler</h3><h4>Add a preprocessor definition for the current project</h4><p></p><pre class="crayon-plain-tag">ADD_DEFINITIONS(MY_OPTION)</pre><p></p><h4>Per-target public/private definitions</h4><p>On the 3rd point of tip #6, PUBLIC modifier is used to transmit a “include directory” to dependent targets. Here we use the PRIVATE modifier instead with target_compile_definitions so the DO_GNU_TESTS is only used for the specific target compilation, and it is not transmitted to its dependent targets .</p><pre class="crayon-plain-tag">target_compile_definitions(target_name PRIVATE DO_GNU_TESTS)</pre><p></p><h4>Per-target public/private compile flags</h4><p>Several flags are compiler specific, and are not preprocessor definitions. Use this command for non-standard flags:</p><pre class="crayon-plain-tag">target_compile_options(target_name PUBLIC "-Wall")</pre><p></p><h3>#8 Set linker Flags</h3><h4>Setting Windows application linker option</h4><p></p><pre class="crayon-plain-tag">if(MSVC)
+   set_target_properties(exe_target PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h4>Per-target public/private linker flags and libs</h4><p></p><pre class="crayon-plain-tag">TARGET_LINK_LIBRARIES(${TARGET_NAME} LINK_PUBLIC ${SOME_LIBRARY})
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC jpeg)
+TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC tiff X11)
+  	SET(PLATFORM_LIBS odbc32.lib odbccp32.lib shlwapi.lib)
+  	target_link_libraries(${BII_LIB_TARGET} PUBLIC ${PLATFORM_LIBS} ${PLATFORM_LDFLAGS})</pre><p></p><h3>#9 Finding and using external libs</h3><h4>OpenGL example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE(OpenGL QUIET)
+IF(OPENGL_FOUND)</pre><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})
+ADD_DEFINITIONS(-DHAVE_OPENGL)
+TARGET_INCLUDE_DIRECTORIES(${TARGET_NAME} PUBLIC
+${OPENGL_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES(${TARGET_NAME} PUBLIC
+${OPENGL_LIBRARIES})
+ENDIF()</pre><p></p><h4>Boost components example</h4><p></p><pre class="crayon-plain-tag">FIND_PACKAGE (Boost COMPONENTS system filesystem REQUIRED) INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR}) LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
+TARGET_LINK_LIBRARIES(${BII_main_TARGET} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES( ${BII_LIB_TARGET} PUBLIC ${Boost_LIBRARIES} )</pre><p></p><h3>#10 Copying files</h3><h4>Copying files of some type to the binary and runtime directories</h4><p></p><pre class="crayon-plain-tag">file(GLOB pngFiles RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+            	${CMAKE_CURRENT_SOURCE_DIR}/*.png *.ttf)
+foreach(imgFile ${imgFiles})
+   message(STATUS "Copying file ${imgFile}")
+   file(COPY ${imgFile} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+   file(COPY ${imgFile} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endforeach(imgFile)</pre><p></p><h4>Copying a directory to the binary dir</h4><p></p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION
+          	     ${CMAKE_CURRENT_BINARY_DIR})</pre><p>Hope you enjoy this CMake Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/">CMake Tutorial to build better biicode projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cmake-tutorial-build-better-biicode-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 1: JSON11 by Dropbox</title><link>http://blog.biicode.com/upload-to-biicode-i/</link> <comments>http://blog.biicode.com/upload-to-biicode-i/#comments</comments> <pubDate>Tue, 30 Sep 2014 12:03:01 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[dropbox]]></category> <category><![CDATA[how to]]></category> <category><![CDATA[json11]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1754</guid> <description><![CDATA[<p>A few days ago, we came across this fantastic library from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use. Also, this library is an ideal example to show how to upload to biicode your library like I did. Why would you want to upload to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A few days ago, we came across <a
+title="Json11" href="https://github.com/dropbox/json11" target="_blank">this fantastic library</a> from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use.<br
+/> Also, this library is an ideal example to show how to upload <a
+title="lasote/json11" href="http://www.biicode.com/lasote/json11" target="_blank">to biicode</a> your library like I did.</p><h2>Why would you want to upload to biicode your library ?</h2><p>Once it&#8217;s uploaded to biicode, everyone (including yourself) can reuse it easily and without any complex configuration.<br
+/> This is key: If you make a good job configuring and uploading the library to biicode, nobody will EVER do this job again. The library will work for anyone just by typing <em>#include &#8220;lasote/json11/json11.hpp&#8221;</em>.</p><div
+id="attachment_1761" style="width: 160px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1761" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/DBTWCard.jpg" alt="Upload to biicode " width="150" height="155" /><p
+class="wp-caption-text">JSON11 by DROPBOX</p></div><h2></h2><p><span
+id="more-1754"></span></p><h2>Ok, it sounds convincing, show me how to do it!</h2><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to <a
+title="dropbox/json11" href="https://github.com/dropbox/json11" target="_blank">original repository</a> and click on fork:<br
+/> <img
+class="alignnone wp-image-1757 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/fork1.jpg" alt="JSON11 fork ready to upload to biicode" width="1016" height="162" /></p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init json
+$ cd json
+$ bii new lasote/json11</pre><p>If you already have a biicode user you can replace &#8220;lasote&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/lasote/json</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\lasote\json11
+$ git clone git@github.com:lasote/json11.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command &#8220;<strong>bii deps</strong>&#8221; give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class=" wp-image-1758 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/deps.jpg" alt="manage your dependencies with biicode" width="283" height="365" /></p><p>If biicode doesn&#8217;t find an #include it is shown under the &#8220;unresolved&#8221; section. As you can see in this case, everything is OK!<br
+/> In future posts we will explain how to proceed in case of unresolved files.</p><h4>5. Build our library</h4><p></p><pre class="crayon-plain-tag">$ bii build</pre><p>Wow! It fails a lot! What happened?</p><p>If we analyze the trace of the compilation we see this:</p><pre class="crayon-plain-tag">c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard.
+This support is currently experimental, and must be enabled with the -std=c++11 or -std=gnu++11 compiler options.</pre><p>It&#8217;s asking us to activate c++11. Expected&#8230; the original library needs c++11.</p><h4>How can we activate C++11?</h4><p>Biicode uses CMake for C/C++ project compilation. It creates a CMakeList.txt file where we can specify compilation flags etc.<br
+/> If we edit the file we can see a lot of commented code with sample cases. In there, you can find how to activate C++11.</p><p>In this case, we want our library to be multi-platform and reusable so I will include these lines after <em>ADD_BIICODE_TARGETS()</em></p><pre class="crayon-plain-tag"># If exist BII_LIB_TARGET activate c++11 for target with PUBLIC flag. This way, all blocks that include this one will
+# have activated c++11 automatically
+IF(BII_LIB_TARGET)
+  IF(APPLE)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11")
+  ENDIF(APPLE)
+# If not exist, simply add CXX_FLAGS to compilation
+ELSE()
+  IF(APPLE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ENDIF(APPLE)
+ENDIF()</pre><p>Hereinafter, when someone #include (s)  our library, he doesn&#8217;t need to activate C++11. Its ready!</p><p><strong>NOTE</strong>: Maybe it seems too difficult, don&#8217;t you think? <del>We are working on a feature to share or include CMakes recipes like this. Meanwhile you can just copy and paste this code to enable C++11 in your project.</del></p><p><strong>UPDATE:</strong> With biicode you can reuse CMake recipes, so<strong> to activate C++11 you can include &#8220;biicode/cmake&#8221; block</strong> to search for &#8216;tools.cmake&#8217; where this code is already implemented. Open <em>CMakelists.txt</em> in your project, include &#8216;<em>tools</em>&#8216; and activate C++11 like this:</p><pre class="crayon-plain-tag">INCLUDE(biicode/cmake/tools) #Here you include "biicode/cmake/tools" file
+ADD_BIICODE_TARGETS()
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET}) #Here you activate c++11</pre><p>If we run build again:</p><pre class="crayon-plain-tag">$ bii build</pre><p>It fails again, why? Let&#8217;s check the trace.</p><pre class="crayon-plain-tag">In function 'int main(int, char**)':
+ test.cpp:92:66: error: 'memcmp' was not declared in this scope
+     assert(memcmp(uni[0].string_value().data(), utf8, sizeof utf8) == 0);</pre><p>It seems it cannot find <em>memcmp</em>, we <em>#include &#8220;string.h&#8221;</em> in test.cpp and if we build again:</p><pre class="crayon-plain-tag">Building: cmake --build .
+BLOCK: lasote/json11
+-----------------------------------------------------------
++ EXE: lasote_json11_test
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/json11/build
+[ 50%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/test.cpp.o
+[100%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/json11.cpp.o
+Linking CXX executable /tmp/json11/bin/lasote_json11_test
+[100%] Built target lasote_json11_test</pre><p>Now the library has been compiled! Go to &#8220;bin&#8221; folder and execute the main example:</p><pre class="crayon-plain-tag">$ cd json11/bin
+$ ./lasote_json11_test</pre><p></p><pre class="crayon-plain-tag">k1: v1b
+k3: ["a", 123, true, false, null]
+- "a"
+- 123
+- true
+- false
+- null
+obj: {"k1": "v1", "k2": 42, "k3": ["a", 123, true, false, null]}
+{"key1": "value1", "key2": false, "key3": [1, 2, 3]}
+[[1, 2], [10, 20], [100, 200]]</pre><p></p><h4>6. Upload to biicode: Publish the library</h4><p></p><pre class="crayon-plain-tag">$ bii publish</pre><p>Congrats! Now your library is on biicode&#8217;s cloud! :D</p><p><strong>NOTE</strong>: Don&#8217;t forget to commit and push the changes to github if you forked the repository!</p><h4>7. Check if anybody can reuse the library</h4><p>After you upload to biicode the first version, its a good practice to create another biicode project and reuse from (include) the library to check if everything is working fine. This way we&#8217;ll simulate a third person reusing our code.</p><p>Exit previous biicode project folder and create another one:</p><pre class="crayon-plain-tag">$ bii init example_json11</pre><p></p><pre class="crayon-plain-tag">$ cd example_json11
+$ bii new lasote/example</pre><p>Write an example in a file &#8220;main.cpp&#8221; in blocks/lasote/example directory that #include our lasote/json11 library:</p><pre class="crayon-plain-tag">#include "string.h"
+#include "lasote/json11/json11.hpp"
+#include &lt;iostream&gt;
+using namespace json11;
+using std::string;
+int main(int argc, char **argv) {
+    // STRING TO JSON
+    const string simple_test = R"({"k1":"v1", "k2":42, "k3":["a",123,true,false,null]})";
+    string err;
+    auto json = Json::parse(simple_test, err);
+    std::cout &lt;&lt; "k1: " &lt;&lt; json["k1"].string_value() &lt;&lt; "\n";
+    std::cout &lt;&lt; "k3: " &lt;&lt; json["k3"].dump() &lt;&lt; "\n";
+}</pre><p>Build the example and run the example!</p><pre class="crayon-plain-tag">$ bii build</pre><p></p><pre class="crayon-plain-tag">$ example_json11/bin/lasote_example_json11_main</pre><p></p><pre class="crayon-plain-tag">k1: v1
+k3: ["a", 123, true, false, null]</pre><p>Yeeeeha!</p><p>We need your feedback! What do you think? Is it easy enough to upload to biicode? Do you think that we should share CMake recipes? What would you like?<br
+/> If you want to upload to biicode your library  we will be pleased to help if you need. Write us in the <a
+title="Biicode forum" href="http://forum.biicode.com" target="_blank">biicode forum</a> and we will give you support!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-i/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Create a funny moving Doll with RaspberryPI</title><link>http://blog.biicode.com/funny-moving-doll-raspberrypi/</link> <comments>http://blog.biicode.com/funny-moving-doll-raspberrypi/#comments</comments> <pubDate>Fri, 20 Dec 2013 13:38:26 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[doll]]></category> <category><![CDATA[moving]]></category> <category><![CDATA[project]]></category> <category><![CDATA[RaspberryPi]]></category> <category><![CDATA[tutorial]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=345</guid> <description><![CDATA[<p>Would you like to surprise your friends by doing something really cool? You can now make a moving doll in just 20 minutes using RaspberryPI and biicode. It’s super easy, you only have to follow this 4 steps: You just need paper, scissors, a servo, a RaspberryPI and biicode! Read our short “How to make [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/funny-moving-doll-raspberrypi/">Create a funny moving Doll with RaspberryPI</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+dir="ltr">Would you like to surprise your friends by doing something really cool?</p><p
+dir="ltr">You can now make a moving doll in just 20 minutes using RaspberryPI and <a
+href="http://www.biicode.com">biicode</a>.</p><div
+id="attachment_1162" style="width: 361px" class="wp-caption aligncenter"><img
+class="wp-image-1162" src="http://blog.biicode.com/wp-content/uploads/sites/2/2013/12/pi1l.jpg" alt="RaspberryPi" width="351" height="281" /><p
+class="wp-caption-text">Credit: ScratchMyPi</p></div><p
+dir="ltr">It’s super easy, you only have to follow this 4 steps:</p><p
+dir="ltr"><span
+id="more-345"></span></p><ol><li>You just need paper, scissors, a servo, a RaspberryPI and biicode!</li><li>Read our short “<a
+title="Funny Moving doll rpi" href="http://docs.biicode.com/raspberrypi/examples/raspberry-pi-moving-doll.html" target="_blank">How to make a funny moving doll”</a> doc</li><li>Implement the code and build a project using biicode in 2 minutes</li><li>Make your own design (or just use a <a
+title="cubeecraft" href="http://www.cubeecraft.com/" target="_blank">cubeecraft</a>)</li></ol><p
+dir="ltr">We created a <a
+title="Funny moving doll biicode" href="https://www.youtube.com/watch?v=_X9g1PrzcXM&#038;feature=youtu.be" target="_blank">Heisenberg doll</a> in 20 minutes. Is cool, isn’t it?</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/_X9g1PrzcXM?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p
+dir="ltr">There are thousands of different funny moving dolls that can be built. And we know you can beat Heisenberg… it&#8217;s really easy to try.</p><p
+dir="ltr">Once you have your doll moving, share it with your friends and family and make them laugh.</p><p
+dir="ltr">We would love to see how creative you are. You can send us your creations to <a
+title="info biicode email" href="mailto:info@biicode.com" target="_blank">info@biicode.com</a> and we will upload them to our YouTube channel.</p><p
+dir="ltr">It’s a good opportunity to show your circles that your christmas cards are special and unique.</p><p
+dir="ltr">Can you surprise us?</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/funny-moving-doll-raspberrypi/">Create a funny moving Doll with RaspberryPI</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/funny-moving-doll-raspberrypi/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; advanced programming</title> <atom:link href="http://blog.biicode.com/tag/advanced-programming/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Unleash your Arduino projects</title><link>http://blog.biicode.com/unleash-arduino-projects/</link> <comments>http://blog.biicode.com/unleash-arduino-projects/#comments</comments> <pubDate>Tue, 02 Dec 2014 12:38:08 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[advanced programming]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[projects]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1933</guid> <description><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino. So let&#8217;s get started, Biicode is a [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino.</p><p>So let&#8217;s get started, Biicode is a client interface aplication (CLI)  and to use it open the Terminal of your computer.</p><p><img
+class="aligncenter" src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/720px-Arduino_Logo.svg.png" alt="Arduino projects easily setup in biicode" width="240" height="163" /></p><p>biicode technology gives you several advantages to richen your Arduino experience:</p><div><ul><li><strong>Save your project in different folders</strong> for a better organization.</li><li><strong>Reuse yours and other user´s code</strong>. Reuse made easy: just <tt
+class="docutils literal"><span
+class="pre">#include</span></tt> the file you need and you get it. No more copy and paste files from project to project or dowloading zip files from tutorials.</li><li>This is a <strong>simple</strong> and <strong>fast</strong> way to <strong>compile and upload</strong> your code to your Arduino.</li><li>Use your favorite IDE or text editor, we also provide <strong>Eclipse integration</strong>.</li><li>We are hosting <a
+class="reference external" href="https://www.biicode.com/adafruit">adafruit</a>, <a
+class="reference external" href="https://www.biicode.com/sparkfun">sparkfun</a> and many other libraries, <strong>you won’t need to download and install libraries in your SDK anymore</strong>.</li></ul></div><p><span
+id="more-1933"></span></p><h1>1. How to program your arduino with biicode</h1><h2>Installing biicode and Arduino tools</h2><div
+id="installing-biicode-and-arduino-tools" class="section"><p><a
+href="https://www.biicode.com/downloads" target="_blank">Download</a> and install biicode, then make sure it is installed:</p><div
+id="installing-biicode-and-arduino-tools" class="section"><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii --version</pre></div></div></div><div
+id="create-your-project" class="section"></div><p>Then, install a group of tools with the following command. Open you terminal write:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii setup:arduino</pre></div></div></div><div
+id="create-your-project" class="section"><h2>Create Arduino projects</h2><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init myproject</pre></div></div><p>Then we can use the <tt
+class="docutils literal"><span
+class="pre">new</span></tt> command to create some folders and a “Simple Blink” Arduino main file. You can do it manually too.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ cd myproject
+~/myproject$ bii new myuser/myblock --hello=arduino</pre></div></div><div
+class="infonote container">You can directly type <tt
+class="docutils literal"><span
+class="pre">myuser</span></tt> or your real username.  This is the resulting layout:</div><div
+class="highlight-text"><div
+class="highlight"><pre class="crayon-plain-tag">+-- myproject
+|    +-- bii
+|    +-- blocks
+|    |    +-- myuser
+|    |    |    +-- myblock
+|    |    |    |    +-- main.cpp
+|    +-- deps</pre></div></div></div><div
+id="define-your-board" class="section"><h2>Define your board</h2><p>Define your Arduino board using <tt
+class="docutils literal"><span
+class="pre">arduino:settings</span></tt> command. We are using an Arduino Uno but use the /o option to show a list of the default boards, even though any board is welcomed!</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">Enter SDK path (/../biicode_env/arduino-1.0.6): [ENTER]
+Enter board (/o list supported options):uno
+Using arduino port: COM4</pre></div></div></div><div
+id="build-and-upload-your-program" class="section"><h2>Upload your program to the Arduino</h2><p>Now, build and upload the blink to your Arduino.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/myproject$ bii arduino:build
+...
+[100%] Built target myuser_myblock_main
+~/myproject$ bii arduino:upload
+...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div></div><div
+id="depending-on-fenix-blink" class="section"><h2><img
+class="aligncenter wp-image-1935 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/pin13-200x300.png" alt="pin13" width="200" height="300" /></h2><h1>2. Difference between .ino and .cpp blink</h1><p>First, compare both main files. There are only two differences, the first include and the extension of the files. As you will see, this pair of differences will bring you lots of advantages.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p><strong> main.ino</strong></p><pre class="crayon-plain-tag">int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p></p><div><h1>3. How to use the code on biicode?</h1><p>Usual &#8220;blink&#8221; project blocks your Arduino, so it&#8217;s obstructed to do anything else but blinking. We are #including here a “blink” utility class that<strong> blinks without delays or blocking your Arduino</strong>. Reuse from<a
+href="https://www.biicode.com/fenix/fenix/blink/master" target="_blank"> fenix&#8217;s blink library</a>, copy the following code containing the new blink into the <em>main.cpp</em> file.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "fenix/blink/blink.h"
+Blink my_blink;
+void setup() {
+  //pin = 13, interval = 1000 ms
+  my_blink.setup(13, 1000);
+}
+void loop() {
+  my_blink.loop();
+}</pre><p>Execute the command below to find unresolved dependencies and retrieve necessary files from servers:</p><pre class="crayon-plain-tag">~/myproject$ bii find</pre><p>Now can now build your firmware and upload it to your Arduino:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/arduino_hello_project$ bii arduino:upload
+      ...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div><p>That’s it, if you see that output fenix’s blink.h was downloaded and uploaded in your project! You can check the deps folder, the blink.h code is there.</p><h1>4. Next steps</h1><p>Many tutorials are available on this blog&#8217;s<a
+href="http://blog.biicode.com/tag/arduino-2/" target="_blank"> Arduino projects with biicode</a>.</p><p>Hope you enjoy this basic unleash your Arduino Projects Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p></div></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/unleash-arduino-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

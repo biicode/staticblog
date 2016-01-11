@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Arduino Yun</title> <atom:link href="http://blog.biicode.com/tag/arduino-yun/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Arduino Yun now supported</title><link>http://blog.biicode.com/arduino-yun/</link> <comments>http://blog.biicode.com/arduino-yun/#comments</comments> <pubDate>Wed, 07 Jan 2015 12:00:23 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[Arduino Yun]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1944</guid> <description><![CDATA[<p>Arduino Yun is the first member of a new groundbreaking line of WiFi products combining the power of Linux with Arduino&#8217;s simplicity. The first Arduino Yun is the combination of an Arduino Leonardo with a WiFi system-ona-chip running Linino (GNU/Linux based on OpenWRT). The board has built-in Ethernet and WiFi support, a USB-A port, micro-SD card slot, 20 [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the first member of a new groundbreaking line of <strong>WiFi</strong> products combining the power of <strong>Linux</strong> with Arduino&#8217;s simplicity. The first <strong><a
+href="http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN" target="_blank">Arduino Yun</a></strong> is the combination of an <a
+href="http://arduino.cc/en/Main/ArduinoBoardLeonardo" target="_blank">Arduino Leonardo</a> with a <strong>WiFi system-ona-chip running <a
+href="https://openwrt.org/" target="_blank">Linino (GNU/Linux based on OpenWRT)</a></strong>.</p><p><img
+class="aligncenter" src="http://tavendo.com/static/img/blog/arduino-yun-getting-started-part-1/arduino-yun.jpg" alt="Arduino Yun board is supported by biicode" width="649" height="431" /></p><p><span
+id="more-1944"></span></p><p>The board has built-in Ethernet and <strong><span
+class="wikiword">WiFi</span> support</strong>, a <strong>USB-A port</strong>, <strong>micro-SD card slot</strong>, <strong>20 digital input/output</strong> pins (of which 7 can be used as PWM outputs and 12 as analog inputs), a <strong>16 <span
+class="wikiword">MHz</span></strong> crystal oscillator, a <strong>micro USB</strong> connection, an<strong> ICSP header</strong> and a <strong>3 reset buttons</strong>.</p><p><strong>It can communicate with the Linux</strong> distribution onboard, offering a powerful networked computer with the ease of Arduino. In addition to Linux commands like cURL, <strong>you can write your own shell scripts for robust interactions</strong>.</p><p>&nbsp;</p><p><img
+class="aligncenter" src="http://arduino.cc/en/uploads/Main/BridgeInShort.png" alt="How the Arduino Yun enviroment connects to the Linux enviroment." width="650" height="361" /></p><p>The Bridge library facilitates communication between the two processors, giving Arduino sketches the ability to run shell scripts, communicate with network interfaces, and receive information from the <span
+class="wikiword">AR9331</span> processor. The USB host, network interfaces and SD card are not connected to the 32U4, but the <span
+class="wikiword">AR9331</span>, and the Bridge library also enables the Arduino to interface with those peripherals.</p><p>Arduino gives us a lot of references about this board in a great <a
+href="http://arduino.cc/en/Guide/ArduinoYun" target="_blank">gide to the Arduino Yun</a> and a sumary of the <a
+href="http://arduino.cc/en/Reference/YunBridgeLibrary" target="_blank">bridge Yun library</a>, a library to enable all the power the Yun can provide.</p><h2>How to use the Arduino Yun with biicode</h2><p>Just specify the Arduino SDK path of the 1.5.8 or higher. If you don&#8217;t have it yet, you can <a
+title="Arduino Download" href="http://arduino.cc/en/Main/Software" target="_blank">download it from the Arduino download page</a> and unzip it into <em>biicode_env</em> folder.</p><pre class="crayon-plain-tag">bii arduino:settings
+Enter SDK path (C:/biicode_env/arduino-1.0.6):C:/biicode_env/arduino-1.5.8
+Enter board (/o list supported options):yun
+Using arduino port: COM12</pre><p>If you want to upload your firmaware by ssh to 192.168.240.1:</p><pre class="crayon-plain-tag">bii arduino:upload --ssh</pre><p>Or specify a different IP.</p><pre class="crayon-plain-tag">bii arduino:upload --ssh 192.168.2.1</pre><p>Now, hacking something via wifi is easier!</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/arduino-yun/">Arduino Yun now supported</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/arduino-yun/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

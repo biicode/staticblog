@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; projects</title> <atom:link href="http://blog.biicode.com/tag/projects/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Unleash your Arduino projects</title><link>http://blog.biicode.com/unleash-arduino-projects/</link> <comments>http://blog.biicode.com/unleash-arduino-projects/#comments</comments> <pubDate>Tue, 02 Dec 2014 12:38:08 +0000</pubDate> <dc:creator><![CDATA[david]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[advanced programming]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[projects]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1933</guid> <description><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino. So let&#8217;s get started, Biicode is a [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>For months, we&#8217;ve been posting tutorials to unleash your Arduino projects and provide all C++ power to Arduino projects with multiple classes and files. But not until we were on a workshop for newbies, we realized we have been missing the basics on how to use biicode to program your arduino.</p><p>So let&#8217;s get started, Biicode is a client interface aplication (CLI)  and to use it open the Terminal of your computer.</p><p><img
+class="aligncenter" src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Arduino_Logo.svg/720px-Arduino_Logo.svg.png" alt="Arduino projects easily setup in biicode" width="240" height="163" /></p><p>biicode technology gives you several advantages to richen your Arduino experience:</p><div><ul><li><strong>Save your project in different folders</strong> for a better organization.</li><li><strong>Reuse yours and other user´s code</strong>. Reuse made easy: just <tt
+class="docutils literal"><span
+class="pre">#include</span></tt> the file you need and you get it. No more copy and paste files from project to project or dowloading zip files from tutorials.</li><li>This is a <strong>simple</strong> and <strong>fast</strong> way to <strong>compile and upload</strong> your code to your Arduino.</li><li>Use your favorite IDE or text editor, we also provide <strong>Eclipse integration</strong>.</li><li>We are hosting <a
+class="reference external" href="https://www.biicode.com/adafruit">adafruit</a>, <a
+class="reference external" href="https://www.biicode.com/sparkfun">sparkfun</a> and many other libraries, <strong>you won’t need to download and install libraries in your SDK anymore</strong>.</li></ul></div><p><span
+id="more-1933"></span></p><h1>1. How to program your arduino with biicode</h1><h2>Installing biicode and Arduino tools</h2><div
+id="installing-biicode-and-arduino-tools" class="section"><p><a
+href="https://www.biicode.com/downloads" target="_blank">Download</a> and install biicode, then make sure it is installed:</p><div
+id="installing-biicode-and-arduino-tools" class="section"><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii --version</pre></div></div></div><div
+id="create-your-project" class="section"></div><p>Then, install a group of tools with the following command. Open you terminal write:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii setup:arduino</pre></div></div></div><div
+id="create-your-project" class="section"><h2>Create Arduino projects</h2><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ bii init myproject</pre></div></div><p>Then we can use the <tt
+class="docutils literal"><span
+class="pre">new</span></tt> command to create some folders and a “Simple Blink” Arduino main file. You can do it manually too.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~$ cd myproject
+~/myproject$ bii new myuser/myblock --hello=arduino</pre></div></div><div
+class="infonote container">You can directly type <tt
+class="docutils literal"><span
+class="pre">myuser</span></tt> or your real username.  This is the resulting layout:</div><div
+class="highlight-text"><div
+class="highlight"><pre class="crayon-plain-tag">+-- myproject
+|    +-- bii
+|    +-- blocks
+|    |    +-- myuser
+|    |    |    +-- myblock
+|    |    |    |    +-- main.cpp
+|    +-- deps</pre></div></div></div><div
+id="define-your-board" class="section"><h2>Define your board</h2><p>Define your Arduino board using <tt
+class="docutils literal"><span
+class="pre">arduino:settings</span></tt> command. We are using an Arduino Uno but use the /o option to show a list of the default boards, even though any board is welcomed!</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">Enter SDK path (/../biicode_env/arduino-1.0.6): [ENTER]
+Enter board (/o list supported options):uno
+Using arduino port: COM4</pre></div></div></div><div
+id="build-and-upload-your-program" class="section"><h2>Upload your program to the Arduino</h2><p>Now, build and upload the blink to your Arduino.</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/myproject$ bii arduino:build
+...
+[100%] Built target myuser_myblock_main
+~/myproject$ bii arduino:upload
+...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div></div><div
+id="depending-on-fenix-blink" class="section"><h2><img
+class="aligncenter wp-image-1935 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/pin13-200x300.png" alt="pin13" width="200" height="300" /></h2><h1>2. Difference between .ino and .cpp blink</h1><p>First, compare both main files. There are only two differences, the first include and the extension of the files. As you will see, this pair of differences will bring you lots of advantages.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p><strong> main.ino</strong></p><pre class="crayon-plain-tag">int led = 13;
+void setup() {
+    pinMode(led, OUTPUT);     // initialize the digital pin as an output.
+}
+void loop() {
+    digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(1000);               // wait for a second
+    digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+    delay(1000);               // wait for a second
+}</pre><p></p><div><h1>3. How to use the code on biicode?</h1><p>Usual &#8220;blink&#8221; project blocks your Arduino, so it&#8217;s obstructed to do anything else but blinking. We are #including here a “blink” utility class that<strong> blinks without delays or blocking your Arduino</strong>. Reuse from<a
+href="https://www.biicode.com/fenix/fenix/blink/master" target="_blank"> fenix&#8217;s blink library</a>, copy the following code containing the new blink into the <em>main.cpp</em> file.</p><p><strong>main.cpp</strong></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "fenix/blink/blink.h"
+Blink my_blink;
+void setup() {
+  //pin = 13, interval = 1000 ms
+  my_blink.setup(13, 1000);
+}
+void loop() {
+  my_blink.loop();
+}</pre><p>Execute the command below to find unresolved dependencies and retrieve necessary files from servers:</p><pre class="crayon-plain-tag">~/myproject$ bii find</pre><p>Now can now build your firmware and upload it to your Arduino:</p><div
+class="highlight-bash"><div
+class="highlight"><pre class="crayon-plain-tag">~/arduino_hello_project$ bii arduino:upload
+      ...
+Writing | ################################################## | 100% 0.00s
+avrdude.exe: 0 bytes of eeprom written
+avrdude.exe: safemode: Fuses OK
+avrdude.exe done.  Thank you.
+[100%] Built target myuser_myblock_main-upload
+Upload finished</pre></div></div><p>That’s it, if you see that output fenix’s blink.h was downloaded and uploaded in your project! You can check the deps folder, the blink.h code is there.</p><h1>4. Next steps</h1><p>Many tutorials are available on this blog&#8217;s<a
+href="http://blog.biicode.com/tag/arduino-2/" target="_blank"> Arduino projects with biicode</a>.</p><p>Hope you enjoy this basic unleash your Arduino Projects Tutorial and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p></div></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/unleash-arduino-projects/">Unleash your Arduino projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/unleash-arduino-projects/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Biicontest is over! Meet the winners</title><link>http://blog.biicode.com/biicontest-winners/</link> <comments>http://blog.biicode.com/biicontest-winners/#comments</comments> <pubDate>Wed, 30 Apr 2014 14:00:10 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[#biicontest2014]]></category> <category><![CDATA[events]]></category> <category><![CDATA[#biicontest]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[projects]]></category> <category><![CDATA[winners]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=11</guid> <description><![CDATA[<p>Biicontest 2014 has come to its end, and it brings along great projects! We were so pumped to receive submissions from all over the world. Each one was so great and unique in their own way. The Jury, composed by companies like Google, BQ, Dymotics, Tetuán Valley, Bricogeek and Biicode, had to make a really difficult call [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicontest-winners/">Biicontest is over! Meet the winners</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/banner-winners-blog.jpg"><img
+class="aligncenter size-full wp-image-22" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/banner-winners-blog.jpg" alt="Winners Biicontest 2014" width="970" height="544" /></a> <span
+id="more-11"></span></p><h3>Biicontest 2014 has come to its end, and it brings along great projects!</h3><p>We were so pumped to receive submissions from all over the world. Each one was so great and unique in their own way. The Jury, composed by companies like <a
+title="Google" href="http://www.google.es/" target="_blank">Google</a>, <a
+title="BQ" href="http://www.bqreaders.com/" target="_blank"> BQ</a>, <a
+title="Dymotics" href="http://www.dymotics.com/" target="_blank"> Dymotics</a>, <a
+title="Tetuan Valley" href="http://tetuanvalley.com/" target="_blank"> Tetuán Valley,</a><a
+title="Bricogeek" href="http://www.bricogeek.com/" target="_blank"> Bricogeek</a> and <a
+title="Biicode" href="http://www.biicode.com/" target="_blank">Biicode</a>, had to make a really difficult call as there were very good projects among participants. It was nearly impossible to choose the best ones, but after a detailed account of points and much deliberation: Biicode is pleased to announce the winners of biicontest2014!</p><h3><strong>1st Prize goes to <a
+title="Coconauts biicontest 1st winner" href="https://www.biicode.com/biicontest2014_first_winner" target="_blank">Coconauts. </a>and their WatchDuino.</strong></h3><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/CtgR1YiwnEY?feature=oembed" frameborder="0" allowfullscreen></iframe></p><h3>2nd Prize goest to <a
+title="Biicontest 2nd winner benefacieur" href="https://www.biicode.com/biicontest2014_second_winner" target="_blank">Benefacieur </a> with his project blocporc.</h3><p><iframe
+width="630" height="354" src="http://www.youtube.com/embed/4mtEbUgCFmM?feature=oembed" frameborder="0" allowfullscreen></iframe></p><h3>3rd Prize goes to <a
+title="biicontest 3rd winner pruli" href="https://www.biicode.com/biicontest2014_third_winner" target="_blank">Pruli. </a>with their simon says game.</h3><p><a
+title="dropbox video pruli biicontest 3rd prize" href="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4" target="_blank">Video of Pruli&#8217;s Simon Says game for biicontest2014 at dropbox</a></p><h3>&amp; The best 3D printed project prize is for <a
+title="3d prize biicontest spainlabs" href="https://www.biicode.com/biicontest2014_3d_winner" target="_blank">SpainLabs</a> and their weather station.</h3><p><iframe
+width="630" height="473" src="http://www.youtube.com/embed/pb4S7I9CzAY?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p>&nbsp;</p><p>Thanks so much to everybody who sent in projects! Do you want to become a maker? <a
+title="winners biicontest2014" href="https://www.biicode.com/biicontest2014-en" target="_blank">Replicate one of our winning or finalist projects</a>.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/biicontest-winners/">Biicontest is over! Meet the winners</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/biicontest-winners/feed/</wfw:commentRss> <slash:comments>1</slash:comments> <enclosure
+url="https://dl.dropboxusercontent.com/u/65093972/20140413_230640.mp4" length="31328315" type="video/mp4" /> </item> </channel> </rss>

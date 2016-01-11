@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; docker daemon</title> <atom:link href="http://blog.biicode.com/tag/docker-daemon/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>C++ Docker remote API client</title><link>http://blog.biicode.com/cpp-docker-remote-api-client/</link> <comments>http://blog.biicode.com/cpp-docker-remote-api-client/#comments</comments> <pubDate>Tue, 20 Jan 2015 17:15:32 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[c++ docker client]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[docker]]></category> <category><![CDATA[docker daemon]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2010</guid> <description><![CDATA[<p>I&#8217;ve built a block to control Docker daemon from C++ source code. It&#8217;s available here: lasote/docker_client What’s Docker Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-docker-remote-api-client/">C++ Docker remote API client</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>I&#8217;ve built a block to control Docker daemon from C++ source code. It&#8217;s available here: <a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank">lasote/docker_client</a></p><p><a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank"><img
+class=" size-full wp-image-2055 alignnone" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/biicode-cplus-docker.jpg" alt="biicode-cplus-docker" width="638" height="279" /></a></p><h2>What’s Docker</h2><p><strong><a
+title="What is Docker?" href="https://www.docker.com/whatisdocker/" target="_blank"><br
+/> Docker</a></strong> is an open platform for developers and sysadmins to build, ship, and run distributed applications. Consisting of Docker Engine, a portable, lightweight runtime and packaging tool, and Docker Hub, a cloud service for sharing applications and automating workflows, Docker enables apps to be quickly assembled from components and eliminates the friction between development, QA, and production environments. As a result, IT can ship faster and run the same app, unchanged, on laptops, data center VMs, and any cloud.</p><h2>What&#8217;s Docker remote API?</h2><p>Docker also exposes a <a
+title="Docker REST API" href="http://https://docs.docker.com/reference/api/docker_remote_api/" target="_blank">REST API</a> to control your docker service. This API is at least as powerfull as the Docker client.</p><h2>Why would I need a C++ Docker client for Docker&#8217;s remote API?</h2><p>Because you can fully control Docker daemon from your C++ source code!<br
+/> For example, you may want to automate the creation of some images, or run some linux instances on demand to build your software, maybe build a CI platform&#8230;</p><p><span
+id="more-2010"></span></p><h3>Brief comments about <a
+title="lasote/docker_client" href="https://www.biicode.com/lasote/docker_client" target="_blank">lasote/docker_client</a></h3><ul><li>It&#8217;s the very first docker client for C++ language.</li><li>Multiplatform, tested on Windows with Visual Studio and MinGW, Linux with GCC and MacOSx with Clang.</li><li>It&#8217;s based on <a
+title="Libuv repository" href="https://github.com/libuv/libuv" target="_blank">libuv</a> library for event driven networking.</li><li>Modern C++11 style.</li></ul><h2>Want to try it?</h2><p><a
+title="Getting started" href="http://docs.biicode.com/c++/gettingstarted.html" target="_blank">Get started</a> with biicode.</p><h3>Create a new biicode project and a new block</h3><p></p><pre class="crayon-plain-tag">bii init myproject
+ cd myproject
+ bii new myuser/myblock</pre><p></p><h3>Enable TCP access for your docker instance</h3><p>You can follow <a
+title="Enable REST API docker" href="http://www.virtuallyghetto.com/2014/07/quick-tip-how-to-enable-docker-remote-api.html" target="_blank">this tutorial</a> to enable TCP access for your docker instance.</p><h3>Create a main.cpp and paste this example code</h3><p><strong>NOTE</strong>: In this example I used lambda functions, but if you prefer the &#8220;classic code&#8221; you can pass any &#8220;function&#8221; object to success callback and error callback.</p><p>Paste in <b>myproject/blocks/myuser/myblock/main.cpp</b>:</p><pre class="crayon-plain-tag">#include "lasote/docker_client/client.h"
+#include &lt;iostream&gt;
+using namespace lasote;
+int main() {
+  DockerClient client("http://localhost:4243");
+  //Callback function for error handle
+  ERR_F error_cb = [] (int status, string desc) {
+      cout &lt;&lt; "Error: " &lt;&lt; status &lt;&lt;  endl  &lt;&lt; desc;
+  };
+  // EXAMPLE 1: CREATE A CONTAINER, START IT AND ATTACH IT ALL IN ONE.
+  // REMEMBER, YOU CAN USE ANY "function" OBJECT, I LIKE TO NEST API CALLS
+  // IN SUCCESS CALLBACK... YES, I LOVE JAVASCRIPT
+  //Command parameters
+  jsonxx::Array commands;
+  commands &lt;&lt; "/bin/python";
+  jsonxx::Object create_params;
+  create_params &lt;&lt; "Cmd" &lt;&lt; commands;
+  create_params &lt;&lt; "Image" &lt;&lt; "fedora_lint";
+  // Create the container and in success callback start the container
+  auto c2 = client.create_container([&amp;client, error_cb] ( jsonxx::Object ret) {
+     cout &lt;&lt; "CREATE CONTAINER RETURN: " &lt;&lt; ret.json() &lt;&lt; endl;
+     auto container_id = ret.get&lt;jsonxx::String&gt;("Id");
+     cout &lt;&lt; "CONTAINER ID: " &lt;&lt; container_id &lt;&lt; endl;
+     auto c4 = client.start_container([container_id, &amp;client, error_cb] ( jsonxx::Object ret) {
+        cout &lt;&lt; "START CONTAINER RETURN: " &lt;&lt; ret.json() &lt;&lt; endl;
+        auto c2 = client.attach_to_container(
+            [] ( jsonxx::Object ret) {
+               cout &lt;&lt; "Response: " &lt;&lt; ret.json() &lt;&lt; endl;
+            },
+            error_cb,
+            [] (const char *p, size_t len) {
+                cout &lt;&lt; string(p, len) ;
+            },
+            container_id, true, true, true, true);
+     }, error_cb, container_id);
+  }, error_cb, create_params);
+  //EXAMPLE 2: SHOW THE CONTAINERS LOGS
+  auto c5 = client.logs_container([] (string out) {
+       cout &lt;&lt; "Response: " &lt;&lt; out &lt;&lt; endl;
+  }, error_cb, "c7ddced66641", true, true, true, true, "all");
+  //EXAMPLE 3: LIST ALL THE CONTAINERS
+  auto c6 = client.list_containers([] ( jsonxx::Object ret) {
+    cout &lt;&lt; "Containers: " &lt;&lt; ret.json() &lt;&lt; endl;
+  }, error_cb, false, 13);
+  //EXAMPLE 4: LIST ALL THE IMAGES
+  auto c7 = client.list_images([] ( jsonxx::Object ret) {
+      cout &lt;&lt; "Images: " &lt;&lt; ret.json() &lt;&lt; endl;
+  }, error_cb);
+  // RUN THE LOOP TO LAUNCH ALL THE REQUESTS ASYNC
+  run_loop();
+}</pre><p></p><h3>Just build it!</h3><p></p><pre class="crayon-plain-tag">bii find
+ bii cpp:build</pre><p></p><h2>TODO</h2><p>&#8211; This library implements about a 70% of docker v1.16 interface. Most important methods are already implemented.<br
+/> &#8211; Libuv doesn&#8217;t support SSL/TLS so, it does not support HTTPs yet. You can replace Libuv easily replaced and use any other network framework to support it. It does not support unix socket for the same reason.</p><p>All <a
+href="https://github.com/lasote/docker_client"> github pull request</a> are welcome, so please contribute! See the <a
+href="https://github.com/lasote/docker_client/issues" target="_blank">issues </a>on GitHub for work to be done.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cpp-docker-remote-api-client/">C++ Docker remote API client</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cpp-docker-remote-api-client/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

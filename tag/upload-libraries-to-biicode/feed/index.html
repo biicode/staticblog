@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; upload libraries to biicode</title> <atom:link href="http://blog.biicode.com/tag/upload-libraries-to-biicode/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Lessons learnt adapting CppMicroServices to biicode</title><link>http://blog.biicode.com/cppmicroservices-biicode/</link> <comments>http://blog.biicode.com/cppmicroservices-biicode/#comments</comments> <pubDate>Wed, 11 Feb 2015 15:41:31 +0000</pubDate> <dc:creator><![CDATA[azriel]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[biicoders]]></category> <category><![CDATA[CppMicroServices]]></category> <category><![CDATA[upload libraries to biicode]]></category> <category><![CDATA[upload to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2058</guid> <description><![CDATA[<p>This post summarizes the lessons learnt from adapting the CppMicroServices framework to a biicode compatible format. It does not go into detail about the actual modifications, but focuses on the lessons learnt adapting the framework. Background CppMicroServices is an implementation of the OSGi framework, which enables runtime dependency injection. Modules of code (bundles) can be [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cppmicroservices-biicode/">Lessons learnt adapting CppMicroServices to biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>This post summarizes the lessons learnt from adapting the <a
+href="http://cppmicroservices.org/" target="_blank">CppMicroServices</a> framework to a biicode compatible format. It does not go into detail about the actual modifications, but focuses on the lessons learnt adapting the framework.</p><h2><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#background" rel="noreferrer" name="user-content-tools"></a>Background</h2><p>CppMicroServices is an implementation of the OSGi framework, which enables runtime dependency injection. Modules of code (bundles) can be loaded and unloaded at runtime. In the case of CppMicroServices, bundles are either shipped in the form of shared libraries, or statically linked into the executable.</p><p><img
+class="aligncenter wp-image-2067 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/cppmicroservices-300x60.png" alt="cppmicroservices" width="300" height="60" /></p><p>Based on <a
+href="http://en.wikipedia.org/wiki/Package_principles" rel="noreferrer">packaging principles</a>, bundles should be packaged and released separately &#8211; so that they can be depended on individually. biicode&#8217;s dependency management through blocks is suitable as a <a
+href="http://blog.biicode.com/file-based-cpp-dependency-manager/" target="_blank">dependency management tool</a> that supports this flow.</p><p><span
+id="more-2058"></span></p><h2><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#lessons-learnt-while-adapting-the-cppmicroservices-framework" rel="noreferrer" name="user-content-lessons-learnt-while-adapting-the-cppmicroservices-framework"></a>Lessons Learnt While Adapting the CppMicroServices Framework</h2><p>Never learn two things at once. This is one of the most important rules to obey when attempting a migration / modification. Another rule is to understand the specifics of each entity involved in the task &#8211; not just the concepts, but the concrete behaviour.</p><p>In my case, I understood the concepts of build and dependency management tools, but I was not familiar with biicode, CMake, and how CppMicroServices used CMake.</p><h3><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#tools" rel="noreferrer" name="user-content-tools"></a>Tools</h3><p>There are multiple layers of tools involved in a biicode build. biicode, CMake, Make, and the compiler (g++, clang, cl) and linker. When something fails, understand why it fails. It&#8217;s not always the lowest layer&#8217;s fault. Perhaps some CMake configuration wasn&#8217;t written to tell <code>ld</code> that a particular library needs to be linked.</p><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#biicode" rel="noreferrer" name="user-content-biicode"></a>biicode</h4><p>Of all of the components in play, biicode probably has the shallowest learning curve &#8211; for the most part. biicode&#8217;s documentation makes it easy to see how it works for freshly created blocks. The hard part is determining if it can do <em>some complex thing that isn&#8217;t documented</em>. The short answer is no, <a
+href="http://docs.biicode.com/c++/building.html#init-biicode-block" rel="noreferrer">what is documented</a> is what you get &#8211; but I found that this is enough. The trickiest part is populating the variables that biicode will read.</p><p>The <a
+href="http://forum.biicode.com/" rel="noreferrer">forum</a> is also a very helpful place to get your questions answered.</p><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#cmake" rel="noreferrer" name="user-content-cmake"></a>CMake</h4><p>CMake reads like a bash script &#8211; short sections are relatively easily understood, but once it gets big, navigating and understanding the code is a hassle. A few gotchas that mask obscure errors when CMake builds fail are:</p><ul
+class="task-list"><li><code>function_call(${param1} ${param2} ${param3})</code> is effectively <code>function_call(${param1} ${param3})</code> if <code>${param2}</code> is empty</li><li>if a subdirectory is added as part of a CMake build using add_subdirectory(<em>dirname</em>), it is in a scope where it is able to access variables set in the parent directory scope, but any variables set in this scope will not be accessible to the parent directory unless <code>PARENT_SCOPE</code> is passed to the function</li></ul><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#mixing-biicode-and-cmake" rel="noreferrer" name="user-content-mixing-biicode-and-cmake"></a>Mixing biicode and CMake</h4><p>If the project to be converted produces multiple artifacts, biicode needs the source files for its targets to be declared in the relevant BII_artifactname_SRC variables. This must be done before the <code>ADD_BIICODE_TARGETS()</code> function is called.</p><p>If a target&#8217;s source includes generated files, then the path to those generated files must be known before the target is added (i.e. prior to the <code>ADD_BIICODE_TARGETS()</code> call). If there is special processing required for a biicode target in a subdirectory, but that subdirectory is added before <code>ADD_BIICODE_TARGETS()</code> is called, then this cannot be done. Either:</p><ul
+class="task-list"><li>create a different static library target in the subdirectory, and link this to the biicode target instead, OR</li><li>perform that special processing in the parent directory&#8217;s CMake configuration after the biicode targets are added (may result in duplicated code)</li></ul><h3><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#building-and-testing" rel="noreferrer" name="user-content-building-and-testing"></a>Building and Testing</h3><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#build-each-combination" rel="noreferrer" name="user-content-build-each-combination"></a>Build each combination</h4><p>After making changes to the project, it is important to make sure it builds on the following combinations:</p><ul
+class="task-list"><li>The non-biicode build</li><li>From the repository checkout (e.g. git clone)</li><li>From bii open user/block &#8211; in case required files are not published</li><li>From a block that depends on it &#8211; to discover implicit source dependencies that cannot be discovered by biicode</li></ul><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#build-on-each-operating-system" rel="noreferrer" name="user-content-build-on-each-operating-system"></a>Build on each operating system</h4><p>If your block should support different operating systems, you should build it on each to ensure it works. This also lets you discover how the block must be built. For example, CMake may default to the MINGW compiler on Windows,but your block may only support the MSVC compiler. This means you need to add an argument to the build command, e.g. <code>bii cpp:configure -G "Visual Studio 12 2013 Win64""</code>.</p><p><strong>Tip:</strong> CMake does not detect your MSVC compiler if <em>&#8220;Express 2013 for Windows&#8221;</em> is installed, but it does if <em>&#8220;Express 2013 for Windows Desktop&#8221;</em> is installed.</p><h4><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#clean-your-working-directory" rel="noreferrer" name="user-content-clean-your-working-directory"></a>Clean your working directory</h4><p>Before you build with biicode, make sure you clean out any output from a non-biicode build (e.g. CMakeCache.txt, generated files).</p><pre class="crayon-plain-tag">git clean -fd # warning: this removes all untracked files, so commit / stage them before running this command</pre><p><strong>Tip:</strong> you can use <code>cmake -Bbuild -H.</code> to have an &#8220;out of source&#8221; build. After, run <code>cd build &amp;&amp; make all &amp;&amp; cd ..</code> to compile your code. Just delete the <code>build</code> directory to clean up your working directory.</p><h3><a
+class="anchor" href="https://gist.github.com/azriel91/95d5c90ff34834380afe#post-publishing-actions" rel="noreferrer" name="user-content-post-publishing-actions"></a>Post Publishing Actions</h3><p>After publishing a block as stable, the next time you publish, your ancestor version for your block is bumped. Remember to commit this change shortly after.</p><h3>Author Bio</h3><p>Azriel is a software developer at Orion Health in New Zealand. His interest in C/C++ development is primarily driven by the control available in the language, and the opportunity to demonstrate that C/C++ code can be clean. To Azriel, biicode is a major improvement to dependency management in C/C++ projects, and compares the improvement in dependency management support from CMake to biicode akin to Apache Ivy to Apache Maven.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/cppmicroservices-biicode/">Lessons learnt adapting CppMicroServices to biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/cppmicroservices-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 5: Libuv</title><link>http://blog.biicode.com/upload-biicode-example-5-libuv/</link> <comments>http://blog.biicode.com/upload-biicode-example-5-libuv/#comments</comments> <pubDate>Mon, 22 Dec 2014 16:51:21 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[blocks]]></category> <category><![CDATA[libuv]]></category> <category><![CDATA[tracks]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1905</guid> <description><![CDATA[<p>Recently, I wrote a post about biicode&#8217;s tracks. &#8220;Biicode Tracks&#8221; mean just that: Actual working versions of the same lib uploaded into different tracks of the same block.  Biicode tracks enable quick using and switching of versions. Let&#8217;s see how I used block tracks to upload Libuv. This is a successful example of maintaining a library developed using [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-biicode-example-5-libuv/">How to upload to biicode. Example 5: Libuv</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Recently, I wrote a post about <strong><a
+title="block tracks post" href="http://blog.biicode.com/new-feature-block-tracks">biicode&#8217;s tracks.</a> &#8220;Biicode Tracks&#8221;</strong> mean just that: Actual working versions of the same lib uploaded into different tracks of the same block.<strong> </strong></p><p>Biicode tracks enable quick using and switching of versions.</p><p>Let&#8217;s see how I used block tracks to upload Libuv. This is a successful example of maintaining a library developed using github with several versions, being each one a different line of development.</p><p><img
+class="alignnone wp-image-1910 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/banner.png" alt="libuv's logo" width="1024" height="384" /></p><p><span
+id="more-1905"></span></p><p>I won&#8217;t get into details about how to adapt the libuv source code to upload it to biicode. If you want to learn how to adapt your source code to upload it to biicode, the previous posts address this topic widely:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li><li>Example 4: <a
+href="http://blog.biicode.com/upload-to-biicode-oscpack/">Oscpack by Ross Bencina</a></li></ul><h2>Libuv library</h2><p><a
+title="Github libuv" href="https://github.com/joyent/libuv" target="_blank">Libuv</a> is an awesome multi-platform library for asynchronous networking, file-system operations and many more uses. It was primarily developed to use with <a
+title="Node.js" href="http://nodejs.org/" target="_blank">Node.js</a> but it&#8217;s also used with <a
+title="luvit.io" href="http://luvit.io/" target="_blank">Luvit</a>, <a
+title="julia" href="http://julialang.org/" target="_blank">Julia</a>, <a
+title="Pyuv" href="https://github.com/saghul/pyuv" target="_blank">pyuv</a>, and <a
+title="others using libuv" href="https://github.com/joyent/libuv/wiki/Projects-that-use-libuv" target="_blank">others</a>.</p><p>You can find <a
+title="github libuv" href="https://github.com/libuv/libuv" target="_blank">libuv original source code on github</a>. It&#8217;s a well organized project development. It has branches and tags each version, stable or not:</p><p><img
+class="alignnone wp-image-1907 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/libuv_github.png" alt="libuv's github repo" width="1010" height="722" /></p><p>As you can see, there are three main versions:</p><ul><li><b>0.10</b> (Stable, used by Nodejs)</li><li><b>0.11</b> (Non stable, but commonly used)</li><li><b>1.0</b> (Made stable few days ago)</li></ul><p>The three versions are outstanding and I wanted to upload all of them to biicode.</p><h2>How to upload to biicode (workflow)</h2><p><b>1. Fork <a
+title="github libuv" href="https://github.com/joyent/libuv">libuv github</a> repository:</b></p><p><img
+class="alignnone wp-image-1909 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/forklibuv.png" alt="forking in github libuv" width="1004" height="60" /></p><p><b>2. Create a biicode project and a block named &#8220;libuv&#8221;:</b></p><pre class="crayon-plain-tag">&gt; bii init libuv_project
+&gt; cd libuv_project
+&gt; bii new lasote/libuv
+&gt; cd blocks/lasote/libuv</pre><p><b>3. Clone repo and checkout tag v0.10.29 (last 0.10 stable) and branch it. </b></p><p>I have created a branch <a
+title="Libuv branched 0.10.29" href="https://github.com/lasote/libuv/tree/v0.10.29_biicode" target="_blank">named</a> <b>v0.10.29_biicode</b>:</p><pre class="crayon-plain-tag">&gt; git clone https://github.com/lasote/libuv.git .
+&gt; git checkout v0.10.28
+&gt; git checkout -b v0.10.29_biicode</pre><p><b>4. Adapt the code to work well with biicode.</b></p><p>As I said, I won&#8217;t get into details because it&#8217;s not the purpose of this blog-post, but here&#8217;s a review of changes, <a
+title="Libuv branch biicode" href="https://github.com/lasote/libuv/tree/v0.10.29_biicode/bii" target="_blank">explore the code</a> to see the details:</p><ul><li>a) Create a <b>biicode.conf file </b>wand filled:<ul><li>[dependencies] section with some not automatically detected dependencies.</li><li>[paths] section to include <b>src</b> and <b>include</b> directories in biicode path.</li></ul></li><li>b) Create a <b>CmakeLists.txt</b> reading existing Makefiles of the project.</li></ul><p><b>5. Create [parent] section to publish a new block track and specify in it that we want to create a track named v0.10 of a <b>lasote/libuv</b> block. </b></p><p>Version -1 indicates that there is no version published yet.</p><pre class="crayon-plain-tag">* lasote/libuv(v0.10): -1</pre><p><b>6. Commit your changes to github whenever you want!</b></p><pre class="crayon-plain-tag">&gt; git add .
+&gt; git commit -m "Biicode conf files added to project"
+&gt; git push</pre><p><b>7. Once you are ready, publish it to biicode!</b></p><pre class="crayon-plain-tag">&gt; bii publish --tag STABLE</pre><p><b>8. Test if the block is reusable writing another block with an libuv&#8217;s example.</b></p><p>You can find <a
+title="Libuv examples" href="https://www.biicode.com/search?q=user:examples%20AND%20block:libuv">libuv examples</a> already uploaded to biicode.</p><p><b>9. Repeat again steps from 3 to 8 and prepare 0.11 and 1.0 tracks!</b></p><p>Using this workflow you can use Github to merge the original repository whenever you want and upload to biicode the new releases that come out.</p><p>Remember that block tracks allow you to change the version of your libuv dependency without changing the #includes in your source code.</p><h2>Want to try libuv?</h2><p>For a quick-start using libuv just open some of the examples we have:</p><pre class="crayon-plain-tag">&gt; bii open "lasote/libuv(v1.0)"
+  &gt; bii cpp:build</pre><p>Or develop your own examples just include this line in your header file:</p><pre class="crayon-plain-tag">#include "lasote/libuv/include/uv.h"</pre><p>And specify the track of libuv to depend on in the [<b>requirements]</b> section of your <strong>biicode.conf</strong> file:</p><pre class="crayon-plain-tag">[requirements]
+  #choose just one above and change it to switch between tracks
+  lasote/libuv(v0.10):0 # For libuv 0.10
+  lasote/libuv(v0.11):0 # For libuv 0.11
+  lasote/libuv(v1.0):0 # For libuv 1.0</pre><p>I hope you enjoy this post and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.<br
+/> Enjoy libuv!!!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-biicode-example-5-libuv/">How to upload to biicode. Example 5: Libuv</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-biicode-example-5-libuv/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 4: Oscpack by Ross Bencina</title><link>http://blog.biicode.com/upload-to-biicode-oscpack/</link> <comments>http://blog.biicode.com/upload-to-biicode-oscpack/#comments</comments> <pubDate>Mon, 17 Nov 2014 16:08:32 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[OScpack]]></category> <category><![CDATA[Ross Bencina]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1886</guid> <description><![CDATA[<p>Updated for biicode 2.0! As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series: Example 1: Json11 by Dropbox Example [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>As the headline states, this is the fourth example about how to upload libraries to biicode.  If you&#8217;ve done this kind of thing before, keep reading, we&#8217;ll explain how to upload Oscpack lib. Otherwise, you may be interested on reading first any previous articles of the series:</p><ul><li>Example 1: <a
+href="http://blog.biicode.com/upload-to-biicode-i/">Json11 by Dropbox</a></li><li>Example 2: <a
+href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D by Erin Catto</a></li><li>Example 3: <a
+href="http://blog.biicode.com/upload-to-biicode-little-cms/">Little CMS by Marti Maria</a></li></ul><h2></h2><p><span
+id="more-1886"></span></p><h2>Upload to biicode Oscpack</h2><p>Oscpack is a set of C++ classes for packing and unpacking Open Sound Control (OSC) packets. Developed by Ross Bencina, Oscpack proved to be an essential library requested in our forum. As Ross Bencina explains, <a
+title="Oscpack library" href="http://www.rossbencina.com/code/oscpack" target="_blank">Oscpack</a> includes a minimal set of UDP networking classes for Windows and POSIX. It enables an easy way to construct, send, receive and parse OSC packets.</p><h3>Basics</h3><p><a
+title="download biicode" href="http://www.biicode.com/downloads" target="_blank">Install biicode </a>and make sure you&#8217;ve got the latest version of the library you want to use. To keep the biicode version updated, fork or clone the library on a public git repository (as Bitbucket or Github). <a
+href="https://code.google.com/p/oscpack/" target="_blank">Oscpack 1.1.0 is available on google code hosting</a>. This guide uses Bitbucket, but the same steps apply to <a
+title="Github Travis Continous Integration" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Github and Travis CI fans</a>.</p><p>Create a new BIICODE project:</p><pre class="crayon-plain-tag">~$ bii init osc
+~$ cd osc
+~$ bii new mariadeanton/oscpack
+~$ cd blocks/mariadeanton/oscpack</pre><p>Put the content of the latest version of Oscpack into <code>blocks/mariadeanton/oscpack </code> folder. Adapt the readme file to notify users the specifics of the lib and its biicode adaptation.</p><p>Create a new Bitbucket repository:</p><p><img
+class="size-large wp-image-1887 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/bitbucket1-1024x174.png" alt="bitbucket repository" width="630" height="107" /></p><p>Copy the HTTPS or SSH address as marked in red on the image. You will need this on the steps below to establish a &#8220;remote origin&#8221;:</p><pre class="crayon-plain-tag">git init
+git add .
+git commit -m "first commit"
+git remote add origin git@bitbucket.org:mariadeanton/oscpack-biicode.git
+git push -u origin master</pre><p>Once first commit is pushed the original library is ready to be adapted.</p><h3>Specifics</h3><h4>A. Check if biicode finds the links between sources</h4><p>Execute <code>bii deps </code> to get all information related to biicode&#8217;s dependency scanning:</p><pre class="crayon-plain-tag">bii deps</pre><p><img
+class="size-full wp-image-1890 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/biideps1.png" alt="biideps1" width="348" height="537" /></p><p>Seems we&#8217;ve got to include the current working directory into dependency search and build.</p><p>If you execute:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>It won&#8217;t compile.</p><h5>A.1. Create a <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a>  file into blocks/username/blockname/ folder</h5><p>and write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/</pre><p>&nbsp;</p><h4></h4><p><img
+class="aligncenter size-large wp-image-1991" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-paths-1024x328.png" alt="osc-paths" width="630" height="201" /></p><h4>B. Build and compile</h4><h5>B.1. Ensure original code logic remains</h5><p>Just with these updates, both biicode and compiler know they should include current source directory, but <code>bii cpp:build</code> can&#8217;t compile properly, why is this happening?</p><p>Check out the previous <code>CMakeLists.txt</code>, it separates the versions of <code>NetworkingUtils.cpp</code> depending on whether the OS is Win32 or POSIX based. It also includes <code>winmm</code> library when using Win32 . As Ross Bencina himself explains &#8220;the IpSystemTypePath selects the correct ones based on the current platform&#8221;.</p><p>Update your <code>CMakeLists.txt</code> to ignore posix folder content while on Win32 and vice versa. It also adds a line after <code>ADD_BIICODE_TARGETS </code>to link <code>winmm</code> lib on Win32:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Discard Posix Folder while on Win32 and vice versa
+  IF(WIN32)
+  list(REMOVE_ITEM  BII_LIB_SRC ip/posix/NetworkingUtils.cpp ip/posix/UdpSocket.cpp)
+  ELSE()
+  list(REMOVE_ITEM  BII_LIB_SRC ip/win32/NetworkingUtils.cpp ip/win32/UdpSocket.cpp)
+  ENDIF()
+  ADD_BIICODE_TARGETS()
+  # Link winmm lib while on Win32
+  IF(WIN32)
+  TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC winmm)
+  ENDIF()
+  # Include base block directory
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+ELSE()
+  # Previous CMakeLists.txt goes here</pre><p></p><h5>B.2. See for yourself what&#8217;s going on</h5><p>Execute:</p><pre class="crayon-plain-tag">~$ bii cpp:build</pre><p><em>(A successful build happens on POSIX OS but not on Win32)</em><br
+/> Let&#8217;s check the <code>bii_username_blockname_vars.cmake</code> file located into the <code>cmake</code> folder on your project. You can see all source code files linked here.<br
+/> <img
+class="aligncenter size-full wp-image-1892" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/cmake.png" alt="cmake" width="953" height="606" /></p><p>There it is! <code>ip/win32/UdpSocket.cpp</code> is missing.</p><h5>B.3. Manually specify dependencies</h5><p>Establish a dependency between <code>ip/UdpSocket.h</code> and <code>ip/win32/UdpSocket.cpp</code> just writing in the <em>[dependencies]</em> section of your <a
+title="biicode conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> file:</p><pre class="crayon-plain-tag">ip/UdpSocket.h + ip/win32/UdpSocket.cpp</pre><p>&nbsp;</p><p><img
+class="aligncenter size-large wp-image-1990" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/osc-dependencies-1024x227.png" alt="osc-dependencies" width="630" height="139" /></p><p>Save all changes and you&#8217;re ready to go!</p><h4>C. Publish</h4><p>Push your changes to Bitbucket and publish to biicode, Oscpack library is ready to be reused!</p><pre class="crayon-plain-tag">bii publish</pre><p>Once you&#8217;ve tested Oscpack library on the different OS you can publish it as stable:</p><pre class="crayon-plain-tag">bii publish --tag=STABLE</pre><p></p><h4>D. Enjoy!</h4><p>Use <a
+href="http://www.biicode.com/Maria/oscpack" target="_blank">Oscpack library on biicode.</a> For example, you can include:</p><pre class="crayon-plain-tag">#include "Maria/oscpack/osc/OscPrintReceivedElements.h"
+//or
+#include "Maria/oscpack/ip/UdpSocket.h"</pre><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a> and <a
+href="http://forum.biicode.com">forum</a>.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-oscpack/">How to upload to biicode. Example 4: Oscpack by Ross Bencina</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-oscpack/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to upload to biicode. Example 3: Little CMS by Marti Maria</title><link>http://blog.biicode.com/upload-to-biicode-little-cms/</link> <comments>http://blog.biicode.com/upload-to-biicode-little-cms/#comments</comments> <pubDate>Mon, 13 Oct 2014 13:10:01 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[lcms]]></category> <category><![CDATA[LittleCMS]]></category> <category><![CDATA[Marti Maria]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1764</guid> <description><![CDATA[<p>Updated for biicode 2.0! Once a library is uploaded to biicode, everyone can reuse it easily!  Let&#8217;s see a new example about how to upload to biicode just following a few steps, again, this is another example about how to proceed when your library depends on others. For this matter we&#8217;re using the fantastic library Little [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-little-cms/">How to upload to biicode. Example 3: Little CMS by Marti Maria</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>Updated for biicode 2.0!</h3><p>Once a library is uploaded to biicode, everyone can reuse it easily!  Let&#8217;s see a new example about how to upload to biicode just following a few steps, again, this is another example about how to proceed when your library depends on others. For this matter we&#8217;re using the fantastic library <a
+title="Little CMS" href="http://www.littlecms.com" target="_blank">Little CMS</a>, a free, open source, CMM engine. It provides fast transforms between ICC profiles.</p><p>As you can guess, once we&#8217;re done everybody will be able to use this library just by typing <code>#include "martimaria/littlecms/include/lcms2.h"</code></p><p><span
+id="more-1764"></span></p><h3>The Initial Steps to upload to biicode: one, two, three, four!</h3><p>These don&#8217;t defer from the ones used on the previous examples last week: <a
+title="upload to biicode json11" href="http://blog.biicode.com/upload-to-biicode-i/">Json11</a> and <a
+title="upload to biicode box2d" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">Box2D</a>.</p><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so if the author  updates the library we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to the <a
+title="mm2/Little-CMS" href="https://github.com/mm2/Little-CMS" target="_blank">original repository</a> and click on fork:</p><p><img
+class="aligncenter wp-image-1769 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/FORK.png" alt="Fork the Little CMS source code to upload to biicode." width="895" height="90" /></p><p>&nbsp;</p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init lcms
+$ cd lcms
+$ bii new amalulla/little-cms</pre><p>If you already are a biicode user you can replace &#8220;amalulla&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/amalulla/little-cms</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\amalulla\little-cms
+$ git clone https://github.com/amalulla/Little-CMS.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command <code>bii deps</code> give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter wp-image-1770 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bii_deps_lcms.png" alt="bii_deps_lcms" width="262" height="375" /></p><p>What&#8217;s going on? Seems we have tons of unresolved files, How should we proceed with those in order to get the library working?</p><h4>4. Solve your Unresolved includes</h4><h4>4.1. #include External Libraries</h4><p>Let&#8217;s start with the ones we already new about: <em>jpeglib.h</em> and <em>tiffio.h,</em> they are the dependencies, as Marti Maria explains in the library Docs:</p><blockquote><p>If you plan to compile the tifficc and jpgicc utilities, you need to have following libraries installed. Please refer to documentation of each library for installation instructions.</p></blockquote><p>Well, that&#8217;s not our case, in biicode you don&#8217;t need to install nor download the libraries, so, we&#8217;re going to look for them in biicode:</p><p><img
+class="aligncenter wp-image-1771 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/search-in-biicode.png" alt="Search the explore section of biicode a C/C++ dependency manager" width="1049" height="102" /></p><p>Lets check, they&#8217;re already in biicode!</p><ul><li><strong>tiffio.h <span
+style="font-weight: 300;color: #292f33">→ </span><span
+style="font-weight: 300;color: #292f33"> </span></strong>Lib TIFF <a
+title="libtiff original library" href="http://www.remotesensing.org/libtiff/" target="_blank">http://www.remotesensing.org/libtiff/</a> <span
+style="font-weight: 300;color: #292f33">→ <a
+title="tiff library biicode" href="http://www.biicode.com/tiff/tiff" target="_blank">http://www.biicode.com/tiff/tiff</a> → <a
+title="tiffio.h" href="//www.biicode.com/tiff/tiff/tiff/master/0/libtiff/tiffio.h" target="_blank">tiffio.h </a></span></li><li><strong>jpeglib.h <span
+style="font-weight: 300;color: #292f33">→ </span></strong> Independent JPEG Group <a
+title="independent jpeg group library" href="http://www.ijg.org" target="_blank">http://www.ijg.org</a>/ <span
+style="font-weight: 300;color: #292f33">→ <a
+title="jpeg library biicode" href="http://www.biicode.com/jpeg/jpeg" target="_blank">http://www.biicode.com/jpeg/jpeg</a> → <a
+title="jpeglib.h " href="http://www.biicode.com/jpeg/jpeg/jpeg/master/0/jpeglib.h" target="_blank">jpeglib.h</a></span></li></ul><p><strong>UPDATE:</strong> They&#8217;ve been already uploaded to biicode so we&#8217;ll <del>change the includes in the library into the includes biicode needs to recognize them</del> map the right includes in our <em>biicode.conf</em> file, just like this:</p><ul><li>#<del>include &#8220;tiffio.h&#8221; <strong><span
+style="font-weight: 300;color: #292f33">→ </span></strong><em><span
+style="color: #292f33">r</span><span
+style="color: #292f33">eplace for</span></em><strong><span
+style="font-weight: 300;color: #292f33"> #include &#8220;tiff/tiff/libtiff/tiffio.h&#8221;</span></strong></del></li><li><del> #include &#8220;jpeglib.h&#8221; <strong><span
+style="font-weight: 300;color: #292f33">→ </span></strong><span
+style="font-weight: 300;color: #292f33"><em>replace for</em></span><strong><span
+style="font-weight: 300;color: #292f33"> #include &#8220;jpeg/jpeg/jpeglib.h&#8221;</span></strong></del></li></ul><p></p><pre class="crayon-plain-tag">[includes]
+    jpeglib.h: jpeg/jpeg
+    tiffio.h: tiff/tiff/libtiff</pre><p>Check our reference section in the docs to <a
+href="http://docs.biicode.com/c++/reference/biicode-conf.html#includes" target="_blank">read more aboout [includes]</a>.</p><h3>How do we know the required include?</h3><p>Just get into the URL of the required file, like this:</p><p><img
+class="aligncenter wp-image-1772 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/jpeg-dependencies.png" alt="Search the blocks the users upload to biicode." width="1030" height="501" /></p><p>&nbsp;</p><p>Once we&#8217;ve updated the #include routes, execute<em> bii find</em> command to retrieve the dependencies:</p><pre class="crayon-plain-tag">$ bii find //to retrieve the dependencies</pre><p><img
+class="aligncenter size-full wp-image-1773" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/find_libs.png" alt="find_libs" width="478" height="79" /></p><p>So if we execute <code>bii deps</code> again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1774" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/bii_deps_lcms1.png" alt="bii_deps_lcms1" width="264" height="403" /></p><p>&nbsp;</p><p>Now that external libraries are included we&#8217;ve got to address what&#8217;s going on with the other &#8220;not found&#8221; includes, let&#8217;s build the project to see exactly what&#8217;s going on and which includes it cannot find.</p><pre class="crayon-plain-tag">$ bii build</pre><p>It doesn&#8217;t build, so it seems we still have a couple things to solve.</p><h4>4.2. #include internal folders</h4><p>In your <a
+title="biicode.conf" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html" target="_blank">biicode.conf</a> , placed into blocks/username/blockname/bii folder, write into its <em>[paths]</em> section:</p><pre class="crayon-plain-tag">/src
+/include
+/utils/common</pre><p>&nbsp;</p><p><img
+class="aligncenter wp-image-2196 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biicodeconf-littlecms.png" alt="" width="710" height="428" /></p><p>Execute <code>bii deps</code> command again to check how&#8217;s our adaptation going:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1829" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biifindmexlcms.png" alt="bii find" width="256" height="356" /></p><p>&nbsp;</p><h4>4.3. There&#8217;s still some #include (s) biicode can not resolve, what&#8217;s going on here?</h4><p>4.3.1 #include &#8220;mex.h&#8221;</p><p>First of all we&#8217;ve got to check which files use #include &#8220;mex.h&#8221;  , it&#8217;s icctrans.c located into: lcms\blocks\amalulla\littlecms\utils\matlab\icctrans.c</p><p>It seems it&#8217;s something related with matlab, but just in case we&#8217;re going to google <code>#include "mex.h",</code> and we ensure it, this is a feature related to Matlab functionality, and as we&#8217;re not using that functionality we&#8217;re going to ignore the whole matlab folder. Notice that if you want to use matlab locally you have to link it. But that&#8217;s another post&#8217;s issue.</p><p>4.3.2 #include &#8220;lcms.h&#8221;</p><p>Let&#8217;s check which files use #include &#8220;lcms.h&#8221;, that&#8217;s an include referred to a previous Little-CMS version. There are currently four files that use that include, they are located into utils/samples, we&#8217;re also going to ignore those, because they won&#8217;t work with the new version, the examples I&#8217;m referring to are:  mkgrayer.c, itufax.c, mkcmy.c and wtpt.c</p><p>43.3. testbed folder</p><p>Finally we&#8217;re also ignoring the whole testbed folder, as it usually contains experimental features, that&#8217;s the dev/development environment.</p><p>So let&#8217;s create a <em>ignore.bii</em> file and write this into it:</p><pre class="crayon-plain-tag">testbed/*
+utils/samples/mkgrayer.c
+utils/samples/itufax.c
+utils/samples/mkcmy.c
+utils/samples/wtpt.c
+utils/matlab/*</pre><p><img
+class="aligncenter size-large wp-image-1995" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/ignore2.png" alt="ignore" width="630" height="533" /></p><p>Execute <code>bii deps</code> command again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-full wp-image-1831" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps-working.png" alt="biideps working" width="281" height="303" /></p><p>Now there are no unresolved #include(s) so let&#8217;s build to check if everything is working properly:</p><pre class="crayon-plain-tag">$ bii build</pre><p>And it properly builds the library, so get into your bin folder and execute any of the examples created to check it out, for example:</p><pre class="crayon-plain-tag">$ cd bin
+bin/~$ amalulla_littlecms_utils_samples_mktiff8.exe</pre><p>And you should see a new file called lcmstiff8.icm created and this output on your terminal:</p><pre class="crayon-plain-tag">$ Creating lcmstiff8.icm...Done.</pre><p>And we&#8217;re ready to go!</p><p>Don&#8217;t forget to publish your library once you&#8217;re done! That way everybody can reuse easily from your library!</p><pre class="crayon-plain-tag">$ bii publish</pre><p>Want to check if the library we&#8217;ve just uploaded is truly reusable? Try making your own example and reuse from it!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-little-cms/">How to upload to biicode. Example 3: Little CMS by Marti Maria</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-little-cms/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>How to upload to biicode. Example 2: Box2D by Erin Catto</title><link>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/</link> <comments>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/#comments</comments> <pubDate>Wed, 08 Oct 2014 08:25:42 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[Angry Birds]]></category> <category><![CDATA[Box2D]]></category> <category><![CDATA[Erin Catto]]></category> <category><![CDATA[Flappy Bii]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1779</guid> <description><![CDATA[<p>Once you upload to biicode a library, everyone can reuse it!  That&#8217;s why we explained how to upload to biicode any library just following a few steps, but that example didn&#8217;t cover the possibility of a library depending on other libraries, which is quite usual nowadays. So today, we&#8217;re going to see with an example how to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">How to upload to biicode. Example 2: Box2D by Erin Catto</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Once you upload to biicod<img
+class="alignleft wp-image-1789 size-medium" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/tumbler_example-293x300.png" alt="This example about Box2D shows you how easy to upload to biicode is" width="293" height="300" />e a library, everyone can reuse it!  That&#8217;s why we explained <a
+title="Upload to biicode Json11" href="http://blog.biicode.com/upload-to-biicode-i/">how to upload to biicode</a> any library just following a few steps, but that example didn&#8217;t cover the possibility of a library depending on other libraries, which is quite usual nowadays. So today, we&#8217;re going to see with an example how to proceed when your library depends on others. For this matter, we&#8217;re using <a
+title="box2d" href="http://box2d.org/" target="_blank">BOX2D</a>, an open source C++ engine to simulate rigid bodies in 2D, it is also used in different video-games like AngryBirds motor engine.</p><p>&nbsp;</p><p><span
+id="more-1779"></span></p><h3>UPDATE: Box2D v 2.3.1 has been uploaded to biicode on <a
+title="Box2d biicode erincatto" href="http://www.biicode.com/erincatto/erincatto/box2d/master/10" target="_blank">erincatto/box2d: 10 </a>version.</h3><div><span
+style="color: #000000">It&#8217;s been generated from Box2D library (see Readme.txt, <a
+href="http://www.box2d.org/" target="_blank">http://www.box2d.org</a>), source code hosted in: <a
+href="https://github.com/drodri/box2d" target="_blank">https://github.com/drodri/box2d</a> and that, was used to create a biicode ready version in: <a
+href="http://www.biicode.com/erincatto/box2d" target="_blank">http://www.biicode.com/erincatto/box2d</a><br
+/> </span></div><div><p><span
+style="color: #000000">Instead of using the glfw library inside, it uses the <a
+title="glfw library" href="http://www.biicode.com/diego/glfw" target="_blank">glfw library available in biicode</a>.</span></p><p><span
+style="color: #000000">The adaptation required can be seen <a
+title="github diff box2d" href="https://github.com/drodri/box2d/commit/7e0259c5db2f01cd6e93a5c2e1969f702169aacb" target="_blank">here, in the diff on github</a>. </span></p><p><span
+style="color: #000000">It requires:</span></p><ul><li><span
+style="color: #000000">Simple modification of root CMakeLists.txt. Note that with this simplification no other CMakeLists.txt in the project is required, biicode does not use them.</span></li><li><span
+style="color: #000000">Changing a couple of #includes. This will also be protected with #ifdef(BIICODE) guards in order to guarantee proper compilation of the fork without biicode too.</span></li><li><span
+style="color: #000000">The DroidSans.ttf is handled as biicode dependency, so it is always retrieved and copied to &#8220;bin&#8221; folder to guarantee proper functioning. This will also be protected with #ifdef guards.</span></li><li><span
+style="color: #000000">Adding glfw dependency in requirements.bii, filtering out glfw in ignore.bii, filtering out stb_truetype.h as having a main in mains.bii, and adding the root folder in paths.bii (so biicode finds #includes starting with &#8220;Box2D&#8221;)</span></li></ul><p><span
+style="color: #000000">ENJOY!</span></p></div><p>&nbsp;</p><p>PREVIOUS VERSION:<br
+/> As you can guess, once we&#8217;re done everybody will be able to use this library just by typing:</p><pre class="crayon-plain-tag">#include "erincatto/box2d/Box2D/Box2D.h"</pre><p>&nbsp;</p><h2>The Initial Steps to upload to biicode: one, two, three, four!</h2><p>These don&#8217;t defer from the ones used on the previous example by Laso last week.</p><h3>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h3><h3>2. Fork original repository (OPTIONAL)</h3><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to the <a
+title="davidsiaw/box2d" href="https://github.com/davidsiaw/box2d" target="_blank">original repository</a> and click on fork:</p><p>&nbsp;</p><p><img
+class="aligncenter size-full wp-image-1780" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/Fork.png" alt="image showing where to fork a github repository" width="953" height="104" /></p><h3>3. Init a new biicode project and create a new block</h3><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init bx
+$ cd bx
+$ bii new amalulla/box2d</pre><p>If you already are a biicode user you can replace &#8220;amalulla&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/amalulla/box2d</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\amalulla\box2d
+$ git clone https://github.com/MariadeAnton/box2d.git .</pre><p></p><h3>4. Find your external dependencies</h3><p>Inside Box2D library it&#8217;s included a copy of freeglut and other of glui, but we don&#8217;t need them, because <a
+title="Freeglut Biicode" href="http://www.biicode.com/sbaker/freeglut" target="_blank">freeglut has been already uploaded to biicode</a>.</p><p>So we&#8217;re going to:</p><ol><li> ignore the freeglut and glui copies inside the original box2d library</li><li> reuse from the ones uploaded in biicode.</li></ol><p>4.1 Create a <em>ignore.bii</em> file into <em>blocks/username/box2d/ignore.bii </em>and write into it: freeglut/* and glui/* , so biicode ignores the whole of both folders.</p><p><img
+class="aligncenter wp-image-1804 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/ignore.png" alt="ignores freeglut and glui" width="577" height="451" /></p><p>&nbsp;</p><h4>4.1.1. Add the includes to your base directory</h4><p>First of all, check the ones needed by executing <code>bii deps</code>, you&#8217;ll see a long list about the system, resolved and unresolved libraries.</p><pre class="crayon-plain-tag">$ bii deps</pre><p><div
+id="attachment_1800" style="width: 260px" class="wp-caption aligncenter"><a
+href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps1.png"><img
+class="wp-image-1800" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps1.png" alt="biideps1 -unresolved" width="250" height="449" /></a><p
+class="wp-caption-text">Click to enlarge image!</p></div></p><p>It seems it cannot find, among others, Box2D internal includes, it has tons of files whose route looks like this: <em>Box2D/Collision/Shapes/b2Shape.h</em> or <em>Box2D/Dynamics/Joints/b2MouseJoint.h</em>,  so we have to specify  the project to include the library&#8217;s base directory.</p><p>Create a paths.bii file and just write &#8221; / &#8221; into it, this way biicode knows it has to include the library&#8217;s root directory to search the files needed into it:</p><p>&nbsp;</p><p><img
+class="aligncenter size-full wp-image-1787" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/pathsbii_update1.png" alt="pathsbii_update" width="562" height="528" /></p><p>&nbsp;</p><p>Save and check your dependencies again:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class="aligncenter size-medium wp-image-1803" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/biideps2-273x300.png" alt="biideps2" width="273" height="300" /></p><p>This looks way better now, let&#8217;s see what it isn&#8217;t finding two of them are included on the build folder for xcode iOS, we&#8217;re going to move towards the other dependencies, there&#8217;s one to Freeglut and Glut, so we&#8217;re going to check how to solve them.</p><h4>4.2. #include External Libraries</h4><p>Once you know the libraries needed, look for them in biicode:</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-1820 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/search_freeglut2-1024x222.png" alt="biicode is a free C/C++ dependency manager, explore and upload to biicode" width="630" height="136" /></p><ul><li> <strong>freeglut.h <span
+style="font-weight: 300;color: #292f33">→  freeglut</span></strong>  <span
+style="font-weight: 300;color: #292f33">→  http://www.biicode.com/glui/glutwrapper</span></li><li><strong>glui.h <span
+style="font-weight: 300;color: #292f33">→  glui</span></strong><span
+style="font-weight: 300;color: #292f33">→ http://www.biicode.com/glui/glui</span></li></ul><h4> How do we know the required include?</h4><p>Just get into the URL of the required file, like this:</p><h3> <img
+class="aligncenter wp-image-1821 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/freeglut_include_sbaker-1024x463.png" alt="Find freeglut library in the explore section of biicode" width="630" height="284" /></h3><p>&nbsp;</p><p>Search in the old #include routes and substitute them for the new ones (I use sublime text editor to achieve this), as you can see, the new includes match exactly the new route where I found them:</p><ul><li><b>freeglut.h </b><span
+style="font-weight: bold;color: #292f33"><span
+style="font-weight: bold;color: #292f33"><span
+style="font-weight: 300">→ </span></span></span><code>#include “freeglut/freeglut.h”</code>  →  <code>#include “sbaker/freeglut/freeglut/freeglut/include/GL/freeglut.h”</code></li></ul><ul><li><strong>glui.h </strong> → <code> #include “glui/glui.h”</code>  →  <code>#include “glui/glui/GL/glui.h”</code></li></ul><p>Ok, we&#8217;ve updated exactly four #include routes, so lets execute<code> bii find</code> command to retrieve the dependencies:#include &lt;glui/glutwrapper/glut.h&gt;</p><pre class="crayon-plain-tag">$ bii find # to retrieve the dependencies</pre><p>And you should see on the terminal a message like this:</p><p><img
+class="aligncenter wp-image-1823 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/find-dependencies-freeglut.png" alt="find dependencies-freeglut" width="456" height="69" /></p><p>&nbsp;</p><h3>5. Edit your CMakeLists.txt</h3><p>Now a small tip on how to have a CMakeLists.txt working as it used to and also with biicode. Just write IF (BIICODE) usual biicode instructions/ ELSE() the ones box2d had before: so update the CMakeLists.txt you had before with this:</p><pre class="crayon-plain-tag">IF(BIICODE)
+  include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+  # Initializes block variables
+  INIT_BIICODE_BLOCK()
+  # Include base block dir
+  ADD_BIICODE_TARGETS()
+  TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+  IF (UNIX)
+     IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/Testbed")
+  add_definitions( -D__unix__ -DHAVE_FCNTL_H -DHAVE_GETTIMEOFDAY )
+        TARGET_LINK_LIBRARIES(${BII_LIB_TARGET} PUBLIC pthread X11)
+        find_package(OpenGL REQUIRED)
+     ENDIF()
+  ENDIF()
+ELSE()
+  # Previous CMakeLists.txt goes here
+ENDIF()</pre><p>This CMake is the usual one with biicode and it includes this line <code>TARGET_INCLUDE_DIRECTORIES(${BII_LIB_TARGET} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})</code> to take into account the root  directory, it&#8217;s exactly the same thing we specified on our <em>paths.bii</em> file, we add that current source directory so Cmake is able to compile the project. Usually, each time you add something to your paths.bii file, you should add it too to your CMakeLists.txt .</p><p>Also a few lines have been written to define how to compile OpenGL with Unix OS.</p><p>&nbsp;</p><h3>6. Now build:</h3><p></p><pre class="crayon-plain-tag">$ bii cpp:build</pre><p>It builds a couple examples: username_box2d_HelloWorld_HelloWorld and username/box2d_Testbed_Framework_Main</p><p>Execute the examples! You&#8217;re ready to go!</p><p>If you execute the Testbed_Framework_Main you&#8217;ll see an image like this one:</p><p><img
+class="aligncenter wp-image-1788 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/box2d_example.png" alt="An example of Box2D" width="657" height="517" /></p><p>Don&#8217;t forget to publish your library once you&#8217;re done! That way everybody can reuse easily from your library!</p><pre class="crayon-plain-tag">$ bii publish</pre><p>Want to check if the library we&#8217;ve just uploaded is truly reusable? Try making your own example just like the one our interns made: <a
+title="Flappy bii game biicode" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii</a></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/">How to upload to biicode. Example 2: Box2D by Erin Catto</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-ii-box2d-erin-catto/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>How to upload to biicode. Example 1: JSON11 by Dropbox</title><link>http://blog.biicode.com/upload-to-biicode-i/</link> <comments>http://blog.biicode.com/upload-to-biicode-i/#comments</comments> <pubDate>Tue, 30 Sep 2014 12:03:01 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[dropbox]]></category> <category><![CDATA[how to]]></category> <category><![CDATA[json11]]></category> <category><![CDATA[tutorial]]></category> <category><![CDATA[upload libraries to biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1754</guid> <description><![CDATA[<p>A few days ago, we came across this fantastic library from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use. Also, this library is an ideal example to show how to upload to biicode your library like I did. Why would you want to upload to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A few days ago, we came across <a
+title="Json11" href="https://github.com/dropbox/json11" target="_blank">this fantastic library</a> from the Dropbox team, to encode and decode JSON using C++11. Syntax is very clean and attractive which makes the library very easy to use.<br
+/> Also, this library is an ideal example to show how to upload <a
+title="lasote/json11" href="http://www.biicode.com/lasote/json11" target="_blank">to biicode</a> your library like I did.</p><h2>Why would you want to upload to biicode your library ?</h2><p>Once it&#8217;s uploaded to biicode, everyone (including yourself) can reuse it easily and without any complex configuration.<br
+/> This is key: If you make a good job configuring and uploading the library to biicode, nobody will EVER do this job again. The library will work for anyone just by typing <em>#include &#8220;lasote/json11/json11.hpp&#8221;</em>.</p><div
+id="attachment_1761" style="width: 160px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1761" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/DBTWCard.jpg" alt="Upload to biicode " width="150" height="155" /><p
+class="wp-caption-text">JSON11 by DROPBOX</p></div><h2></h2><p><span
+id="more-1754"></span></p><h2>Ok, it sounds convincing, show me how to do it!</h2><h4>1. <a
+title="Getting started" href="http://docs.biicode.com/en/latest/c++/gettingstarted.html#cpp-getting-started" target="_blank">Install biicode</a> in your computer.</h4><h4>2. Fork original repository (OPTIONAL)</h4><p>If the library is available on Github or another public git repository, it&#8217;s a good practice to fork the repository so in case the author  updates we can merge them to our &#8220;biicode compatible&#8221; library easily. For this step, go to <a
+title="dropbox/json11" href="https://github.com/dropbox/json11" target="_blank">original repository</a> and click on fork:<br
+/> <img
+class="alignnone wp-image-1757 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/fork1.jpg" alt="JSON11 fork ready to upload to biicode" width="1016" height="162" /></p><h4>3. Init a new biicode project and create a new block</h4><p>Easy-peasy, just like this:</p><pre class="crayon-plain-tag">$ bii init json
+$ cd json
+$ bii new lasote/json11</pre><p>If you already have a biicode user you can replace &#8220;lasote&#8221; with your username so you can publish your code when you finish this tutorial.<br
+/> Now <strong>copy the source code</strong> into <em>blocks/lasote/json</em> folder or execute git clone into it (if you forked the original repository):</p><pre class="crayon-plain-tag">$ cd blocks\lasote\json11
+$ git clone git@github.com:lasote/json11.git .</pre><p></p><h4>4. Check if biicode has found the relationships between your source code</h4><p>It&#8217;s important that biicode locates all the <em>#includes</em> in your source code and the files that these includes point to.<br
+/> Command &#8220;<strong>bii deps</strong>&#8221; give us all the information we need to know about the &#8220;dependency scanning&#8221; of biicode in our project:</p><pre class="crayon-plain-tag">$ bii deps</pre><p><img
+class=" wp-image-1758 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/deps.jpg" alt="manage your dependencies with biicode" width="283" height="365" /></p><p>If biicode doesn&#8217;t find an #include it is shown under the &#8220;unresolved&#8221; section. As you can see in this case, everything is OK!<br
+/> In future posts we will explain how to proceed in case of unresolved files.</p><h4>5. Build our library</h4><p></p><pre class="crayon-plain-tag">$ bii build</pre><p>Wow! It fails a lot! What happened?</p><p>If we analyze the trace of the compilation we see this:</p><pre class="crayon-plain-tag">c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard.
+This support is currently experimental, and must be enabled with the -std=c++11 or -std=gnu++11 compiler options.</pre><p>It&#8217;s asking us to activate c++11. Expected&#8230; the original library needs c++11.</p><h4>How can we activate C++11?</h4><p>Biicode uses CMake for C/C++ project compilation. It creates a CMakeList.txt file where we can specify compilation flags etc.<br
+/> If we edit the file we can see a lot of commented code with sample cases. In there, you can find how to activate C++11.</p><p>In this case, we want our library to be multi-platform and reusable so I will include these lines after <em>ADD_BIICODE_TARGETS()</em></p><pre class="crayon-plain-tag"># If exist BII_LIB_TARGET activate c++11 for target with PUBLIC flag. This way, all blocks that include this one will
+# have activated c++11 automatically
+IF(BII_LIB_TARGET)
+  IF(APPLE)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    target_compile_options(${BII_LIB_TARGET} PUBLIC "-std=c++11")
+  ENDIF(APPLE)
+# If not exist, simply add CXX_FLAGS to compilation
+ELSE()
+  IF(APPLE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+  ELSEIF (WIN32 OR UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ENDIF(APPLE)
+ENDIF()</pre><p>Hereinafter, when someone #include (s)  our library, he doesn&#8217;t need to activate C++11. Its ready!</p><p><strong>NOTE</strong>: Maybe it seems too difficult, don&#8217;t you think? <del>We are working on a feature to share or include CMakes recipes like this. Meanwhile you can just copy and paste this code to enable C++11 in your project.</del></p><p><strong>UPDATE:</strong> With biicode you can reuse CMake recipes, so<strong> to activate C++11 you can include &#8220;biicode/cmake&#8221; block</strong> to search for &#8216;tools.cmake&#8217; where this code is already implemented. Open <em>CMakelists.txt</em> in your project, include &#8216;<em>tools</em>&#8216; and activate C++11 like this:</p><pre class="crayon-plain-tag">INCLUDE(biicode/cmake/tools) #Here you include "biicode/cmake/tools" file
+ADD_BIICODE_TARGETS()
+ACTIVATE_CPP11(INTERFACE ${BII_BLOCK_TARGET}) #Here you activate c++11</pre><p>If we run build again:</p><pre class="crayon-plain-tag">$ bii build</pre><p>It fails again, why? Let&#8217;s check the trace.</p><pre class="crayon-plain-tag">In function 'int main(int, char**)':
+ test.cpp:92:66: error: 'memcmp' was not declared in this scope
+     assert(memcmp(uni[0].string_value().data(), utf8, sizeof utf8) == 0);</pre><p>It seems it cannot find <em>memcmp</em>, we <em>#include &#8220;string.h&#8221;</em> in test.cpp and if we build again:</p><pre class="crayon-plain-tag">Building: cmake --build .
+BLOCK: lasote/json11
+-----------------------------------------------------------
++ EXE: lasote_json11_test
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/json11/build
+[ 50%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/test.cpp.o
+[100%] Building CXX object lasote/json11/CMakeFiles/lasote_json11_test.dir/json11.cpp.o
+Linking CXX executable /tmp/json11/bin/lasote_json11_test
+[100%] Built target lasote_json11_test</pre><p>Now the library has been compiled! Go to &#8220;bin&#8221; folder and execute the main example:</p><pre class="crayon-plain-tag">$ cd json11/bin
+$ ./lasote_json11_test</pre><p></p><pre class="crayon-plain-tag">k1: v1b
+k3: ["a", 123, true, false, null]
+- "a"
+- 123
+- true
+- false
+- null
+obj: {"k1": "v1", "k2": 42, "k3": ["a", 123, true, false, null]}
+{"key1": "value1", "key2": false, "key3": [1, 2, 3]}
+[[1, 2], [10, 20], [100, 200]]</pre><p></p><h4>6. Upload to biicode: Publish the library</h4><p></p><pre class="crayon-plain-tag">$ bii publish</pre><p>Congrats! Now your library is on biicode&#8217;s cloud! :D</p><p><strong>NOTE</strong>: Don&#8217;t forget to commit and push the changes to github if you forked the repository!</p><h4>7. Check if anybody can reuse the library</h4><p>After you upload to biicode the first version, its a good practice to create another biicode project and reuse from (include) the library to check if everything is working fine. This way we&#8217;ll simulate a third person reusing our code.</p><p>Exit previous biicode project folder and create another one:</p><pre class="crayon-plain-tag">$ bii init example_json11</pre><p></p><pre class="crayon-plain-tag">$ cd example_json11
+$ bii new lasote/example</pre><p>Write an example in a file &#8220;main.cpp&#8221; in blocks/lasote/example directory that #include our lasote/json11 library:</p><pre class="crayon-plain-tag">#include "string.h"
+#include "lasote/json11/json11.hpp"
+#include &lt;iostream&gt;
+using namespace json11;
+using std::string;
+int main(int argc, char **argv) {
+    // STRING TO JSON
+    const string simple_test = R"({"k1":"v1", "k2":42, "k3":["a",123,true,false,null]})";
+    string err;
+    auto json = Json::parse(simple_test, err);
+    std::cout &lt;&lt; "k1: " &lt;&lt; json["k1"].string_value() &lt;&lt; "\n";
+    std::cout &lt;&lt; "k3: " &lt;&lt; json["k3"].dump() &lt;&lt; "\n";
+}</pre><p>Build the example and run the example!</p><pre class="crayon-plain-tag">$ bii build</pre><p></p><pre class="crayon-plain-tag">$ example_json11/bin/lasote_example_json11_main</pre><p></p><pre class="crayon-plain-tag">k1: v1
+k3: ["a", 123, true, false, null]</pre><p>Yeeeeha!</p><p>We need your feedback! What do you think? Is it easy enough to upload to biicode? Do you think that we should share CMake recipes? What would you like?<br
+/> If you want to upload to biicode your library  we will be pleased to help if you need. Write us in the <a
+title="Biicode forum" href="http://forum.biicode.com" target="_blank">biicode forum</a> and we will give you support!</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/upload-to-biicode-i/">How to upload to biicode. Example 1: JSON11 by Dropbox</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/upload-to-biicode-i/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> </channel> </rss>

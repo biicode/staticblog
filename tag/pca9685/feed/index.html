@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; pca9685</title> <atom:link href="http://blog.biicode.com/tag/pca9685/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Moving servos with arduino, pca9685 and a nunchuk</title><link>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/</link> <comments>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/#comments</comments> <pubDate>Wed, 25 Jun 2014 08:00:46 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[nunchuck]]></category> <category><![CDATA[pca9685]]></category> <category><![CDATA[servo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=696</guid> <description><![CDATA[<p>Hi all! As all you know, we have many adafruit libraries allocated at biicode, including the one to handle the PCA9685, capable of moving up to 16 servos. Also You can find the nunchuck library, that allows to use nunchucky. That&#8217;s all the software you need to move some servos using a joystick. &#160; Let&#8217;s begin!. These are [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/">Moving servos with arduino, pca9685 and a nunchuk</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Hi all!</p><p>As all you know, we have many adafruit libraries allocated at biicode, including <a
+title="link to servo driver adafruit" href="https://www.biicode.com/adafruit/blocks/adafruit/pwm_servo_driver_library/branches/master" target="_blank">the one to handle the PCA9685</a>, capable of moving up to 16 servos. Also You can find the <a
+title="nunchuck" href="https://www.biicode.com/gabrielbianconi/blocks/gabrielbianconi/nunchuk/branches/master">nunchuck</a> library, that allows to use nunchucky. That&#8217;s all the software you need to move some servos using a joystick.</p><p><span
+id="more-696"></span></p><p>&nbsp;</p><p><strong>Let&#8217;s begin!. </strong></p><p>These are the main ingredients you need to achieve successfully this recipe:</p><ul><li>Two servos</li><li>One Arduino ( I have used UNO board)</li><li>One <a
+title="pca8695" href="http://www.adafruit.com/products/815">Adafruit 16-Channel 12-bit PWM/Servo Driver &#8211; I2C interface</a> (pca8695)</li><li>One wii nunchuk</li><li>One <a
+title="nunchucky" href="http://www.adafruit.com/products/345">nunchucky adapter</a></li><li>Typical stuff (wires, protoboard)</li></ul><p>Now you have all you need, take a look at the sketch below:</p><p><img
+class="alignnone wp-image-697" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/servos-and-nunchuck_bb.png" alt="servos and nunchuck sketch" width="630" height="474" /></p><p>&nbsp;</p><p>You can follow the connections from the picture. We have used 2 servos at ports 0 and 4 for clarity.</p><p><strong>Where is the code I need?</strong></p><p>You can also reuse, branch, extend or just take a look at our code below (from <a
+title="recluising servos nunchuk" href="https://www.biicode.com/recluising/blocks/recluising/servos_nunchuk/branches/master">recluising/servos_nunchuk</a>) by using <em><a
+title="bii open" href="http://docs.biicode.com/biicode/reference/commands.html?highlight=bii%20open#bii-open-editing-code">bii open</a>: bii open recluising/servos_nunchuk</em></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;Wire.h&gt;
+#include &lt;adafruit/pwm_servo_driver_library/adafruit_pwmservodriver.h&gt;
+#include &lt;gabrielbianconi/nunchuk/nunchuk.h&gt;
+// called this way, it uses the default address 0x40
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+ArduinoNunchuk nunchuk = ArduinoNunchuk();
+#define SERVOMIN  150 // this is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  600 // this is the 'maximum' pulse length count (out of 4096)
+void setup() {
+  Serial.begin(9600);
+  Serial.println("Set up running...");
+  pwm.begin();
+  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+  nunchuk.init();
+  Serial.println("... Set up completed");
+}
+void move_x(int x){
+  double pulselen_x;
+  pulselen_x= map(x,0,255,SERVOMIN,SERVOMAX);
+  pwm.setPWM(0, 0, pulselen_x);
+  //output
+  Serial.print("x: ");
+  Serial.println(x);
+}
+void move_y(int y){
+  double pulselen_y;
+  pulselen_y= map(y,0,255,SERVOMIN,SERVOMAX);
+  pwm.setPWM(4, 0, pulselen_y);
+  //output
+  Serial.print("y: ");
+  Serial.println(y);
+}
+void move(int x,int y){
+  move_x(x);
+  move_y(y);
+}
+void loop() {
+  nunchuk.update();
+  if(nunchuk.cButton==1){
+    move_x(nunchuk.analogX);
+  }
+  else if(nunchuk.zButton==1){
+    move_y(nunchuk.analogY);
+  }
+  else{
+    move(nunchuk.analogX,nunchuk.analogY);
+  }
+  Serial.print(nunchuk.analogX, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.analogY, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelX, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelY, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelZ, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.zButton, DEC);
+  Serial.print(' ');
+  Serial.println(nunchuk.cButton, DEC);
+  delay(50);
+}</pre><p>You can also reuse from the necessary libraries to code your own sketch with <em><a
+title="command bii init" href="http://docs.biicode.com/biicode/commands/core_commands.html#bii-init-creates-a-new-project">bii init project</a>,</em> in this case the libraries reused are:</p><ul><li><a
+title="link to servo driver adafruit" href="https://www.biicode.com/adafruit/blocks/adafruit/pwm_servo_driver_library/branches/master">adafruit pca8695 </a></li><li><a
+title="nunchuck" href="https://www.biicode.com/gabrielbianconi/blocks/gabrielbianconi/nunchuk/branches/master">nunchuck</a></li></ul><p>Pay special attention to the #includes linking to the libraries that control the drivers we need. You just need to write the #include, and biicode will configure everything for you (using <a
+title="bii find" href="http://docs.biicode.com/biicode/reference/commands.html?highlight=bii%20find#bii-find-retrieving-dependencies">bii find</a>).</p><p>At set-up we set port 9600 to get the serial output. We will print values captured by nunchuk so we can know how the nunchuk is working and what values it&#8217;s registering. If you test the code, you should see something like this:</p><div
+id="attachment_698" style="width: 640px" class="wp-caption alignnone"><img
+class="wp-image-698" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/serie.png" alt="serial port output" width="630" height="361" /><p
+class="wp-caption-text">serial port output</p></div><p>We are moving two servos with the buttons and pads provided by the nunchuk joystick. We decided to use the logical pad to move the servos depending on axis values (x,y).</p><p>So, when we move the pad trough the x axis, one servo is moved and  if the y axis is the one we&#8217;re moving through, we move the other servo!</p><p>Just execute <a
+title="bii arduino:upload" href="http://docs.biicode.com/arduino/reference/commands.html?highlight=upload#bii-arduino-upload-upload-a-firmware-in-arduino" target="_blank">bii arduino: upload</a>  to load the code into your arduino and this is the way it works:</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/OWGSpEgf8yQ?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p><strong>Now it&#8217;s your turn</strong></p><p>This example is not cool enough, We&#8217;re sure you can do it better, so&#8230; here are some ideas, if you test them, we&#8217;ll be happy to know your feedback and your experience using biicode:</p><ul><li>Try something with more than 2 servos,  you can use up to 16!</li><li>Change the way you move the servos, maybe switching servo with nunchuk buttons.</li><li>Use the nunchuck sensors (maybe the accelerometer) to move the servos depending on its values.</li></ul><p>Happy coding!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/">Moving servos with arduino, pca9685 and a nunchuk</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

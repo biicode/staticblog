@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; TLS</title> <atom:link href="http://blog.biicode.com/tag/tls/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>OpenSSL is now available in biicode!</title><link>http://blog.biicode.com/openssl-available-biicode/</link> <comments>http://blog.biicode.com/openssl-available-biicode/#comments</comments> <pubDate>Wed, 28 Jan 2015 11:52:00 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[Heartbleed]]></category> <category><![CDATA[Secure Connections]]></category> <category><![CDATA[SSL]]></category> <category><![CDATA[TLS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2028</guid> <description><![CDATA[<p>The OpenSSL Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support. It was born in 1998 and today about 66% of internet servers are using OpenSSL. &#160; UPDATE! [10-Feb-2015] OpenSSL last version 1.0.2 is [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openssl-available-biicode/">OpenSSL is now available in biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>The <a
+title="OpenSSL website" href="https://www.openssl.org/"><strong>OpenSSL</strong></a> Project is an implementation of the SSL and TLS protocols written in C. It has multiple cipher algorithms (AES, Blowfish, Camellia&#8230;), cryptographic hash functions (MD5, SHA-1, SHA-2&#8230;) and public-key cryptography support.<br
+/> It was born in 1998 and today about 66% of internet servers are using OpenSSL.</p><p><img
+class="aligncenter wp-image-2038 size-full" title="OpenSSL is now supported in biicode" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/01/openSSL.jpeg" alt="Secure connections can now be used from C/C++ source code with biicode and OpenSSL" width="431" height="117" /></p><p>&nbsp;</p><p><strong>UPDATE!</strong> [10-Feb-2015] OpenSSL <a
+title="OpenSSL 1.0.2 " href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">last version 1.0.2 is ready on biicode! </a> We created a <a
+title="block tracks help" href="http://docs.biicode.com/c++/dependencies.html?highlight=track#depending-on-a-block-track" target="_blank">block track</a> lasote/openssl(v1.0.2).<br
+/> Remeber, you can switch between v1.0.1 and v1.0.2 just changing the requirements line in biicode.conf file.</p><p><span
+id="more-2028"></span></p><h2>Benefits</h2><p>→ Keeping your dependencies updated is really important, specially with this kind of projects. <a
+title="Heart bleed bug" href="http://heartbleed.com/">Heartbleed</a> bug affected half a million widely trusted websites. It&#8217;s proven, it is essential to keep OpenSSL updated. With <strong>biicode</strong> updating versions is easy. Just change the requirements version in <strong>biicode.conf</strong> file.</p><p>→ Code in <a
+title="lasote/openssl github" href="https://github.com/lasote/openssl/tree/OpenSSL_1_0_1l_biicode" target="_blank">github</a>: You can check <a
+title="diff code" href="https://github.com/lasote/openssl/compare/openssl:OpenSSL_1_0_1l...OpenSSL_1_0_1l_biicode" target="_blank">the diff</a> between original source code and source code used in biicode. There are only few changes to be build the library with CMake and biicode.</p><p>→ Tested on <strong>Windows</strong> with <strong>MinGW</strong> and <strong>Visual Studio</strong>, <strong>Linux</strong> with <strong>gcc</strong> and <strong>OSx</strong> with <strong>Clang</strong>.</p><h2>You can use OpenSSL in your C/C++ projects following these steps:</h2><h3>1. Create a new biicode project and a new block</h3><p></p><pre class="crayon-plain-tag">bii init myproject
+ cd myproject
+ bii new myuser/myblock</pre><p></p><h3>2. Create a main.cpp and paste this example code in it</h3><p><b> myproject/blocks/myuser/myblock/main.cpp </b></p><pre class="crayon-plain-tag">#include "lasote/openssl/include/openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h3>3. Download your dependencies and build your project</h3><p></p><pre class="crayon-plain-tag">bii find # This will find 1.0.1 track, if you want 1.0.2 edit biicode.conf file.
+ bii build</pre><p>If you want to keep your #includes the traditional way &#8220;openssl/sha.h&#8221; you can do it editing <b>biicode.conf</b> file and using <a
+title="Include paths" href="http://docs.biicode.com/c++/configuration_files/biicode-conf.html#includes" target="_blank">&#8220;include paths&#8221;</a> feature. If you want OpenSSL v1.0.2 version there is a v1.0.2 track available in biicode, just specify (v1.0.2):</p><pre class="crayon-plain-tag"># Biicode configuration file
+[requirements]
+     lasote/openssl(v1.0.2): 0 # Version of lasote/openssl to require
+[paths]
+[dependencies]
+[mains]
+[hooks]
+[includes]
+    # This will append **lasote/openssl/include** when find a openssl/*.h include
+    openssl/*.h: lasote/openssl/include
+[data]</pre><p>Build again:</p><pre class="crayon-plain-tag">bii build</pre><p>As you can see, the number of libraries uploaded to biicode is growing fast. Building professional software with a dependency manager involves lots of benefits, and it is now possible with C and C++ with biicode.</p><p>OpenSSL has a <a
+href="https://www.openssl.org/support/" target="_blank">support section</a> in their site to join, donate to, fund and/or hire members of this fantastic project. We encourage you to collaborate with them.</p><p>Hope you enjoy OpenSSL and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openssl-available-biicode/">OpenSSL is now available in biicode!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/openssl-available-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

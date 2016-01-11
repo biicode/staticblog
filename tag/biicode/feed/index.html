@@ -1,0 +1,1228 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; biicode</title> <atom:link href="http://blog.biicode.com/tag/biicode/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Boost libraries are now supported in biicode</title><link>http://blog.biicode.com/dependency-management-boost-libraries/</link> <comments>http://blog.biicode.com/dependency-management-boost-libraries/#comments</comments> <pubDate>Fri, 20 Feb 2015 08:29:13 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[boost]]></category> <category><![CDATA[boost c++ libraries]]></category> <category><![CDATA[c++]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2086</guid> <description><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices. However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a C++ developer I love the Boost libraries. They are one of the highest quality and best suited C++ libraries in the world, with the spirit and design of being fully compatible with the standard library and its practices.</p><p>However, Boost is not easy to love. It&#8217;s shipped with tons of inter-dependencies, even circular dependencies, and that&#8217;s only for header-only libraries (thankfully 80% of Boost is header-only). For non header-only libs, it&#8217;s a true pain. You should compile those and then link against, being careful about what you are doing.<br
+/> Even if setting up Boost manually could be a bit hard, when it works it&#8217;s a pleasure to develop with it.</p><p>At biicode we have been working hard to simplify the process, to make Boost available for any C++ programmer with just an include. But this is only the start, the project has been <a
+href="https://github.com/Manu343726/boost-biicode">released as open source</a> to allow everyone contribute and help.</p><p>I hope you like it.<br
+/> <img
+class=" wp-image-2094 size-full aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/02/Boost.png" alt="Boost libraries are finally supported in biicode" width="277" height="86" /></p><h2></h2><p><span
+id="more-2086"></span></p><h2 id="working-with-boost">Working with Boost libraries</h2><p></p><pre class="crayon-plain-tag">$ sudo apt-get install boost</pre><p>That&#8217;s what most of us do to work with Boost. There&#8217;s no easy way to change the Boost version though, or even have multiple coexistent Boost versions. In addition to the fact that the package-manager way doesn&#8217;t work on Windows.</p><p>The main purpose of biicode is to handle dependencies and improve the development workflow. That means one should take into account:</p><ul><li>A user may want to work <strong>with different versions of Boost</strong>. It should be <strong>easy to switch between Boost versions during development</strong>.</li><li>When dealing with Standard C++, that is, with true portable C++, one should care about multiple compilers and test his/her code with all of them. <strong>It should be easy to switch Boost to work with different compilers</strong>. In our case, that means GCC, Clang, MSVC, MinGW GCC, and the different versions of each one.</li></ul><p>That were the two main objectives I had when I started to work in Boost support for biicode. To <strong>make Boost setup portable across versions, compilers, and platforms</strong>, and at the same time make the <strong>process fully transparent to the user</strong>.</p><h2 id="our-approach">Our approach</h2><p>The biicode Boost setup is very simple: Install each Boost version on a dedicated folder inside the biicode environment, and then rely on Boost&#8217;s bjam to handle the different compilers.</p><p>The setup should also handle all the installation process, which means:</p><ol><li>Download the requested Boost version if it&#8217;s not currently in the biicode environment.</li><li>Bootstrap it.</li><li>Build the libraries.</li><li>Configure <code>FindBoost.cmake</code> to track the installation.</li></ol><p>But how should that look like in user code? I was thinking about it for a long time. Actually, the current interface is just the last of a very long process of testing different approaches.<br
+/> I finally ended up trying not to force the user to learn new commands. Instead, try to mimic the current Boost setup with CMake: Instead of calling <code>find_package(Boost COMPONENTS...)</code>, call <code>bii_find_boost(COMPONENTS...)</code>. <strong>The rest of the <code>CMakeLists.txt</code> is almost the same.</strong></p><p><code>bii_find_boost()</code> wraps the <code>find_package(Boost)</code> call by first setting up the required boost version (Steps 1 and 2 above), building the requested <code>COMPONENTS</code> on demand, finally calling <code>find_package(Boost COMPONENTS ...)</code>.</p><h2 id="a-boost-example-with-biicode">A Boost example with biicode</h2><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p>That&#8217;s an example of the Boost.Coroutine library extracted from the Boost docs. It&#8217;s so simple, it just takes a coroutine to print the string &#8220;<em>Hello, world!&#8221;</em> in two steps to see how the coroutine <em>continues</em> its execution on consecutive calls.</p><p>This is the <code>CMakeLists.txt</code> file of the <a
+href="http://www.biicode.com/examples/boost-coroutine"><code>examples/boost-coroutine</code></a> block available in our cloud:</p><pre class="crayon-plain-tag">include(biicode/boost/setup)
+    INIT_BIICODE_BLOCK()
+    ADD_BIICODE_TARGETS()
+    set(Boost_USE_STATIC_LIBS ON)
+    bii_find_boost(COMPONENTS system coroutine context thread REQUIRED)
+    target_include_directories(${BII_BLOCK_TARGET} INTERFACE ${Boost_INCLUDE_DIRS})
+    target_link_libraries(${BII_BLOCK_TARGET} INTERFACE ${Boost_LIBRARIES})
+    if(MSVC)
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+    else()
+        target_compile_options(${BII_BLOCK_TARGET} INTERFACE -std=c++11)
+    endif()</pre><p>Let&#8217;s open and run the example:</p><pre class="crayon-plain-tag">$ bii init boost-examples
+$ bii open examples/boost-coroutine
+$ bii find
+$ bii cpp:configure
+Running: cmake  -G "Unix Makefiles" -Wno-dev  ../cmake
+-- The C compiler identification is GNU 4.9.2
+-- The CXX compiler identification is GNU 4.9.2
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+      examples/boost-corutine
+---------------------------------
+-- Setting up Biicode Boost...
+-- Downloading Boost 1.57.0...
+-- Bootstrapping Boost 1.57.0...
+-- Building Boost 1.57.0 components with toolset gcc-4.9.2...
+-- Building system library...
+-- Building coroutine library...
+-- Building context library...
+-- Building thread library...
+-- Boost 1.57.0
+Found the following Boost libraries
+    system
+    coroutine
+    context
+    thread
+...
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p><strong>Issue with MinGW: </strong>To compile Boost.Context, MinGW depends on the Microsoft assembler. Be sure you have ml or ml64 (Depending on your platform) in your PATH. Those executables are usually shipped within Visual Studio, check the Visual Studio Directory/VC/bin/ folder.</p><p><strong>Issue with CMake configure: </strong>Seems that CMake has problems with long-running configures. In some cases, even if the libraries were built successfully, find_package() is not able to find the Boost components. Just rerun bii cpp:configure.</p><p><strong>Header only libraries: </strong>Boost.Spririt is a header only library. Only libraries that must be compiled should be passed to bii_find_boost(). Try with a naked <code>bii_find_boost()</code> call.</p><p>We currently maintain a <code>biicode/boost</code> block with the scripts, which has four different tracks representing the four (three) different Boost versions we have tested: <code>master</code> (The latest version available, currently Boost 1.57.0), <code>1.57.0</code>, <code>1.56.0</code>, and <code>1.55.0</code>. Want to change the Boost version you want? Just go to the <code>biicode.conf</code> of your block and change the <code>biicode/boost</code> track in the <code>requirements</code> entry.</p><p>Refer to <a
+href="http://docs.biicode.com/c++/examples/boost.html">the docs</a> for more info.</p><h2 id="whats-next">What&#8217;s next?</h2><p>I want to see what people say about this. The main reason we released this as an open source project is to allow the community to improve it with us. This is a first working version, but I&#8217;m sure it could be improved a lot thanks to your feedback and thoughts. Check the <a
+href="https://github.com/Manu343726/boost-biicode#issues">README&#8217;s issues entry</a> and the project issues page.<br
+/> There are people who already were helping us. I specially thank <a
+href="http://thetoeb.de/">Tobias Becker</a> for his feedback on the last steps of the development. His <a
+href="http://www.biicode.com/toeb/cmakepp">cmakepp</a> library is a great tool and something I want to use in our Boost scripts in the near future. cmakepp is <em>batteries included</em> CMake!</p><p>I think dependency management for C++ is the right way to go, and supporting Boost libraries is a great step forward.<br
+/> Let&#8217;s continue working until a modern C++ development environment becomes reality.</p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers or comment below to tell us your enquiries.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/dependency-management-boost-libraries/">Boost libraries are now supported in biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/dependency-management-boost-libraries/feed/</wfw:commentRss> <slash:comments>7</slash:comments> </item> <item><title>Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship</title><link>http://blog.biicode.com/our-story-ii/</link> <comments>http://blog.biicode.com/our-story-ii/#comments</comments> <pubDate>Thu, 18 Sep 2014 10:56:17 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[Our Story]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[entrepeneurship]]></category> <category><![CDATA[start-up]]></category> <category><![CDATA[where we come from]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1626</guid> <description><![CDATA[<p>How did biicode begin? &#8230;certainly not in a parking lot, but Pablo San Segundo and I were pretty close to the one at the University the very first time Diego explained biicode to us. I consider myself lucky for being part of biicode’s birth. The day we decided its name, or those endless meetings with [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/our-story-ii/">Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h2>How did biicode begin?</h2><p>&#8230;certainly not in a parking lot, but <a
+href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo">Pablo San Segundo</a> and I were pretty close to the one at the University the very first time Diego explained biicode to us.</p><p>I consider myself lucky for being part of biicode’s birth. The day we decided its name, or those endless meetings with a chalkboard full of diagrams, the first &#8220;battle logo&#8221; as we named our first &#8220;company mascot&#8221;.<br
+/> In addition, I really enjoy my work as a university professor and engineer. Thanks to the university I have had the opportunity to devote myself to something that fascinated me since I was a child: robotics. But you cannot master robotics without solid programming skills, so I&#8217;ve been programming since I started hacking the fascinating Commodore 64, with its &#8220;peek&#8221; and &#8220;poke&#8221;, and his incredible voice synthesizer accessible through a simple command: &#8220;say&#8221;.</p><div
+id="attachment_1632" style="width: 818px" class="wp-caption alignleft"><img
+class="wp-image-1632" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/Commodore-64.jpg" alt="Hacking Commodore 64 is the beginning of our story" width="808" height="560" /><p
+class="wp-caption-text">Hacking the Commodore 64 was classy.</p></div><p><span
+id="more-1626"></span></p><h2>Our story II</h2><p>I was barely 12 years old when my first computer game was published. By then, to share code with other rookie programmers you had to literally publish it in journals as pages and pages of text. So using other’s code implied a tedious and patient task of copying.<br
+/> Not much has changed since then (except for the blessed CTRL-C and CTRL-V).</p><p>Two years later, I connected my old computer to an Scalextric so I was able to measure and display on the TV lap times, car speeds and lap counters, in addition to a sprite representation of the vehicles when crossing the finish line.</p><p>Then I made new friends who shared my hobby, and so, without giving up football, skates and bicycles, we reserved a place to pound the keys of a very first IBM PC, without a hard drive and with a neon yellow display that delights collectors right now.</p><p>After reading manuals and through hard trial and error, our programming skills evolved into learning new languages to achieve more complex functionalities to satisfy our requirements. BASIC, compiled QBASIC, PASCAL and Modula-2, were on our roadmap before discovering C and its amazing memory control.</p><p>So after making multiplayer games on CGA graphics cards (it’s amazing what you can achieve with only four basic colours!), EGA, VGA and XGA &#8230; constructing a pair of robotic arms and designing a series of more or less useful gadgets came &#8230; college.</p><h2>Instant byte crush</h2><p>I met Diego while I was doing my <a
+href="http://www.elai.upm.es/joomla/index.php/webmaster/17-personal/personal-docente/57-webmaster">doctoral thesis</a> on supervisory control systems applied to the control of teleoperated robots over long distances. From the beginning I was surprised by Diego’s intellectual capacity and commitment to excellence. I remember when I asked him as part of his learning to develop a two-dimensional simulation of a solar system, and he delivered only a couple of days later, with a full configurable 3D simulator of a complex celestial system.<br
+/> Increasingly, we were collaborating on more projects together of both: research and teaching, supporting each other with our particular vision of things. We both enjoy trying to introduce common sense reasoning in machines and software, and many of our discussions were about simplifying the robots processing into the same categories of our way of thinking. So while Diego was working on the interpretation of environment data for robot localization and mapping, I was trying to include spatial reasoning skills on the control of robot manipulators.<br
+/> <img
+class="alignleft wp-image-1629" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/09/MVC-476X.jpg" alt="Some of the founders of biicode at the beginning of our story" width="400" height="300" /></p><p>So, in 2011 we came up with an ambitious project: we started to develop lightweight C++ library (MRCore) that was meant to support our respective investigations.<br
+/> The code we generated was based on many pieces of old code, or third parties that we integrated into our scheme, so Diego began mulling over the idea of ​​permanently interconnect these functions in the cloud.<br
+/> Consequently, one day at the University lounge, he exposed to Pablo and me the main ideas of something he called &#8220;Hypercode&#8221; in its most original form. He said then that we had to extend the concept of internet hyperlink to the software, so that a piece of code could use another piece of code without having to copy and manage the duplicate.</p><blockquote><p>Just like Wikipedia</p></blockquote><p>he said</p><blockquote><p>if you need to use any piece of code just link it</p></blockquote><p>Diego&#8217;s proposal fascinated me. His idea was a breath of fresh air, it had a clear goal and was accompanied by ambition and high potential.<br
+/> After a dozen national and international research projects, I was still copying and adapting the same code to perform the same mathematical operations, the same simulations, the same port handlers, etc.<br
+/> In many cases, I grouped functionalities into libraries and I tried to maintain and update them, but for other functionalities I still had a lot pieces of code repeated again and again with small and no relevant changes among them.</p><h2>A C and C++ dependencies manager, <strong>finally</strong>!</h2><p>How many times have I written the code to manage correctly the TCP/UDP client/server? Or to establish message protocols for communication between components? Or the robust, secure and non-blocking way of handling of a serial port?<br
+/> The idea of ​​developing a dependency manager for C / C ++ was evolving gradually and improving towards a much more complete vision about what the software programming should be with a pragmatist view.<br
+/> We started to enrich the basic idea with Internet’s magic and the Open Source movement and enthused with it.<br
+/> And bit by bit all the pieces start fitting together into an ambitious and beautiful picture. Diego’s thrust, courage and ability were the main ingredients that propelled us and our story into building a new programming paradigm: biicode.</p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/our-story-ii/">Our Story (II): Miguel Hernando&#8217;s road to entrepreneurship</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/our-story-ii/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> <item><title>A quick approach to BITSCAN</title><link>http://blog.biicode.com/quick-approach-bitscan/</link> <comments>http://blog.biicode.com/quick-approach-bitscan/#comments</comments> <pubDate>Fri, 25 Jul 2014 08:00:40 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[bitscan]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[chess]]></category> <category><![CDATA[combinatorial problems]]></category> <category><![CDATA[control inteligente]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[features]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=922</guid> <description><![CDATA[<p>Pablo San Segundo, professor of Robotics at UPM in Madrid, after years of scientific investigation and many hours of devoted work on his passion: chess (he's a Chess Grandmaster), have lead him to propose BITSCAN library as a help with many complex combinatorial problems. He has been using BITSCAN with the help of biicode and it works just fine. It has clearly  proved to be more efficient than other implementations widespread in the developer community. Give it a try!</p><p><a
+href="http://blog.biicode.com/quick-approach-bitscan/"> Read More...</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/quick-approach-bitscan/">A quick approach to BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>This is is a small explanation about BITSCAN, the C++ library exclusively developed by <a
+title="Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a>.</p><p>BITSCAN is dedicated to the efficient processing of bit strings. In programming, a bit string is a data structure that stores collections of 1s and 0s. It gets interesting when those 1s and 0s refer to a Boolean property of a group, so that each element of this group is identified by a bit of that chain.</p><h2>Time to move your pawns forward</h2><p>A good example of this is the game of chess. In a chessboard each position is formed by six different types of pieces with two possible colours. A string of 64 bits can encode the position of all pieces of the same type and color on the board (e.g. &#8220;white pawns&#8221;) by referring each bit to a square with the semantics of a value to 1 (TRUE) if the square is occupied by a piece of the chosen type and 0 (FASLE) otherwise.<span
+id="more-922"></span></p><p>The figure below shows an example. The white pawns on the board are encoded the 64-bit string to the right.<br
+/> <img
+class="aligncenter wp-image-923" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/bitscan-example-blogpost.png" alt="bitscan example blogpost" width="630" height="346" /><br
+/> Recently bit strings have had much impact in the scientific community because it has been shown that bit-parallel algorithms can accelerate up to one order of magnitude the solution of a number of complex combinatorial problems.<br
+/> After years of research in combinatorial optimization, Professor San Segundo has developed C++ bit string library BITSCAN optimizing those features that he found useful in his work, including different types of bit scanning.</p><h3>More on BITSCAN</h3><p>As you can recall, in a recent <a
+title="survey BITSCAN" href="http://blog.biicode.com/bitscan-efficiency-at-glance/">comparative</a> BITSCAN was proven clearly more efficient than other C, C++ widespread implementations (i.e. STL bitset and BOOST dynamic_bitset).</p><p>Are you interested in scanning bits? Pablo is going to release soon a great surprise for those interested in encoding simple unweighted graphs.</p><p>Stay tuned!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/quick-approach-bitscan/">A quick approach to BITSCAN</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/quick-approach-bitscan/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Build a smiley mechatronic face today with biicode and arduino!</title><link>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/</link> <comments>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/#comments</comments> <pubDate>Thu, 17 Jul 2014 14:36:34 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[c/c++]]></category> <category><![CDATA[c/cpp]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[project]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=863</guid> <description><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control. This biiday project comes in by Julio Caso, one of our users! Follow this step by step recipe to successfully build this project. If any doubts come, just post [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Control 12 servo motors located in a mechatronic face. It uses a makey makey board to switch between controllers: a wii nunchuck or a tv remote control.</p><p>This biiday project comes in by Julio Caso, one of our users!</p><p><img
+class="alignnone wp-image-864" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/mechatronic-face-biicode.png" alt="mechatronic face biicode" width="600" height="398" /></p><p>Follow this step by step recipe to successfully build this project. If any doubts come, just post a comment!</p><h3><span
+id="more-863"></span>Mechatronic Face Main Ingredients:</h3><ul><li><a
+title="Arduino uno" href="http://arduino.cc/en/Main/arduinoBoardUno" target="_blank">Arduino Uno</a></li><li><a
+title="Makey Makey Board" href="http://www.thinkgeek.com/product/f082/" target="_blank">Makey Makey board</a></li><li><a
+href="http://www.dx.com/p/ir-receiver-module-wireless-remote-control-kit-for-arduino-1-x-cr2025-135520">IR Receiver Module, Wireless Remote Control Kit for Arduino</a></li><li><a
+title="wii nunchuck" href="http://www.dx.com/es/p/wired-nunchuk-controller-for-wii-u-white-80cm-cable-191948#.U8etXvl_ttZ" target="_blank">Wii Nunchuck</a></li><li>Servo Control</li><li>Arduino Sensor Shield 5</li><li>The usual electronic stuff: wires, leds, protoboard&#8230;</li><li>screws and a screwdriver</li></ul><h3><strong>Let&#8217;s get down to work!</strong></h3><table><tbody><tr><td
+colspan="2" width="581"> Connect the Leds:</td></tr><tr><td
+width="315"><ul><li> Led 1</li></ul></td><td
+width="315">  Pin 13</td></tr><tr><td
+width="315"><ul><li> Led 2</li></ul></td><td
+width="315">  Pin 12</td></tr><tr><td
+colspan="2" width="581"> The nunchuck:</td></tr><tr><td
+width="315"><ul><li> Power Pin</li></ul></td><td
+width="315">  Pin A3</td></tr><tr><td
+width="315"><ul><li>Trigger Pin</li></ul></td><td
+width="315">  Pin 5</td></tr><tr><td
+width="315"><ul><li>Servo Pin</li></ul></td><td
+width="315">  Pin 10</td></tr><tr><td
+width="315"><ul><li> GND Pin</li></ul></td><td
+width="315">  Pin A2</td></tr><tr><td
+colspan="2" width="581">And finally, build the face and screw the different parts.</td></tr></tbody></table><p>&nbsp;</p><p>All the coding, connections and 3-D plans are located in <a
+title="readme mechatronic face biicode" href="https://www.biicode.com/blown/blown/cabeza/master/1/readme.md" target="_blank">here</a>.</p><p>Want to try it?  Execute this commands:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii open blown/cabeza
+~/project$ bii arduino:build
+~/project$ bii arduino:upload</pre><p>And that&#8217;s it!</p><p>Watch Julio&#8217;s demo:</p><p><iframe
+width="854" height="510" src="//www.youtube.com/embed/pUikbi9BqMk" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p><p>&nbsp;</p><p>Summer is a great time to be a maker, what are you making?</p><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/">Build a smiley mechatronic face today with biicode and arduino!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/build-a-smiley-mechatronic-face-today-with-biicode-and-arduino/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>bii internals: C vs Python efficiency</title><link>http://blog.biicode.com/bii-internals-c-vs-python/</link> <comments>http://blog.biicode.com/bii-internals-c-vs-python/#comments</comments> <pubDate>Sat, 12 Jul 2014 08:00:57 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[cython]]></category> <category><![CDATA[efficency]]></category> <category><![CDATA[obfuscate]]></category> <category><![CDATA[python]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=846</guid> <description><![CDATA[<p>In our bii internal series we’ve walked through the process to convert our python code into C code, compile it as a python native extension to distribute it for different platforms. One of the major drawbacks of using native code is that we are not supporting all systems but, on the other side, we gain in [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-c-vs-python/">bii internals: C vs Python efficiency</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In our bii internal series we’ve walked through the process to convert our <a
+title="compiling your python app with cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">python code into C code</a>, compile it as a python native extension to <a
+title="automating pkg genration biicode" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/" target="_blank">distribute it for different platforms</a>. One of the major drawbacks of using native code is that we are not supporting all systems but, on the other side, we gain in efficiency and have more control over the environments where the app runs. We’re doing some benchmark to see how much faster is biicode processing projects: running all in python code or with the native extensions.</p><p><span
+id="more-846"></span></p><p>First of all, let’s explain a bit what biicode does on every operation. At first it makes a <b>check in</b> to read files from the hard disk and it checks if they’ve changed and caches them. Then, if any files have changed, it <b>processes</b> your project which means that it parses source code, searching for dependencies, analyzes your dependencies, configuration etc. The final step is <b>checking out</b> to disk file changes and external dependencies that were already in local cache.</p><p>We’ve tested how biicode processes different libraries: running python code vs cythonized code. We’ve measured following times:</p><ul><li>Check-In: Time to read all files and cache them in memory.</li><li>Process: Time to parse code, and analyze dependencies.</li><li>Reprocess: Time to reprocess files without changes.</li></ul><p>These are the results (in seconds) for SDL library, which contains 2130 files:</p><table><tbody><tr><td></td><td><strong>Python</strong></td><td><strong>Native extensions</strong></td></tr><tr><td><strong>Check-In</strong></td><td>0.26206111908 s</td><td>0.262398004532 s</td></tr><tr><td><strong>Process</strong></td><td>9.54270887375 s</td><td>6.47844004631 s</td></tr><tr><td><strong>Reprocess</strong></td><td>1.45510792732 s</td><td>1.36480784416 s</td></tr></tbody></table><p>As you can see that check-in time is the same in both cases as it involves reading tons of files from disk so it&#8217;s IO bounded not processor bounded.</p><p>Also reprocess time is very similar, with a slightly improvement in native extensions. Reprocess makes sure there’s no need to calculate anything new.</p><p>Where you can notice major improvements is in processing time where native extensions take the 68% of the time of plain python code, 3 seconds of extra time mean a lot in terms of user experience.</p><p>Performance gain is not constant  for every library, but it increases along with number of files/relations being processed. For projects smaller than 500 files performance gain is between 7% and 8%, for larger projects it boosts up to 32%  as observed in SDL case.</p><div
+id="attachment_847" style="width: 610px" class="wp-caption alignnone"><img
+class="wp-image-847 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/image.png" alt="Same code running on python or python native extension" width="600" height="371" /><p
+class="wp-caption-text">Same code running on python or python native extension</p></div><p>So, is it worth compiling to C code? Well, depends on your project, of course. If your program is IO bounded then probably it isn&#8217;t worthy, but if you need to do tons of processing then you might consider it,  setting up the <a
+title="compiling your python app with cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">compile</a>&#8211;<a
+title="packaging a compiled app with pi installer" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/" target="_blank">package</a> process is very easy.</p><p>You can check all the posts in the series, and in case of doubts, I’ll be happy to help you, <a
+title="google plus Julia" href="https://plus.google.com/+JuliaSSimon" target="_blank">contact me</a>.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-c-vs-python/">bii internals: C vs Python efficiency</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-c-vs-python/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>OpenExpoDay is over!</title><link>http://blog.biicode.com/openexpoday-is-over/</link> <comments>http://blog.biicode.com/openexpoday-is-over/#comments</comments> <pubDate>Fri, 27 Jun 2014 08:02:27 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[events]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[free]]></category> <category><![CDATA[open]]></category> <category><![CDATA[openexpoday]]></category> <category><![CDATA[software]]></category> <category><![CDATA[source]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=732</guid> <description><![CDATA[<p>#OpenExpoDay is gone, and you&#8217;ll have to wait until next year to enjoy it again. On the meantime, you can see what this year&#8217;s OpenExpo Day was about. All Open Source and Free Software Lovers had a date yesterday in Madrid. OpenExpo Day featured more than 20 demos and workshops, 6 round tables, 10 keynotes and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openexpoday-is-over/">OpenExpoDay is over!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><img
+class="alignnone wp-image-735" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/openexpo-PNG.png" alt="OpenExpoDay" width="630" height="141" /></p><p><a
+title="hashtag openexpoday twitter" href="https://twitter.com/hashtag/OpenExpoDay?src=hash" target="_blank">#OpenExpoDay</a> is gone, and you&#8217;ll have to wait until next year to enjoy it again.</p><p>On the meantime, you can see what this year&#8217;s OpenExpo Day was about.</p><p><span
+id="more-732"></span></p><p>All Open Source and Free Software Lovers had a date yesterday in Madrid.</p><p>OpenExpo Day featured more than 20 demos and workshops, 6 round tables, 10 keynotes and conferences, 4 Meetups&#8230;.</p><p>With the participation of great companies and hundreds of attendees, it was a unique opportunity to approach the Open Source and Free Software immediately.</p><p>We had the chance to attend and share what biicode is about in this great event.</p><p><H2>biicode OpenExpoDay:</h2><p>Our speaker <a
+title="Twitter FcoFdezC" href="https://twitter.com/fcofdezc" target="_blank">@fcofdez</a>, shares the slides he used with us:</p><p><iframe
+src="http://www.slideshare.net/slideshow/embed_code/36350183" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe><div
+style="margin-bottom:5px"> <strong> <a
+href="https://www.slideshare.net/fcofdezc/biicode" title="Biicode OpenExpoDay" target="_blank">Biicode OpenExpoDay</a> </strong> from <strong><a
+href="http://www.slideshare.net/fcofdezc" target="_blank">fcofdezc</a></strong></div><p><img
+class="alignnone wp-image-734" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Fran-Fernández-en-ExpoDay.jpg" alt="Fran Fernández en ExpoDay" width="630" height="355" /></p><p>Thanks for coming!</p><p>and.. happy coding!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/openexpoday-is-over/">OpenExpoDay is over!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/openexpoday-is-over/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>bii internals: Automating DEB pkg generation</title><link>http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/</link> <comments>http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/#comments</comments> <pubDate>Mon, 23 Jun 2014 08:00:20 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[automate]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[deb]]></category> <category><![CDATA[generation]]></category> <category><![CDATA[pkg]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=677</guid> <description><![CDATA[<p>To continue with our series about packaging and distributing biicode, today we are talking about deb packages generation. Even though deb packages are broadly documented, sometimes a concrete example is more helpful. To create a debian package we need to create a folder called DEBIAN. In that folder we will place our program files, recreating [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/">bii internals: Automating DEB pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>To continue with our series about packaging and distributing biicode, today we are talking about deb packages generation. Even though deb packages are broadly documented, sometimes a concrete example is more helpful.</p><p><span
+id="more-677"></span></p><p>To create a debian package we need to create a folder called DEBIAN. In that folder we will place our program files, recreating the structure we want in the client&#8217;s machines. This means that if we want biicode installed inside /usr/lib/biicode then we place biicode inside DEBIAN/usr/lib/biicode. Following the same schema, copyright file should be placed in DEBIAN/usr/share/doc/biicode/copyright. Along with these contents we should also place the control file and the scripts needed to finish installation or removal process. In this case we need postinst and prerm, that will run with sudo permissions.</p><p>To sum up this is how our DEBIAN directory should look like:</p><pre class="crayon-plain-tag">├── DEBIAN
+│   ├── control
+│   ├── postinst
+│   ├── prerm
+│   └── usr
+│       └── share
+│       |   └── doc
+│       |       └── biicode
+│       |           └── copyright
+│       └── lib
+│           └── biicode
+│               └── # Tons os stuff</pre><p>You can read <a
+title="Debian Control File Documentation" href="http://www.debian.org/doc/debian-policy/ch-controlfields.html" target="_blank">control file documentation</a> at debian&#8217;s page, our control file looks like this:</p><pre class="crayon-plain-tag">Package: biicode
+Priority: optional
+Section: devel
+Maintainer: Julia S.Simon &lt;julia.simon@biicode.com&gt;
+Architecture: %ARCHITECTURE%
+Version: %VERSION%
+Depends: zlib1g, libc-bin
+Recommends: build-essential | python2.7 | nodejs
+Homepage: http://www.biicode.com
+Installed-Size: %SIZE%
+Description: Biicode
+ Biicode is a novel tool that aims to make easier our lives as developers.
+ It will make you forget about setting up dependencies, build scripts,
+ distribution... and let us focus on the only task that is valuable,
+ productive, creative and cannot be automated, which is coding.</pre><p>In the postinstallation step we just create a symlink in the PATH:</p><pre class="crayon-plain-tag">#!/usr/bin/env/ bash
+chmod -R a+rx /usr/lib/biicode/
+ln -s -f /usr/lib/biicode/bii /usr/bin/bii</pre><p>Which is removed in the pre-remove step:</p><pre class="crayon-plain-tag">#!/usr/bin/env bash
+rm /usr/bin/bii</pre><p>We also have a small bash script to set the permissions, calculate md5sum and creates the package.<br
+/> Md5sum contains a list of MD5 checksums for all files contained within the package so they can be verified when they are extracted to the client&#8217;s machine:</p><pre class="crayon-plain-tag">chmod 755 ${POSTINST_FILE}
+chmod 755 ${PRERM_FILE}
+chmod 755 ${TMPDIR}/DEBIAN
+chmod 755 ${TMPDIR}/DEBIAN/control
+find ${TMPDIR}/usr -type d -exec chmod 755 {} +
+echo "cd ${TMPDIR}"
+cd ${TMPDIR}
+echo "Calculating md5sums"
+find . -type f ! -regex '.*?biicode*' ! -regex '.*?DEBIAN.*' -printf '%P ' | xargs md5sum &gt; DEBIAN/md5sums
+chmod 644 DEBIAN/md5sums
+echo "cd ${HOLDER}"
+cd ${HOLDER}
+fakeroot dpkg-deb -z8 -Zgzip --build biicode
+echo "cp biicode.deb ~/biicode.deb"</pre><p>Finally everything is wired up with a python script that grabs <a
+title="bii internals: Compiling your python application with Cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/" target="_blank">cythonized</a>,<a
+title="bii internals: Packaging a compiled app with PyInstaller" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/" target="_blank"> pyinstalled</a> biicode, creates the folder structure and invokes mentioned bash script:</p><pre class="crayon-plain-tag">import shutil
+import os
+import tempfile
+from biicode.common import __version__
+from biicode.common.utils import file_utils
+from biicode.utils.pack import create_client_binary
+from biicode.client.command.process_executor import execute
+import sys
+import platform
+def get_folder_size(p):
+    size = os.popen('du -s %s' % p).read()
+    return int(size.split('\t')[0])
+def main(compiled=True, force_compile=False):
+    create_client_binary.main(compiled=compiled, onefile=False, force_compile=force_compile)
+    folder_temp = tempfile.mkdtemp(suffix='biicode')
+    tmpdir = os.path.join(folder_temp, 'biicode')
+    os.mkdir(tmpdir)
+    pkg_path = os.path.join(tmpdir, 'usr/lib/biicode')
+    debian_path = os.path.join(tmpdir, 'DEBIAN')
+    os.mkdir(debian_path)
+    share_path = os.path.join(tmpdir, 'usr/share')
+    compiled_path = os.path.expanduser('~/PyInstaller-2.1/bii/dist/bii')
+    src_debian_path = os.path.join(os.path.dirname(__file__), 'resources/DEBIAN')
+    src_share_path = os.path.join(os.path.dirname(__file__), 'resources/DEBIAN/usr/share')
+    to_deb_script = os.path.join(os.path.dirname(__file__), 'resources/DEBIAN/to_deb.sh')
+    control_file = os.path.join(debian_path, 'control')
+    postinst_file = os.path.join(debian_path, 'postinst')
+    prerm_file = os.path.join(debian_path, 'prerm')
+    print 'Copying compiled folder %s to %s' % (compiled_path, pkg_path)
+    shutil.copytree(compiled_path, pkg_path)
+    shutil.copy(os.path.join(src_debian_path, 'control'), control_file)
+    shutil.copy(os.path.join(src_debian_path, 'postinst'), postinst_file)
+    shutil.copy(os.path.join(src_debian_path, 'prerm'), prerm_file)
+    shutil.copytree(src_share_path, share_path)
+    arch = platform.architecture()[0]
+    if arch == '64bit':
+        architecture = 'amd64'
+    else:
+        if 'arm' in platform.machine():
+            architecture = 'armhf'
+        else:
+            architecture = 'i386'
+    version = __version__
+    if version == 'develop':
+        version = '0'
+    file_utils.search_and_replace(control_file, '%VERSION%', version)
+    file_utils.search_and_replace(control_file, '%ARCHITECTURE%', architecture)
+    file_utils.search_and_replace(control_file, '%SIZE%', str(get_folder_size(compiled_path)))
+    from os.path import expanduser
+    home = expanduser("~")
+    env = {'POSTINST_FILE': postinst_file,
+           'PRERM_FILE': prerm_file,
+           'TMPDIR': tmpdir,
+           'HOLDER': folder_temp,
+           'HOME': home}
+    retcode, _ = execute(to_deb_script, env=env)
+    sys.exit(retcode)
+if __name__ == '__main__':
+    main()</pre><p>Have you tried to package your own installer now? We hope you have!</p><p>Did you miss how to package an app for other OS?</p><ul><li>They are available here: for <a
+title="windows installer" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/" target="_blank">Windows </a> and for <a
+title="MacOS Installer" href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/" target="_blank">MacOS</a>.</li></ul><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/">bii internals: Automating DEB pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-automating-deb-pkg-generation/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia!</title><link>http://blog.biicode.com/meet-the-team-weve-got-a-new-biicoder-jorge-combalia/</link> <comments>http://blog.biicode.com/meet-the-team-weve-got-a-new-biicoder-jorge-combalia/#comments</comments> <pubDate>Mon, 16 Jun 2014 09:26:32 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[biicode]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=671</guid> <description><![CDATA[<p>Jorge Combalia is our pixel-perfect obsessed Visual and UX Designer. It&#8217;s been five months now since he joined our team. What brings you to Madrid, Jorge? After several years studying and working in San Francisco, I decided to come back to Madrid, the place where I was born and where I have spent most of my [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/meet-the-team-weve-got-a-new-biicoder-jorge-combalia/">Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p><img
+class="alignnone size-full wp-image-672" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/jorge-combalia.jpg" alt="jorge-combalia" width="630" height="473" /></p><p>Jorge Combalia is our pixel-perfect obsessed Visual and UX Designer. It&#8217;s been five months now since he joined our team.</p><p><span
+id="more-671"></span></p><p><strong>What brings you to Madrid, Jorge?</strong></p><p>After several years studying and working in San Francisco, I decided to come back to Madrid, the place where I was born and where I have spent most of my life. Here I have family and friends. My girlfriend and I are expecting a baby so we want to be close to ours right now. Besides, in the United States you can&#8217;t do anything without a working Visa and the lawyers of the company I worked for, sent a few hours later my dossier to the USCIS (U.S. Citizenship and Immigration Services) for the renewal of my visa, so we had to make a choice about where to settle and Madrid seemed the best option for all of us.</p><p><strong>Do you always stay here?</strong></p><p>What do you mean?</p><p>Are you planning to stay here for good or for a long term period?</p><p>Well, I don&#8217;t now yet. Madrid is a great place to be, I love the city and my job, also  the rhythm and movement in here, the professional stage, there is a lot of colour! I love travelling and I consider myself an eager person so it&#8217;s possible that we keep moving in a few years.</p><p><strong>How did you come to work with us?</strong></p><p>A week after landing in Madrid I saw a very attractive offer in Domestika.org, in which you were looking for a UI/UX Designer, I really liked the requirements you were looking for and I felt it was a perfect fit with my profile and background.</p><p>Although I had already designed for software developing companies, this felt different, biicode&#8217;s project is soooo interesting!</p><p>Manuel and Diego told me the need to unify web technology and design for this reuse source code software and I found it challenging. It&#8217;s the most complicated and rewarding project I&#8217;ve ever done. Biicode it&#8217;s a start-up with a huge potential, I want to be part of this giving my two cents.</p><p><strong>Working as a Visual &amp; UX Designer at biicode, what is it like?</strong></p><p>As I was just saying, this is more than a challenge, I love working with such a professional team, not even in &#8220;Silicon Valley&#8221; had I seen such a high level, I like to work closely with programmers and developers, seeing the tech we work with and how well does communication work. In the team we all get along very well and it shows in the results of our product.</p><p><strong>Does it feel any different from where you have been before?</strong></p><p>Actually my goals are always the same, get a friendly and simple visual environment.</p><p>At biicode, the daily scrums allow a fluidity and agility developing, I get lots of feedback and priorities are discussed without the need to wait for eternal protocol confirmations. I n other companies I have worked for, my designs went through several departments that sometimes the final result turned out very different from the original. Here, the flexibility relies on colleagues work, everyone is great at what they do. It&#8217;s such a collaborative environment in which communication is easy and fast.</p><p><strong>Where does you heart lies in designing?</strong></p><p>In terms of design I love simplicity and cleanness. My efforts are in 50/50 usability  and design, users having good visual experiences while finding what they are looking for quickly. Typography, flat design, iconography, color coding, large images, infinite scrolls, simple and accurate content.</p><p><strong>And which are the most interesting territories in terms of design innovation?</strong></p><p>There&#8217;s very capable people anywhere. I have had the pleasure of working with truly cracks. In San Francisco two of each three people either programs or designs, and the third is always a professional hipster. SO it&#8217;s easy to quickly soak for trends. I like and follow the work of many designers NY, LA, Berlin, MAD and BCN.</p><p><strong>What exciting things do you think technology will do for designers in the near future?</strong></p><p>I think the future is now, we work in the clouds and we share everything :). Everything is already happening, internet of things, more intuitive CMS, online software is moving rapidly, multi-device platforms, more reliable information, libraries&#8230; I only miss a standard for web browsers and everyone will be happier. I&#8217;d like to work someday with holographic technology, it&#8217;s very idyllic, but it&#8217;s already a reality.<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/meet-the-team-weve-got-a-new-biicoder-jorge-combalia/">Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/meet-the-team-weve-got-a-new-biicoder-jorge-combalia/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>bii internals: How to do your own Windows Installer</title><link>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/</link> <comments>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/#comments</comments> <pubDate>Fri, 13 Jun 2014 08:00:04 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[Innosetup]]></category> <category><![CDATA[python]]></category> <category><![CDATA[register]]></category> <category><![CDATA[windows installer]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=632</guid> <description><![CDATA[<p>As a continuation of the previous post, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows. The main tool used for packaging and installing the client binaries for Windows is the popular Inno Setup program. This tool is completely free of charge and [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/">bii internals: How to do your own Windows Installer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As a continuation of the <a
+href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">previous post</a>, which introduces the way in which installers for several systems are automatically generated, we will discuss now the solution adopted for windows.<br
+/> The main tool used for packaging and installing the client binaries for Windows is the popular <a
+title="Inno Setup Home Page" href="http://www.jrsoftware.org/isinfo.php" target="_blank">Inno Setup </a>program. This tool is completely free of charge and supports almost every windows release since 2000.</p><p><span
+id="more-632"></span></p><p>Installators are created by means of scripts, which are ASCII text files with an &#8220;.iss&#8221; extension. The concept is quite similar to the distribution definition file described for MacOS.<br
+/> The <em>script file</em> controls every aspect of the installation.  It specifies which files have to be installed and where, what short-cuts have to be created and what are they in order to be named, and so on. It &#8216;s arranged into sections and each section controls a different part of the installation.<br
+/> A quite simple and small script could be the next one:</p><pre class="crayon-plain-tag">&lt;
+; -- Example1.iss --
+; Demonstrates copying 3 files and creating an icon.
+; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
+[Setup]
+AppName=My Program
+AppVersion=1.5
+DefaultDirName={pf}\My Program
+DefaultGroupName=My Program
+UninstallDisplayIcon={app}\MyProg.exe
+Compression=lzma2
+SolidCompression=yes
+OutputDir=userdocs:Inno Setup Examples Output
+[Files]
+Source: "MyProg.exe"; DestDir: "{app}"
+Source: "MyProg.chm"; DestDir: "{app}"
+Source: "Readme.txt"; DestDir: "{app}"; Flags: isreadme
+[Icons]
+Name: "{group}\My Program"; Filename: "{app}\MyProg.exe"
+;</pre><p>The <em>script</em> could have a lot of different sections that allow almost all the operations required for a correct installation and uninstallation in windows systems. It includes a integrated <a
+title="JRSowtware Scripting" href="http://www.jrsoftware.org/ishelp/topic_scriptintro.htm" target="_blank">Pascal scripting</a> engine for advanced run-time customization. For example, we use that section to make a nice uninstalling and to modify the register in an intelligent way, avoiding unnecessary register operations.</p><p>As it&#8217;s done in MacOS installers, in our automation repo we have prepared  a resource file that contains all the files used by the script (images, icons, text files, and the script itself) :</p><pre class="crayon-plain-tag">resources
+├── windows
+   ├── Docs
+   │   └── readme.txt
+   ├── Images
+   │   ├── biiconsole.ico
+   │   ├── installlerimage.bmp
+   │   └── logobii.bmp
+   ├── license.txt
+   └── biicodeinstaller.iss</pre><p>Before calling the external tool (InnoSetup) all the required files (installer resources and biicode binaries) are copied into a temporal folder. The main python script that automates the process is executed in a windows virtual machine in which InnoSetup is installed. In order to avoid the hard-coding of the external command  we are retreiving that info through a registry request for both, win32 and win64:</p><p>&nbsp;</p><pre class="crayon-plain-tag">if platform.system() == 'Windows':
+    import _winreg
+def innoexepath():
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion'
+            '\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        result = getregvalue(
+            'HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows'
+            '\\CurrentVersion\\Uninstall\\Inno Setup 5_is1\\InstallLocation')
+        if result:
+            return os.path.join(result, 'ISCC.exe')
+        return 'ISCC.exe'</pre><p>Finally, an important but simple pre-build step: we update the version info through a simple but effective search and replace text operation, looking for a key string included into the script and the text documents.</p><pre class="crayon-plain-tag">from biicode.utils.pack import create_client_binary
+from biicode.client.command.process_executor import execute
+from biicode.common.utils.file_utils import search_and_replace
+from biicode.common import __version__ as version
+    search_and_replace(iss_path, '%VERSION%', version)
+    command = []
+    command.append(innoexepath())
+    command.append(os.path.join(folder_tmp, 'installdata', 'biicodeinstaller.iss'))
+    execute(command)
+    shutil.copy(os.path.join(folder_tmp, 'setup.exe'), 'C:/bii-setup.exe')</pre><p>As you can see, a product executable has been created and renamed as &#8220;bii-setup&#8221; and placed in a convenient directory for publishing.<br
+/> The InnoSetup tool creates a wonderful installer with a brief and simple script file:</p><p><img
+class="alignnone wp-image-640" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura.gif" alt="Biicode Wizard Windows" width="630" height="486" /></p><p>Hope you enjoy installing!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/">bii internals: How to do your own Windows Installer</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-how-to-do-your-own-windows-installer/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>bii internals: Automating MacOS pkg generation</title><link>http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/</link> <comments>http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/#comments</comments> <pubDate>Fri, 06 Jun 2014 08:52:36 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[bii-internals]]></category> <category><![CDATA[mac]]></category> <category><![CDATA[macos]]></category> <category><![CDATA[pkg]]></category> <category><![CDATA[pkgbuild]]></category> <category><![CDATA[productbuild]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=618</guid> <description><![CDATA[<p>In a previous posts we talked about how we cythonized and packaged biicode with pyinstaller. Now we will explain how to generate installers for the different systems, starting with mac. The problem with pkg generation is that most of the existing tutorials and references are xcode oriented, and we just wanted to use plain console. [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">bii internals: Automating MacOS pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In a previous posts we talked about how we <a
+title="bii internals: Compiling your python application with Cython" href="http://blog.biicode.com/bii-internals-compiling-your-python-application-with-cython/">cythonized</a> and <a
+title="bii internals: Packaging a compiled app with PyInstaller" href="http://blog.biicode.com/bii-internals-packaging-a-compiled-app-with-pyinstaller/">packaged biicode with pyinstaller</a>. Now we will explain how to generate installers for the different systems, starting with mac. The problem with pkg generation is that most of the existing tutorials and references are xcode oriented, and we just wanted to use plain console.</p><p><span
+id="more-618"></span></p><p>Let’s get started on how generate a mac installer:</p><p>Before packaging we need to prepare a set of additional files: license and welcome text, background img, postinstall script and the Distribution.xml.</p><p><strong>Distribution.xm</strong>l is a distribution definition file which defines the installation experience for the installer package that contains it, you can read about its different options in the <a
+href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/DistributionDefinitionRef/Chapters/Introduction.html#//apple_ref/doc/uid/TP40005370-CH1-SW1">Apple developers page</a>. A minimal Distribution.xml looks like this:</p><pre class="crayon-plain-tag">&lt;?xml version="1.0" encoding="utf-8" standalone="yes"?&gt;
+   &lt;installer-gui-script minSpecVersion="2"&gt;
+   &lt;!--+==========================+
+       |       Presentation       |
+       +==========================+--&gt;
+   &lt;title&gt;Biicode&lt;/title&gt;
+   &lt;options customize="never" rootVolumeOnly="true"/&gt;
+   &lt;welcome file="Welcome.rtf"/&gt;
+   &lt;license file="license.rtf"/&gt;
+   &lt;background file="background.png" scaling="proportional" alignment="bottomleft"/&gt;
+   &lt;allowed-os-versions&gt;
+       &lt;os-version min="10.9" /&gt;
+   &lt;/allowed-os-versions&gt;
+   &lt;options customize="never" require-scripts="false"/&gt;
+   &lt;product id="biicode" version="%VERSION%" /&gt;
+   &lt;!--+==========================+
+       |         Installer        |
+       +==========================+--&gt;
+   &lt;choices-outline&gt;
+       &lt;line choice="default"&gt;
+           &lt;line choice="biicode"/&gt;
+       &lt;/line&gt;
+   &lt;/choices-outline&gt;
+   &lt;choice id="default"/&gt;
+   &lt;choice id="biicode" visible="false"&gt;
+       &lt;pkg-ref id="biicode"/&gt;
+   &lt;/choice&gt;
+   &lt;!--+==========================+
+       |    Package References    |
+       +==========================+--&gt;
+   &lt;pkg-ref id="biicode" version="%VERSION%" onConclusion="none"&gt;%PKG%&lt;/pkg-ref&gt;
+&lt;/installer-gui-script&gt;</pre><p><strong>postinstall</strong> script is a script that runs as super user after installation is complete. In our case it will set permissions and create a symbolic link in the PATH:</p><pre class="crayon-plain-tag">#!/usr/bin/env bash
+echo "Setting permissions"
+sudo chmod -R a+rx /usr/lib/biicode
+echo "Creating symlink"
+sudo ln -f -s /usr/lib/biicode/bii /usr/bin/bii</pre><p><strong>Welcome.rtf</strong> is the rich text that appears in the first step of the installation wizard, that looks like this:</p><div
+id="attachment_619" style="width: 640px" class="wp-caption aligncenter"><img
+class="wp-image-619" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/wizard1.png" alt="Biicode installation Wizard: Welcome" width="630" height="447" /><p
+class="wp-caption-text">Biicode installation Wizard: Welcome</p></div><p><strong>background.png</strong> is the image containing the bee you se above.</p><p><strong>license.rtf</strong> contains the license users need to accept in the next step.</p><div
+id="attachment_620" style="width: 640px" class="wp-caption aligncenter"><img
+class="wp-image-620 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/wizard2.png" alt="Biicode installation Wizard: License" width="630" height="440" /><p
+class="wp-caption-text">Biicode installation Wizard: License</p></div><p>Both Welcome and license can be in different languages with the proper suffixes so they will display in the user’s language.</p><p>In our automation repo we have all these files in a folder like this:</p><pre class="crayon-plain-tag">resources
+├── macos
+   ├── Distribution.xml
+   ├── Resources
+   │   ├── Welcome.rtf
+   │   ├── background.png
+   │   └── license.rtf
+   └── scripts
+       └── postinstall</pre><p>Now that we have everything set up we can start packaging, the main script looks like this:</p><pre class="crayon-plain-tag">import os
+import sys
+import tempfile
+folder_tmp = tempfile.mkdtemp(suffix='biicode')
+   pkg_path = os.path.join(folder_tmp, 'tmpbiicode.pkg')
+   resources = os.path.join(os.path.dirname(__file__), 'resources/macos/')
+   retcode = create_package_from_sources(binary_path, pkg_path, resources)
+   if retcode == 0:
+       retcode = create_product_package(folder_tmp, resources)
+   sys.exit(retcode)</pre><p>This script, creates a temporary directory to work in, creates the base package, patches the distribution file and creates the final pkg to release. binary_path is the path to the app processed by PyInstaller.</p><pre class="crayon-plain-tag">def create_package_from_sources(binary_path, pkg_path, resources):
+   try:
+       shutil.copytree(os.path.join(resources, 'Resources'),
+                       os.path.join(os.path.split(binary_path)[0],
+                       'Resources'))
+   except:
+       pass
+   command = 'pkgbuild --root %s/ %s --scripts %s/scripts ' \
+              % (os.path.split(binary)[0], pkg_path, resources)
+   command += '--identifier biicode --version %s ' % version
+   command += '--install-location usr/lib/biicode'
+   print command
+   return os.system(command)</pre><p>So we copy the previously mentioned files (resources) to a Resources file in the pyinstaller generated folder and invoke pkgbuild.</p><p>pkgbuild builds an OS X Installer component package from on-disk files. A “component package” contains payload to be installed by the OS X Installer. Although a component<br
+/> package can be installed on its own, it is typically incorporated into a product archive, along with a “distribution” and localized resources, using<a
+href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/productbuild.1.html#//apple_ref/doc/man/1/productbuild"> productbuild.</a></p><p>So then we can create the final product package:</p><pre class="crayon-plain-tag">def create_product_package(holder, resources):
+   dist_file = os.path.join(holder, 'Distribution.xml')
+   shutil.copy(os.path.join(resources, 'Distribution.xml'), dist_file)
+   file_utils.search_and_replace(dist_file, '%VERSION%', version)
+   file_utils.search_and_replace(dist_file, '%PKG%', 'tmpbiicode.pkg')
+   command = 'productbuild '
+   command += '--distribution %s ' % dist_file
+   command += '--package-path %s ' % holder
+   command += '--resources %s ' % os.path.join(resources, 'Resources')
+   command += '~/biicode.pkg'
+   print command
+   print holder
+   return os.system(command)</pre><p>productbuild builds a product archive for the OS X Installer or the Mac App Store. A product archive is a flat file with a .pkg extension.  productbuild creates a deployable product archive, which can be used with the OS X Installer, or submitted to the Mac App Store.</p><p>An additional step would be signing the package so it comes from a “trusted” developer (and you dont need to right-click on it to install it) but we are skipping that step for the moment.</p><p>Hope you enjoy packaging!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/">bii internals: Automating MacOS pkg generation</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bii-internals-automating-macos-pkg-generation/feed/</wfw:commentRss> <slash:comments>2</slash:comments> </item> </channel> </rss>

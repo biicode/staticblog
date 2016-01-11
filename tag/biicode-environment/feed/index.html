@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; biicode environment</title> <atom:link href="http://blog.biicode.com/tag/biicode-environment/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Libraries.io integrates with biicode</title><link>http://blog.biicode.com/libraries-io-integrates-with-biicode/</link> <comments>http://blog.biicode.com/libraries-io-integrates-with-biicode/#comments</comments> <pubDate>Tue, 26 May 2015 11:12:55 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[biicode environment]]></category> <category><![CDATA[Libraries.io]]></category> <category><![CDATA[Version management]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2273</guid> <description><![CDATA[<p>Start using libraries.io with biicode &#8211; login with GitHub to get notified by email of new releases of a specific library. You can also subscribe to the RSS feed of any of the 1.65K biicode Projects available! &#160; &#160; Subscribe to any library you use or just sniff around to see all dependant blocks or [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/libraries-io-integrates-with-biicode/">Libraries.io integrates with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Start using libraries.io with biicode &#8211; login with GitHub to get notified by email of new releases of a specific library. You can also subscribe to the RSS feed of any of the <a
+href="https://libraries.io/biicode" target="_blank">1.65K biicode Projects available</a>!</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-2274 size-large" title="Up to 1.65k biicode projects are now tracked by Libraries.io" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/bii-projects-libraries.io_-1024x570.png" alt="biicode's section in Libraries.io" width="630" height="351" /></p><p>&nbsp;</p><p><span
+id="more-2273"></span></p><p>Subscribe to any library you use or just sniff around to see all dependant blocks or libraries available &#8211; it&#8217;s up to you!</p><p><img
+class="aligncenter wp-image-2275 size-large" title="Quick example of Boost dependencies." src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/boost-dependents-libraries-io-1024x491.png" alt="Boost dependencies from biicode tracked in Libraries.io" width="630" height="302" /></p><h2>How does libraries.io work?</h2><p>Libraries pulls in data using their JSON apis, it uses two end points, one to get the names of all available packages, and one to get the meta data (things like description, homepage, keywords, dependencies, versions etc.). The initial import pulls data for everything, and then where available, an RSS feed is used to get the names of new or updated packages every 10 minutes, otherwise a reload of all the packages is undertaken every hour or day depending on the number of packages in each project.</p><p>Read more about libraries.io <a
+href="https://medium.com/@teabass/solving-open-source-discovery-db43a04cd9e7">HERE</a>.</p><h2>What information does libraries.io fetch from biicode?</h2><p>As you read above you can almost all the information from the code stored in biicode with libraries.io Just in case you are confused with naming structure we use in biicode, read this brief explanation of block naming. There are three kinds of block names at biicode:</p><p>&#8211; <strong>A simple block:</strong> <em>username/username/blockname/<wbr
+/>master</em></p><p><a
+href="https://www.biicode.com/dimitrikourk/small3d" target="_blank">dimitrikourk/small3d</a> → dimitrikourk/dimitrikourk/small3d/master</p><pre class="crayon-plain-tag">[requirements]
+     dimitrikourk/small3d : 1</pre><p></p><p
+dir="ltr">&#8211; <strong>A block track:</strong> <em>username/username/blockname/<wbr
+/>trackname</em></p><p
+dir="ltr"><a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">lasote/openssl (v1.0.2)</a> → lasote/lasote/openssl/v1.0.2</p><p></p><pre class="crayon-plain-tag">[requirements]
+      lasote/openssl(v1.0.2): 0</pre><p></p><p
+dir="ltr">&#8211; <strong>A block track from another user&#8217;s block</strong>, related to original owner’s block:</p><p
+dir="ltr"><em>publishers_username/original_<wbr
+/>owner_username/original_owner_<wbr
+/>blockname/trackname</em></p><p
+dir="ltr"><a
+href="https://www.biicode.com/dimitrikourk/miguel/vorbis/mingwfix" target="_blank"> miguel/vorbis (dimitrikourk/mingwfix)</a>→ dimitrikourk/miguel/vorbis/<wbr
+/>mingwfix</p><p></p><pre class="crayon-plain-tag">[requirements]
+      miguel/vorbis(dimitrikourk/mingwfix): 0</pre><p>You know we&#8217;re always available at <a
+href="mailto:support@biicode.com">support@biicode.com</a> and at <a
+href="http://forum.biicode.com" target="_blank">our forum </a> for any questions yoy may have.</p><p>Libraries.io is a project hosted in <a
+href="https://github.com/librariesio">GitHub</a>. Especial thanks to <a
+href="https://twitter.com/teabass">Andrew Nesbitt</a> for the hard work.</p><p><img
+class="aligncenter wp-image-2276 size-medium" title="Libraries.io version management tool" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/05/LibrariesioLogo-300x300.png" alt="Libraries.io integrates with biicode" width="300" height="300" /></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/libraries-io-integrates-with-biicode/">Libraries.io integrates with biicode</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/libraries-io-integrates-with-biicode/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

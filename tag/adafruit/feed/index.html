@@ -1,0 +1,1316 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; adafruit</title> <atom:link href="http://blog.biicode.com/tag/adafruit/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Moving servos with arduino, pca9685 and a nunchuk</title><link>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/</link> <comments>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/#comments</comments> <pubDate>Wed, 25 Jun 2014 08:00:46 +0000</pubDate> <dc:creator><![CDATA[recluising]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[nunchuck]]></category> <category><![CDATA[pca9685]]></category> <category><![CDATA[servo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=696</guid> <description><![CDATA[<p>Hi all! As all you know, we have many adafruit libraries allocated at biicode, including the one to handle the PCA9685, capable of moving up to 16 servos. Also You can find the nunchuck library, that allows to use nunchucky. That&#8217;s all the software you need to move some servos using a joystick. &#160; Let&#8217;s begin!. These are [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/">Moving servos with arduino, pca9685 and a nunchuk</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Hi all!</p><p>As all you know, we have many adafruit libraries allocated at biicode, including <a
+title="link to servo driver adafruit" href="https://www.biicode.com/adafruit/blocks/adafruit/pwm_servo_driver_library/branches/master" target="_blank">the one to handle the PCA9685</a>, capable of moving up to 16 servos. Also You can find the <a
+title="nunchuck" href="https://www.biicode.com/gabrielbianconi/blocks/gabrielbianconi/nunchuk/branches/master">nunchuck</a> library, that allows to use nunchucky. That&#8217;s all the software you need to move some servos using a joystick.</p><p><span
+id="more-696"></span></p><p>&nbsp;</p><p><strong>Let&#8217;s begin!. </strong></p><p>These are the main ingredients you need to achieve successfully this recipe:</p><ul><li>Two servos</li><li>One Arduino ( I have used UNO board)</li><li>One <a
+title="pca8695" href="http://www.adafruit.com/products/815">Adafruit 16-Channel 12-bit PWM/Servo Driver &#8211; I2C interface</a> (pca8695)</li><li>One wii nunchuk</li><li>One <a
+title="nunchucky" href="http://www.adafruit.com/products/345">nunchucky adapter</a></li><li>Typical stuff (wires, protoboard)</li></ul><p>Now you have all you need, take a look at the sketch below:</p><p><img
+class="alignnone wp-image-697" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/servos-and-nunchuck_bb.png" alt="servos and nunchuck sketch" width="630" height="474" /></p><p>&nbsp;</p><p>You can follow the connections from the picture. We have used 2 servos at ports 0 and 4 for clarity.</p><p><strong>Where is the code I need?</strong></p><p>You can also reuse, branch, extend or just take a look at our code below (from <a
+title="recluising servos nunchuk" href="https://www.biicode.com/recluising/blocks/recluising/servos_nunchuk/branches/master">recluising/servos_nunchuk</a>) by using <em><a
+title="bii open" href="http://docs.biicode.com/biicode/reference/commands.html?highlight=bii%20open#bii-open-editing-code">bii open</a>: bii open recluising/servos_nunchuk</em></p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include &lt;Wire.h&gt;
+#include &lt;adafruit/pwm_servo_driver_library/adafruit_pwmservodriver.h&gt;
+#include &lt;gabrielbianconi/nunchuk/nunchuk.h&gt;
+// called this way, it uses the default address 0x40
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+ArduinoNunchuk nunchuk = ArduinoNunchuk();
+#define SERVOMIN  150 // this is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  600 // this is the 'maximum' pulse length count (out of 4096)
+void setup() {
+  Serial.begin(9600);
+  Serial.println("Set up running...");
+  pwm.begin();
+  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+  nunchuk.init();
+  Serial.println("... Set up completed");
+}
+void move_x(int x){
+  double pulselen_x;
+  pulselen_x= map(x,0,255,SERVOMIN,SERVOMAX);
+  pwm.setPWM(0, 0, pulselen_x);
+  //output
+  Serial.print("x: ");
+  Serial.println(x);
+}
+void move_y(int y){
+  double pulselen_y;
+  pulselen_y= map(y,0,255,SERVOMIN,SERVOMAX);
+  pwm.setPWM(4, 0, pulselen_y);
+  //output
+  Serial.print("y: ");
+  Serial.println(y);
+}
+void move(int x,int y){
+  move_x(x);
+  move_y(y);
+}
+void loop() {
+  nunchuk.update();
+  if(nunchuk.cButton==1){
+    move_x(nunchuk.analogX);
+  }
+  else if(nunchuk.zButton==1){
+    move_y(nunchuk.analogY);
+  }
+  else{
+    move(nunchuk.analogX,nunchuk.analogY);
+  }
+  Serial.print(nunchuk.analogX, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.analogY, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelX, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelY, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.accelZ, DEC);
+  Serial.print(' ');
+  Serial.print(nunchuk.zButton, DEC);
+  Serial.print(' ');
+  Serial.println(nunchuk.cButton, DEC);
+  delay(50);
+}</pre><p>You can also reuse from the necessary libraries to code your own sketch with <em><a
+title="command bii init" href="http://docs.biicode.com/biicode/commands/core_commands.html#bii-init-creates-a-new-project">bii init project</a>,</em> in this case the libraries reused are:</p><ul><li><a
+title="link to servo driver adafruit" href="https://www.biicode.com/adafruit/blocks/adafruit/pwm_servo_driver_library/branches/master">adafruit pca8695 </a></li><li><a
+title="nunchuck" href="https://www.biicode.com/gabrielbianconi/blocks/gabrielbianconi/nunchuk/branches/master">nunchuck</a></li></ul><p>Pay special attention to the #includes linking to the libraries that control the drivers we need. You just need to write the #include, and biicode will configure everything for you (using <a
+title="bii find" href="http://docs.biicode.com/biicode/reference/commands.html?highlight=bii%20find#bii-find-retrieving-dependencies">bii find</a>).</p><p>At set-up we set port 9600 to get the serial output. We will print values captured by nunchuk so we can know how the nunchuk is working and what values it&#8217;s registering. If you test the code, you should see something like this:</p><div
+id="attachment_698" style="width: 640px" class="wp-caption alignnone"><img
+class="wp-image-698" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/serie.png" alt="serial port output" width="630" height="361" /><p
+class="wp-caption-text">serial port output</p></div><p>We are moving two servos with the buttons and pads provided by the nunchuk joystick. We decided to use the logical pad to move the servos depending on axis values (x,y).</p><p>So, when we move the pad trough the x axis, one servo is moved and  if the y axis is the one we&#8217;re moving through, we move the other servo!</p><p>Just execute <a
+title="bii arduino:upload" href="http://docs.biicode.com/arduino/reference/commands.html?highlight=upload#bii-arduino-upload-upload-a-firmware-in-arduino" target="_blank">bii arduino: upload</a>  to load the code into your arduino and this is the way it works:</p><p><iframe
+width="630" height="354" src="https://www.youtube.com/embed/OWGSpEgf8yQ?feature=oembed" frameborder="0" allowfullscreen></iframe></p><p><strong>Now it&#8217;s your turn</strong></p><p>This example is not cool enough, We&#8217;re sure you can do it better, so&#8230; here are some ideas, if you test them, we&#8217;ll be happy to know your feedback and your experience using biicode:</p><ul><li>Try something with more than 2 servos,  you can use up to 16!</li><li>Change the way you move the servos, maybe switching servo with nunchuk buttons.</li><li>Use the nunchuck sensors (maybe the accelerometer) to move the servos depending on its values.</li></ul><p>Happy coding!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/">Moving servos with arduino, pca9685 and a nunchuk</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/moving-servos-with-arduino-pca9685-and-a-nunchuk/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>IoT: How many clicks does my bitly link get?</title><link>http://blog.biicode.com/how-many-clicks-does-my-bitly-link-get/</link> <comments>http://blog.biicode.com/how-many-clicks-does-my-bitly-link-get/#comments</comments> <pubDate>Fri, 20 Jun 2014 10:00:55 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=703</guid> <description><![CDATA[<p>A really quick and small project with temboo and arduino, comes in today. We&#8217;re just using this HW components: an Arduino mega2560 Adafruit CC3000 WiFi Module We&#8217;re reusing from this two blocks right here: Name Description Include (s) [crayon-568870bdc25a8416870705/] To control the Adafruit CC300 WiFi Module [crayon-568870bdc25b5534950392/] [crayon-568870bdc25c5401613073/] Temboo library for Arduino, available in biicode, ready to reuse. [crayon-568870bdc25d0348200894/] Just make sure [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/how-many-clicks-does-my-bitly-link-get/">IoT: How many clicks does my bitly link get?</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A really quick and small project with <a
+title="temboo" href="https://www.temboo.com/" target="_blank">temboo</a> and <a
+title="arduino" href="http://www.arduino.cc/" target="_blank">arduino</a>, comes in today.</p><p>We&#8217;re just using this HW components:</p><ul><li>an Arduino mega2560</li><li><a
+title="Adafruit cc300 module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC3000 WiFi Module</a></li></ul><p><img
+class="alignnone wp-image-714" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Adafruit-Wifi+-Arduino-sketch.jpg" alt="Bitly Temboo Arduino" width="630" height="491" /></p><p><span
+id="more-703"></span></p><p>We&#8217;re reusing from this two blocks right here:</p><table
+style="height: 326px;" border="1" width="690" cellpadding="10"><tbody><tr><td
+width="30%">Name</td><td
+width="30%">Description</td><td
+width="40%">Include (s)</td></tr><tr><td><pre class="crayon-plain-tag">ardunet</pre></td><td>To control the <a
+title="Adafruit CC300 WiFi Module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC300 WiFi Module</a></td><td><pre class="crayon-plain-tag">#include &quot;diego/ardunet/cc3000utils.h&quot;
+#include &quot;diego/ardunet/cc3000client.h&quot;
+#include &quot;diego/ardunet/http_get.h&quot;</pre></td></tr><tr><td><pre class="crayon-plain-tag">temboo</pre></td><td><a
+title="temboo library biicode arduino" href="https://www.biicode.com/diego/blocks/diego/temboo/branches/master" target="_blank">Temboo library for Arduino, available in biicode, ready to reuse.</a></td><td><pre class="crayon-plain-tag">#include &quot;diego/temboo/temboo.h&quot;</pre></td></tr></tbody></table><p>Just make sure you have a temboo choreo configured in order to get data from your bitly account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/bitly --hello=cpp</pre><p>Then, just copy and paste the code you get in temboo in your new main.cpp file, don&#8217;t forget to adapt the #include links in the cases needed.</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "stdio.h"
+#include &lt;SPI.h&gt;
+#include &lt;WiFi.h&gt;
+#include &lt;WiFiClient.h&gt;
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "amalulla/temboo/temboo.h"
+#include "tembooaccount.h" // Contains Temboo account information
+#include "lasote/stream_json_reader/stream_json_reader.h"
+int numRuns = 1;   // Execution count, so this doesn't run forever
+int maxRuns = 10;   // Maximum number of times the Choreo should be executed
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+                                         ADAFRUIT_CC3000_IRQ,
+                                         ADAFRUIT_CC3000_VBAT,
+                                         SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup() {
+  Serial.begin(9600);
+  startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop() {
+  if (numRuns &lt;= maxRuns) {
+    Serial.println("Running GetClicksForLink - Run #" + String(numRuns++));
+    TembooChoreo GetClicksForLinkChoreo(client);
+    // Invoke the Temboo client
+    GetClicksForLinkChoreo.begin();
+    // Set Temboo account credentials
+    GetClicksForLinkChoreo.setAccountName(TEMBOO_ACCOUNT);
+    GetClicksForLinkChoreo.setAppKeyName(TEMBOO_APP_KEY_NAME);
+    GetClicksForLinkChoreo.setAppKey(TEMBOO_APP_KEY);
+    // Set profile to use for execution
+    GetClicksForLinkChoreo.setProfile("bitly");
+    // Identify the Choreo to run
+    GetClicksForLinkChoreo.setChoreo("/Library/Bitly/LinkMetrics/GetClicksForLink");
+    // Run the Choreo; when results are available, print them to serial
+    GetClicksForLinkChoreo.run();
+    while(GetClicksForLinkChoreo.available()) {
+      char c = GetClicksForLinkChoreo.read();
+      Serial.print(c);
+    }
+    GetClicksForLinkChoreo.close();
+  }
+  Serial.println("\nWaiting...\n");
+  delay(30000); // wait 30 seconds between GetClicksForLink calls
+}</pre><p>The Temboo, Bitly and WiFi credentials are stored in “tembooaccount.h”, this file is not publicly visible to keep sensitive data in private, but it&#8217;s the header file temboo gives you when you configure your settings, and it should look like this one:</p><pre class="crayon-plain-tag">/*
+IMPORTANT NOTE about TembooAccount.h
+TembooAccount.h contains your Temboo account information and must be included
+alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,
+and copy this content into it.
+*/
+#define TEMBOO_ACCOUNT "account_name"  // Your Temboo account name
+#define TEMBOO_APP_KEY_NAME "myFirstApp"  // Your Temboo app key name
+#define TEMBOO_APP_KEY "app_key"  // Your Temboo app key
+#define BITLY_API_KEY "app_key" //Bitly API Key
+#define WLAN_SSID "wifi_ide"
+#define WLAN_PASS "your_pass_here"
+#define WLAN_SECURITY WLAN_SEC_WPA2
+/*
+The same TembooAccount.h file settings can be used for all Temboo SDK sketches.
+Keeping your account information in a separate file means you can share the
+main .ino file without worrying that you forgot to delete your credentials.
+*/</pre><p>Save the project, and you&#8217;re ready to go:</p><p>Just push or execute<img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><pre class="crayon-plain-tag">bii arduino:upload</pre><p>&nbsp;</p><p>Don&#8217;t forget to open the monitor to see what&#8217;s going on, and that&#8217;s it, try making your own one!</p><p>Which temboo service would you want to use?</p><p>Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/how-many-clicks-does-my-bitly-link-get/">IoT: How many clicks does my bitly link get?</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/how-many-clicks-does-my-bitly-link-get/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>IoT: Get New York Times news directly on your email with Arduino and Temboo</title><link>http://blog.biicode.com/get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/</link> <comments>http://blog.biicode.com/get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/#comments</comments> <pubDate>Thu, 19 Jun 2014 08:33:53 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[nytimes]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=707</guid> <description><![CDATA[<p>A new small project with arduino and temboo, comes in today. We&#8217;re just using this hardware: an Arduino mega2560 Adafruit CC3000 WiFi Module In order to get the news on your email with Arduino, we are going to use temboo service. And we&#8217;re reusing from this three blocks right here: Name Description Include (s) [crayon-568870bdc334a331567963/] [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/">IoT: Get New York Times news directly on your email with Arduino and Temboo</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>A new small project with <a
+title="arduino" href="http://www.arduino.cc/" target="_blank">arduino</a> and <a
+title="temboo" href="https://www.temboo.com/" target="_blank">temboo</a>, comes in today. We&#8217;re just using this hardware:</p><ul><li>an Arduino mega2560</li><li><a
+title="Adafruit cc300 module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC3000 WiFi Module</a></li></ul><p>In order to get the news on your email with Arduino, we are going to use temboo service. <img
+class="alignnone wp-image-710" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/IMAG0079.jpg" alt="Adafruit CC3000 + Arduino mega2560" width="630" height="377" /> <span
+id="more-707"></span> And we&#8217;re reusing from this three blocks right here:</p><table
+style="height: 326px;" border="1" width="690" cellpadding="10"><tbody><tr><td
+width="30%">Name</td><td
+width="30%">Description</td><td
+width="40%">Include (s)</td></tr><tr><td><pre class="crayon-plain-tag">ardunet</pre></td><td>To control the <a
+title="Adafruit CC300 WiFi Module" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master" target="_blank">Adafruit CC3000 WiFi Module</a></td><td><pre class="crayon-plain-tag">#include &quot;diego/ardunet/cc3000utils.h&quot;
+#include &quot;diego/ardunet/cc3000client.h&quot;
+#include &quot;diego/ardunet/http_get.h&quot;</pre></td></tr><tr><td><pre class="crayon-plain-tag">temboo</pre></td><td><a
+title="temboo library biicode arduino" href="https://www.biicode.com/diego/blocks/diego/temboo/branches/master" target="_blank">Temboo library for Arduino, available in biicode, ready to reuse.</a></td><td><pre class="crayon-plain-tag">#include &quot;diego/temboo/temboo.h&quot;</pre></td></tr><tr><td><pre class="crayon-plain-tag">temboo NYTimes choreo</pre></td><td>To use easier the <a
+title="david virseda block nytimes" href="https://www.biicode.com/davidvirseda/blocks/davidvirseda/temboo_nytimes/branches/master" target="_blank">NYTimes choreo</a></td><td><pre class="crayon-plain-tag">#include &quot;davidvirseda/temboo_nytimes/nytimeschoreo.h&quot;</pre></td></tr></tbody></table><p>Just make sure you have a temboo choreo configured in order to get data from your New York Times account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/times --hello=cpp</pre><p>Then, just copy and paste the code below in your new main.cpp file, don&#8217;t forget to adapt the #include links in the cases needed.</p><pre class="crayon-plain-tag">#include &lt;Arduino.h&gt;
+#include &lt;SPI.h&gt;
+#include &lt;diego/temboo/temboo.h&gt;
+#include "diego/temboochoreos/choreo.h"
+#include "diego/temboochoreos/sendmail.h"
+#include "../credentials/tembooaccount.h" // Contains Temboo account information
+#include "../credentials/mywifidetails.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "davidvirseda/temboo_nytimes/nytimeschoreo.h"
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+				 ADAFRUIT_CC3000_IRQ,
+				 ADAFRUIT_CC3000_VBAT,
+				 SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+String body1;
+int numRuns = 1;   // Execution count, so this doesn't run forever
+int maxRuns = 1;   // Maximum number of times the Choreo should be executed
+void setup() {
+  Serial.begin(9600);
+  // For debugging, wait until the serial console is connected.
+  delay(4000);
+  while(!Serial);
+  startConnection(cc3000,
+        	        WLAN_SSID,
+                  WLAN_PASS,
+                  WLAN_SEC_WPA2);
+  Serial.println("OK");
+  Serial.println("Setup complete.\n");
+}
+void loop() {
+if (numRuns &lt;= maxRuns) {
+        TembooChoreo choreo1 = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+        TembooChoreo choreo2 = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+        readnews(choreo1, NYTIMES_API_KEY, body1);
+        sendEmail(choreo2, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "News", body1);
+        numRuns++;
+  }
+  Serial.println("\nWaiting...\n");
+  delay(60000); // wait 60 seconds between GetRecentNewsItems calls
+}</pre><p>The Temboo, Twitter and WiFi credentials are stored in “tembooaccount.h”, this file is not publicly visible to keep sensitive data in private, but it&#8217;s the header file temboo gives you when you configure your settings, and it should look like this one:</p><pre class="crayon-plain-tag">/*
+IMPORTANT NOTE about TembooAccount.h
+TembooAccount.h contains your Temboo account information and must be included
+alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,
+and copy this content into it.
+*/
+#define TEMBOO_ACCOUNT "account_name"  // Your Temboo account name
+#define TEMBOO_APP_KEY_NAME "myFirstApp"  // Your Temboo app key name
+#define TEMBOO_APP_KEY "app_key"  // Your Temboo app key
+#define WLAN_SSID "wifi_ide"
+#define WLAN_PASS "your_pass_here"
+#define WLAN_SECURITY WLAN_SEC_WPA2
+/*
+The same TembooAccount.h file settings can be used for all Temboo SDK sketches.
+Keeping your account information in a separate file means you can share the
+main .ino file without worrying that you forgot to delete your credentials.
+*/</pre><p>Save the project, and you&#8217;re ready to go: Just push or execute<img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><pre class="crayon-plain-tag">bii arduino:upload</pre><p>And that&#8217;s it, try making your own one! Which one of the hundreds of services from temboo do you want to use? Happy hacking!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/">IoT: Get New York Times news directly on your email with Arduino and Temboo</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</title><link>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/</link> <comments>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/#comments</comments> <pubDate>Wed, 11 Jun 2014 08:30:38 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[example]]></category> <category><![CDATA[IoT]]></category> <category><![CDATA[nexmo]]></category> <category><![CDATA[project]]></category> <category><![CDATA[temboo]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=659</guid> <description><![CDATA[<p>What&#8217;s this biiday project about? Get your Arduino to call you whenever the temperature rises! In this case, we&#8217;re going to make our Arduino board call a phone based on the temperature value obtained from the 10-DOF IMU Breakout module, and then remotely control it with the keypad. To connect to temboo, we&#8217;re using the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>What&#8217;s this biiday project about? Get your Arduino to call you whenever the temperature rises!</p><p>In this case, we&#8217;re going to make our Arduino board call a phone based on the temperature value obtained from the <a
+title="10-DOF IMU Breakout module" href="http://www.adafruit.com/products/1604" target="_blank">10-DOF IMU Breakout module</a>, and then remotely control it with the keypad.</p><p>To connect to <a
+title="temboo" href="https://temboo.com/" target="_blank">temboo</a>, we&#8217;re using the <a
+title="Adafruit CC300 WiFi Module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC300 WiFi Module</a> and reusing code from <a
+title="Diego Block for CC3000 Module Adafruit" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master" target="_blank">diego/ardunet.</a></p><p><img
+class="aligncenter wp-image-660" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/temboo_nexmo_bb.jpg" alt="temboo_nexmo_bb" width="630" height="544" /><span
+id="more-659"></span></p><p>The  layout above, was made with fritzing for an Arduino mega 2560.</p><p>If you want to make your Arduino make a phone call, we&#8217;ve made a new reusable block! . You just need to create a free Nexmo account and  reuse from davidvirseda/nexmo block.</p><p>Just make sure you have a temboo choreo configured in order to get data from your nexmo account. Start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/nexmo --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include &lt;Arduino.h&gt;
+#include &lt;SPI.h&gt;
+#include &lt;diego/temboo/temboo.h&gt;
+#include "tembooaccount.h" // Contains Temboo account information
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "davidvirseda/nexmo/nexmochoreo.h"
+#include &lt;adafruit/ada_10dof/adafruit_10dof.h&gt;
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+/* Assign a unique ID to the sensors */
+Adafruit_BMP085_Unified  bmp   = Adafruit_BMP085_Unified(18001);
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+				 ADAFRUIT_CC3000_IRQ,
+				 ADAFRUIT_CC3000_VBAT,
+				 SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+String makeNexmoCall();
+// The number of times to trigger the action if the condition is met.
+// We limit this so you won't use all of your Temboo calls while testing.
+int maxCalls = 1;
+// The number of times this Choreo has been run so far in this sketch.
+int calls = 0;
+float temperature;
+void setup() {
+  Serial.begin(9600);
+  // For debugging, wait until the serial console is connected.
+  delay(4000);
+  while(!Serial);
+  startConnection(cc3000,
+        	        WLAN_SSID,
+                  WLAN_PASS,
+                  WLAN_SEC_WPA2);
+  Serial.println("OK");
+  if(!bmp.begin()){
+        /* There was a problem detecting the BMP085 ... check your connections */
+        Serial.print("Ooops, no BMP085 detected ... Check your wiring or I2C ADDR!");
+        while(1);
+  }
+  delay(5000);
+  Serial.println("Setup complete.\n");
+}
+void loop() {
+  bmp.getTemperature(&amp;temperature);
+  Serial.println("Temperature: ");
+  Serial.println(temperature);
+  if (temperature &gt; 30) {
+    if (calls &lt; maxCalls) {
+      Serial.println("\nTriggered! Calling /Library/Nexmo/Voice/CaptureTextToSpeechPrompt...");
+      TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+      String choice = makeNexmoCall(choreo, "It's getting hot in here!, Press 1 to turn on A/C",
+                                    NEXMO_API_KEY, NEXMO_API_SECRET, NUMBER_TO, "1", "Ok, your wish is my command. Goodbye!");
+      if (choice == "1") {
+	digitalWrite(12, HIGH);
+        	Serial.println("A/C is on");
+      }
+      calls++;
+    } else {
+      Serial.println("\n Triggered! Skipping the action to save Temboo calls during testing.");
+      Serial.println("You can adjust or remove the calls/maxCalls if() statement to change this behavior.\n");
+    }
+  }
+  delay(10000);
+  digitalWrite(12, LOW);
+}</pre><p>As you can see in this example, the Arduino board will make a phone call whenever the temperature obtained from the 10- DOF IMU Breakout module is higher than 30 degrees.</p><p>Customize the temperature that pulls the trigger and adapt the text you want to listen by the phone.</p><p>The Temboo, Nexmo and WiFi credentials are stored in “tembooaccount.h”, this file is not publicly visible to keep sensitive data in private, but it&#8217;s the header file temboo gives you when you configure your settings, and it should look like this one:</p><pre class="crayon-plain-tag">/*
+IMPORTANT NOTE about TembooAccount.h
+TembooAccount.h contains your Temboo account information and must be included
+alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,
+and copy this content into it.
+*/
+#define TEMBOO_ACCOUNT "account_name"  // Your Temboo account name
+#define TEMBOO_APP_KEY_NAME "myFirstApp"  // Your Temboo app key name
+#define TEMBOO_APP_KEY "app_key"  // Your Temboo app key
+#define NEXMO_API_KEY "app_key" //Nexmo API Key
+#define NEXMO_API_SECRET "api_secret"
+#define NUMBER_TO "number_to_call"
+#define WLAN_SSID "wifi_ide"
+#define WLAN_PASS "your_pass_here"
+#define WLAN_SECURITY WLAN_SEC_WPA2
+/*
+The same TembooAccount.h file settings can be used for all Temboo SDK sketches.
+Keeping your account information in a separate file means you can share the
+main .ino file without worrying that you forgot to delete your credentials.
+*/</pre><p>Well, you&#8217;re ready to go:</p><p>Just push or execute<img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /></p><pre class="crayon-plain-tag">bii find</pre><p>and <img
+class="alignnone wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><pre class="crayon-plain-tag">bii arduino:upload</pre><p>&nbsp;</p><p>Let&#8217;s see the results with our Arduino Serial Monitor!<img
+class="aligncenter wp-image-663" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/Captura_monitor.jpg" alt="Bii IDE" width="630" height="709" /></p><p>It is not necessary to download on install anything manually! Biicode manages to get everything, the temboo library, the 10-DOF IMU adafruit library and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically.</p><p>Temboo has hundreds of services, and using the great <a
+title="adafruit" href="https://www.adafruit.com/" target="_blank">adafruit</a> HW components is simple with biicode, so let your imagination fly and build your Internet of Things application!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>Create a button panel with your 5&#8221; TFT Display with TouchScreen</title><link>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/</link> <comments>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/#comments</comments> <pubDate>Fri, 30 May 2014 10:00:19 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[button]]></category> <category><![CDATA[example]]></category> <category><![CDATA[panel]]></category> <category><![CDATA[tft]]></category> <category><![CDATA[touchscreen]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=456</guid> <description><![CDATA[<p>If you have calibrated your TFT &#38; RA8875 Driver, you&#8217;ll be able to use this post without any trouble. If you haven&#8217;t calibrated your TFT yet, look our last post where we explained how to achieve it. This example creates a button panel on the left side of your TFT. Each one of the buttons created have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/">Create a button panel with your 5&#8221; TFT Display with TouchScreen</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>If you have calibrated your TFT &amp; RA8875 Driver, you&#8217;ll be able to use this post without any trouble.</p><p><a
+title="how to calibrate your tft touchscreen eeprom" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/" target="_blank">If you haven&#8217;t calibrated your TFT yet, look our last post where we explained how to achieve it.</a></p><p>This example creates a button panel on the left side of your TFT.</p><p><img
+class="aligncenter wp-image-462" title="Button Panel 5'' TFT TouchScreen &amp; RA8875 Driver" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/Button-Panel-TFT.jpg" alt="Button Panel TFT" width="630" height="402" /><span
+id="more-456"></span>Each one of the buttons created have different functionalities. There are  six buttons:  &#8220;Free&#8221; to draw free, &#8220;Random&#8221; to draw with all types of colours depending on when you press the button, &#8220;Triangle&#8221;, &#8220;Rectangle&#8221; and &#8220;Circle&#8221; to draw these polygons with different sizes, colours and positions,  and finally, &#8220;Clear&#8221;  button, cleans our TFT screen.</p><p>Just start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/tft --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><p><strong>Do you like it?</strong> Then copy the following main.cpp file in yours, it should be located in a block of your project:</p><pre class="crayon-plain-tag">/******************************************************************
+ This is an example for the Adafruit RA8875 Driver board for TFT displays
+ ---------------&gt; http://www.adafruit.com/products/1590
+ The RA8875 is a TFT driver for up to 800x480 dotclock'd displays
+ It is tested to work with displays in the Adafruit shop. Other displays
+ may need timing adjustments and are not guanteed to work.
+ Adafruit invests time and resources providing this open
+ source code, please support Adafruit and open-source hardware
+ by purchasing products from Adafruit!
+ Written by Limor Fried/Ladyada for Adafruit Industries.
+ BSD license, check license.txt for more information.
+ All text above must be included in any redistribution.
+ ******************************************************************/
+#include "fenix/ra8875_button_panel/button_panel.h"
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+tsMatrix_t _tsMatrix;
+ButtonPanel panel;
+//declaring needed variables
+unsigned long previousMillis = 0;
+unsigned long interval = 100;
+void waitingTouchEvents(tsPoint_t * point);
+void setup()
+{
+    Serial.begin(9600);
+    Serial.println("RA8875 start");
+    /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
+    if (!tft.begin(RA8875_800x480)) {
+    Serial.println("RA8875 Not Found!");
+    while (1);
+    }
+    Serial.println("Found RA8875");
+    tft.displayOn(true);
+    tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
+    tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+    tft.PWM1out(255);
+    // With hardware accelleration this is instant
+    tft.fillScreen(BLACK);
+    pinMode(RA8875_INT, INPUT);
+    digitalWrite(RA8875_INT, HIGH);
+    if (readCalibrationMatrix (&amp;_tsMatrix))
+        Serial.println("Calibration is OK! :)");
+    else
+        Serial.println("Calibration is wrong! Repeat the process!");
+    tft.touchEnable(true);
+    panel.draw();
+    Serial.print("Status: "); Serial.println(tft.readStatus(), HEX);
+    Serial.println("Waiting for touch events ...");
+}
+void loop()
+{
+    tsPoint_t point;
+    tsPoint_t calibrated;
+    unsigned long currentMillis = millis();
+    // waiting for touch events
+    waitingTouchEvents(&amp;point);
+    /* Calcuate the real X/Y position based on the calibration matrix */
+    calibrateTSPoint(&amp;calibrated, &amp;point, &amp;_tsMatrix );
+    //To avoid creating a lot of figures if you touch only once
+    //It's not BLOCKING your Arduino
+    if(currentMillis - previousMillis &gt; interval){
+        // save the last time you touched the button
+        previousMillis = currentMillis;
+        panel.OnTouch(calibrated);
+    }
+    //if we touch button Free, we don't need to wait OnTouch event
+    panel.OnDrawFree(calibrated);
+}
+void waitingTouchEvents(tsPoint_t* point)
+{
+  /* Clear the touch data object and placeholder variables */
+  memset(point, 0, sizeof(tsPoint_t));
+  /* Clear any previous interrupts to avoid false buffered reads */
+  uint16_t x, y;
+  tft.touchRead(&amp;x, &amp;y);
+  delay(1);
+  /* Wait around for a new touch event (INT pin goes low) */
+  while (digitalRead(RA8875_INT)){}
+  /* Make sure this is really a touch event */
+  if (tft.touched())
+  {
+    tft.touchRead(&amp;x, &amp;y);
+    point-&gt;x = x;
+    point-&gt;y = y;
+    Serial.print("Touch: ");
+    Serial.print(point-&gt;x); Serial.print(", "); Serial.println(point-&gt;y);
+  }
+  else
+  {
+    point-&gt;x = 0;
+    point-&gt;y = 0;
+  }
+}</pre><p>Just press <img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" />in our <a
+title="Download Bii-IDE" href="https://www.biicode.com/downloads" target="_blank">Bii-IDE,</a> or execute in the terminal:</p><pre class="crayon-plain-tag">$ bii find</pre><p>and</p><p><img
+class="alignleft wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><p>&nbsp;</p><p>&nbsp;</p><pre class="crayon-plain-tag">$ bii arduino:upload</pre><p><strong> Enjoy drawing!</strong></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/">Create a button panel with your 5&#8221; TFT Display with TouchScreen</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</title><link>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/</link> <comments>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/#comments</comments> <pubDate>Tue, 27 May 2014 10:32:40 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[eeprom]]></category> <category><![CDATA[example]]></category> <category><![CDATA[tft]]></category> <category><![CDATA[touchscreen]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=430</guid> <description><![CDATA[<p>Today, you can learn how to save the calibration matrix in your EEPROM and load it any time you use your  TFT Display. Everytime you use the TFT Display you have to calibrate it for drawing anything properly. We can use the Arduino EEPROM to save the  TFT Display calibration matrix and then use it [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/">5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p
+style="text-align: left;">Today, you can learn how to save the calibration matrix in your EEPROM and load it any time you use your  TFT Display.</p><p><img
+class="size-full wp-image-450 alignleft" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/IMG_20140513_165231281.jpg" alt="TFT display calibration" width="522" height="340" /></p><p>Everytime you use the TFT Display you have to calibrate it for drawing anything properly. We can use the Arduino EEPROM to save the  TFT Display calibration matrix and then use it anytime you want easier than ever before.</p><p><span
+id="more-430"></span></p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>We’re re-using from the following Adafruit modules:</p><table
+border="0" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td><img
+class="alignleft wp-image-533" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/tft_adafruit.jpg" alt="TFT Touchscreen adafruit" width="215" height="161" /> <a
+title="ra8875 driver" href="http://www.adafruit.com/products/1590">RA8875 Driver Board for 40-pin TFT Touch Displays</a></td></tr><tr><td><img
+class="alignleft wp-image-532" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/ra8875_adafruit.jpg" alt="Adafruit RA8875 driver" width="215" height="161" /><br
+/> <a
+title="5'' TFT with touchscreen" href="http://www.adafruit.com/products/1596">5.0&#8243; 40-pin TFT Display &#8211; 800&#215;480 with Touchscreen</a></td></tr></tbody></table><p>This is the main code to calibrate your TFT Display and save/load the calibration matrix. We made it by re-using from the <a
+title="adafruit_ra8875 library" href="https://www.biicode.com/adafruit/blocks/adafruit/ra8875/branches/master#.U00SgPl_u3I">adafruit_ra8875 library</a>, and the <a
+title="ra8875_calibrate library" href="https://www.biicode.com/fenix/blocks/fenix/ra8875_calibrate/branches/master#.U00aRfl_u3I">ra8875_calibrate library</a> , both allocated in biicode. Our code is just like this, to use it,  start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/tft --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "SPI.h"
+#include "fenix/ra8875_calibrate/ra8875_calibration.h"
+#include "fenix/ra8875_calibrate/test/aux_funcs.h"
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+tsPoint_t       _tsLCDPoints[3];
+tsPoint_t       _tsTSPoints[3];
+tsMatrix_t      _tsMatrix;
+tsMatrix_t      _tsCalibratedMatrix;
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println("Hello, RA8875!");
+  /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
+    if (!tft.begin(RA8875_800x480))
+  {
+    Serial.println("RA8875 not found ... check your wires!");
+    while (1);
+  }
+  /* Enables the display and sets up the backlight */
+  Serial.println("Found RA8875");
+  tft.displayOn(true);
+  tft.GPIOX(true); // Enable TFT - display enable tied to GPIOX
+  tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+  tft.PWM1out(255);
+  /* Enable the touch screen */
+  Serial.println("Enabled the touch screen");
+  pinMode(RA8875_INT, INPUT);
+  digitalWrite(RA8875_INT, HIGH);
+  tft.touchEnable(true);
+  tft.fillScreen(RA8875_WHITE);
+  delay(100);
+  /* Start the calibration process */
+  tsCalibrate(tft, _tsLCDPoints, _tsTSPoints, &amp;_tsMatrix);
+  if (readCalibrationMatrix (&amp;_tsCalibratedMatrix))
+	  Serial.println("Calibration is OK! :)");
+  else
+	  Serial.println("Calibration is wrong! Repeat the process!");
+  /* _tsMatrix should now be populated with the correct coefficients! */
+  Serial.println("Waiting for touch events ...");
+}
+/**************************************************************************/
+/*!
+*/
+/**************************************************************************/
+void loop()
+{
+  tsPoint_t raw;
+  tsPoint_t calibrated;
+  /* Wait around for a touch event */
+  waitForTouchEvent(tft, &amp;raw);
+  /* Calcuate the real X/Y position based on the calibration matrix */
+  calibrateTSPoint(&amp;calibrated, &amp;raw, &amp;_tsCalibratedMatrix);
+  /* Draw a single pixel at the calibrated point */
+  tft.fillCircle(calibrated.x, calibrated.y, 3, RA8875_BLACK);
+}</pre><p><strong> </strong><strong>Do you want to code it?</strong></p><p>It is not necessary to download or install anything manually! Biicode manages to get everything, the Adafruit library, the calibration library, the helper functions, etc. and everything is configured automatically.</p><p>Just copy this main file and then:</p><pre class="crayon-plain-tag">$ bii find</pre><p>and</p><pre class="crayon-plain-tag">$ bii arduino:upload</pre><p><strong> Enjoy drawing!</strong><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/">5.0&#8243; TFT Display calibration with Touchscreen and EEPROM</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> <item><title>IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</title><link>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/</link> <comments>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/#comments</comments> <pubDate>Tue, 08 Apr 2014 14:23:04 +0000</pubDate> <dc:creator><![CDATA[diego]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[CC3000]]></category> <category><![CDATA[email]]></category> <category><![CDATA[example]]></category> <category><![CDATA[temboo]]></category> <category><![CDATA[wifi]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=362</guid> <description><![CDATA[<p>In this post we will show how it is possible to send email from Arduino! We registered at the great temboo service which offers connection &#62;100 services (gmail, twiter, github, and many more) and a library for Arduino. But the provided temboo library expects a reference to something implementing the Arduino SDK Client &#8220;interface&#8221;. In the [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/">IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>In this post we will show how it is possible to send email from Arduino!</p><div><p>We registered at the great <a
+title="Temboo" href="http://www.temboo.com" target="_blank">temboo</a> service which offers connection &gt;100 services (gmail, twiter, github, and many more) and a library for Arduino. But the provided temboo library expects a reference to something implementing the Arduino SDK Client &#8220;interface&#8221;. In the setup we&#8217;re using an Arduino Mega2560 with the Adafruit CC3000 WiFi module.</p><p>If you ever need to connect the CC3000 module with another service, you can do it using this <a
+title="biicode Ardunet block" href="https://www.biicode.com/diego/blocks/diego/ardunet/branches/master#.U0RdCK2Szc4" target="_blank">Ardunet block with network utilities for Arduino</a>. Unluckily, the <a
+title="biicode Adafruit CC3000 WiFi" href="https://www.biicode.com/adafruit/blocks/adafruit/cc3000_library/branches/master#.U0RdXa2Szc4" target="_blank">Adafruit CC3000 library</a> does not conform with this interface, so I had to roll my own one.</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-363" title="temboo adafruit email biicode" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/temboo-adafruit-email-biicode.jpg" alt="temboo adafruit email biicode" width="400" height="371" /></p><p>&nbsp;</p><p><span
+id="more-362"></span></p><p>And it&#8217;s use is very simple:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "../../../mywifidetails.h"
+//This file, located in your hive root folder define your wifi settings. Do not publish it!
+//#define WLAN_SSID "YOUR_SSID" // cannot be longer than 32 characters!
+//#define WLAN_PASS "your_password"
+//#define WLAN_SECURITY YOUR_WIFI_SECURITY //WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+		ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(9600);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop(void) {
+	client.connect("www.your_url.com", 80);
+	http_get(client, "www.your_url.com", "/");
+	client.stop();
+	delay(6000);
+}</pre><p>&nbsp;</p><p>The <a
+title="temboo" href="http://www.temboo.com" target="_blank">temboo</a> service generates in the web, code you can run in your arduino. If you want to create your own code, it is also quite simple. I have generated some helper functions for the email example. With the following code you should be able to send a couple of emails:</p><pre class="crayon-plain-tag">#include "Arduino.h"
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "../../../mywifidetails.h"
+#define ADAFRUIT_CC3000_IRQ 3 // MUST be an interrupt pin!
+#define ADAFRUIT_CC3000_VBAT 5
+#define ADAFRUIT_CC3000_CS 10
+#include "diego/temboochoreos/choreo.h"
+#include "diego/temboochoreos/sendmail.h"
+//This file will contain your TEMBOO_MYMAIL_CREDENTIAL, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY, do not publish it with your block
+#include "../../../tembooaccount.h"
+//create CC3000 instance, and an SDK compatible Client
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+		ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+void setup(void) {
+	Serial.begin(9600);
+	startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+}
+void loop(void) {
+	Serial.println("Send hello email");
+	TembooChoreo choreo = setupChoreo(client, TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME, TEMBOO_APP_KEY );
+	sendEmail(choreo, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "Hello", "Hello World!");
+	delay(10000);
+	Serial.println("Send bye email");
+	sendEmail(choreo, TEMBOO_MYMAIL_CREDENTIAL, "user@someemail.com", "Bye", "Bye World!");
+	while(1); //Do nothing
+}</pre><p>&nbsp;</p><p>It is not necessary to download or install anything manually! Biicode manages to get everything, the temboo library, the CC300 adapter class and the CC3000 adafruit library, the helper functions, etc. and everything is configured automatically. Just do &#8220;bii find&#8221;, and &#8220;bii arduino:upload&#8221; after customising the email address.</p><p>You might notice that<strong> you don&#8217;t need to provide your email password</strong>; you tell temboo to use your credentials (in the example TEMBOO_MYMAIL_CREDENTIAL), which is a name for your settings stored in Temboo, in which you configure your email provider (e.g. gmail), user and password. The connection to temboo is done via your TEMBOO_ACCOUNT, TEMBOO_APP_KEY_NAME and TEMBOO_APP_KEY, which you can get in temboo web.</p><p>Note that there are a couple of files that are NOT located inside the block, they contain sensitive data: the &#8220;mywifidetails.h&#8221; with details about your WiFi, and &#8220;tembooaccount.h&#8221; with the data of temboo.</p><p>Temboo has hundreds of services, and using the great adafruit HW components is simple with biicode, so let your imagination fly and <strong>build your Internet of Things application</strong>!</div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/">IoT: Send email from arduino using adafruit CC3000 WiFi and the temboo service</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/iot-email-arduino-adafruit-cc3000-wifi-temboo/feed/</wfw:commentRss> <slash:comments>4</slash:comments> </item> <item><title>Enjoy reusing Adafruit libraries!</title><link>http://blog.biicode.com/enjoy-reusing-adafruit-libraries/</link> <comments>http://blog.biicode.com/enjoy-reusing-adafruit-libraries/#comments</comments> <pubDate>Fri, 14 Mar 2014 11:34:09 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[news]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[biicode]]></category> <category><![CDATA[libraries]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=141</guid> <description><![CDATA[<p>Dear Bii users, At Biicode we are working hard to offer you always the best possible experience. We are very proud of the improvements we bring you this week and we bet that you are going to find them very useful in your everyday life. Adafruit´s libraries are now available on Biicode! You can take [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/enjoy-reusing-adafruit-libraries/">Enjoy reusing Adafruit libraries!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Dear Bii users,</p><p
+dir="ltr">At Biicode we are working hard to offer you always the best possible experience.</p><p
+dir="ltr">We are very proud of the improvements we bring you this week and we bet that you are going to find them very useful in your everyday life.</p><p
+dir="ltr"><strong><a
+title="Adafruit" href="https://www.adafruit.com/" target="_blank">Adafruit</a>´s libraries are now available on Biicode!</strong></p><p
+dir="ltr"><span
+id="more-141"></span></p><p
+dir="ltr">You can take a look at your favorite Adafruit libraries here:<a
+title="Adafruit libraries biicode" href="http://www.biicode.com/adafruit" target="_blank"> www.biicode.com/adafruit</a>  and reuse them incredibly easy.</p><p
+dir="ltr">We remain very focused on improving user experience and on making Biicode simple and easy. Some of our improvements come from the feedback we got from you, so we encourage you to keep writing us with your improving suggestions at <a
+title="Email info biicode" href="mailto:info@biicode.com" target="_blank">info@biicode.com</a>. We’ll analize and develop them immediately.</p><p
+dir="ltr">Remember that you are still on time to register for our competition and to prove your skills with Arduino and/or Raspberry Pi. You can sign up until April 6th and deliver your project until April 13th.</p><p
+dir="ltr">Great prizes are waiting for you!</p><p
+dir="ltr">Sing up here:<a
+title="biicontest2014 biicode" href="http://www.biicode.com/biicontest2014" target="_blank"> www.biicode.com/biicontest2014</a></p><p
+dir="ltr">Happy coding!</p><p
+dir="ltr"><img
+class="alignleft wp-image-110" title="LadyAda" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/LadyAda.jpeg" alt="Adafruit Libraries" width="190" height="266" /></p><p
+dir="ltr">Picture: ladyada, <a
+title="Press Adafruit" href="http://www.adafruit.com/press" target="_blank">http://www.adafruit.com/press</a></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/enjoy-reusing-adafruit-libraries/">Enjoy reusing Adafruit libraries!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/enjoy-reusing-adafruit-libraries/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

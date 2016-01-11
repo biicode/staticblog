@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; meta</title> <atom:link href="http://blog.biicode.com/tag/meta/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Meta-configuration with CMake of C/C++ projects</title><link>http://blog.biicode.com/meta-configuration-cpp-projects-cmake/</link> <comments>http://blog.biicode.com/meta-configuration-cpp-projects-cmake/#comments</comments> <pubDate>Tue, 17 Dec 2013 16:08:31 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[c++ templates]]></category> <category><![CDATA[cmake]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[meta]]></category> <category><![CDATA[meta-configuration]]></category> <category><![CDATA[meta-programming]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=340</guid> <description><![CDATA[<p>In biicode, meta-configuration is the process in which the project setup is done (most of the time automatically) by collecting information about the project and user intentions from different origins. For example, the source code itself is a great source of information that can be exploited for this purpose.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/meta-configuration-cpp-projects-cmake/">Meta-configuration with CMake of C/C++ projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<h3>This blog post is out dated.</h3><p>If you&#8217;re interested on knowing the updates, <a
+title="docs biicode building and cmake" href="http://docs.biicode.com/c++/building.html">check our docs</a> for more information.</p><h3>Project configuration and setup</h3><div><p>Project configuration in software development is the process of setting up <em>how</em> your code will be built, managed and/or run. It varies depending on the programming language and tools, as the IDE, used. For instance, when programming in C/C++, the project setup usually comes with defining which artifacts (executables, libraries) will be built from certain source code files, with given compiling and linking options. In Microsoft Visual, this can be mostly done with wizards, menu and contextual commands; e.g. you can configure your directories containing external libraries in a dialog (Project Properties).</p><p>&nbsp;</p><p><img
+class="aligncenter wp-image-341" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/files_biicode.png" alt="Meta-configuration with CMake" width="629" height="297" /></p><div></div><p><span
+id="more-340"></span></p><div><p><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#cc-project-meta-configuration" name="cc-project-meta-configuration"></a></p><h2>C/C++ project meta-configuration with CMake</h2></div><p>Other languages, especially interpreted ones, as node or python, typically require much less project configuration or setup. In languages, such as Java, typical project setup can be done with IDEs like Eclipse or Netbeans, nevertheless, the use of Maven is probably more extended. Maven allows you to define not only how the project has to be built, packaged, executed or tested, but also, to specify dependencies to binaries artifacts (jars), which can be retrieved from external servers.</p><p>In the C/C++ ecosystem, the best tool for project configuration is CMake. CMake allows to specify the build of a project in files named CmakeLists.txt with a simple syntax (it is simpler than writing Makefiles). From those files it can generate projects for the most popular IDEs and build systems in different OS. It is a must have tool. It is the de-facto standard in the industry for the C/C++ multiplatform and even for single OS development. We love it. We have used it for a long time in our own projects, and, as professors, we have taught it from the first day in our Software Engineering courses at university since 2005. We obviously began using it in the biicode platform from the very beginning of the company in 2012.</p></div><div><p>What is the project meta-configuration? Probably you already know something about meta-programming. Meta-programming is a process in which the code you write (as in a C++ template) is the specification or instructions of how the real code will be generated by a system (in the case of C++ templates, the compiler).</p><p>In biicode, meta-configuration is the process in which the project setup is done (most of the time automatically) by collecting information about the project and user intentions from different origins. For example, the source code itself is a great source of information that can be exploited for this purpose.</p><p>Let&#8217;s see how it works with the well-known example &#8220;Hello World&#8221;:</p><p>Imagine someone starts to write code, and writes the following three (simplified) files for a Hello World application.<br
+/> Analyzing the source code, it is clear that the user wants to build an executable (from the main function, in green), that <em>includes</em> the file &#8220;hello.h&#8221; (red). Cross-checking declared and defined symbols in &#8220;hello.h&#8221; and &#8220;hello.cpp&#8221; it can be easily deduced that the implementation (blue) of the function hello() is found in the &#8220;hello.cpp&#8221; file, and so it is required to build the application. Accordingly, a CMakeLists.txt like the following could be automatically generated:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">ADD_EXECUTABLE(main
+               main.cpp
+               hello.cpp)</pre></div><p>What makes this automatic generation of the CMakeLists.txt file interesting? If a couple of new files are added and included by &#8220;main.cpp&#8221; or &#8220;hello.cpp&#8221;, they will automatically be added to the executable. If the user wants to create a new executable, all they have to do is to write a file (with whatever name) with a main() function inside, i.e. the user just has to focus on writing code, practically the rest of the process can be automated. Although real large scale multiplatform projects usually have a complex building process which probably cannot be automatically fully deduced, this approach can be very valuable for students, programming courses, rapid prototyping and testing, etc. And for such large projects, they can also benefit from this approach. Lets see how.</p></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#biicode-approach-to-c-projects-meta-configuration" name="biicode-approach-to-c-projects-meta-configuration"></a>Biicode approach to C++ projects meta-configuration with Cmake</h4><p>Biicode is a free tool (and it will always be free for OSS) created by C/C++ lovers to manage source code files dependencies in a novel way, facilitating the process of sharing and reusing source code.</p><p>In biicode, each project is called a hive, and it has the following simplified layout:</p><pre class="crayon-plain-tag">|-- my_hive
+|    +-- blocks (the user source code is here)
+|    |    +-- my_user_name
+|    |          +-- my_block
+|    |          |       |-- hello.c
+|    |          |       |-- hello.h
+|    |          +-- my_other_block
+|    |                  |-- foo.c
+|    |                  └── bar.h
+|    +-- build (to store generated project and build files)
+|    +-- cmake (stores the generated CMake files)
+|    +-- deps (stores source code of dependencies)</pre><p>The user&#8217;s source code is arranged in blocks, each one in the form <em>username/blockname</em>. These blocks are the units that are published and reused, somewhat (but different, really) similar to repositories in a version control system.</p><p>Let&#8217;s assume that the username for this example is <strong>maya</strong>, the hive is called <strong>hello</strong>, and the blockname in this case (this is not necessary), is also <strong>hello</strong>. The layout will be:</p><pre class="crayon-plain-tag">|-- hello (the hive - project)
+|    +-- blocks
+|    |    +-- maya
+|    |          +-- hello (block maya/hello)
+|    |                  |-- hello.cpp
+|    |                  |-- hello.h
+|    |                  └── main.cpp
+|    +-- cmake
+|    |    |-- CMakeLists.txt
+|    |    ├── bii_targets.cmake
+|    |    └── bii_vars.cmake</pre><p></p><div><h3><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#generated-cmake-files" name="generated-cmake-files"></a>Generated CMake files</h3><p>The files inside the cmake folder are automatically generated by biicode. The CMakeLists.txt is created just once, so the user can modify its contents if necessary.</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">PROJECT( hello )
+cmake_minimum_required(VERSION 2.8)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ../bin)
+INCLUDE_DIRECTORIES(../blocks)
+INCLUDE_DIRECTORIES(../deps)
+# This file has all the variables used in bii_targets.cmake to define the targets
+INCLUDE(bii_vars.cmake)
+# This file defines the actual targets EXEs, LIBs STATIC and SHARED with their respective
+# settings and definitions
+INCLUDE(bii_targets.cmake)</pre></div><p>It includes two other files, also generated by biicode. These two files are overwritten everytime the <em>bii</em> tool is called and there are changes in the project. The first one, <em>bii_vars.cmake</em> creates variables that define the targets to build and their properties, but does not create those targets yet. Some variables might be empty, but they are declared here for convenience to the user.</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">###### Defining target maya_hello_main #######
+SET(BII_TARGET_maya_hello_main_NAME maya_hello_main)
+SET(BII_TARGET_maya_hello_main_TYPE EXE)
+#Ordered list of libraries to link with
+SET(BII_TARGET_maya_hello_main_LIBS )
+SET(BII_TARGET_maya_hello_main_COMPILE_FLAGS )
+SET(BII_TARGET_maya_hello_main_FILES ../blocks/maya/hello/hello.cpp
+                                ../blocks/maya/hello/hello.h
+                                ../blocks/maya/hello/main.cpp)
+SET(BII_TARGET_maya_hello_main_DATA_FILES )</pre></div><p>The other <em>bii_targets.cmake</em> file, is the one that actually define the targets to be built, based on the variables declared in the previous file.</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">#This file is automatically created by biicode.
+#Do not modify it, as your changes will be overwritten.
+###### Artifact for target maya_hello_main #######
+ADD_EXECUTABLE( ${BII_TARGET_maya_hello_main_NAME}
+                                ${BII_TARGET_maya_hello_main_EXE_TYPE}
+                                ${BII_TARGET_maya_hello_main_FILES})
+TARGET_LINK_LIBRARIES( ${BII_TARGET_maya_hello_main_NAME} ${BII_TARGET_maya_hello_main_LIBS})
+SET_TARGET_PROPERTIES(${BII_TARGET_maya_hello_main_NAME} PROPERTIES COMPILE_FLAGS
+                                &quot;${BII_TARGET_maya_hello_main_COMPILE_FLAGS}&quot;)</pre></div><p>This way makes it very simple to define or customize the building process. Users can edit the used variables in the CMakeLists.txt between the two included .cmake files. Note that this approach is not exclusive with the possibility of the user having their own CMakeLists inside their blocks along with his source code, or even other cmake files that could be included from the biicode generated CMakeList.txt one.</p></div><div><h3><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#integrating-dependencies" name="integrating-dependencies"></a>Integrating dependencies</h3><p>Biicode allows a very simple publication and sharing of your source code to the biicode cloud. You (or anyone else in the world) can later very easily reuse code in another project. All you have to do to reuse previously published code is to write in your code a #include directive, in the form &#8220;username/block/path/to/file.h&#8221;. If biicode does not find such file locally, it will look for it in biicode cloud and retrieve it into your project along with other files (included by or implementing such file). What happens with such source code?</p><p>It is retrieved as source code, not as binaries, so it has to be built locally. The source files could be just directly added to the executable, but it seems more intuitive to define a library that contains such files, as they wont be usually edited by the user, and link the executable to such library.</p><p>For example, imagine that the user <strong>willy</strong> has developed a similar application that says goodbye instead of hello, with the following layout:</p><pre class="crayon-plain-tag">|-- bye (the hive - project)
+|    +-- blocks
+|    |    +-- willy
+|    |          +-- bye (block willy/bye)
+|    |                  |-- bye.cpp
+|    |                  |-- bye.h
+|    |                  └── main.cpp</pre><p>Willy can very easily publish and share his code, with the command (see HYPERLINK to DOCU):</p><div
+class="highlight highlight-bash"><pre class="crayon-plain-tag">$ bii publish</pre></div><p>Maya can very easily reuse that code, writing in her code:</p><div
+class="highlight highlight-cpp"><pre class="crayon-plain-tag">#include "maya/hello/hello.h"
+#include "willy/bye/bye.h"
+#include &lt;iostream&gt;;
+int main(){
+        hello();
+        bye();
+        return 1;
+}</pre></div><p>and issuing the command:</p><div
+class="highlight highlight-bash"><pre class="crayon-plain-tag">$ bii find</pre></div><p>The source code files <em>&#8220;bye.cpp&#8221;</em> and <em>&#8220;bye.h&#8221;</em> are retrieved and written in the <em>deps</em> folder. Note that willy&#8217;s main.cpp file is not retrieved as it is not necessary as indicated by the dependency graph.</p><p>The generated CMake <em>bii_vars.cmake</em> file will now also contain:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">###### Defining target willy_bye #######
+SET(BII_TARGET_willy_bye_NAME willy_bye)
+SET(BII_TARGET_willy_bye_TYPE STATIC)
+SET(BII_TARGET_willy_bye_FILES ../blocks/willy/bye/bye.cpp
+                                ../blocks/willy/bye/bye.h)
+###### Defining target maya_hello_main #######
+SET(BII_TARGET_maya_hello_main_NAME maya_hello_main)
+SET(BII_TARGET_maya_hello_main_TYPE EXE)
+#Ordered list of libraries to link with
+SET(BII_TARGET_maya_hello_main_LIBS willy_bye)</pre></div><p>and the <em>bii_targets.cmake</em> file:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">###### Artifact for target willy_bye #######
+ADD_LIBRARY( ${BII_TARGET_willy_bye_NAME}
+                                ${BII_TARGET_willy_bye_TYPE}
+                                ${BII_TARGET_willy_bye_FILES})
+TARGET_LINK_LIBRARIES( ${BII_TARGET_willy_bye_NAME} ${BII_TARGET_willy_bye_LIBS})
+SET_TARGET_PROPERTIES(${BII_TARGET_willy_bye_NAME} PROPERTIES COMPILE_FLAGS
+                                &quot;${BII_TARGET_willy_bye_COMPILE_FLAGS}&quot;)</pre></div></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#advanced-configuration" name="advanced-configuration"></a>Advanced configuration</h4><p>Why we call it meta-configuration instead of automated configuration? Because, is the user who specifies the configuration of the project in a higher level. The automatic dependencies detection in C/C++ can sometimes fail, most of the times due to the usage of macros that a normal parser cannot handle. The programmer could also want to specify his own dependencies to do reflection, feature toggling, etc. Custom dependencies can be set in a file called <em>&#8220;dependencies.bii&#8221;</em> in which the user can add, remove or redefine dependencies between files.</p><p>Biicode has also a way to define custom build options. These options are propagated to the affected targets automatically, following the dependency graph. For example, imagine the user <strong>willy</strong> uses in the <em>bye</em> block some mathematical functions from <em>&lt;math.h&gt;</em>, that requires to link with the &#8220;m&#8221; library under linux (the typical -lm link flag). How can user willy specify such behaviour? It is true that #pragma directives can sometimes be used to define libraries to link with, but biicode defines a more general approach that can be used not just for linking libraries, but for many building properties.</p><p>The user <strong>willy</strong> can create a file <strong>cpp_rules.bii</strong> in his block <strong>bye</strong> that could contain something similar to:</p><div
+class="highlight highlight-python"><pre class="crayon-plain-tag">if settings.os.family == 'Linux':
+        target.add_library('m')</pre></div><p>This defines that under Linux, the library &#8216;m&#8217; has to be added to the current target (in this case, the STATIC library that will be created, named <em>willy_bye</em>. Although it is a static library and it does not make much sense to link it with another library (linking is only actually performed for exes and shared libraries), biicode knows that this setting has to be transitively propagated, that is, executables and shared libraries that link to <strong>willy_bye</strong> will have in turn to link with <strong>m</strong>, so biicode adds it to the list of required libraries for such executables and shared libraries.</p></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#editing-cmakeliststxt" name="editing-cmakeliststxt"></a>Editing CMakeLists.txt</h4><p>Suppose that you need to use a library, let&#8217;s say Boost. If such library was already in biicode, it would be enough to just #include it. But boost is still not in biicode (and it is not likely to be in the short term, for many reasons, as being too large or having many complex interdependencies among its libraries). Fortunately, as explained above, it is fairly straightforward to modify the CMakeLists.txt in order to account for it.</p><p>For example, if the required library is lambda, which is only composed by headers, you just need to specify your boost installation directory as:</p><div
+class="highlight highlight-cmake"><pre class="crayon-plain-tag">PROJECT( hello )
+	# This file has all the variables used in bii_targets.cmake to define the targets
+	INCLUDE(bii_vars.cmake)
+	INCLUDE_DIRECTORIES(path/to/your/boost/installation)
+	# This file defines the actual targets EXEs, LIBs STATIC and SHARED with their respective
+	# settings and definitions
+	INCLUDE(bii_targets.cmake)</pre><br
+/> Of course, you can also use FIND_PACKAGE features of CMake for such purpose. In fact, we are already using it to find and configure projects with well known dependencies, large and massively used libraries as WxWidgets or Boost, so it will be enough for users to just #include what they want and biicode is able to fully configure the project if a local installation of such libraries is found.</p></div></div><div><h4><a
+class="anchor mceItemAnchor" href="https://github.com/biicode/docs/blob/release/0.3/articles/meta_configuration_cmake.rst#conclusion" name="conclusion"></a>Conclusion</h4><p>In this post we have introduced a new approach to C/C++ projects configuration: meta-configuration with CMake from user information, mainly source code. This is a powerful approach, that can lower barriers for students and new users of the C/C++ language, but that can be also very interesting for many users used in conjunction with a dependency manager based on source code instead of binary artifacts.</p><p>Biicode is such novel dependency manager for the C/C++ ecosystem in which source code files can be easily reused among projects and very simply shared with the OSS community. Biicode is in Beta stage, it has currently few contents, so it could happen that your typical requirements are not available in it yet, and it is still not very stable. But it is a solid proof of the power of this approach, and it is evolving quickly, iterating on user feedback. The fact that we use CMake has been widely accepted by our users, we are so convinced about its power that can assure that we will always use it. We are even using it for our experimental Fortran biicode tools!</p><p>Would you like to give it a try? Sign up for free at www.biicode.com</p></div></div><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/meta-configuration-cpp-projects-cmake/">Meta-configuration with CMake of C/C++ projects</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/meta-configuration-cpp-projects-cmake/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

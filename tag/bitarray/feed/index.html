@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; bitarray</title> <atom:link href="http://blog.biicode.com/tag/bitarray/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Bit-encoded Graphs</title><link>http://blog.biicode.com/bit-encoded-graph/</link> <comments>http://blog.biicode.com/bit-encoded-graph/#comments</comments> <pubDate>Thu, 31 Jul 2014 08:30:26 +0000</pubDate> <dc:creator><![CDATA[pablo]]></dc:creator> <category><![CDATA[biicoders]]></category> <category><![CDATA[news]]></category> <category><![CDATA[bit set]]></category> <category><![CDATA[bit string]]></category> <category><![CDATA[bitarray]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[graph]]></category> <category><![CDATA[np-hard]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=969</guid> <description><![CDATA[<p>UPDATED: 11/09/2014 Today, by the hand of Pablo San Segundo, we present graph and ugraph, two simple, easy-to-use, C++ wrappers for unweighted graphs encoded as bit strings. Preliminaries One of the most interesting and versatile applications of bit strings is to encode simple unweighted graphs dynamic in the number of edges (i.e. there is an [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-encoded-graph/">Bit-encoded Graphs</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>UPDATED: 11/09/2014</p><p>Today, by the hand of <a
+title="Pablo San Segundo" href="http://es.wikipedia.org/wiki/Pablo_San_Segundo_Carrillo" target="_blank">Pablo San Segundo</a>, we present g<em>raph</em> and <em>ugraph</em>, two simple, easy-to-use, C++ wrappers for unweighted graphs encoded as bit strings.</p><h2>Preliminaries</h2><p>One of the most interesting and versatile applications of bit strings is to encode simple unweighted graphs dynamic in the number of edges (i.e. there is an efficient way to add/remove edges but not so for the vertices). Graphs encoded as bit strings have recently attracted the attention of researchers in relation to  well known NP-hard problems such as <em>vertex coloring</em> or <em>clique</em>. The main reason is that efficient algorithms that exploit bit-parallelism at CPU level have been found for such problems.</p><p><span
+id="more-969"></span></p><p>The figure shows a simple undirected graph with 6 vertices (in red a 3-clique).  The last two columns show the bit encoding of the adjacency matrix of the graph. Each 1-bit refers to an edge in the graph and each bit string encodes the neighbor set of the corresponding vertex.</p><p><img
+class="aligncenter wp-image-970" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/07/ugraph-pablo-exmple-bitstring.png" alt="ugraph pablo exmple bitstring" width="630" height="240" /></p><p>For example, the bitstring for V1 is 010010, which indicates that V2 and V5 are its neighbors (we assume bit positions start at 1 and increase from left to right).</p><h2>graph CLASS</h2><p>A graph object refers to a (bit-encoded) simple directed graph. In the current version it is possible either to create an empty graph of any order (and add or remove edges manually) or to read a graph in DIMACS format from a text file.</p><p>Here is an example:</p><pre class="crayon-plain-tag">#include "pablodev/graph/graph.h"   //header for the block in Biicode repository
+graph g1("brock200_1.clq");         //reads the file in g1
+graph g2(3);                        //creates a 3-clique in g2
+g2.add_edge(0,1);
+g2.add_edge(1,2);
+g2.add_edge(0,3);</pre><p><em>graph</em> includes a number of functionalities related to graph configuration, examples of which can be found in the <em>test_graph.cpp</em> file inside the <em>tests</em> folder of the distribution. Adding and removing edges can be done in constant time. However removing vertices modifies the adjacency matrix and requires memory reallocation.</p><p>It is important to remember that graph objects are by default <em>directed</em> (the adjacency matrix is not symmetrical). If you want to ensure that edges are symmetrical use the <em>make_bidirected</em> member function.</p><h2>ugraph CLASS</h2><p>The <em>u</em>g<em>raph</em> class is a specialization of the <em>graph</em> class for undirected graphs. Each time an edge is added to the graph (with the <em>add_edge</em> function) it is always symmetrical. Moreover a number of functions can be implemented more efficiently for the undirected case and have been overridden for <em>graph</em>, such as logical checking for equality, edge processing etc. As before  we refer the reader to the <em>test_graph.cpp</em> file for examples of code.</p><h2>APPLICATIONS</h2><p>The <em>ugraph</em> class has been used to implement <em>BBMC</em>, a leading state of the art algorithm for the maximum clique problem known to be NP-hard. A number of variants for BBMC are described in literature <sup><a
+id="ref1" href="#fn1">1</a></sup> <sup><a
+id="ref2" href="#fn2">2</a></sup> <sup><a
+id="ref3" href="#fn3">3</a></sup><br
+/> . BBMC has also been applied successfully to approximate vertex coloring  and exact coloring <sup><a
+id="ref4" href="#fn4">4</a></sup>. Finally some applications for real problems related to matching can be found in <sup><a
+id="ref5" href="#fn5">5</a> </sup><sup><a
+id="ref6" href="#fn6">6</a></sup>.</p><p><a
+title="Graph Ugraph classes bit-encoding" href="http://www.biicode.com/pablodev/pablodev/graph/master" target="_blank"><em>graph</em> and <em>ugraph</em> types are available exclusively at Biicode. </a>We make them public for researchers and practitioners which are interested in combinatorial problem solving and as an example of  bit string graph encoding. We also hope that Biicode´s reuse paradigm helps to add new exciting features!</p><p>&nbsp;</p><h3>Footnotes</h3><p><sup
+id="fn1">1.    San Segundo, P. Rodriguez-Losada, D., Jimenez, A.; <em>An exact bit-parallel algorithm for the maximum clique problem</em>. Computers &amp; Operations Research  38:2, 2011, 571-581.<a
+title="Jump back to footnote 1 in the text." href="#ref1">↩</a></sup></p><p><sup
+id="fn2">2.    San Segundo, P. Matia, F., Rodriguez-Losada, D., Hernando, M.; <em>An improved bit parallel exact maximum clique algorithm.</em> Optimization Letters.  7:3, Springer 2011, 467-479.<a
+title="Jump back to footnote 2 in the text." href="#ref2">↩</a></sup></p><p><sup
+id="fn3">3.      San Segundo, P., Tapia, C. <em>Relaxed approximate coloring in exact maximum clique search. </em><em>Computers &amp; Operations Research</em>, 44, 2014, 185-192.<a
+title="Jump back to footnote 3 in the text." href="#ref3">↩</a></sup></p><p><sup
+id="fn4">4.      San Segundo, P. <em>A new DSATUR-based algorithm for exact vertex coloring</em>. Computers &amp; Operations Research, 39:7, 2012, 1724-1733.<a
+title="Jump back to footnote 4 in the text." href="#ref4">↩</a></sup></p><p><sup
+id="fn5">5.      San Segundo, P., Rodriguez-Losada, D., Matia, F., Galan, R. <em>Fast exact feature based data correspondence search with an efficient bit-parallel MCP solver</em>. Applied Intelligence, 32:3, 2010, 311-329.<a
+title="Jump back to footnote 5 in the text." href="#ref5">↩</a></sup></p><p><sup
+id="fn6">6.      San Segundo, P., Rodriguez-Losada, D. <em>Robust Global Feature Based Data Association With a Sparse Bit Optimized Maximum Clique Algorithm</em>.  IEEE Transactions on Robotics, 29:5, 2013, 1332-1339.<a
+title="Jump back to footnote 6 in the text." href="#ref6">↩</a></sup><br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/bit-encoded-graph/">Bit-encoded Graphs</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/bit-encoded-graph/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

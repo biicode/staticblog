@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; tags</title> <atom:link href="http://blog.biicode.com/tag/tags/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>New feature: Version Tags</title><link>http://blog.biicode.com/new-feature-version-tags/</link> <comments>http://blog.biicode.com/new-feature-version-tags/#comments</comments> <pubDate>Fri, 26 Dec 2014 10:20:03 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[features]]></category> <category><![CDATA[semantic versioning]]></category> <category><![CDATA[tags]]></category> <category><![CDATA[VCS]]></category> <category><![CDATA[version control]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1948</guid> <description><![CDATA[<p>Biicode is not a Version Control System, neither a Source Code Management System. As a dependency manager, biicode makes &#8220;some kind&#8221; of internal version control to establish dependencies against a specific version of the block. Our versions are incremental integers starting on 0. Until now,  to know that biicode&#8217;s version corresponds to any official version you [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-version-tags/">New feature: Version Tags</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode is not a Version Control System, neither a Source Code Management System. As a dependency manager, biicode makes &#8220;some kind&#8221; of internal version control to establish dependencies against a specific version of the block.</p><p>Our versions are incremental integers starting on 0. Until now,  to know that biicode&#8217;s version corresponds to any official version you had to look for it on the block&#8217;s description or readme.</p><p>Now you can <a
+title="publishing" href="http://docs.biicode.com/c++/publishing.html" target="_blank">tag a version while publishing</a>. For example, <a
+title="qiangwu/atlsl" href="http://www.biicode.com/qiangwu/atlstl" target="_blank">qiangwu/atlstl </a>corresponds to the official &#8220;1.9.98&#8221; version:</p><p><img
+class="aligncenter wp-image-1959 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/versiontags.png" alt="Version tags now available in biicode 2.0" width="986" height="107" /></p><p><span
+id="more-1948"></span></p><h2>Using Version Tags</h2><p>Let&#8217;s say you&#8217;re publishing a new version into biicode and you&#8217;re looking for a way to relate this version number to your SCM versions or your library&#8217;s official version release. Today, I&#8217;m tagging OSCPack library version 3 to the official release version 1.1.0:</p><pre class="crayon-plain-tag">~/myproject$ bii publish  --tag STABLE --versiontag=v1.1.0
+INFO: Publishing block: Maria/oscpack
+INFO: *****************************
+INFO: ***** Publishing public ****
+INFO: *****************************
+INFO: Successfully published Maria/oscpack: 3 @v1.1.0</pre><p><img
+class="aligncenter wp-image-1958 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/oscpack-versiontags-1024x190.png" alt="OSCPack example of a version tag" width="630" height="116" /></p><p>That&#8217;s the basics.</p><h2>Version Tags Utilities</h2><h3>Publish a new version with its tag:</h3><p></p><pre class="crayon-plain-tag">~/myproject$ bii publish --tag STABLE --versiontag 1.2.0
+INFO: *****************************
+INFO: ***** Publishing public ****
+INFO: *****************************
+INFO: Downloading files from: amalulla/hi
+INFO: Successfully published amalulla/hi: 2 @1.2.0</pre><p><img
+class="aligncenter wp-image-1961 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/version-tag2.png" alt="Version tags, as seen in this other example, can now be implemented in biicode" width="768" height="132" /></p><h3>Semantic Versioning</h3><p>A versioning policy is just some simple rules specifying how to use version numbers. It can be very simple like the one biicode makes by default or more complex.</p><p>We encourage you developers to follow the <a
+href="http://semver.org/">Semantic Versioning</a> standard for your block&#8217;s versions. Be mindful that  using a &#8220;non-rational&#8221; policy will be a disservice for those using your blocks.</p><h3>Depending with Version Tags</h3><p>To use a version based on a tag instead of biicode internal version number, write in <strong>[requirements]</strong> section in your <strong>biicode.conf</strong>:</p><pre class="crayon-plain-tag">amalulla/hi @1.2.0</pre><p>And whenever you build your project, biicode will discover biicode version and update your<strong> [requirements]</strong> section in your <strong>biicode.conf</strong>:</p><pre class="crayon-plain-tag">amalulla/hi: 2 @1.2.0</pre><p></p><h2>Not to confuse them with Tags</h2><p>Add tags and a description to your block, this is useful for other users and will be indexed better for our <a
+title="Search Engine" href="http://blog.biicode.com/improved-search-engine-elastic-search/" target="_blank">Search Engine</a>.</p><p><img
+class="aligncenter wp-image-1952 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/tags-las-normales-1024x518.png" alt="Do not confuse version tags with tags" width="630" height="318" /></p><p>Just select settings and start writing and adding tags!</p><p>Hope you enjoy this post, and as always, we look forward to hear what you think. Just click on the sidebar button to try biicode and check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/new-feature-version-tags/">New feature: Version Tags</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/new-feature-version-tags/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

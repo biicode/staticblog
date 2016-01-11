@@ -1,0 +1,2121 @@
+<!DOCTYPE html><html
+lang="en-US" xmlns:fb="http://ogp.me/ns/fb#" xmlns:addthis="http://www.addthis.com/help/api-spec"  prefix="og: http://ogp.me/ns#">
+<!-- Mirrored from blog.biicode.com/iot-how-to-use-twitter-with-your-arduino-temboo-and-adafruit-hw/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:58:31 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head><link
+rel='stylesheet' href='../wp-content/plugins/wp-minify/min/index1667.css?f=wp-content/plugins/wp-currency-converter/css/wp-currency-converter.css,wp-content/plugins/addthis/css/output.css,wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css,wp-content/uploads/sites/2/crayon-syntax-highlighter/themes/biicode/biicode.css,wp-content/plugins/crayon-syntax-highlighter/fonts/inconsolata.css,wp-content/plugins/cookie-law-info/css/cli-style.css,wp-content/themes/truly-minimal-wpcom/style.css,wp-content/plugins/tablepress/css/default.min.css&amp;m=1434970912' type='text/css' media='screen' /> <script type='text/javascript' src='../wp-content/plugins/wp-minify/min/index5cdb.css?f=wp-content/themes/truly-minimal-wpcom/js/html5.js,wp-includes/js/jquery/jquery.js,wp-includes/js/jquery/jquery-migrate.min.js,wp-content/plugins/q2w3-fixed-widget/js/q2w3-fixed-widget.min.js,wp-content/plugins/wp-currency-converter/js/wp-currency-converter.js,wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js,wp-content/plugins/cookie-law-info/js/cookielawinfo.js&amp;m=1434970912'></script> <meta
+charset="UTF-8" /><meta
+name="viewport" content="width=device-width" /><title>IoT: twitter with your Arduino, Temboo and Adafruit HW</title><link
+rel="profile" href="http://gmpg.org/xfn/11" /><link
+rel="pingback" href="../xmlrpc.php" /> <!--[if lt IE 9]> <![endif]--> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery-1.7.1.min.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/home/jquery.easing.1.3.js"></script> <script type="text/javascript" src="../../biiwebproduction.s3.amazonaws.com/static/js/nav/nav.js"></script> <meta
+name="description" content="biicode lets you to optimize your Twitter with your Arduino, Temboo and Adafruit HW. Get a tweet each time you shake your arduino with this easy tutorial!"/><link
+rel="canonical" href="index.html" /><link
+rel="publisher" href="http://plus.google.com/+biicode"/><meta
+property="og:locale" content="en_US" /><meta
+property="og:type" content="article" /><meta
+property="og:title" content="IoT: twitter with your Arduino, Temboo and Adafruit HW" /><meta
+property="og:description" content="biicode lets you to optimize your Twitter with your Arduino, Temboo and Adafruit HW. Get a tweet each time you shake your arduino with this easy tutorial!" /><meta
+property="og:url" content="http://blog.biicode.com/iot-how-to-use-twitter-with-your-arduino-temboo-and-adafruit-hw/" /><meta
+property="og:site_name" content="biicode Blog" /><meta
+property="article:publisher" content="https://www.facebook.com/Biicode" /><meta
+property="article:tag" content="adadruit" /><meta
+property="article:tag" content="arduino" /><meta
+property="article:tag" content="example" /><meta
+property="article:tag" content="IoT" /><meta
+property="article:tag" content="temboo" /><meta
+property="article:tag" content="twitter" /><meta
+property="article:section" content="try this out" /><meta
+property="article:published_time" content="2014-06-18T10:00:15+00:00" /><meta
+property="article:modified_time" content="2014-09-02T13:51:06+00:00" /><meta
+property="og:updated_time" content="2014-09-02T13:51:06+00:00" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/06/ArduTweetSketch.jpg" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" /><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Feed" href="http://feeds.feedburner.com/biicodeblog" /><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; Comments Feed" href="../comments/feed/index.html" /><meta
+name="twitter:card" content="summary"><meta
+name="twitter:creator" content="@biicode"><meta
+name="twitter:site" content="@biicode"><meta
+property="og:title" content="IoT: twitter with your Arduino, Temboo and Adafruit HW"><meta
+property="og:image" content="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/Logo-biicode-low.png"><link
+rel="alternate" type="application/rss+xml" title="biicode Blog &raquo; IoT: how to use twitter with your Arduino, Temboo and Adafruit HW. Comments Feed" href="feed/index.html" /> <script type="text/javascript">window._wpemojiSettings = {"baseUrl":"http:\/\/s.w.org\/images\/core\/emoji\/72x72\/","ext":".png","source":{"concatemoji":"http:\/\/blog.biicode.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.2.5"}};
+			!function(a,b,c){function d(a){var c=b.createElement("canvas"),d=c.getContext&&c.getContext("2d");return d&&d.fillText?(d.textBaseline="top",d.font="600 32px Arial","flag"===a?(d.fillText(String.fromCharCode(55356,56812,55356,56807),0,0),c.toDataURL().length>3e3):(d.fillText(String.fromCharCode(55357,56835),0,0),0!==d.getImageData(16,16,1,1).data[0])):!1}function e(a){var c=b.createElement("script");c.src=a,c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g;c.supports={simple:d("simple"),flag:d("flag")},c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.simple&&c.supports.flag||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);</script> <style type="text/css">img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}</style><link
+rel='stylesheet' id='mailchimpSF_main_css-css'  href='../index2740.html?mcsf_action=main_css&amp;ver=4.2.5' type='text/css' media='all' /> <!--[if IE]><link
+rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://blog.biicode.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.2.5' type='text/css' media='all' /> <![endif]--><link
+rel='stylesheet' id='truly-minimal-droid-serif-css'  href='http://fonts.googleapis.com/css?family=Droid+Serif%3A400%2C700%2C400italic%2C700italic&amp;ver=4.2.5' type='text/css' media='all' /><link
+rel='stylesheet' id='truly-minimal-droid-sans-css'  href='http://fonts.googleapis.com/css?family=Droid+Sans%3A400%2C700&amp;ver=4.2.5' type='text/css' media='all' /> <script type='text/javascript'>/*  */
+var CrayonSyntaxSettings = {"version":"2.7.1","is_admin":"0","ajaxurl":"http:\/\/blog.biicode.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/*  */</script> <link
+rel="EditURI" type="application/rsd+xml" title="RSD" href="../xmlrpc0db0.php?rsd" /><link
+rel="wlwmanifest" type="application/wlwmanifest+xml" href="../wp-includes/wlwmanifest.xml" /><link
+rel='shortlink' href='../indexb753.html?p=635' /> <script data-cfasync="false" src="http://load.sumome.com/" data-sumo-site-id="8d5d163c33e2beb1876a5027edd9a9c4c583be61433be230b24e6bcfc0387265" async></script><script type="text/javascript">var wpccAjaxLink = "../wp-admin/admin-ajax.html";</script>  <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','../../www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-41860930-1', 'auto');
+	ga('require', 'displayfeatures');
+	ga('set', 'forceSSL', true);
+	ga('send', 'pageview');</script>  <script type="text/javascript">jQuery(document).ready(function(e) {
+    jQuery('a').click(function(e) {
+		var $this = jQuery(this);
+      	var href = $this.prop('href').split('?')[0];
+		var ext = href.split('.').pop();
+		if ('xls,xlsx,doc,docx,ppt,pot,pptx,pdf,pub,txt,zip,rar,tar,7z,gz,exe,wma,mov,avi,wmv,wav,mp3,midi,csv,tsv,jar,psd,pdn,ai,pez,wwf,torrent,cbr'.split(',').indexOf(ext) !== -1) {
+        ga('send', 'event', 'Download', ext, href);
+      }
+	  if (href.toLowerCase().indexOf('mailto:') === 0) {
+        ga('send', 'event', 'Mailto', href.substr(7));
+      }
+	  if (href.toLowerCase().indexOf('tel:') === 0) {
+        ga('send', 'event', 'Phone number', href.substr(4));
+      }
+      if ((this.protocol === 'http:' || this.protocol === 'index.html') && this.hostname.indexOf(document.location.hostname) === -1) {
+        ga('send', 'event', 'Outbound', this.hostname, this.pathname);
+      }
+	});
+});</script> <style type="text/css">.site-title a {
+			color: #f48123;
+		}</style><link
+href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'></head><body
+class="single single-post postid-635 single-format-standard group-blog sidebar-right"><div
+id="ContainerHeader"> <a
+id="forkme" href="https://biicode.github.io/biicode"><img
+style="z-index: 4;position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="../../s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a><div
+id="ContainerwidthHeader"><div
+id="header"> <header
+id="menu"><div
+id="logo"> <a
+href="https://www.biicode.com/"><img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/biicode-logo.png" alt="Biicode-logo" /></a></div><div
+id="search-form"><form
+method="get" id="searchform" class="searchform" action="http://blog.biicode.com/" role="search"><div
+class="form-container"><input
+type="search" class="search-field" name="s" value="" id="s" placeholder="Search in Blog &hellip;" /><div
+class="submit-container"><input
+name="search" value=""  type="submit" class="submit-bt" /></div></div></form></div> <nav
+class="right"><ul><li><a
+href="https://www.biicode.com/explore">Explore</a></li><li><a
+href="http://web.biicode.com/pricing/">Plans</a></li><li> Learn <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/arrow-drop-down-menu.jpg" style="margin:0px 0px 3px 4px" width="8" height="4" /><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Get Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads</a></li><li><a
+href="http://docs.biicode.com/">Docs</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li></ul></li><li><a
+href="https://www.biicode.com/accounts/login">Log in</a></li></ul> </nav><div
+id="signup-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-on.jpg" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/header/bt-signup-off.jpg" /></a></div> </header></div><p
+id="breadcrumbs"><span
+xmlns:v="http://rdf.data-vocabulary.org/#"><span
+typeof="v:Breadcrumb"><a
+href="../index.html" rel="v:url" property="v:title">Biicode Blog</a> » <span
+rel="v:child" typeof="v:Breadcrumb"><a
+href="../category/try-this-out/index.html" rel="v:url" property="v:title">try this out</a> » <strong
+class="breadcrumb_last">IoT: how to use twitter with your Arduino, Temboo and Adafruit HW.</strong></span></span></span></p></div></div><div
+id="page" class="hfeed site"><div
+id="main" class="site-main"><div
+id="primary" class="content-area"><div
+id="content" class="site-content" role="main"> <article
+id="post-635" class="post-635 post type-post status-publish format-standard hentry category-try-this-out tag-adadruit tag-arduino-2 tag-example tag-iot tag-temboo tag-twitter"> <header
+class="entry-header"><h1 class="entry-title">IoT: how to use twitter with your Arduino, Temboo and Adafruit HW.</h1><div
+class="entry-meta"> Posted on <a
+href="index.html" title="10:00" rel="bookmark"><time
+class="entry-date" datetime="2014-06-18T10:00:15+00:00">June 18, 2014</time></a><span
+class="byline"> by <span
+class="author vcard"><a
+class="url fn n" href="../author/maria/index.html" title="View all posts by maria" rel="author">maria</a></span></span></div> </header><div
+class="entry-content"><p>Today&#8217;s biiday comes in to prove that you can easily make anything you can imagine! This is the first one of a set of three posts in which <a
+title="temboo" href="https://www.temboo.com/" target="_blank">temboo</a> services are used with:</p><ul><li>Get a <a
+title="tweet, twitter" href="http://www.twitter.com/" target="_blank">tweet</a> of your timeline whenever you shake your Arduino. (today&#8217;s project)</li><li>Get the <a
+title="NY Times" href="http://www.nytimes.com/" target="_blank">New York Times</a> news directly on your email. (tomorrow post)</li><li> How many clicks does my <a
+title="bitly" href="http://www.bitly.com/" target="_blank">bitly</a> link get? (available on friday)</li></ul><p>The layout below has been made for an Arduino mega2560, to use twitter with your Arduino. <img
+class="aligncenter wp-image-682" src="../wp-content/uploads/sites/2/2014/06/ArduTweetSketch.jpg" alt="Arduino + Twitter Sketch" width="630" height="542" /> <span
+id="more-635"></span> We&#8217;re reusing from this three blocks right here:</p><table
+style="height: 326px;" border="1" width="690" cellpadding="10"><tbody><tr><td
+width="30%">Name</td><td
+width="30%">Description</td><td
+width="40%">Include (s)</td></tr><tr><td><div
+id="crayon-56886fc126878239518422" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+ardunet</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc126878239518422-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc126878239518422-1"><span
+class="crayon-v">ardunet</span></div></div></td></tr></table></div></div></td><td>To control the <a
+title="Adafruit CC300 WiFi Module" href="http://www.adafruit.com/products/1469" target="_blank">Adafruit CC300 WiFi Module</a></td><td><div
+id="crayon-56886fc12688b081148098" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc12688b081148098-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc12688b081148098-2">2</div><div
+class="crayon-num" data-line="crayon-56886fc12688b081148098-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc12688b081148098-1"><span
+class="crayon-p">#include "diego/ardunet/cc3000utils.h"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc12688b081148098-2"><span
+class="crayon-p">#include "diego/ardunet/cc3000client.h"</span></div><div
+class="crayon-line" id="crayon-56886fc12688b081148098-3"><span
+class="crayon-p">#include "diego/ardunet/http_get.h"</span></div></div></td></tr></table></div></div></td></tr><tr><td><div
+id="crayon-56886fc126895957524733" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+temboo</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc126895957524733-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc126895957524733-1"><span
+class="crayon-v">temboo</span></div></div></td></tr></table></div></div></td><td><a
+title="temboo library biicode arduino" href="https://www.biicode.com/diego/blocks/diego/temboo/branches/master" target="_blank">Temboo library for Arduino, available in biicode, ready to reuse.</a></td><td><div
+id="crayon-56886fc12689e227590404" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include "diego/temboo/temboo.h"</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc12689e227590404-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc12689e227590404-1"><span
+class="crayon-p">#include "diego/temboo/temboo.h"</span></div></div></td></tr></table></div></div></td></tr><tr><td><div
+id="crayon-56886fc1268a8536585986" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+ada_10dof</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268a8536585986-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268a8536585986-1"><span
+class="crayon-v">ada_10dof</span></div></div></td></tr></table></div></div></td><td>Just control when your <a
+title="10-DOF IMU Breakout module" href="http://www.adafruit.com/products/1604" target="_blank">10-DOF IMU Breakout module</a> shakes.</td><td><div
+id="crayon-56886fc1268b1559766534" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include "adafruit/ada_10dof/adafruit_10dof.h"</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268b1559766534-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268b1559766534-1"><span
+class="crayon-p">#include "adafruit/ada_10dof/adafruit_10dof.h"</span></div></div></td></tr></table></div></div></td></tr></tbody></table><p>Just make sure you have a temboo choreo configured in order to get data from your twitter account. Start a new project:</p><div
+id="crayon-56886fc1268bb560702552" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+$ bii init project
+$ cd project
+~/project$ bii new username/twitter --hello=cpp</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268bb560702552-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268bb560702552-2">2</div><div
+class="crayon-num" data-line="crayon-56886fc1268bb560702552-3">3</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268bb560702552-1"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-e">init </span><span
+class="crayon-i">project</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268bb560702552-2"><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">cd </span><span
+class="crayon-v">project</span></div><div
+class="crayon-line" id="crayon-56886fc1268bb560702552-3"><span
+class="crayon-o">~</span><span
+class="crayon-o">/</span><span
+class="crayon-v">project</span><span
+class="crayon-sy">$</span><span
+class="crayon-h"> </span><span
+class="crayon-e">bii </span><span
+class="crayon-r">new</span><span
+class="crayon-h"> </span><span
+class="crayon-v">username</span><span
+class="crayon-o">/</span><span
+class="crayon-v">twitter</span><span
+class="crayon-h"> </span><span
+class="crayon-o">--</span><span
+class="crayon-v">hello</span><span
+class="crayon-o">=</span><span
+class="crayon-v">cpp</span></div></div></td></tr></table></div></div><p>Then, just copy and paste the code below into your new main.cpp file, to get a tweet each time you shake your arduino!</p><div
+id="crayon-56886fc1268c4749943335" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+#include &lt;SPI.h&gt;
+#include &lt;Dhcp.h&gt;
+#include &lt;Dns.h&gt;
+#include "diego/ardunet/cc3000utils.h"
+#include "diego/ardunet/cc3000client.h"
+#include "diego/ardunet/http_get.h"
+#include "diego/temboo/temboo.h"
+#include "adafruit/ada_10dof/adafruit_10dof.h"
+#include "tembooaccount.h" // Contains Temboo account information
+#include &lt;LiquidCrystal.h&gt;
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+#define WLAN_SSID       "WIFI_SSID"           // cannot be longer than 32 characters!
+#define WLAN_PASS       "WIFI_PASS"
+// Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2
+#define WLAN_SECURITY   SECURITY
+// These are the interrupt and control pins
+#define ADAFRUIT_CC3000_IRQ   18  // MUST be an interrupt pin!
+// These can be any two pins
+#define ADAFRUIT_CC3000_VBAT  9
+#define ADAFRUIT_CC3000_CS    10
+Adafruit_10DOF                dof   = Adafruit_10DOF();
+Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(30301);
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS,
+        ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIVIDER);
+CC3000Client client(cc3000);
+sensors_event_t accel_event;
+sensors_vec_t   orientation;
+float accel_x;
+float old_accel_x;
+float accel_y;
+float old_accel_y;
+float accel_z;
+float old_accel_z;
+String id_ = "";
+void setup() {
+  Serial.begin(9600);
+  //For debugging, wait until the serial console is connected.
+  delay(4000);
+  while(!Serial);
+  startConnection(cc3000, WLAN_SSID, WLAN_PASS, WLAN_SECURITY);
+  if(!accel.begin())
+  {
+    /* There was a problem detecting the LSM303 ... check your connections */
+    Serial.println(F("Ooops, no LSM303 detected ... Check your wiring!"));
+    while(1);
+  }
+  lcd.begin(16, 2);
+}
+void loop() {
+  accel.getEvent(&amp;accel_event);
+  dof.accelGetOrientation(&amp;accel_event, &amp;orientation);
+  accel_x=accel_event.acceleration.x;
+  accel_y=accel_event.acceleration.y;
+  accel_z=accel_event.acceleration.z;
+  delay(100);
+  if ((accel_x&gt;=(old_accel_x+5.f))|(accel_y&gt;=(old_accel_y+5.f))|(accel_z&gt;=(old_accel_z+5.f))) {
+    Serial.println("Running HomeTimeline - Run #");
+    TembooChoreo HomeTimelineChoreo(client);
+    // Invoke the Temboo client
+    HomeTimelineChoreo.begin();
+    // Set Temboo account credentials
+    HomeTimelineChoreo.setAccountName(TEMBOO_ACCOUNT);
+    HomeTimelineChoreo.setAppKeyName(TEMBOO_APP_KEY_NAME);
+    HomeTimelineChoreo.setAppKey(TEMBOO_APP_KEY);
+    // Set Choreo inputs
+    HomeTimelineChoreo.addInput("ExcludeReplies", "true");
+    HomeTimelineChoreo.addInput("Count", "1");
+    HomeTimelineChoreo.addInput("AccessToken", "ACC_TOKEN");
+    HomeTimelineChoreo.addInput("AccessTokenSecret", "ACC_SEC_TOKEN");
+    HomeTimelineChoreo.addInput("ConsumerSecret", "CONS_KEY_SECRET");
+    HomeTimelineChoreo.addInput("ConsumerKey", "CONS_KEY");
+    HomeTimelineChoreo.addInput("IncludeEntities", "false");
+    HomeTimelineChoreo.addInput("ExcludeReplies", "true");
+    HomeTimelineChoreo.addInput("TrimUser", "true");
+    HomeTimelineChoreo.addInput("ContributorDetails", "true");
+    if(id_!="")
+      HomeTimelineChoreo.addInput("SinceId", id_);
+    // Identify the Choreo to run
+    HomeTimelineChoreo.setChoreo("/Library/Twitter/Timelines/HomeTimeline");
+    HomeTimelineChoreo.addOutputFilter("tweet","/[1]/text","Response");
+    HomeTimelineChoreo.addOutputFilter("id","/[1]/id","Response");
+    // Run the Choreo; when results are available, print them to serial
+    HomeTimelineChoreo.run();
+    while(HomeTimelineChoreo.available()) {
+      // read the name of the next output item
+      String name = HomeTimelineChoreo.readStringUntil('\x1F');
+      name.trim();
+      Serial.println("The text is " + name);// use ?trim? to get rid of newlines
+      // read the value of the next output item
+      String data = HomeTimelineChoreo.readStringUntil('\x1E');
+      data.trim();
+      Serial.println("The data is " + data); // use ?trim? to get rid of newlines
+      if (name.substring(0) == "tweet") {
+        int j=0,k=0;
+        for (int i = 0; i &lt; data.length(); i++) {
+          if(j&lt;16){
+            lcd.setCursor(j,k);
+            lcd.print(data.charAt(i));
+            delay(500);
+          }else{
+            i--;
+            j=-1;
+            k++;
+            if(k==2){
+              k=0;
+              lcd.clear();
+            }
+          }
+          j++;
+        }
+      } else if (name == "id") {
+        id_ = data;
+      }
+    }
+    HomeTimelineChoreo.close();
+    delay(7000);
+    lcd.clear();
+  }
+  old_accel_x=accel_event.acceleration.x;
+  old_accel_y=accel_event.acceleration.y;
+  old_accel_z=accel_event.acceleration.z;
+  delay(100);
+}</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-2">2</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-4">4</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-6">6</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-8">8</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-10">10</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-12">12</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-14">14</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-16">16</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-18">18</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-20">20</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-21">21</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-22">22</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-23">23</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-24">24</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-25">25</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-26">26</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-27">27</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-28">28</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-29">29</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-30">30</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-31">31</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-32">32</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-33">33</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-34">34</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-35">35</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-36">36</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-37">37</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-38">38</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-39">39</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-40">40</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-41">41</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-42">42</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-43">43</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-44">44</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-45">45</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-46">46</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-47">47</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-48">48</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-49">49</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-50">50</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-51">51</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-52">52</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-53">53</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-54">54</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-55">55</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-56">56</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-57">57</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-58">58</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-59">59</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-60">60</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-61">61</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-62">62</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-63">63</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-64">64</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-65">65</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-66">66</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-67">67</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-68">68</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-69">69</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-70">70</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-71">71</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-72">72</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-73">73</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-74">74</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-75">75</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-76">76</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-77">77</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-78">78</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-79">79</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-80">80</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-81">81</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-82">82</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-83">83</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-84">84</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-85">85</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-86">86</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-87">87</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-88">88</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-89">89</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-90">90</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-91">91</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-92">92</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-93">93</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-94">94</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-95">95</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-96">96</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-97">97</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-98">98</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-99">99</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-100">100</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-101">101</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-102">102</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-103">103</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-104">104</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-105">105</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-106">106</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-107">107</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-108">108</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-109">109</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-110">110</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-111">111</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-112">112</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-113">113</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-114">114</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-115">115</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-116">116</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-117">117</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-118">118</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-119">119</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-120">120</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-121">121</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-122">122</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-123">123</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-124">124</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-125">125</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-126">126</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-127">127</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-128">128</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-129">129</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-130">130</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-131">131</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-132">132</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-133">133</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-134">134</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-135">135</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-136">136</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-137">137</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-138">138</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-139">139</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-140">140</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-141">141</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-142">142</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-143">143</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-144">144</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-145">145</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-146">146</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-147">147</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-148">148</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-149">149</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268c4749943335-150">150</div><div
+class="crayon-num" data-line="crayon-56886fc1268c4749943335-151">151</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-1"><span
+class="crayon-p">#include &lt;SPI.h&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-2"><span
+class="crayon-p">#include &lt;Dhcp.h&gt;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-3"><span
+class="crayon-p">#include &lt;Dns.h&gt;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-4"><span
+class="crayon-p">#include "diego/ardunet/cc3000utils.h"</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-5"><span
+class="crayon-p">#include "diego/ardunet/cc3000client.h"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-6"><span
+class="crayon-p">#include "diego/ardunet/http_get.h"</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-7"><span
+class="crayon-p">#include "diego/temboo/temboo.h"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-8"><span
+class="crayon-p">#include "adafruit/ada_10dof/adafruit_10dof.h"</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-9"><span
+class="crayon-p">#include "tembooaccount.h" // Contains Temboo account information</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-10"><span
+class="crayon-p">#include &lt;LiquidCrystal.h&gt;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-11">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-12"><span
+class="crayon-e">LiquidCrystal </span><span
+class="crayon-e">lcd</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">12</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">11</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">5</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">4</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">3</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-13">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-14">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-15"><span
+class="crayon-p">#define WLAN_SSID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "WIFI_SSID"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // cannot be longer than 32 characters!</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-16"><span
+class="crayon-p">#define WLAN_PASS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "WIFI_PASS"</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-17"><span
+class="crayon-c">// Security can be WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA or WLAN_SEC_WPA2</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-18"><span
+class="crayon-p">#define WLAN_SECURITY&nbsp;&nbsp; SECURITY</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-19">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-20"><span
+class="crayon-c">// These are the interrupt and control pins</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-21"><span
+class="crayon-p">#define ADAFRUIT_CC3000_IRQ&nbsp;&nbsp; 18&nbsp;&nbsp;// MUST be an interrupt pin!</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-22"><span
+class="crayon-c">// These can be any two pins</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-23"><span
+class="crayon-p">#define ADAFRUIT_CC3000_VBAT&nbsp;&nbsp;9</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-24"><span
+class="crayon-p">#define ADAFRUIT_CC3000_CS&nbsp;&nbsp;&nbsp;&nbsp;10</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-25">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-26"><span
+class="crayon-e">Adafruit_10DOF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">dof</span><span
+class="crayon-h">&nbsp;&nbsp; </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Adafruit_10DOF</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-27"><span
+class="crayon-e">Adafruit_LSM303_Accel_Unified </span><span
+class="crayon-v">accel</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Adafruit_LSM303_Accel_Unified</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">30301</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-28">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-29"><span
+class="crayon-e">Adafruit_CC3000 </span><span
+class="crayon-v">cc3000</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-e">Adafruit_CC3000</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">ADAFRUIT_CC3000_CS</span><span
+class="crayon-sy">,</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-30"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">ADAFRUIT_CC3000_IRQ</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">ADAFRUIT_CC3000_VBAT</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">SPI_CLOCK_DIVIDER</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-31">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-32"><span
+class="crayon-e">CC3000Client </span><span
+class="crayon-e">client</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">cc3000</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-33">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-34"><span
+class="crayon-e">sensors_event_t </span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-35"><span
+class="crayon-e">sensors_vec_t&nbsp;&nbsp; </span><span
+class="crayon-v">orientation</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-36">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-37"><span
+class="crayon-t">float</span><span
+class="crayon-h"> </span><span
+class="crayon-v">accel_x</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-38"><span
+class="crayon-t">float</span><span
+class="crayon-h"> </span><span
+class="crayon-v">old_accel_x</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-39"><span
+class="crayon-t">float</span><span
+class="crayon-h"> </span><span
+class="crayon-v">accel_y</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-40"><span
+class="crayon-t">float</span><span
+class="crayon-h"> </span><span
+class="crayon-v">old_accel_y</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-41"><span
+class="crayon-t">float</span><span
+class="crayon-h"> </span><span
+class="crayon-v">accel_z</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-42"><span
+class="crayon-t">float</span><span
+class="crayon-h"> </span><span
+class="crayon-v">old_accel_z</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-43">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-44"><span
+class="crayon-t">String</span><span
+class="crayon-h"> </span><span
+class="crayon-v">id_</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-s">""</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-45">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-46"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">setup</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-47"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">Serial</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">9600</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-48"><span
+class="crayon-h">&nbsp;&nbsp;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-49"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-c">//For debugging, wait until the serial console is connected.</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-50"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">delay</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">4000</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-51"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">while</span><span
+class="crayon-sy">(</span><span
+class="crayon-o">!</span><span
+class="crayon-v">Serial</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-52">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-53"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">startConnection</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">cc3000</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">WLAN_SSID</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">WLAN_PASS</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">WLAN_SECURITY</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-54"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-o">!</span><span
+class="crayon-v">accel</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-55"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-56"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">/* There was a problem detecting the LSM303 ... check your connections */</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-57"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">Serial</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">println</span><span
+class="crayon-sy">(</span><span
+class="crayon-e">F</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"Ooops, no LSM303 detected ... Check your wiring!"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-58"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">while</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-59"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-60"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">lcd</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">16</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-61"><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-62">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-63"><span
+class="crayon-t">void</span><span
+class="crayon-h"> </span><span
+class="crayon-e">loop</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-64"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">accel</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">getEvent</span><span
+class="crayon-sy">(</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-65"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">dof</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">accelGetOrientation</span><span
+class="crayon-sy">(</span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&amp;</span><span
+class="crayon-v">orientation</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-66"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">accel_x</span><span
+class="crayon-o">=</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">acceleration</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">x</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-67"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">accel_y</span><span
+class="crayon-o">=</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">acceleration</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">y</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-68"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">accel_z</span><span
+class="crayon-o">=</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">acceleration</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">z</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-69"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">delay</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">100</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-70"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">accel_x</span><span
+class="crayon-o">&gt;=</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">old_accel_x</span><span
+class="crayon-o">+</span><span
+class="crayon-cn">5.f</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">|</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">accel_y</span><span
+class="crayon-o">&gt;=</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">old_accel_y</span><span
+class="crayon-o">+</span><span
+class="crayon-cn">5.f</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-o">|</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">accel_z</span><span
+class="crayon-o">&gt;=</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">old_accel_z</span><span
+class="crayon-o">+</span><span
+class="crayon-cn">5.f</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-71"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">Serial</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">println</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"Running HomeTimeline - Run #"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-72">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-73"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">TembooChoreo </span><span
+class="crayon-e">HomeTimelineChoreo</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">client</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-74">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-75"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// Invoke the Temboo client</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-76"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">begin</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-77">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-78"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// Set Temboo account credentials</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-79"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">setAccountName</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">TEMBOO_ACCOUNT</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-80"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">setAppKeyName</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">TEMBOO_APP_KEY_NAME</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-81"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">setAppKey</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">TEMBOO_APP_KEY</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-82">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-83"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// Set Choreo inputs</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-84"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"ExcludeReplies"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"true"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-85"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"Count"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"1"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-86"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"AccessToken"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"ACC_TOKEN"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-87"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"AccessTokenSecret"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"ACC_SEC_TOKEN"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-88"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"ConsumerSecret"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"CONS_KEY_SECRET"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-89"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"ConsumerKey"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"CONS_KEY"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-90"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"IncludeEntities"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"false"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-91"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"ExcludeReplies"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"true"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-92"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"TrimUser"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"true"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-93"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"ContributorDetails"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"true"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-94"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">id_</span><span
+class="crayon-o">!=</span><span
+class="crayon-s">""</span><span
+class="crayon-sy">)</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-95"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addInput</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"SinceId"</span><span
+class="crayon-sy">,</span><span
+class="crayon-h"> </span><span
+class="crayon-v">id_</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-96">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-97"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// Identify the Choreo to run</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-98"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">setChoreo</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"/Library/Twitter/Timelines/HomeTimeline"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-99">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-100"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addOutputFilter</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"tweet"</span><span
+class="crayon-sy">,</span><span
+class="crayon-s">"/[1]/text"</span><span
+class="crayon-sy">,</span><span
+class="crayon-s">"Response"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-101"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">addOutputFilter</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"id"</span><span
+class="crayon-sy">,</span><span
+class="crayon-s">"/[1]/id"</span><span
+class="crayon-sy">,</span><span
+class="crayon-s">"Response"</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-102">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-103"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// Run the Choreo; when results are available, print them to serial</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-104"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">run</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-105">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-106"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">while</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">available</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-107"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-108"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// read the name of the next output item</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-109"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">String</span><span
+class="crayon-h"> </span><span
+class="crayon-v">name</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">readStringUntil</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">'\x1F'</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-110"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">name</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">trim</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-111"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">Serial</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">println</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"The text is "</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+</span><span
+class="crayon-h"> </span><span
+class="crayon-v">name</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-c">// use ?trim? to get rid of newlines</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-112">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-113"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-c">// read the value of the next output item</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-114"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">String</span><span
+class="crayon-h"> </span><span
+class="crayon-v">data</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">readStringUntil</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">'\x1E'</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-115"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">data</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">trim</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-116"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">Serial</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">println</span><span
+class="crayon-sy">(</span><span
+class="crayon-s">"The data is "</span><span
+class="crayon-h"> </span><span
+class="crayon-o">+</span><span
+class="crayon-h"> </span><span
+class="crayon-v">data</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-c">// use ?trim? to get rid of newlines</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-117">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-118">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-119"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">name</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">substring</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"tweet"</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-120"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-121"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">j</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">k</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-122"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">for</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-t">int</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-h"> </span><span
+class="crayon-o">&lt;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">data</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">length</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span><span
+class="crayon-h"> </span><span
+class="crayon-v">i</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-123"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">j</span><span
+class="crayon-o">&lt;</span><span
+class="crayon-cn">16</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-124"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">lcd</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">setCursor</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">j</span><span
+class="crayon-sy">,</span><span
+class="crayon-v">k</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-125"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">lcd</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">print</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">data</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">charAt</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">i</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-126"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">delay</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">500</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-127"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span><span
+class="crayon-st">else</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-128"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">i</span><span
+class="crayon-o">--</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-129"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">j</span><span
+class="crayon-o">=</span><span
+class="crayon-o">-</span><span
+class="crayon-cn">1</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-130"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">k</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-131"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-st">if</span><span
+class="crayon-sy">(</span><span
+class="crayon-v">k</span><span
+class="crayon-o">==</span><span
+class="crayon-cn">2</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-132"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">k</span><span
+class="crayon-o">=</span><span
+class="crayon-cn">0</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-133"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">lcd</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">clear</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-134"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-135"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-136"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">j</span><span
+class="crayon-o">++</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-137"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span><span
+class="crayon-h">&nbsp;&nbsp;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-138"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span><span
+class="crayon-h"> </span><span
+class="crayon-st">else</span><span
+class="crayon-h"> </span><span
+class="crayon-st">if</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">(</span><span
+class="crayon-v">name</span><span
+class="crayon-h"> </span><span
+class="crayon-o">==</span><span
+class="crayon-h"> </span><span
+class="crayon-s">"id"</span><span
+class="crayon-sy">)</span><span
+class="crayon-h"> </span><span
+class="crayon-sy">{</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-139"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">id_</span><span
+class="crayon-h"> </span><span
+class="crayon-o">=</span><span
+class="crayon-h"> </span><span
+class="crayon-v">data</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-140"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-141"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-142">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-143"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">HomeTimelineChoreo</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">close</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-144"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-e">delay</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">7000</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-145"><span
+class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span
+class="crayon-v">lcd</span><span
+class="crayon-sy">.</span><span
+class="crayon-e">clear</span><span
+class="crayon-sy">(</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-146"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-sy">}</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-147"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">old_accel_x</span><span
+class="crayon-o">=</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">acceleration</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">x</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-148"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">old_accel_y</span><span
+class="crayon-o">=</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">acceleration</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">y</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-149"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-v">old_accel_z</span><span
+class="crayon-o">=</span><span
+class="crayon-v">accel_event</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">acceleration</span><span
+class="crayon-sy">.</span><span
+class="crayon-v">z</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268c4749943335-150"><span
+class="crayon-h">&nbsp;&nbsp;</span><span
+class="crayon-e">delay</span><span
+class="crayon-sy">(</span><span
+class="crayon-cn">100</span><span
+class="crayon-sy">)</span><span
+class="crayon-sy">;</span></div><div
+class="crayon-line" id="crayon-56886fc1268c4749943335-151"><span
+class="crayon-sy">}</span></div></div></td></tr></table></div></div><p>The Temboo credentials are stored in “tembooaccount.h”, this file is not publicly visible to keep sensitive data in private, but it&#8217;s the header file temboo gives you when you configure your settings, and it should look like this one:</p><div
+id="crayon-56886fc1268d1361485261" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+/*
+IMPORTANT NOTE about TembooAccount.h
+TembooAccount.h contains your Temboo account information and must be included
+alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,
+and copy this content into it.
+*/
+#define TEMBOO_ACCOUNT "account_name"  // Your Temboo account name
+#define TEMBOO_APP_KEY_NAME "myFirstApp"  // Your Temboo app key name
+#define TEMBOO_APP_KEY "app_key"  // Your Temboo app key
+#define TWITTER_API_KEY "app_key" //Twitter API Key
+#define WLAN_SSID "wifi_ide"
+#define WLAN_PASS "your_pass_here"
+#define WLAN_SECURITY WLAN_SEC_WPA2
+/*
+The same TembooAccount.h file settings can be used for all Temboo SDK sketches.
+Keeping your account information in a separate file means you can share the
+main .ino file without worrying that you forgot to delete your credentials.
+*/</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-1">1</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-2">2</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-3">3</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-4">4</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-5">5</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-6">6</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-7">7</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-8">8</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-9">9</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-10">10</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-11">11</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-12">12</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-13">13</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-14">14</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-15">15</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-16">16</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-17">17</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-18">18</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-19">19</div><div
+class="crayon-num crayon-striped-num" data-line="crayon-56886fc1268d1361485261-20">20</div><div
+class="crayon-num" data-line="crayon-56886fc1268d1361485261-21">21</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-1"><span
+class="crayon-c">/*</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-2"><span
+class="crayon-c">IMPORTANT NOTE about TembooAccount.h</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-3">&nbsp;</div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-4"><span
+class="crayon-c">TembooAccount.h contains your Temboo account information and must be included</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-5"><span
+class="crayon-c">alongside your sketch. To do so, make a new tab in Arduino, call it TembooAccount.h,</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-6"><span
+class="crayon-c">and copy this content into it. </span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-7"><span
+class="crayon-c">*/</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-8">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-9"><span
+class="crayon-p">#define TEMBOO_ACCOUNT "account_name"&nbsp;&nbsp;// Your Temboo account name </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-10"><span
+class="crayon-p">#define TEMBOO_APP_KEY_NAME "myFirstApp"&nbsp;&nbsp;// Your Temboo app key name</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-11"><span
+class="crayon-p">#define TEMBOO_APP_KEY "app_key"&nbsp;&nbsp;// Your Temboo app key</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-12">&nbsp;</div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-13"><span
+class="crayon-p">#define TWITTER_API_KEY "app_key" //Twitter API Key</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-14"><span
+class="crayon-p">#define WLAN_SSID "wifi_ide"</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-15"><span
+class="crayon-p">#define WLAN_PASS "your_pass_here"</span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-16"><span
+class="crayon-p">#define WLAN_SECURITY WLAN_SEC_WPA2</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-17"><span
+class="crayon-c">/* </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-18"><span
+class="crayon-c">The same TembooAccount.h file settings can be used for all Temboo SDK sketches.&nbsp;&nbsp;</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-19"><span
+class="crayon-c">Keeping your account information in a separate file means you can share the </span></div><div
+class="crayon-line crayon-striped-line" id="crayon-56886fc1268d1361485261-20"><span
+class="crayon-c">main .ino file without worrying that you forgot to delete your credentials.</span></div><div
+class="crayon-line" id="crayon-56886fc1268d1361485261-21"><span
+class="crayon-c">*/</span></div></div></td></tr></table></div></div><p>Well, you&#8217;re ready to go: Just push or execute<img
+class="alignnone wp-image-587 size-full" src="../wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" /></p><div
+id="crayon-56886fc1268db231633957" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+bii find</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268db231633957-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268db231633957-1"><span
+class="crayon-e">bii </span><span
+class="crayon-v">find</span></div></div></td></tr></table></div></div><p>and <img
+class="alignnone wp-image-588 size-full" src="../wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><div
+id="crayon-56886fc1268e5498228168" class="crayon-syntax crayon-theme-biicode crayon-font-inconsolata crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-toolbar" data-settings=" mouseover hide delay" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><span
+class="crayon-title"></span><div
+class="crayon-tools" style="font-size: 14px !important;height: 21px !important; line-height: 21px !important;"><div
+class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-expand-button" title="Expand Code"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-copy-button" title="Copy"><div
+class="crayon-button-icon"></div></div><div
+class="crayon-button crayon-popup-button" title="Open Code In New Window"><div
+class="crayon-button-icon"></div></div></div></div><div
+class="crayon-info" style="min-height: 19.6px !important; line-height: 19.6px !important;"></div><div
+class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 14px !important; line-height: 15px !important;">
+bii arduino:upload</textarea></div><div
+class="crayon-main" style=""><table
+class="crayon-table"><tr
+class="crayon-row"><td
+class="crayon-nums " data-settings="show"><div
+class="crayon-nums-content" style="font-size: 14px !important; line-height: 15px !important;"><div
+class="crayon-num" data-line="crayon-56886fc1268e5498228168-1">1</div></div></td><td
+class="crayon-code"><div
+class="crayon-pre" style="font-size: 14px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div
+class="crayon-line" id="crayon-56886fc1268e5498228168-1"><span
+class="crayon-e">bii </span><span
+class="crayon-v">arduino</span><span
+class="crayon-o">:</span><span
+class="crayon-v">upload</span></div></div></td></tr></table></div></div><p>And that&#8217;s it, try making your own one! http://youtu.be/147VLjNf1Y0 Happy hacking! thanks to <a
+title="santiago xunty hurtado twitter" href="https://twitter.com/xunty_s" target="_blank">@xunty </a>from user support who executed this example to prove how easy you can reuse with biicode!<br
+/></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><hr
+class="dot-line" />Related Posts<ul><li><a
+href="../how-many-clicks-does-my-bitly-link-get/index.html" title="IoT: How many clicks does my bitly link get?">IoT: How many clicks does my bitly link get?</a></li><li><a
+href="../get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/index.html" title="IoT: Get New York Times news directly on your email with Arduino and Temboo">IoT: Get New York Times news directly on your email with Arduino and Temboo</a></li><li><a
+href="../iot-control-your-arduino-by-phone-with-nexmo-and-temboo-adafruit/index.html" title="IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)">IoT: Control your Arduino by phone with Nexmo and Temboo (and Adafruit HW)</a></li><li><a
+href="../iot-fill-a-spreadsheet-in-your-google-drive-with-cc3000-wifi-and-temboo-service-arduino/index.html" title="IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service">IoT and Arduino: Fill a SpreadSheet in your Google Drive with CC3000 WiFi and temboo service</a></li></ul><div
+class="addthis_toolbox addthis_default_style addthis_32x32_style" addthis:url='http://blog.biicode.com/iot-how-to-use-twitter-with-your-arduino-temboo-and-adafruit-hw/' addthis:title='IoT: how to use twitter with your Arduino, Temboo and Adafruit HW.' ><a
+class="addthis_button_facebook"></a><a
+class="addthis_button_twitter"></a><a
+class="addthis_button_google_plusone_share"></a><a
+class="addthis_button_compact"></a><a
+class="addthis_counter addthis_bubble_style"></a></div></div> <footer
+class="entry-meta"> This entry was posted in <a
+href="../category/try-this-out/index.html" rel="category tag">try this out</a> and tagged <a
+href="../tag/adadruit/index.html" rel="tag">adadruit</a>, <a
+href="../tag/arduino-2/index.html" rel="tag">arduino</a>, <a
+href="../tag/example/index.html" rel="tag">example</a>, <a
+href="../tag/iot/index.html" rel="tag">IoT</a>, <a
+href="../tag/temboo/index.html" rel="tag">temboo</a>. Bookmark the <a
+href="index.html" title="Permalink to IoT: how to use twitter with your Arduino, Temboo and Adafruit HW." rel="bookmark">permalink</a>. </footer> </article> <nav
+role="navigation" id="nav-below" class="navigation-post"><h1 class="screen-reader-text">Post navigation</h1><div
+class="previous"><a
+href="../meet-the-team-weve-got-a-new-biicoder-jorge-combalia/index.html" rel="prev"><span
+class="meta-nav">&larr;</span> Meet the team: we&#8217;ve got a new biicoder, Jorge Combalia!</a></div><div
+class="next"><a
+href="../get-new-york-times-news-directly-on-your-email-with-arduino-and-temboo/index.html" rel="next">IoT: Get New York Times news directly on your email with Arduino and Temboo <span
+class="meta-nav">&rarr;</span></a></div> </nav><div
+id="disqus_thread"></div> <script type="text/javascript">var disqus_url = 'index.html';
+var disqus_identifier = '635%20http_/blog.biicode.com/indexb753.html?p=635';
+var disqus_container_id = 'disqus_thread';
+var disqus_shortname = 'biicodeblog';
+var disqus_title = "IoT: how to use twitter with your Arduino, Temboo and Adafruit HW.";
+var disqus_config_custom = window.disqus_config;
+var disqus_config = function () {
+    /*
+    All currently supported events:
+    onReady: fires when everything is ready,
+    onNewComment: fires when a new comment is posted,
+    onIdentify: fires when user is authenticated
+    */
+    this.language = '';
+        this.callbacks.onReady.push(function () {
+        // sync comments in the background so we don't block the page
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'index2e7c.html?cf_action=sync_comments&amp;post_id=635';
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+    });
+    if (disqus_config_custom) {
+        disqus_config_custom.call(this);
+    }
+};
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script> </div></div><div
+id="secondary" class="widget-area" role="complementary"> <aside
+id="text-2" class="widget widget_text"><div
+class="textwidget"><p
+class="widgettitleWhatwedo" align="center"> biicode is:</p><p
+class="hrOrange">&nbsp;</p><p
+align="center" class="widgetxtWhatwedo">For <span
+style="font-weight:normal">C/C++ developers,</span> biicode is a file-based dependencies manager that makes code reuse simple.</p><div
+id="Sidebar-Tryforfree"> <img
+src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-on.jpg" /> <a
+href="http://www.biicode.com/downloads"><img
+class="top" src="../wp-content/uploads/sites/3/2014/05/try-it-for-free-off.jpg" /></a></div></div> </aside><aside
+id="text-3" class="widget widget_text"><div
+class="textwidget"> <a
+href="https://www.biicode.com/biicode-open-source-challenge"><img
+src="../wp-content/uploads/sites/3/2014/05/banner-open-source.jpg" /></a></div> </aside><aside
+id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1><label
+class="screen-reader-text" for="cat">Categories</label><select
+name='cat' id='cat' class='postform' ><option
+value='-1'>Select Category</option><option
+class="level-0" value="3">#biicontest2014</option><option
+class="level-0" value="328">algorithms</option><option
+class="level-0" value="350">Arduino</option><option
+class="level-0" value="12">biicode</option><option
+class="level-0" value="173">biicode-internals</option><option
+class="level-0" value="7">biicoders</option><option
+class="level-0" value="229">BITSCAN</option><option
+class="level-0" value="372">c++</option><option
+class="level-0" value="49">events</option><option
+class="level-0" value="198">Gamedev</option><option
+class="level-0" value="318">Integrations</option><option
+class="level-0" value="209">Meta-programming</option><option
+class="level-0" value="43">news</option><option
+class="level-0" value="163">Our Story</option><option
+class="level-0" value="269">Software design</option><option
+class="level-0" value="50">try this out</option><option
+class="level-0" value="225">ZeroMQ</option> </select> <script type='text/javascript'>/*  */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			location.href = "http://blog.biicode.com/?cat=" + dropdown.options[ dropdown.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/*  */</script> </aside></div></div></div><div
+id="containerfooter"> <footer><div
+class="center"><div
+class="footer-item company"><h3>About</h3><ul><li><a
+href="http://web.biicode.com/about-us">Company</a></li><li><a
+href="http://web.biicode.com/pricing">Pricing</a></li><li><a
+href="http://web.biicode.com/jobs">Careers</a></li><li><a
+href="http://web.biicode.com/meet-the-team">Team </a></li><li><a
+href="http://web.biicode.com/contact-us/">Contact us </a></li></ul></div><div
+class="footer-item contact"><h3>Features</h3><ul><li><a
+href="http://web.biicode.com/features/arduino/">Arduino</a></li><li><a
+href="http://web.biicode.com/features/raspberry-pi/">Raspberry Pi</a></li><li><a
+href="http://web.biicode.com/features/cpp/">C/C++</a></li><li><a
+href="http://web.biicode.com/features/nodejs/">Node.js</a></li></ul></div><div
+class="footer-item resources"><h3>Resources</h3><ul><li><a
+href="http://web.biicode.com/learn/getting-started">Getting Started</a></li><li><a
+href="https://www.biicode.com/downloads">Downloads </a></li><li><a
+href="http://www.biicode.com/explore">Explore</a></li><li><a
+href="http://docs.biicode.com/">Documentation</a></li><li><a
+href="http://forum.biicode.com/">Forum</a></li><li><a
+href="../index.html">Blog</a></li></ul></div><div
+class="footer-item resources"><h3>Community</h3><ul><li><a
+href="http://web.biicode.com/community/friends/">Friends</a></li><li><a
+href="http://web.biicode.com/community/roadmap/">Roadmap</a></li></ul></div><div
+class="signupfooter"><div
+id="signupfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-on.png" /> <a
+href="https://www.biicode.com/accounts/signup/"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/bt-sign-up-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-on.png" /> <a
+href="https://www.facebook.com/Biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-fb-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-on.png" /> <a
+href="https://twitter.com/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-twitter-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-on.png" /> <a
+href="https://plus.google.com/110838391970414654069/posts"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-google-footer-off.png" /></a></div><div
+id="socialiconsfooter-bt"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-on.png" /> <a
+href="http://www.linkedin.com/company/biicode"><img
+class="top" src="../wp-content/themes/truly-minimal-wpcom/img/footer/icon-linkedin-footer-off.png" /></a></div></div><div
+class="center copyright"> <img
+src="../wp-content/themes/truly-minimal-wpcom/img/footer/biicoce-logo-footer.png" class="logo" width="32" height="42" /><p>© 2014 Biicode. All rights reserved · <a
+href="http://web.biicode.com/legal/terms-and-conditions">Terms and conditions</a> · <a
+href="http://web.biicode.com/legal/privacy-policy">Privacy Policy</a> · <a
+href="http://web.biicode.com/legal/community-guidelines">Community guidelines</a></p></div></div> </footer></div>
+ <script type="text/javascript">//
+			jQuery(document).ready(function() {
+				// Edit 09/05: remove globals and package into Object Literal, and removed the debug function
+				cli_show_cookiebar({
+					html: '<div id="cookie-law-info-bar"><span>This website uses cookies to improve your experience. We\'ll assume you\'re ok with this, but you can opt-out if you wish.<a href=\"#\" id=\"cookie_action_close_header\"  class=\"medium cli-plugin-button cli-plugin-main-button\" >Accept</a> <a href=\"http://web.biicode.com/legal/privacy-policy/\" id=\"CONSTANT_OPEN_URL\" target=\"_new\"  class=\"cli-plugin-main-link\"  >Read More</a></span></div><div id="cookie-law-info-again"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div>',
+					settings: '{"animate_speed_hide":"500","animate_speed_show":"500","background":"#fff","border":"#444","border_on":true,"button_1_button_colour":"#000000","button_1_button_hover":"#000000","button_1_link_colour":"#fff","button_1_as_button":true,"button_2_button_colour":"#333","button_2_button_hover":"#292929","button_2_link_colour":"#444","button_2_as_button":false,"font_family":"Arial, Helvetica, sans-serif","notify_animate_hide":true,"notify_animate_show":false,"notify_div_id":"#cookie-law-info-bar","notify_position_horizontal":"right","notify_position_vertical":"bottom","scroll_close":false,"scroll_close_reload":false,"showagain_tab":true,"showagain_background":"#fff","showagain_border":"#000","showagain_div_id":"#cookie-law-info-again","showagain_x_position":"100px","text":"#000","show_once_yn":false,"show_once":"10000"}'
+				});
+			});
+			//</script> <script type="text/javascript">// 
+        var disqus_shortname = 'biicodeblog';
+        (function () {
+            var nodes = document.getElementsByTagName('span');
+            for (var i = 0, url; i < nodes.length; i++) {
+                if (nodes[i].className.indexOf('dsq-postid') != -1) {
+                    nodes[i].parentNode.setAttribute('data-disqus-identifier', nodes[i].getAttribute('data-dsqidentifier'));
+                    url = nodes[i].parentNode.href.split('#', 1);
+                    if (url.length == 1) { url = url[0]; }
+                    else { url = url[1]; }
+                    nodes[i].parentNode.href = url + '#disqus_thread';
+                }
+            }
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        //</script><script type="text/javascript">if (typeof(addthis_share) == "undefined"){ addthis_share = {"passthrough":{"twitter":{"via":"biicode"}}};}
+
+var addthis_config = {"data_track_clickback":false,"data_track_addressbar":false,"data_track_textcopy":false,"ui_atversion":"300"};
+var addthis_product = 'wpp-4.0.7';
+</script><script type="text/javascript" src="../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-522dcd676fbf553f"></script><script type="text/javascript">
+jQuery(window).load(function(){
+  var q2w3_sidebar_1_options = { "sidebar" : "sidebar-1", "margin_top" : 10, "margin_bottom" : 450, "screen_max_width" : 0, "width_inherit" : false, "widgets" : ['text-2','text-3','categories-2'] };
+  q2w3_sidebar(q2w3_sidebar_1_options);
+  setInterval(function () { q2w3_sidebar(q2w3_sidebar_1_options); }, 1500);
+});
+</script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/navigation11a8.js?ver=20120206'></script>
+<script type='text/javascript' src='../wp-content/themes/truly-minimal-wpcom/js/skip-link-focus-fix08e0.js?ver=20130115'></script>
+<script type='text/javascript' src='../wp-includes/js/comment-reply.mind19b.js?ver=4.2.5'></script>
+<!--wp_footer-->
+</body>
+
+<!-- Mirrored from blog.biicode.com/iot-how-to-use-twitter-with-your-arduino-temboo-and-adafruit-hw/ by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 03 Jan 2016 00:58:31 GMT -->
+</html>

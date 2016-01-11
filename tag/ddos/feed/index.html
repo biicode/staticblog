@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; DDoS</title> <atom:link href="http://blog.biicode.com/tag/ddos/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Our first DDoS attack!!</title><link>http://blog.biicode.com/first-ddos-attack/</link> <comments>http://blog.biicode.com/first-ddos-attack/#comments</comments> <pubDate>Tue, 12 Aug 2014 09:26:45 +0000</pubDate> <dc:creator><![CDATA[lasote]]></dc:creator> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[news]]></category> <category><![CDATA[biicode Team]]></category> <category><![CDATA[BOFHers]]></category> <category><![CDATA[DDoS]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1060</guid> <description><![CDATA[<p>Yesterday biicode suffered a DDoS attack on this wordpress blog. DDoS attack (Distributed Denial of Service) tries to make a resource (this blog) unavailable using servers distributed all over the world. In this case, sources came from Korea, USA, Europe&#8230; More than a hundred simultaneous connections brought down our blog. &#160; What happened? We received [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-ddos-attack/">Our first DDoS attack!!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Yesterday biicode suffered a DDoS attack on this wordpress blog.</p><p><a
+title="DDoS attack" href="http://en.wikipedia.org/wiki/Denial-of-service_attack" target="_blank">DDoS attack</a> (Distributed Denial of Service) tries to make a resource (this blog) unavailable using servers distributed all over the world.<br
+/> In this case, sources came from Korea, USA, Europe&#8230; More than a hundred simultaneous connections brought down our blog.</p><p>&nbsp;</p><div
+style="width: 1144px" class="wp-caption aligncenter"><img
+src="http://www.datasoft.ws/images/ddos-attacks1.png" alt="DDoS attack can seriously damage your system." width="1134" height="768" /><p
+class="wp-caption-text">DDoS attack</p></div><p><span
+id="more-1060"></span></p><h2>What happened?</h2><p>We received an alert about our blog not responding right. We connected inmediatly to the server and started looking into the server logs.</p><h2>Why did the blog go down?</h2><p>Well, the first sign that something was going wrong was a message telling us the server couldn&#8217;t connect to the database.<br
+/> At that moment we connected to the server and tried to restart mysql service&#8230; but the service went down almost inmediatly.<br
+/> We looked at the mysql error log and we found it was a memory issue.<br
+/> After looking up in google the error code we decided to increase the server memory (easy to do with a virtualized instance) but it didn&#8217;t work, memory wasn&#8217;t being used and the problem persisted.<br
+/> We even tried to increase the swap partition&#8230; but our disk got full.</p><h2>What the f*** is going on!!!??</h2><p>That was our reaction before all we tried failed.<br
+/> We started to think that maybe we were under some kind of attack.<br
+/> We executed netstat command to look at port 80. More than a hundred connections were stablished.</p><pre class="crayon-plain-tag">netstat -plan|grep :80 | wc -l</pre><p>With these command options I could check the connected IPs:</p><pre class="crayon-plain-tag">netstat -plan|grep :80|awk {'print $5'}|cut -d: -f 1|sort|uniq -c|sort -nk 1</pre><p></p><h2>Well&#8230; we definitely are under a DDoS attack&#8230;now what?</h2><p>Repealing a DDoS attack may be very complex. The most important thing is to understand the attack and think of a way to stop it.<br
+/> We looked in the Apache access log and we saw hundreds of access to the same resource: &#8220;xmlrpc.php&#8221;</p><p>Xmlrpc.php is an API to remote publish contents to wordpress. Attackers are POSTing big files to this resource. Files were not getting published though, because the attacker didn&#8217;t have the right credentials, however, WordPress was receiving a laaaaaaarge amount of data and loading it into server memory which eventually was full.</p><p>The solution was simple&#8230; We moved that php file to a non accessible location. The server started to respond 404 for all these requeste and all the system went to normal. We don&#8217;t need xmlrpc and after what happened&#8230; We prefer never to use it again.</p><h2>Conclusion</h2><p>Despite this, we are happy with the results of this DDoS attack. We are in beta, we are not perfect, our systems are not configured perfectly, but we are learning a lot and we are greatful to be able to fix any problem that affects our fantastic users!. Also we know that we are gaining interest and an attack like this confirms that!</p><p>Happy summer!!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/first-ddos-attack/">Our first DDoS attack!!</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/first-ddos-attack/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

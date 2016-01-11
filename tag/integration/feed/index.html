@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Integration</title> <atom:link href="http://blog.biicode.com/tag/integration/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Automatically build and publish via Travis CI and Github</title><link>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/</link> <comments>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/#comments</comments> <pubDate>Thu, 06 Nov 2014 10:22:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[Integration]]></category> <category><![CDATA[Testing]]></category> <category><![CDATA[Travis.CI]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1877</guid> <description><![CDATA[<p>This is a simple guide about how to automatically build and publish via Travis CI and Github. biicode, Travis CI and Github: a C/C++ dev environment GitHub allows us to create a remote repository to develop collaboratively. Travis CI provides continuous integration inside our projects. Import from GitHub! First of all make sure you&#8217;ve installed [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/">Automatically build and publish via Travis CI and Github</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<div
+class="article-wrap"><p>This is a simple guide about how to automatically build and publish via Travis CI and Github.</p><h2><strong>biicode, Travis CI and Github: a C/C++ dev environment</strong></h2><p>GitHub allows us to create a remote repository to develop collaboratively.<br
+/> Travis CI provides continuous integration inside our projects.</p><p><img
+class="aligncenter wp-image-1884 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/logotravis.png" alt="logotravis" width="300" height="295" /></p><p><span
+id="more-1877"></span></p><h3><strong>Import from GitHub!</strong></h3><p>First of all make sure you&#8217;ve installed <strong>biicod</strong>e and <strong>Git</strong>.<br
+/> Once both you got both of them, you can clone the <a
+title="github" href="https://github.com/" target="_blank">github</a> repository you want to make a new biicode block.</p><p><img
+class="aligncenter wp-image-2104 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/clone-1024x683.png" alt="clone" width="630" height="420" /></p><p>Create the new BIICODE project (as usual) and create q working local copy in your biicode block:</p><pre class="crayon-plain-tag">$ bii init myproject
+$ cd myproject/blocks
+$ git clone https://github.com/lasote/docker_client.git
+$ cd docker_client</pre><p>Now we&#8217;ve got everything we need to start working locally.</p><h3><strong>Automatically build your projects via Travis CI</strong></h3><p>Travis CI provides continuous integration inside your project, to use it, just create a file named &#8220;.travis.yml&#8221; inside your project folder.</p><p>Write on your &#8220;.travis.yml&#8221; file, the commands to build your project, and if it successes publish it automatically to BIICODE.</p><p>First of all sign up in <a
+title="travis" href="https://travis-ci.org/" target="_blank">Travis CI</a> with your <a
+title="Github" href="https://github.com/" target="_blank">GitHub </a>account and once there, go to your profile, sync your repos and enable Travis CI building:<img
+class="aligncenter size-large wp-image-2027" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/travis-ci-1024x461.png" alt="travis-ci" width="630" height="284" /></p><p>To use Travis CI in your project you&#8217;ve got to be using a Linux machine (you can use: Koding, Cloud9IDE or just a virtual machine on your computer). Once in your linux machine check if ruby is installed:</p><pre class="crayon-plain-tag">$ which ruby</pre><p>if you see a path such as <em>/usr/bin/ruby</em>, Ruby is installed.</p><p>If ruby is not installed:</p><pre class="crayon-plain-tag">$ sudo apt-get install ruby</pre><p>When ruby is installed:</p><pre class="crayon-plain-tag">$ sudo gem install travis</pre><p>Please check <a
+href="http://docs.travis-ci.com/user/languages/cpp/">Travis docs</a> or <a
+title="stackoverflow ruby-gems travis" href="http://stackoverflow.com/questions/18354959/building-native-extensions-error-in-installing-ruby-gems" target="_blank">stackoverflow related issues </a>if your having any troubles installing travis gem.</p><p>Now, create your &#8220;.travis.yml&#8221; file like the example below on your block folder, this file is to building and automatically publishing to biicode, after that it will check if your <code>biicode.conf</code> file <code>[parents]</code> have been updated while publishing and committing the changes to github. This is the one I&#8217;m using, don&#8217;t forget to adjust the config and <em><strong>&#8220;the env&#8221;</strong></em> it to your needs:</p><p>&#8220;.travis.yml&#8221;</p><pre class="crayon-plain-tag">language: cpp
+compiler:
+- gcc
+before_install:
+- export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)"
+- if [[ "$TRAVIS_COMMIT_MSG" = "$COMMIT_IGNORE_BUILD" ]]; then exit 0 ; fi
+- if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;
+  fi
+- sudo apt-get update -qq
+- git config --global user.email "$USER_EMAIL"
+- git config --global user.name "$USER_NAME"
+- git config --global push.default simple
+- git checkout $TRAVIS_BRANCH
+install:
+- if [ "$CXX" == "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+- if [ "$CXX" == "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++
+  /usr/bin/g++-4.8 50; fi
+- wget http://www.biicode.com/downloads/latest/ubuntu64
+- mv ubuntu64 bii-ubuntu64.deb
+- sudo dpkg -i bii-ubuntu64.deb &amp;&amp; sudo apt-get -f install
+- rm bii-ubuntu64.deb
+- wget https://s3.amazonaws.com/biibinaries/thirdparty/cmake-3.0.2-Linux-64.tar.gz
+- tar -xzf cmake-3.0.2-Linux-64.tar.gz
+- sudo cp -fR cmake-3.0.2-Linux-64/* /usr
+- rm -rf cmake-3.0.2-Linux-64
+- rm cmake-3.0.2-Linux-64.tar.gz
+- export TRAVIS_CXX=$CXX
+script:
+- cd /tmp
+- bii init -L
+- shopt -s dotglob &amp;&amp; mv $TRAVIS_BUILD_DIR/* ./
+- if [ "$CXX" == "clang++" ]; then export CXX="clang++" &amp;&amp; bii build; fi
+- if [ "$CXX" == "g++" ];     then export CXX="g++"     &amp;&amp; bii build; fi
+##################### CHANGE WITH YOUR CUSTOM CHECKS OR TEST EXECUTION ##################
+- ls ./bin/lasote_docker_client_example_main
+#########################################################################################
+after_success:
+- bii user $USER -p $BII_PASSWORD
+- if [[ -n $TRAVIS_TAG ]]; then bii publish -r --tag STABLE --versiontag $TRAVIS_TAG
+  || echo "Ignored publish output..."; fi
+- if [[ -z $TRAVIS_TAG ]]; then bii publish -r || echo "Ignored publish output...";
+  fi
+# If there are changes, commit them
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" &gt; .git/credentials
+- git add -A .
+- git commit -m "$COMMIT_IGNORE_BUILD"
+- git remote -v
+- git remote set-url origin https://github.com/$TRAVIS_REPO_SLUG.git
+- git push
+env:
+  global:
+  - USER_EMAIL=lasote@gmail.com
+  - USER_NAME="Luis Martinez de Bartolome"
+  - COMMIT_IGNORE_BUILD="Promoted version.***travis***"
+  - BLOCK_NAME=docker_client
+  - USER=lasote
+  # BII_PASSWORD: Biicode USER's password. &gt; travis encrypt BII_PASSWORD=XXXXXX --add
+  - secure: K4oI72CcIcUBo3cb7DfhPoWSOEZxNzx8JOLpkZ/xOy3vFvXatvDP1KEpDvpirIGkueBuzhzMXXWE1wsefsbimh1PWSE5iyyF52aoWGuhKsjXt0/q80G2uwA/lcJIRJhJCH0m7QAsG8j054x06A+CJUHOsYCNKK3XUzE5ice+Dsc=
+  # GH_TOKEN: Github token &gt; travis encrypt GH_TOKEN=XXXXXX --add
+  - secure: gNKs9E4Fh2agwqaGFTl1uzLvT+PrhykIi57eo9IkAlBuae/jOjAqxGua7NM7Rg+FxjLYh+wecPpO9DXsyNmeBjKpRN3AUmL6qTUgnVndxaRGV4avYpvnVymy6btqoyyBO3lm+wXgaKPtyp9NxjYhXbiQXnMC77yZOLC2k8BCRgk=</pre><p>Let&#8217;s take a deeper look this file, as you can see there are 6 different parts in the <a
+title="build lifecycle travis ci" href="http://docs.travis-ci.com/user/build-configuration/#Build-Lifecycle" target="_blank">Build Lifecycle as explained in Travis CI docs</a> (language, compiler, before_install, install, script, after_success):</p><ul><li><em>Language</em> and <em>compiler</em> are totally clear (this is where you choose the language and compiler that Travis CI will use).</li><li><em>Before_installing</em>, stablishes our automatic commit must be ignored and configures git to push later, on the after_success part.</li><li><em>Install</em> provides the tools necessary to test our code with BIICODE.</li><li><em>Script</em> part creates, builds and runs the project and checks if the project successes.</li><li><em>After_success</em> part is to publish your project to biicode as STABLE with VERSION_TAG if tagged in github, otherwise it publishes as DEV. Also, if your biicode.conf file is updated, this commits its changes to github without launching a new build.</li><li><em>env: </em>replace all environment values with your own ones. Don&#8217;t delete the <em>***travis***</em>  text, as it is the one needed to specify that commit should skip build, avoiding entering an endless build loop.</li></ul><h2 id="building-appveyor-specifics">Encrypting</h2><h3 id="creating-github-personal-access-token">Create a GitHub <a
+href="https://github.com/blog/1509-personal-api-tokens">Personal Access Token</a></h3><p>Use this <a
+href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">GitHub guide to create your personal access token</a>.</p><h3 id="creating-github-personal-access-token">Encode your password</h3><p>And now, encode your github token and biicode password (to archive this you&#8217;ve got to <strong>locate in your block&#8217;s folder</strong>). This command automatically writes the value returned to your &#8220;.travis.yml&#8221; file:</p><pre class="crayon-plain-tag">$ travis encrypt GH_TOKEN=XXXXXXX --add</pre><p></p><pre class="crayon-plain-tag">$ travis encrypt BII_PASSWORD=XXXXXXXXXXX --add</pre><p>The lines added should look like this one:</p><pre class="crayon-plain-tag">env:
+   global:
+      secure:
+M+/Hjhv5M0+MyXhTCLYUWJje4r6I8rYohUhpgjH9nODJUuC10rAokWg6L8f3Z8haaNyfFoNVYLeA1kAKtemlBJK4Mqf7Z9W92URLfL/U8xwoWzwudH2EvjUQPX8Um7Xgu5e4arHjsuQ1mzL9ghg8O6SENS4YrGZX3QfKptVEAuw=</pre><p>To more information about this, you can take a look at <a
+title="Travis-ci docs" href="http://docs.travis-ci.com/user/encryption-keys/" target="_blank">Travis CI docs</a>.</p><p>It&#8217;s a good practice to add to your readme the build status image Travis CI gives you here:</p><p>&nbsp;</p><p><img
+class="alignright size-large wp-image-2106" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/badge_travis1-1024x365.png" alt="badge_travis" width="630" height="225" /></p><h3><strong>Update your GitHub!</strong></h3><p>Once you&#8217;ve updated your repo locally, add all files and updates via git:</p><pre class="crayon-plain-tag">$ git add .</pre><p>and commit your updates:</p><pre class="crayon-plain-tag">$ git commit -m "commit message"</pre><p>Now, send those updates to your remote repository:</p><pre class="crayon-plain-tag">$ git push origin master</pre><p></p><h3><strong>Build each commit</strong></h3><p>So whenever you want to check your build, just press the build status image and it will directly get into the Travis CI build.</p><p><img
+class="aligncenter wp-image-1881 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/11/travis2-1024x502.png" alt="travis2" width="630" height="308" /></p><p>So this is it, enjoy!</p><h2>Check it out</h2><p>Post&#8217;s original marterial is:</p><ul><li><a
+title="GitHub Docker C++ Client" href="https://github.com/lasote/docker_client" target="_blank">GitHub Docker-Client Repo</a>.</li><li><a
+title="travis ci build docker c++ client" href="https://travis-ci.org/lasote/docker_client" target="_blank">Docker-Client builds in Travis</a> CI and Deployment</li><li><a
+title="Docker Client Block biicode" href="https://www.biicode.com/lasote/docker_client" target="_blank">Docker-client biicode block</a> and with its automatically published releases</li></ul><p>If you liked this post please comment below. If you want to try biicode just click on the sidebar button and if you have any doubts check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a>, <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> and <a
+href="https://github.com/biicode">Github repos</a>.</p></div><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/">Automatically build and publish via Travis CI and Github</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/feed/</wfw:commentRss> <slash:comments>12</slash:comments> </item> </channel> </rss>

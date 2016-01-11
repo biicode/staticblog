@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; git</title> <atom:link href="http://blog.biicode.com/tag/git/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>biicode’s getting started with OpenSSL, Git and GitHub</title><link>http://blog.biicode.com/getting-started-with-openssl-git-and-github/</link> <comments>http://blog.biicode.com/getting-started-with-openssl-git-and-github/#comments</comments> <pubDate>Mon, 13 Apr 2015 11:10:33 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[Integrations]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[Github]]></category> <category><![CDATA[OpenSSL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2178</guid> <description><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on OpenSSL v1.0.2 biicode block to generate MD5 (Message-Digest Algorithm 5) and SHA-1 (Secure Hash Algorithm) hashes in your Terminal. Before anything else (of course), you’ll need Git, CMake &#62; 3.0, biicode &#62; 2.6 and both accounts: GitHub and biicode. Make sure you have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Today’s post is biicode’s getting started guide with Git and GitHub. We will depend on <a
+href="https://www.biicode.com/lasote/lasote/openssl/v1.0.2" target="_blank">OpenSSL v1.0.2 biicode block</a> to generate <a
+title="MD5 hash" href="http://es.wikipedia.org/wiki/MD5" target="_blank">MD5 (Message-Digest Algorithm 5)</a> and <a
+title="sha1 hash" href="http://es.wikipedia.org/wiki/Secure_Hash_Algorithm" target="_blank">SHA-1 (Secure Hash Algorithm)</a> hashes in your Terminal.</p><p><img
+class="aligncenter wp-image-2182 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/postgithub.png" alt="Getting started with Git and GitHub in biicode" width="640" height="300" /></p><p><span
+id="more-2178"></span></p><p>Before anything else (of course), you’ll need <a
+title="git" href="http://git-scm.com/downloads" target="_blank">Git</a>, CMake &gt; 3.0, <a
+title="download biicode" href="https://www.biicode.com/downloads" target="_blank">biicode &gt; 2.6</a> and both accounts: <a
+href="https://github.com/login/" target="_blank">GitHub</a> and <a
+title="biicode log in" href="https://www.biicode.com/accounts/login" target="_blank">biicode</a>.</p><p>Make sure you have all them, run <code>--version </code>in your terminal:</p><pre class="crayon-plain-tag">git --version
+cmake --version
+bii --version
+#install c++ tools for biicode (optional)
+bii setup:cpp</pre><p></p><h2>Now, let’s begin with Git and Github!</h2><p>Create a GitHub repo on the web page and copy the repo’s URL:</p><p><img
+class="aligncenter wp-image-2179 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/create_new_github_repo-1024x541.png" alt="Create a new GitHub repo" width="630" height="333" /></p><p><img
+class="aligncenter wp-image-2180 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/cloneit.png" alt="Copy the recently created GitHub repo's URL" width="1003" height="242" /></p><p>Now, go back to your terminal. Clone the repo (this clones an empty git folder for your project to live in), navigate to that folder and run <code>bii init -L </code>:</p><pre class="crayon-plain-tag"># clone the repo
+clone https://github.com/MariadeAnton/bii-init.git
+# get into its folder
+cd your_repo
+# initialize
+bii init -L</pre><p></p><h3>Write the code</h3><p>Create three files: a <em>sha1.</em>cpp a <em>md5.cpp</em> to generate both hashes, SHA1 and MD5, and also a biicode.conf file.</p><pre class="crayon-plain-tag">echo "//sha1 code goes here" &gt;&gt; sha1.cpp
+echo "//md5 code goes here" &gt;&gt; md5.cpp
+echo "# biicode.conf file" &gt;&gt; biicode.conf</pre><p><strong>sha1.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/sha.h"
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+int main(){
+    // The data to be hashed
+    const unsigned char data[] = "Hello, world!";
+    size_t length = sizeof(data);
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    SHA1(data, length, hash);
+    char mdString[SHA_DIGEST_LENGTH];
+    for(int i = 0; i &lt; (SHA_DIGEST_LENGTH/2) - 1; i++)
+           sprintf(&amp;mdString[i*2], "%02x", (unsigned int)hash[i]);
+        printf("sha1 digest: %s\n", mdString);
+    return 0;
+}</pre><p><strong>md5.cpp code</strong></p><pre class="crayon-plain-tag">#include "openssl/md5.h"
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main()
+{
+    unsigned char digest[MD5_DIGEST_LENGTH];
+    char string[] = "hello biicode!";
+    MD5((unsigned char*)&amp;string, strlen(string), (unsigned char*)&amp;digest);
+    char mdString[33];
+    for(int i = 0; i &lt; 16; i++)
+         sprintf(&amp;mdString[i*2], "%02x", (unsigned int)digest[i]);
+    printf("md5 digest: %s\n", mdString);
+    return 0;
+}</pre><p></p><h4>biicode.conf</h4><p>&#8211; biicode&#8217;s configuration file</p><p>Fill the biicode.conf file so bii gets the OpenSSL v1.0.2. dependencies your project needs via [requirements] and [includes] sections:</p><p><strong>biicode.conf</strong></p><pre class="crayon-plain-tag">[requirements]
+       lasote/openssl(v1.0.2): 3
+   [includes]
+       openssl/*: lasote/openssl/include</pre><p></p><h3><img
+class=" size-large wp-image-2185 aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/04/open_ssl_sha1_biicode-1024x500.png" alt="open_ssl_sha1_biicode" width="630" height="308" /></h3><h3></h3><h3>running your project</h3><p><code>bii build</code> and you’re ready to run your project and check the generated MD5 and SHA-1 hashes.</p><pre class="crayon-plain-tag">bii build
+cd bin
+./#run SHA1 or MD5
+#see the hashes, md5 digest and sha1 digest.</pre><p></p><h3>What bii files/folders does your repo need?</h3><p>Your GitHub repo only needs <em>biicode.conf</em> file, a <em>CMakeLists.txt</em> and your code. You can safely ignore bii/ and bin/ folders as they’re auxiliary. bii/ holds subfolders like cmake/, build/ or deps/, and bin/ contains the output binaries, frequently ignored too.</p><p>Create a .gitignore file and write bii and bin to ignore both folders:</p><pre class="crayon-plain-tag">echo "bii" &gt;&gt; .gitignore
+echo "bin" &gt;&gt; .gitignore</pre><p>Add and commit your changes:</p><pre class="crayon-plain-tag"># add all files but the ones ignored
+git add --all
+# commit message
+git commit -m "my OpenSSL example biicode block"</pre><p></p><h3>Share your code</h3><p>It&#8217;s finally time to share your code. Now all is setup to push your project to GitHub and publish a biicode block referring to your GitHub repo:</p><pre class="crayon-plain-tag"># push to GitHub
+git push origin master
+# publish to biicode
+bii publish -r</pre><p>Want a repo with the files needed? <a
+title="bii-init repo" href="https://github.com/MariadeAnton/bii-init" target="_blank">Just fork mine </a> and go!</p><pre class="crayon-plain-tag">clone https://github.com/your_github_username/bii-init.git
+cd bii-init
+bii init -L</pre><p>There are many options available to automatically publish (to biicode) from GitHub. We usually use Travis-ci and Appveyor to achieve so:</p><ul><li><a
+title="travis-ci and biicode" href="http://blog.biicode.com/automatically-build-publish-via-travis-ci-github/" target="_blank">Automaticall build and publish via Travis CI and GitHub</a></li><li><a
+title="biicode and appveyor" href="http://blog.biicode.com/appveyor-ci-windows-biicode/" target="_blank">Using Appveyor CI and Deploy for Windows</a></li></ul><p>For those who enjoy<a
+title="open multiple blocks biicode" href="http://docs.biicode.com/c++/advanced/open_blocks.html#working-with-any-published-block" target="_blank"> using multiple blocks at the same time</a>, we recommend using a git repo for each biicode block.</p><p>Don’t forget that all layouts are fully customizable via layout.bii file, check all the options available in the docs section: <a
+title="custom biicode layout" href="http://docs.biicode.com/c++/advanced/project.html" target="_blank">Customizing your layout</a>.</p><p>As always, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/getting-started-with-openssl-git-and-github/">biicode’s getting started with OpenSSL, Git and GitHub</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/getting-started-with-openssl-git-and-github/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>biicode’s new basics &#8211; git remote linking, collaborators and more</title><link>http://blog.biicode.com/git-remote-collaborators/</link> <comments>http://blog.biicode.com/git-remote-collaborators/#comments</comments> <pubDate>Tue, 10 Mar 2015 15:02:26 +0000</pubDate> <dc:creator><![CDATA[maria]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[biicode-internals]]></category> <category><![CDATA[collaborator]]></category> <category><![CDATA[feature]]></category> <category><![CDATA[git]]></category> <category><![CDATA[git remote]]></category> <category><![CDATA[Github]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=2134</guid> <description><![CDATA[<p>We have decided to move out of beta some of our coolest features and allow any user enjoy them. Today we are featuring git remote linking and block collaborators management but we release every two to three weeks so expect new features like these coming every fortnight or so. These functionalities are now available to [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-remote-collaborators/">biicode’s new basics &#8211; git remote linking, collaborators and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>We have decided to move out of beta some of our coolest features and allow any user enjoy them. Today we are featuring git remote linking and block collaborators management but we release every two to three weeks so expect new features like these coming every fortnight or so. These functionalities are now available to all biicode users. Enjoy! you can always suggest or upvote the existing features that are ahead in our roadmap <a
+href="http://web.biicode.com/community/roadmap/">here</a>.</p><p><span
+id="more-2134"></span></p><h2><b>Block collaborators management</b></h2><p>When we released collaborative blocks about half a year ago, we enabled this feature only for beta-premium accounts.<br
+/> There was &#8212; and there is &#8212; a lot to improve, but it makes sense you also get unlimited collaborators or admin for your unlimited free blocks.<br
+/> You can assign permissions to other users: assign them permissions over some of your blocks or give them full access to all your blocks. It’s up to you and the workflow you decide to set up.</p><p>To enable this just for one block, get into your block’s settings and assign permissions:</p><p><img
+class="aligncenter wp-image-2136 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/block-settings-1024x639.png" alt="Block settings include now collaborators" width="630" height="393" /></p><p>Want to enable full control of your account? Add administrators from your biicode web profile in the “Access management” section:</p><p><img
+class="aligncenter wp-image-2138 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/access-management-1024x503.png" alt="Access management section where you can tweak the collaborators permissions" width="630" height="309" /></p><p>That’s it &#8211; notifications and many other improvements are yet to come.</p><h2><b>Publishing git remote info<br
+/> </b></h2><p><img
+class="aligncenter wp-image-1148 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/git-hooks.jpg" alt="Integrate biicode using git hooks. Use git remote too." width="940" height="200" /></p><p>As you may recall, <a
+href="http://docs.biicode.com/c++/reference/commands/publish.html#bii-publish-command"><i>bii publish</i></a> command publishes your code to biicode.</p><p><code>bii publish -r </code> or <code>bii publish --remote</code> uses the git info within your block to publish it along with your block. This way everyone knows “who is” the git repo maintaining the biicode block and the specific commit creating each block version.</p><p>Just cd into your block and:</p><pre class="crayon-plain-tag">$ bii publish  -r</pre><p>This is how publishing with <code>bii publish --remote</code> looks like:</p><p><img
+class="aligncenter wp-image-2137 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2015/03/bii_publish_remote-1024x497.png" alt="Git remote publish is now available in biicode" width="630" height="306" /></p><p>You can mix bii publish parameters, for example:</p><pre class="crayon-plain-tag">bii publish -r --tag STABLE --versiontag v1.0.2</pre><p><a
+title="publishing biicode" href="http://docs.biicode.com/c++/publishing.html" target="_blank">Here&#8217;s more on publishing to biicode.</a></p><h2>The Future</h2><p>Biicode’s basic features<a
+href="http://docs.biicode.com/c++/release_notes.html"> keep getting better</a>, so there’s still more to come. Some things will work and others might need improvements, but it’s always fun to perfect our recipes with your feature requests and bug reports.</p><p>As you know, we&#8217;re available at our <a
+title="biicode forum" href="forum.biicode.com">forum </a>or <a
+title="biicode tagged questions" href="http://stackoverflow.com/questions/tagged/biicode">Stackoverflow tag</a>. You can also <a
+title="support mail" href="mailto:support@biicode.com" target="_blank">write us</a> and request features at <a
+href="http://web.biicode.com/community/roadmap/" target="_blank">our roadmap.</a></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-remote-collaborators/">biicode’s new basics &#8211; git remote linking, collaborators and more</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/git-remote-collaborators/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> <item><title>How to integrate biicode with git using git hooks</title><link>http://blog.biicode.com/git-hooks/</link> <comments>http://blog.biicode.com/git-hooks/#comments</comments> <pubDate>Wed, 20 Aug 2014 08:59:00 +0000</pubDate> <dc:creator><![CDATA[julia]]></dc:creator> <category><![CDATA[biicode]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[git]]></category> <category><![CDATA[git hooks]]></category> <category><![CDATA[github integration]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1130</guid> <description><![CDATA[<p>Our users have asked a lot for github integration. This can be easily achieved with git hooks. Git hooks are scripts which are executed when certain actions happen and they can run in the client or the server. Using git hooks For example I want to put my state machine library on github, and I [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-hooks/">How to integrate biicode with git using git hooks</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Our users have asked a lot for github integration. This can be easily achieved with git hooks. Git hooks are scripts which are executed when certain actions happen and they can run in the client or the server.</p><div
+id="attachment_1148" style="width: 610px" class="wp-caption aligncenter"><img
+class="wp-image-1148" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/git-hooks.jpg" alt="Integrate biicode using git hooks" width="600" height="128" /><p
+class="wp-caption-text">Credit: http://www.gianlucaguarini.com/</p></div><p><span
+id="more-1130"></span></p><h2>Using git hooks</h2><p>For example I want to put my state machine library on github, and I want to publish a new DEV version in biicode each time a push to master. My <a
+title="State machine block" href="http://www.biicode.com/hithwen/statemachine">state machine library is already on biicode</a>, but not in github, so first I create a <a
+href="https://github.com/hithwen/statemachine">new github repository</a> and then I go to my block folder and initialize a git repo inside:</p><pre class="crayon-plain-tag">$ cd /Users/hithwen/Desktop/state_machine/blocks/hithwen/statemachine
+$ git init
+$ git remote add origin https://github.com/hithwen/statemachine.git</pre><p>Now I can create the hook. In this case we will use the pre-push hook. Pre-action hooks run before the action actually happens. If the hook fails then the action is not performed. Ideally we would prefer to use a post-push hook but git does not support them.</p><pre class="crayon-plain-tag">$ vim .git/hooks/pre-push  # You need git &gt; 1.8.2</pre><p></p><pre class="crayon-plain-tag">#!/bin/sh
+remote="$1"
+url="$2"
+while read local_ref local_sha remote_ref remote_sha
+do
+	if [[ $remote_ref == "refs/heads/master" ]]; then
+		bii publish --tag DEV --msg "Git autopublish ${local_sha}"
+	fi
+done
+exit 0</pre><p>From now on each time time you push to your master branch in github your biicode DEV version will be updated. If you want to freeze a stable version you need to do:</p><pre class="crayon-plain-tag">$ bii publish --tag STABLE</pre><p></p><pre class="crayon-plain-tag">$ chmod a+x .git/hooks/pre-push
+$ git push --set-upstream origin master
+$ git push origin master
+INFO: Processing changes...
+*****************************
+***** Publishing public ****
+*****************************
+INFO: Please log in to perform this action. If you don't have an account sign up here: http://www.biicode.com
+Please enter a password for "hithwen" account:
+INFO: Publishing block: hithwen/statemachine
+INFO: Successfully published hithwen/statemachine: 12
+Counting objects: 5, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 288 bytes | 0 bytes/s, done.
+Total 3 (delta 2), reused 0 (delta 0)
+To https://github.com/hithwen/statemachine.git
+   f001366..2160752  master -&gt; master</pre><p>et voila!</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/git-hooks/">How to integrate biicode with git using git hooks</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/git-hooks/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

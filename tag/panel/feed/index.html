@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; panel</title> <atom:link href="http://blog.biicode.com/tag/panel/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Create a button panel with your 5&#8221; TFT Display with TouchScreen</title><link>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/</link> <comments>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/#comments</comments> <pubDate>Fri, 30 May 2014 10:00:19 +0000</pubDate> <dc:creator><![CDATA[franchuti]]></dc:creator> <category><![CDATA[try this out]]></category> <category><![CDATA[adafruit]]></category> <category><![CDATA[arduino]]></category> <category><![CDATA[button]]></category> <category><![CDATA[example]]></category> <category><![CDATA[panel]]></category> <category><![CDATA[tft]]></category> <category><![CDATA[touchscreen]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=456</guid> <description><![CDATA[<p>If you have calibrated your TFT &#38; RA8875 Driver, you&#8217;ll be able to use this post without any trouble. If you haven&#8217;t calibrated your TFT yet, look our last post where we explained how to achieve it. This example creates a button panel on the left side of your TFT. Each one of the buttons created have [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/">Create a button panel with your 5&#8221; TFT Display with TouchScreen</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>If you have calibrated your TFT &amp; RA8875 Driver, you&#8217;ll be able to use this post without any trouble.</p><p><a
+title="how to calibrate your tft touchscreen eeprom" href="http://blog.biicode.com/calibrate-your-5-0-tft-display-with-touchscreen-and-save-it-in-your-eeprom/" target="_blank">If you haven&#8217;t calibrated your TFT yet, look our last post where we explained how to achieve it.</a></p><p>This example creates a button panel on the left side of your TFT.</p><p><img
+class="aligncenter wp-image-462" title="Button Panel 5'' TFT TouchScreen &amp; RA8875 Driver" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/Button-Panel-TFT.jpg" alt="Button Panel TFT" width="630" height="402" /><span
+id="more-456"></span>Each one of the buttons created have different functionalities. There are  six buttons:  &#8220;Free&#8221; to draw free, &#8220;Random&#8221; to draw with all types of colours depending on when you press the button, &#8220;Triangle&#8221;, &#8220;Rectangle&#8221; and &#8220;Circle&#8221; to draw these polygons with different sizes, colours and positions,  and finally, &#8220;Clear&#8221;  button, cleans our TFT screen.</p><p>Just start a new project:</p><pre class="crayon-plain-tag">$ bii init project
+$ cd project
+~/project$ bii new username/tft --hello=cpp</pre><p>Then, just copy and paste the code below into your new main.cpp file to replicate this post:</p><p><strong>Do you like it?</strong> Then copy the following main.cpp file in yours, it should be located in a block of your project:</p><pre class="crayon-plain-tag">/******************************************************************
+ This is an example for the Adafruit RA8875 Driver board for TFT displays
+ ---------------&gt; http://www.adafruit.com/products/1590
+ The RA8875 is a TFT driver for up to 800x480 dotclock'd displays
+ It is tested to work with displays in the Adafruit shop. Other displays
+ may need timing adjustments and are not guanteed to work.
+ Adafruit invests time and resources providing this open
+ source code, please support Adafruit and open-source hardware
+ by purchasing products from Adafruit!
+ Written by Limor Fried/Ladyada for Adafruit Industries.
+ BSD license, check license.txt for more information.
+ All text above must be included in any redistribution.
+ ******************************************************************/
+#include "fenix/ra8875_button_panel/button_panel.h"
+Adafruit_RA8875 tft = Adafruit_RA8875(RA8875_CS, RA8875_RESET);
+tsMatrix_t _tsMatrix;
+ButtonPanel panel;
+//declaring needed variables
+unsigned long previousMillis = 0;
+unsigned long interval = 100;
+void waitingTouchEvents(tsPoint_t * point);
+void setup()
+{
+    Serial.begin(9600);
+    Serial.println("RA8875 start");
+    /* Initialise the display using 'RA8875_480x272' or 'RA8875_800x480' */
+    if (!tft.begin(RA8875_800x480)) {
+    Serial.println("RA8875 Not Found!");
+    while (1);
+    }
+    Serial.println("Found RA8875");
+    tft.displayOn(true);
+    tft.GPIOX(true);      // Enable TFT - display enable tied to GPIOX
+    tft.PWM1config(true, RA8875_PWM_CLK_DIV1024); // PWM output for backlight
+    tft.PWM1out(255);
+    // With hardware accelleration this is instant
+    tft.fillScreen(BLACK);
+    pinMode(RA8875_INT, INPUT);
+    digitalWrite(RA8875_INT, HIGH);
+    if (readCalibrationMatrix (&amp;_tsMatrix))
+        Serial.println("Calibration is OK! :)");
+    else
+        Serial.println("Calibration is wrong! Repeat the process!");
+    tft.touchEnable(true);
+    panel.draw();
+    Serial.print("Status: "); Serial.println(tft.readStatus(), HEX);
+    Serial.println("Waiting for touch events ...");
+}
+void loop()
+{
+    tsPoint_t point;
+    tsPoint_t calibrated;
+    unsigned long currentMillis = millis();
+    // waiting for touch events
+    waitingTouchEvents(&amp;point);
+    /* Calcuate the real X/Y position based on the calibration matrix */
+    calibrateTSPoint(&amp;calibrated, &amp;point, &amp;_tsMatrix );
+    //To avoid creating a lot of figures if you touch only once
+    //It's not BLOCKING your Arduino
+    if(currentMillis - previousMillis &gt; interval){
+        // save the last time you touched the button
+        previousMillis = currentMillis;
+        panel.OnTouch(calibrated);
+    }
+    //if we touch button Free, we don't need to wait OnTouch event
+    panel.OnDrawFree(calibrated);
+}
+void waitingTouchEvents(tsPoint_t* point)
+{
+  /* Clear the touch data object and placeholder variables */
+  memset(point, 0, sizeof(tsPoint_t));
+  /* Clear any previous interrupts to avoid false buffered reads */
+  uint16_t x, y;
+  tft.touchRead(&amp;x, &amp;y);
+  delay(1);
+  /* Wait around for a new touch event (INT pin goes low) */
+  while (digitalRead(RA8875_INT)){}
+  /* Make sure this is really a touch event */
+  if (tft.touched())
+  {
+    tft.touchRead(&amp;x, &amp;y);
+    point-&gt;x = x;
+    point-&gt;y = y;
+    Serial.print("Touch: ");
+    Serial.print(point-&gt;x); Serial.print(", "); Serial.println(point-&gt;y);
+  }
+  else
+  {
+    point-&gt;x = 0;
+    point-&gt;y = 0;
+  }
+}</pre><p>Just press <img
+class="alignnone wp-image-587 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/find-button.png" alt="find button" width="120" height="54" />in our <a
+title="Download Bii-IDE" href="https://www.biicode.com/downloads" target="_blank">Bii-IDE,</a> or execute in the terminal:</p><pre class="crayon-plain-tag">$ bii find</pre><p>and</p><p><img
+class="alignleft wp-image-588 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/05/upload-bii-button.png" alt="upload bii button" width="120" height="50" /></p><p>&nbsp;</p><p>&nbsp;</p><pre class="crayon-plain-tag">$ bii arduino:upload</pre><p><strong> Enjoy drawing!</strong></p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/">Create a button panel with your 5&#8221; TFT Display with TouchScreen</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/create-a-button-panel-with-your-5-tft-display-with-touchscreen/feed/</wfw:commentRss> <slash:comments>0</slash:comments> </item> </channel> </rss>

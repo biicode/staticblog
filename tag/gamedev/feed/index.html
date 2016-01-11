@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; Gamedev</title> <atom:link href="http://blog.biicode.com/tag/gamedev/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>Multiplatform Arcade Game in 6 steps with SDL and OpenGL</title><link>http://blog.biicode.com/multiplatform-arcade-sdl/</link> <comments>http://blog.biicode.com/multiplatform-arcade-sdl/#comments</comments> <pubDate>Thu, 23 Oct 2014 13:28:28 +0000</pubDate> <dc:creator><![CDATA[miguel]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[2D]]></category> <category><![CDATA[arcade game]]></category> <category><![CDATA[freeglut]]></category> <category><![CDATA[GLUI]]></category> <category><![CDATA[OpenGL]]></category> <category><![CDATA[SDL]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1850</guid> <description><![CDATA[<p>Biicode already has the first adaptations of libraries like SDL, glui or freeglut, which standardize the access to the windows system. With a little bit of design, and aiming to simplify the life of the programmer, I designed some classes that can be very useful for simple 2D games. The following images are screenshots of two [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/multiplatform-arcade-sdl/">Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>Biicode already has the first adaptations of libraries like SDL, glui or freeglut, which standardize the access to the windows system. With a little bit of design, and aiming to simplify the life of the programmer, I designed some classes that can be very useful for simple 2D games. The following images are screenshots of two examples included in examples/game_utils. The second one corresponds to the <a
+title="shooting game c++" href="http://www.biicode.com/examples/post_game" target="_blank">shooting game application</a> we&#8217;ll develop in this mini-tutorial:</p><p><img
+class="aligncenter wp-image-1854" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/game_test.png" alt="game_test_SDL" width="630" height="498" /></p><p><span
+id="more-1850"></span></p><h2>sdl and opengl with biicode</h2><p>Most of the &#8220;Arcade&#8221; games contain the same types of elements: scroll-able backgrounds, sprites (static or animated), text info  and sound. With those elements, each game determines the specific logic, with its stages, levels, and interactions. It is also necessary to interact with the game via the keyboard, mouse, joystick etc.</p><p>In <a
+title="Arcade Game classes " href="http://www.biicode.com/miguel/game_utils" target="_blank">miguel/game_utils</a> the class <b>OpenglGame </b>is provided to easily design a 2D game simplifying the basic use of SDL and OpenGL libs.</p><p>Check the <a
+href="http://www.biicode.com/examples/post_game" target="_blank">post&#8217;s example game </a>immediately by executing:</p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii open examples/post_game
+~$ bii cpp:build
+~$ cd bin
+~$ #execute the game!</pre><p>Let&#8217;s take a step by step look into our game:</p><h3>1. <strong>Create a project and a block to hold your code.</strong></h3><p></p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii new username/simple</pre><p>Create the file game.cpp into blocks/examples/simple directory and put into it the code below to create a simple window:</p><pre class="crayon-plain-tag">#include "miguel/game_utils/OpenglGame.h"
+class MiGame : public OpenglGame
+{
+; //nothing to do
+} mainGame;
+int main(int argc, char** argv) //SDL requires this kind of main
+{
+mainGame.execute();
+return 0;
+}</pre><p>Let’s retrieve the dependencies to the OpenglGame:</p><pre class="crayon-plain-tag">bii find</pre><p>Biicode uses by default with MinGW, so if you want to build with Visual Studio execute:</p><pre class="crayon-plain-tag">bii cpp:configure -G “Visual Studio 10”</pre><p>Build the example:</p><pre class="crayon-plain-tag">bii cpp:build</pre><p>If everything worked out properly, a binary file was created into your bin folder: “examples_simple_game” .</p><p>Execute and check what happens: a simple window should appear.</p><p>If you compiled using Visual Studio, in addition to it, the system console also popups. To remove this unwanted additional window, we have to set the &#8220;SUBSYSTEM&#8221;  property in Visual Studio for the exe target. We do this by adding the following lines to CMakeLists.txt after the ADD_BIICODE_TARGETS() line:</p><pre class="crayon-plain-tag">if(MSVC)
+    set_target_properties(${BII_game_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p></p><h3>2. <b>Using the keyboard</b></h3><p>Re-act according to keystrokes is quite simple, you only have to overwrite the onKeyboardDown virtual method. The following lines allow to end the application when the ESC key is pressed.</p><pre class="crayon-plain-tag">void onKeyboardDown(SDL_KeyboardEvent k){
+        if(k.keysym.sym==SDLK_ESCAPE)this-&gt;exit();
+}</pre><p></p><h3>3. <b>Drawing a background  </b></h3><p>Managing images and textures has always been a relatively tedious and repetitive  task in OpenGL.</p><p><b>OpenglGame </b>includes a png file reader and the Slide class to create backgrounds easily. The loading of textures, thus the creation of backgrounds and Sprites, must take place within a drawing context. In <b>OpenglGame </b>we do this redefining the setup() method.</p><p>Although it is possible to create sophisticated backgrounds, we will make use of the simplicity provided by the OpenglGame class for a basic background:</p><pre class="crayon-plain-tag">bool setup(){
+setBackground(new Slide(getTexture("data/background.png")));
+return true;
+}</pre><p>Download our <a
+title="data folder.zip" href="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/data_folder.zip" target="_blank">data folder utils .zip</a> here and place the folder into <em>blocks/username/simple</em>, we&#8217;re using three different images and a font in this tutorial. For example this is our background:</p><p><img
+class="aligncenter wp-image-1852 size-large" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/background-1024x524.png" alt="Game background using SDL and OpenGL" width="630" height="322" /></p><p>Although everything compiles correctly, to run the program, it is necessary to maintain the relative path between the executable and the data. Add the following lines to your CMakeLists.txt right after INIT_BIICODE_BLOCK(). With this lines, the files in the data directory will be copied to the binary dir and to the IDE runtime directory:</p><pre class="crayon-plain-tag">file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})</pre><p>Also update your dependencies.bii file, located into game/blocks/username/post_game, this tells biicode to also retrieve the local .png and .ttf files on our data folder:</p><pre class="crayon-plain-tag">game.cpp + data/*.png data/*.ttf</pre><p>If you compile again, you&#8217;d see a window that has our image as background. In this case it has not established any special behavior on the background dimensions, so a default scale of 1:1 in pixels is applied, and the image will stick to the bottom left edges of the window.  OpenglGame class defines its own coordinate system, placing the origin  0,0 at the lower left corner of the window. You have to be careful because events like mouse clicks and images are normalized to this unique coordinate system.</p><h3>4. <b>Loading, drawing and moving our first sprite:</b></h3><p>Let´s include a simple sprite loading a png image.  We add the crosshair variable to MiGame class to allows us to access the sprite attributes later:</p><pre class="crayon-plain-tag">Sprite *crosshair;</pre><p>In the setup we include the creation of the Sprite, and we add it to the list of Sprites managed by MiGame.</p><pre class="crayon-plain-tag">crosshair=new Sprite(getTexture("data/crossair.png"));
+addSprite(crosshair);</pre><p>Once created the crosshair, we&#8217;ve got to follow the mouse movement over the window. Just define the method onMouseMotion()  and make the position of the sprite to match the mouse position:</p><pre class="crayon-plain-tag">void onMouseMotion(SDL_MouseMotionEvent mmevent){
+    crosshair-&gt;pos=Vector2D(mmevent.x,mmevent.y);
+}</pre><p>If we compile and run the example, we’ll  see that it works, but is little aesthetic that we continue seeing the mouse cursor when moving the crosshair. Therefore, in the setup, we will tell SDL to hide the mouse cursor:</p><pre class="crayon-plain-tag">SDL_ShowCursor(SDL_DISABLE);</pre><p></p><h4>4.1. <strong>Adding an animated sprite:</strong></h4><p>Although there are many ways to define a sequence of images that give the impression of movement in a sprite, one of the most common is to have a matrix of drawings with the consecutive frames of the animation.</p><p>To work comfortably with it, we&#8217;ve developed the SpriteSequence class as an specialization of the class Sprite. To use it you have to include the header file:<strong><strong><br
+/> </strong></strong></p><pre class="crayon-plain-tag">#include "miguel/game_utils/SpriteSequence.h"</pre><p>In this case we will add a butterfly, which I have obtained from google searching “butterfly sprite sequence” :</p><p><img
+class="aligncenter wp-image-1851 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/butterfly.png" alt="butterfly sprite" width="700" height="94" /></p><p>The animation is defined by a 1&#215;7 matrix, something that we have to specify when creating the SpriteSequence:</p><pre class="crayon-plain-tag">butterfly= new SpriteSequence(getTexture("data/butterfly.png"),7,1,100,true,200,200);
+addSprite(butterfly);</pre><p></p><h3>5. <strong>Moving the sprite:</strong></h3><p>As in most games, there is a cyclic method responsible of the game logic that we usually redefine: <strong>gameLoop ()</strong>. Since this method is implented in the base class to manage the sprite animations, when redefined, we&#8217;ll include a call to the base class function. We add a very primitive intelligence to the butterfly based on Dice, a game_utils class which allows us to obtain random numbers in a simple way.</p><h3>6. <strong>Printing Scores:</strong></h3><p>Finally, we will set a score, based on the number of shots and the number of hits. So we declare two integer variables that record these values​​, write the logic of shooting and we printing the result as overlay info of the game. Making use of the supplied font loading class on the method <strong>drawGame()</strong>.</p><h3><strong>Results:</strong></h3><p>So your game.cpp file should look like this one:</p><pre class="crayon-plain-tag">#include "miguel/game_utils/OpenglGame.h"
+#include "miguel/game_utils/SpriteSequence.h"
+#include "miguel/game_utils/Dice.h"
+#include "stdio.h"
+class MiGame : public OpenglGame
+{
+	Sprite *crosshair;
+	Sprite *butterfly;
+	Sprite *squirrel;
+	int hits, shots;
+    void onKeyboardDown(SDL_KeyboardEvent k){
+        if(k.keysym.sym==SDLK_ESCAPE)this-&gt;exit();
+	}
+     bool setup(){
+		 SDL_ShowCursor(SDL_DISABLE);
+		 setBackground(new Slide(getTexture("data/background.png")));
+		 crosshair=new Sprite(getTexture("data/crossair.png"), 100,100);
+		 butterfly= new SpriteSequence(getTexture("data/butterfly.png"),7,1,100,true,200,400);
+		 addSprite(butterfly);
+		 addSprite(crosshair);
+		 hits=0;shots=0;
+		return true;
+	 }
+   void onMouseMotion(SDL_MouseMotionEvent mmevent){
+	   crosshair-&gt;pos=Vector2D(mmevent.x,mmevent.y);
+   }
+   void gameLoop()
+   {
+	   OpenglGame::gameLoop();
+	   if(Dice::Int(100)==1)
+		   butterfly-&gt;vel=Vector2D(Dice::Double(250,-250),Dice::Double(30,-30));
+	   if((butterfly-&gt;pos.x&lt;100)&amp;&amp;(butterfly-&gt;vel.x&lt;0))butterfly-&gt;vel.x=-butterfly-&gt;vel.x;
+	   if((butterfly-&gt;pos.x&gt;getWidth())&amp;&amp;(butterfly-&gt;vel.x&gt;0))butterfly-&gt;vel.x=-butterfly-&gt;vel.x;
+	   if((butterfly-&gt;pos.y&lt;100)&amp;&amp;(butterfly-&gt;vel.y&lt;0))butterfly-&gt;vel.y=-butterfly-&gt;vel.y;
+	   if((butterfly-&gt;pos.y&gt;getHeight())&amp;&amp;(butterfly-&gt;vel.y&gt;0))butterfly-&gt;vel.y=-butterfly-&gt;vel.y;
+	   butterfly-&gt;horizontal_flip=butterfly-&gt;vel.x&gt;0;
+   }
+   void onMouseButtonDown(SDL_MouseButtonEvent mb){
+	   if(mb.button==SDL_BUTTON_LEFT){
+		   shots++;
+		   if((butterfly-&gt;pos-Vector2D(mb.x,mb.y)).module()&lt;20){
+			   hits++;
+			   butterfly-&gt;pos=Vector2D(Dice::Double(getWidth(),100),Dice::Double(getHeight(),100));
+		   }
+	   }
+   }
+	void drawGame(){
+		char text[100];
+		OpenglGame::drawGame();
+		sprintf(text,"Hits/Shots %d/%d",hits,shots);
+		drawText("data/Bitwise.ttf",20,text,50,getHeight()-50,255,255,150,true);
+	}
+} mainGame;
+int main(int argc, char** argv)
+{
+mainGame.execute();
+return 0;
+}</pre><p>And this is the CMakeLists.txt:</p><pre class="crayon-plain-tag"># This CMakeLists.txt file helps defining your block building and compiling
+# Include the main biicode macros and functions
+# To learn more about the CMake use with biicode, visit http://docs.biicode.com/c++/building.html
+# Or check the examples below
+include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+ADD_BIICODE_TARGETS()
+if(MSVC)
+    set_target_properties(${BII_game_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif()</pre><p>You&#8217;re ready to go,  wanna try other examples available?</p><p><img
+class="aligncenter wp-image-1855 size-full" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/space_game.png" alt="Space game developed with SDL and OpenGL" width="652" height="515" /></p><pre class="crayon-plain-tag">~$ bii init game
+~$ cd game
+~$ bii open examples/game_utils
+~$ bii cpp:build
+~$ cd bin
+~$ #execute the games!</pre><p></p><h3>Enjoy SDL and Open GL in biicode!</h3><p><a
+href="http://www.opengl.org/"><img
+class=" wp-image-2046 size-medium aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/OpenGL_in_biicode-300x125.png" alt="Open GL working fine in biicode" width="300" height="125" /></a></p><p>&nbsp;</p><p><a
+href="https://www.libsdl.org"><img
+class=" wp-image-1856 size-medium aligncenter" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/10/preview-300x174.png" alt="SDL lib" width="300" height="174" /></a></p><p>Hope you enjoy this new feature and, as always, we look forward to read what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com/">docs</a>, <a
+href="http://forum.biicode.com/">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/multiplatform-arcade-sdl/">Multiplatform Arcade Game in 6 steps with SDL and OpenGL</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/multiplatform-arcade-sdl/feed/</wfw:commentRss> <slash:comments>3</slash:comments> </item> <item><title>Flappy Bii game</title><link>http://blog.biicode.com/flappy-bii-game/</link> <comments>http://blog.biicode.com/flappy-bii-game/#comments</comments> <pubDate>Thu, 28 Aug 2014 08:51:43 +0000</pubDate> <dc:creator><![CDATA[biicode Team]]></dc:creator> <category><![CDATA[Gamedev]]></category> <category><![CDATA[try this out]]></category> <category><![CDATA[Angry Birds]]></category> <category><![CDATA[Box2D]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[cpp]]></category> <category><![CDATA[Flappy Bii]]></category> <category><![CDATA[Flappy Bird]]></category> <category><![CDATA[GLUI]]></category> <category><![CDATA[GLUT]]></category> <category><![CDATA[Learn to code]]></category> <category><![CDATA[Learn to develop videogames]]></category> <category><![CDATA[Nacho Lasheras]]></category> <category><![CDATA[Orcs and Fireballs]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1321</guid> <description><![CDATA[<p>As Nacho Lasheras reminds us when he encourages anyone to start developing games, take your time! Go step by step. Biicode offers a clear example of how easily you can develop a simple indie game using Box2D and GLUT. Start playing with Flappy Bii!!</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii game</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>As <a
+href="https://twitter.com/fanatiko">Nacho Lasheras</a> points out in his blog <a
+href="http://orcsandfireballs.com/post/74979339105/empezar-a-programar-juegos">Orcs and Fireballs</a></p><blockquote><p>Once you’ve grasped the basics of coding (variables, execution flow, conditions, loops, functions, etc.) you can start learning how to develop “easy” games. It’s important to go step by step. Do not try to rush and start programming in C++, OpenGL and Android at the same time because it can be overwhelming.</p></blockquote><p><img
+class="alignright size-medium wp-image-1368" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/flappy_bii_biicode.png" alt="Falppy Bii game developed with Box2D and GLUT" width="1" height="1" /></p><p><img
+class="aligncenter wp-image-1373" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/flappy_bii_biicode_JPG.jpg" alt="Flappy Bii game developed using Box2D and GLUT." width="630" height="630" /></p><p><span
+id="more-1321"></span></p><p>Despite agreeing with the bottomline we do encourage gamers to leave their fears behind and fiddle with C++. Biicode makes things so much easier that developing the simplest games is at almost anyone’s reach. To become an excellent programer like Nacho though a lot of hard work and practice is required. And that’s precisely what our interns David Virseda and Santiago Hurtado did. Based on the Flappy Bird idea they developed using biicode the Flappy Bii game. Developing Flappy Bii is simple, you just have to follow these steps.</p><h2>Make your own Flappy Bii game using Box2D and GLUI libraries.</h2><p>Box2D is a library with biicode. Box2D is an open source C++ engine to simulate rigid bodies in 2D, it is also used in different video-games AngryBirds motor engine.</p><div
+id="attachment_1344" style="width: 410px" class="wp-caption alignright"><img
+class="wp-image-1344" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/08/boxbirds-500x248.png" alt="Box2D was used to develop Flappy Bii game and you can find it in biicode" width="400" height="198" /><p
+class="wp-caption-text">Credit: http://blog.blprnt.com/</p></div><p>GLUT (OpenGL UtilityToolkit) is an open source library that we use in our game to develop graphics, windows management and mouse control, and to draw all the graphic elements of the game. To use BOX2D and GLUT, you only have to include these in your code:</p><pre class="crayon-plain-tag">#include "glui/glutwrapper/glut.h"
+#include "erincatto/box2d/box2d/box2d.h"</pre><p>Find your dependency to these libraries with ~$ bii find, and the files box2d.h and glui.h will be downloaded along with the dependencies needed into the deps folder at your project. Follow these steps to play Flappy Bii game: Create a new project:</p><pre class="crayon-plain-tag">~$ bii init flappy_bii</pre><p>Open the code block that contains the game functionality on Biicode:</p><pre class="crayon-plain-tag">~/$ cd flappy_bii
+~/flappy_bii$ bii open xunty/flappy_bii</pre><p>Finally, compile and execute your program and you’re ready to play! Compile:</p><pre class="crayon-plain-tag">~/flappy_bii$ bii cpp:build</pre><p>Execute: For Windows, double click on the .exe created.</p><p>For Linux and MacOS:</p><pre class="crayon-plain-tag">~/flappy_bii$ .bin/xunty_flappy_bii_main</pre><p>To play Flappy Bii game, all you have to do is clicking the right mouse button in the game’s window to make the bii fly and pass between the gaps of the columns.</p><div
+align="center"><iframe
+width="552" height="167" src="//itch.io/embed/10925?dark=true&amp;linkback=true" frameborder="0"></iframe></div><p>Enjoy!</p><p>P.S.:</p><p>→ If you find ANY kind of trouble please take a look at the <a
+href="http://docs.biicode.com/c++/gettingstarted.html#installing-biicode-and-c-c-tools">Docs</a> and/or the <a
+href="https://forum.biicode.com">Forum</a> to find help and assistance.</p><p>→ If you are looking for motivation and a formed opinion of the gamedev industry keep going back to <a
+href="http://orcsandfireballs.com/">Orcs and Fireballs</a>.</p><p></p><div
+id="ContainerFriendsSubscribe"><div
+class="mc_custom_border_hdr">Stay tuned</div><style>.widget_mailchimpsf_widget .widget-title {
+		line-height: 1.4em;
+		margin-bottom: 0.75em;
+	}
+	#mc_subheader {
+		line-height: 1.25em;
+		margin-bottom: 18px;
+	}
+	.mc_merge_var {
+		margin-bottom: 1.0em;
+	}
+	.mc_var_label,
+	.mc_interest_label {
+		display: block;
+		margin-bottom: 0.5em;
+	}
+	.mc_input {
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+		width: 100%;
+	}
+	.mc_input.mc_phone {
+		width: auto;
+	}
+	select.mc_select {
+		margin-top: 0.5em;
+		width: 100%;
+	}
+	.mc_address_label {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+		display: block;
+	}
+	.mc_address_label ~ select {
+		width: 100%;
+	}
+	.mc_list li {
+		list-style: none;
+		background: none !important;
+	}
+	.mc_interests_header {
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_interest label,
+	.mc_interest input {
+		margin-bottom: 0.4em;
+	}
+	#mc_signup_submit {
+		margin-top: 1.5em;
+		width: 80%;
+	}
+	#mc_unsub_link a {
+		font-size: 0.75em;
+	}
+	#mc_unsub_link {
+		margin-top: 1.0em;
+	}
+	.mc_header_address,
+	.mc_email_format {
+		display: block;
+		font-weight: bold;
+		margin-top: 1.0em;
+		margin-bottom: 0.5em;
+	}
+	.mc_email_options {
+		margin-top: 0.5em;
+	}
+	.mc_email_type {
+		padding-left: 4px;
+	}</style><div
+id="mc_signup"><form
+method="post" action="#mc_signup" id="mc_signup_form"> <input
+type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" /> <input
+type="hidden" name="mcsf_action" value="mc_submit_signup_form" /> <input
+type="hidden" id="_mc_submit_signup_form_nonce" name="_mc_submit_signup_form_nonce" value="528a10d57f" /><div
+class="mc_form_inside"><div
+class="updated" id="mc_message"></div><div
+class="mc_merge_var"> <label
+for="mc_mv_EMAIL" class="mc_var_label mc_header mc_header_email">Email Address</label> <input
+type="text" size="18" placeholder="" name="mc_mv_EMAIL" id="mc_mv_EMAIL" class="mc_input"/></div><div
+class="mc_signup_submit"> <input
+type="submit" name="mc_signup_submit" id="mc_signup_submit" value="Send" class="button" /></div></div></form></div></div><p></p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/flappy-bii-game/">Flappy Bii game</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/flappy-bii-game/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>

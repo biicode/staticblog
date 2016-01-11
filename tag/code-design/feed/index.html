@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><rss
+version="2.0"
+xmlns:content="http://purl.org/rss/1.0/modules/content/"
+xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:atom="http://www.w3.org/2005/Atom"
+xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+> <channel><title>biicode Blog &#187; code design</title> <atom:link href="http://blog.biicode.com/tag/code-design/feed/" rel="self" type="application/rss+xml" /><link>http://blog.biicode.com</link> <description>Almost daily C and C++ jibby jabba</description> <lastBuildDate>Sun, 16 Aug 2015 07:58:20 +0000</lastBuildDate> <language>en-US</language> <sy:updatePeriod>hourly</sy:updatePeriod> <sy:updateFrequency>1</sy:updateFrequency> <generator>http://wordpress.org/?v=4.2.5</generator> <item><title>A Tiny Metaprogramming Library</title><link>http://blog.biicode.com/tiny-metaprogramming-library/</link> <comments>http://blog.biicode.com/tiny-metaprogramming-library/#comments</comments> <pubDate>Tue, 16 Dec 2014 11:14:14 +0000</pubDate> <dc:creator><![CDATA[Manu Sánchez]]></dc:creator> <category><![CDATA[Meta-programming]]></category> <category><![CDATA[c++]]></category> <category><![CDATA[code design]]></category> <category><![CDATA[functions]]></category> <category><![CDATA[template metaprogramming]]></category> <category><![CDATA[tmp]]></category> <guid
+isPermaLink="false">http://blog.biicode.com/?p=1975</guid> <description><![CDATA[<p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++. It&#8217;s not a funny way to play with the compiler only, template metaprogramming is a powerful tool for C++ [&#8230;]</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library/">A Tiny Metaprogramming Library</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></description> <content:encoded><![CDATA[<p>It seems people like template metaprogramming. After three successful blog posts about tmp &#8211; with 5k views on average each one &#8211; I&#8217;m sure people like and even want to understand that obscure corner of C++.</p><p>It&#8217;s not a funny way to play with the compiler only, <strong>template metaprogramming is a powerful tool for C++ developers and something that many of us must deal with everyday.</strong></p><div
+id="attachment_1977" style="width: 1034px" class="wp-caption aligncenter"><img
+class="size-full wp-image-1977" src="http://blog.biicode.com/wp-content/uploads/sites/2/2014/12/metaprogramming.jpg" alt="Template metaprogramming in C++ with biicode" width="1024" height="768" /><p
+class="wp-caption-text">by <a
+href="http://photo.net/photodb/photo?photo_id=6522423&amp;size=lg">Shane Willis</a></p></div><p><span
+id="more-1975"></span></p><h2>Why is metaprogramming important?</h2><p>C++ is a great language to write applications in, but it&#8217;s even better to write libraries. You can write abstract, natural (readable) and performant generic APIs.<br
+/> To me the best example is the <code>vector</code> template (The algebraic vector, not the C++ <code>std::vector</code> one):</p><pre class="crayon-plain-tag">template&lt;typename T&gt;
+struct vector3
+{
+    vector3() : vector3{0, 0, 0} {}
+    vector3(T xx, T yy, T zz) :
+        x{xx},
+        y{yy},
+        z{zz}
+    {}
+    vector3&amp; operator+=(const vector3&amp; v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+        return *this;
+    }
+    friend vector3 operator+(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        //Want speed, pass by value?
+        //I prefer to have a clear interface,
+        //but that's another topic...
+        vector3 cpy{lhs};
+        return cpy += rhs;
+    }
+    friend bool operator==(const vector3&amp; lhs, const vector3&amp; rhs)
+    {
+        return std::tie(lhs.x,lhs.y,lhs.z) == std::tie(rhs.x,rhs.y,rhs.z);
+    }
+    T x, y, z;
+};</pre><p>Using that <code>vector3</code> template is easy and it resembles algebraic notation:</p><pre class="crayon-plain-tag">vector3&lt;int&gt; a{1,2,3}, b{4,5,6};
+vector3&lt;int&gt; c = a + b;
+bool eq = c == vector3&lt;int&gt;{5,7,9};</pre><p>The same for a hypothetical <code>matrix</code> template:</p><pre class="crayon-plain-tag">matrix&lt;int,2,2&gt; m{ {1,2}, {3,4} };
+m.row(0) = m.row(0)*4 + m.row(1);</pre><p><em>Bjarne Stroupstrup does a great in-depth description of the design of this kind of matrix template in his book &#8220;The C++ Programming Language, 4th Edition&#8221;</em></p><p>Compare that with the <em>pure OO</em> alternative of other languages:</p><pre class="crayon-plain-tag">Matrix&lt;int&gt; a = new Matrix&lt;int&gt;(2,2, 1,2,3,4);
+Matrix&lt;int&gt; b = new Matrix&lt;int&gt;(2,2, 5,6,7,8);
+Matrix&lt;int&gt; c = new Matrix&lt;int&gt;(2,2);
+c = a.add(b); a.row(0) = a.row(0).mul(4).add(a.row(0));</pre><p>There are a few points that should be noted here:</p><h4>Don&#8217;t leave to runtime decisions based on properties you know at compile-time</h4><p>In general that only serves to increase runtime overhead.</p><p>In the matrix example, the matrix dimensions are known at compile time. Despite having some kind of <a
+href="http://en.wikipedia.org/wiki/Variable-length_array">VLA</a> allocated on the stack, it hasn&#8217;t got much sense to introduce dynamic memory allocation here, with all its cache misses, alloc/dealloc/memory-footprint overheads, etc.</p><p>Consider also the matrix&#8217;s design. How you would implement this?<br
+/> What comes to my mind is a <code>matrix_slice</code> class with all the algebraic operations between matrix slices, where a slice is only a portion of a matrix (Maybe <code>matrix_view</code> is a common name for this thing with non-owning semantics).<br
+/> The key point here is that a matrix row can bee seen as a slice, a submatrix can be seen as a slice, and even a matrix can be seen as a slice. Implement matrix ops only in one site (the <code>slice</code>) then propagate them along your implementation via composition, inheritance, type aliasing, whatever you like.</p><p>Even if we decide to use the inheritance approach (<code>matrix</code> inherits from <code>slice</code>, <code>row</code> inherits from <code>slice</code>, etc), C++ has great (crazy) things to achieve this in a performant way, like <a
+href="http://en.wikipedia.org/wiki/Curiously_recurring_template_pattern">CRTP</a>; or going further enough, using the classic dynamic dispatch <a
+href="http://bannalia.blogspot.com.es/2014/05/fast-polymorphic-collections.html">the right way</a>.</p><p><strong>Performance matters. C++ is a language for performance.</strong> If that was not the case, I would be using python or even ruby. But we are here because we need to squeeze down each CPU cicle. Nowadays that performance is only provided when understanding how hardware works and giving enough information to your compiler. C++ does both thing pretty well, or at least it gives you the opportunity to do them properly.</p><p>Don&#8217;t throw away those opportunities writing oh-my-runtime designs. Use your type system (literally); understand your compiler capabilities.</p><h4>OO is not the 42 of programming</h4><p>&#8220;<em>Everything must be an object, there are only classes, classes with their methods. Model your system with objects talking each other&#8221;</em> That&#8217;s <strong>The Big Lie Of Object Oriented Programming</strong>.</p><p>You can&#8217;t model every system with objects only. There are some actors in that system, abstracts things that cannot be represented easily as an &#8220;<em>object</em>&#8220;. A function is a function, don&#8217;t force it to be something else. I want a set of functions, not a class full of static methods.It&#8217;s true. It all boils down to <code>std::cos()</code> vs. <code>Math.cos()</code> but what&#8217;s relevant to me is the design of the code.</p><p>Take a look at the above OO example again:</p><pre class="crayon-plain-tag">c = a.add(b);
+a.row(0) = a.row(0).mul(4).add(a.row(0));</pre><p><code>b</code> is added to <code>a</code>? Addition is a binary operation, that means that neither of their operands have more importance than the other, they just participate in the operation. <code>b</code> is not being added to <code>a</code>, it&#8217;s the addition of <code>a</code> and <code>b</code> what produces a result, <code>c</code>.</p><p>That&#8217;s a problem. Modeling a binary operation as an object method is a very big mistake. There are really three things playing here: the operator, the first operand, and the second operand. <strong>OO forgets about the first one, with one object playing two roles at the same time</strong>.</p><p>Am I being pedant? Consider this:</p><pre class="crayon-plain-tag">c = b.add(a);</pre><p>Is there any semantic difference with the previous example?</p><p>As I said, there aren&#8217;t objects only in a system. Thankfully, syntax apart, C++ takes this the right way, differentiating between functions and objects. In C++ addition there are three things: two object operands and the operator; where a C++ operator is just a fancy syntax for a non-member function.</p><p><strong>There are different categories in a system, everything cannot be modeled directly as an object</strong>. The power of C++ comes from its multiparadigm spirit, allowing us to decide what programming paradigm (OO, structured, functional, generic&#8230;) is better for each situation.</p><h3>Ok, a cool dissertation about C++ over Java, but why metaprogramming?</h3><p>Because implementing these clear, performant, and almost-static interfaces is not that easy.</p><p>You want to automate the implementation of those libraries, or at least describe the most common cases in a generic way, where being generic does not mean parametrizing the element type only&#8230; Generics are only a simple toy for kids, to make them think that their libraries are generic, but it&#8217;s really a casting party at Mr. Autoboxing house.<br
+/> Being generic means that if I manage a dynamic array, I don&#8217;t know the specific policy for dynamic memory the user wants. I just parametrize it:</p><pre class="crayon-plain-tag">template&lt; class T,
+          class Allocator = std::allocator&lt;T&gt;
+&gt; class vector;</pre><p>The problem is that that&#8217;s only the cool interface. The implementation is full of template madness like policy classes, multiple inheritance, template specializations, etc.</p><p>Template meta-programming helps to describe and implement that kind of generic designs, but its syntax makes your maintainer commit suicide just after approaching the codebase.</p><h2>What can we do?</h2><p>TMP is an ugly metalanguage. But its usage can be improved a lot if you think of it as a bastard version of Haskell, what I coined as <a
+href="http://isocpp.org/blog/2014/11/metaprogramming-with-modern-c-the-haskell-metaphor">&#8220;<em>The Haskell Metaphor</em>&#8220;</a>.</p><p>Since a pure bottom-up approach <a
+href="http://www.meetup.com/Madrid-C-Cpp/events/205900412/">didn&#8217;t work as expected</a>, let&#8217;s try another approach: <strong>Learn high-level template metaprogramming developing your own <code>Tiny Metaprogramming Library</code></strong>.</p><h3>The Tiny Metaprogramming Library</h3><p>I&#8217;m a big fan of GitHub, so my version of the Tiny Metaprogramming Library <a
+href="https://github.com/Manu343726/tiny-metaprogramming-library">will be hosted on my github account</a>.</p><p>Hosting the library is one thing, but using it is a completely different beast.<br
+/> Deployment of C and C++ libraries is a so complex process, since each platform needs its own binary that should be compiled and linked with specific settings. Having a truly portable C++ library is a mess. Meanwhile most modern languages are shipped with their own dependency management system, where setting up a library just becomes using it via an <code>import</code>-like sentence and a <code>install dependencies</code> command.</p><p><a
+href="https://www.biicode.com">biicode</a> is a tool focused on giving the power of automatic dependency management to C and C++. It&#8217;s CMake based, so making an existing project work with biicode is easy. Its even easier to manage a project on biicode from scratch.<br
+/> The tool works like a charm, resolving all the dependencies and generating pretty projects via CMake generators just <code>#include</code>ing what you need:</p><pre class="crayon-plain-tag">include(${CMAKE_HOME_DIRECTORY}/biicode.cmake)
+include(boost/install/install) #Magic happens here
+# Initializes block variables
+INIT_BIICODE_BLOCK()
+# Actually create targets: EXEcutables and libraries.
+ADD_BIICODE_TARGETS()
+BII_BOOST(1.57.0)
+find_package(Boost COMPONENTS system coroutine REQUIRED)
+target_link_libraries(${BII_BLOCK_TARGETS} PUBLIC ${Boost_LIBRARIES})
+target_compile_options(${BII_BLOCK_TARGETS} PUBLIC -std=c++11)</pre><p></p><hr
+/><p></p><pre class="crayon-plain-tag">#include &lt;boost/coroutine/all.hpp&gt;
+#include &lt;iostream&gt;
+using namespace boost::coroutines;
+void cooperative(coroutine&lt;void&gt;::push_type &amp;sink)
+{
+    std::cout &lt;&lt; "Hello";
+    sink();
+    std::cout &lt;&lt; "world";
+}
+int main()
+{
+    coroutine&lt;void&gt;::pull_type source{cooperative};
+    std::cout &lt;&lt; ", ";
+    source();
+    std::cout &lt;&lt; "!\n";
+}</pre><p></p><hr
+/><p></p><pre class="crayon-plain-tag">$ bii find
+$ bii cpp:configure -G "Unix Makefiles"
+$ bii cpp:build
+$ ./bin/examples_boost-coroutine_main
+Hello, world!</pre><p>So I will develop and deploy my version of the Tiny Metaprogramming Library as a biicode block, <a
+href="https://www.biicode.com/manu343726/tiny"><code>manu343726/tiny</code></a>, and all the examples provided in the blogposts will be using biicode for setup and building.<br
+/> I have developed a metaprogramming library before, the <a
+href="https://github.com/Manu343726/Turbo">Turbo Metaprogramming Library</a>. Many of my examples and guidelines may resemble the design of Turbo. Others may not, being fixes to bad design decisions.</p><p>The idea of this post series is that everybody following them has its own Tiny Metaprogramming Library, in a way that each one is implementing and trying the lessons learned.<br
+/> Of course you can ask me whatever questions you like, post comments in the blogposts about specific questions covered there, or questions about my reference implementation on github via the issues system.</p><h3>The blogposts</h3><p>Each week we will learn and implement a little but interesting high-level feature, like expression evaluation, currying, lifting, lambda expressions, etc; and that feature will be added to our Tiny Metaprogramming Library.<br
+/> Of course as the blogposts are released, the library will be growing each week, starting from basic concepts to complex features based on those we have learnt and implemented before.</p><p>As the series and the libraries evolve my criteria may change, depending on your feedback, but this is the main set of bullets I&#8217;m thinking for the posts:</p><ul><li>Templates, basic concepts (Just re-read <a
+href="http://www.codeproject.com/Articles/826229/Template-Metaprogramming-with-Modern-Cplusplus-tem">this</a>)</li><li>Type parameters vs non-type parameters. Value boxing and template boxing (i.e. <code>std::integral_constant</code> and <code>tml::lazy</code>).</li><li>Mastering the Haskell bastard: Values and expressions</li><li>Improving expression evaluation.</li><li>Lists</li><li>Algorithms</li><li>Iterators</li><li>Lambda expressions</li><li>Monads</li></ul><h2>Are you ready for some cool metaprogramming?</h2><p>I hope you like this idea. It&#8217;s not only me writing crazy meta-stuff, but everybody developing their own metaprogramming library, learning something new each week, and comparing the different approaches each one is taking. I&#8217;m the guy who writes this posts, but I can learn a lot with your Tiny Metaprogramming Libraries and your feedback.</p><p>Hope you enjoy this metaprogramming post and, as always, we look forward to hear what you think. Just click on the sidebar button to try biicode, check our <a
+href="http://docs.biicode.com">docs</a>, <a
+href="http://forum.biicode.com">forum</a> and/or <a
+href="http://stackoverflow.com/questions/tagged/biicode?sort=newest">Stackoverflow tag</a> for questions and answers.</p><p>The post <a
+rel="nofollow" href="http://blog.biicode.com/tiny-metaprogramming-library/">A Tiny Metaprogramming Library</a> appeared first on <a
+rel="nofollow" href="http://blog.biicode.com">biicode Blog</a>.</p> ]]></content:encoded> <wfw:commentRss>http://blog.biicode.com/tiny-metaprogramming-library/feed/</wfw:commentRss> <slash:comments>1</slash:comments> </item> </channel> </rss>
